@@ -335,3 +335,73 @@ test("list_pending_nodes returns the full incomplete work queue", async () => {
   assert.equal(r.nodes[0].nodeId, "county-30-1", "DFS order: county before city");
   assert.equal(r.nodes[1].nodeId, "city-30-1");
 });
+
+test("traversal visits province-level places before counties", async () => {
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "complete" });
+  notes.upsertRegistry(state, { id: "province-30", slug: "p", path: "province.json", status: "active", name: "همدان", type: "other", subType: "province" });
+  for (const t of ["counties", "provincePlaces", "camping"]) notes.completeDiscoveryTask(state, "province-30", t);
+  notes.upsertNode(state, { nodeId: "place-30-1", nodeType: "place", canonicalName: "مکان استانی", parentNodeId: "province-30", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
+  notes.writeNotes(state);
+
+  const { nextRequiredNode } = await import("../dist/graph.js");
+  const next = nextRequiredNode("province-30");
+  assert.equal(next.nodeId, "place-30-1", "province-level place must come before county");
+});
+
+test("reserve_entity_id persists a pending reservation and finalizes on save", async () => {
+  const { toolReserveEntityId, toolSaveActiveEntity } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+  const r1 = toolReserveEntityId({ provinceId: "province-30", entityKind: "place", preferredSlug: "new-place" });
+  const r2 = toolReserveEntityId({ provinceId: "province-30", entityKind: "place", preferredSlug: "new-place" });
+  assert.notEqual(r1.id, r2.id, "second reserve must return a different id");
+  assert.notEqual(r1.slug, r2.slug, "second reserve must return a different slug");
+
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  assert.ok(state.registry.some((x) => x.id === r1.id && x.status === "pending"), "reservation must be persisted as pending");
+
+  // Saving with the reserved id/slug must not hit DUPLICATE (pending is excluded).
+  notes.upsertNode(state, { nodeId: r1.id, nodeType: "place", canonicalName: "مکان جدید", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(state);
+  const entity = makeValidPlace({ id: r1.id, slug: r1.slug });
+  const save = toolSaveActiveEntity({ provinceId: "province-30", entity, expectedNodeId: r1.id });
+  assert.equal(save.accepted, true, JSON.stringify(save.errors));
+
+  const state2 = notes.readNotes("province-30");
+  assert.equal(state2.registry.find((x) => x.id === r1.id).status, "active", "pending must be promoted to active");
+});
+
+test("update_notes rejects add_source_matrix_entry (record_search_result is the only owner)", async () => {
+  const { toolUpdateNotes } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+  assert.throws(
+    () => toolUpdateNotes({ provinceId: "province-30", operation: "add_source_matrix_entry", payload: { nodeId: "place-30-1", sourceUrl: "https://example.com/x", ownershipStatus: "belongs_to_child" } }),
+    /Unknown notes operation/,
+  );
+});
+
+test("link_entities enforces semantic relation rules", async () => {
+  const { toolSaveActiveEntity, toolLinkEntities } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "place-30-2", nodeType: "place", canonicalName: "مکان دیگر", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(state);
+
+  const a = makeValidPlace();
+  const b = makeValidPlace({ id: "place-30-2", slug: "other-place", name: { fa: "مکان دیگر" } });
+  assert.equal(toolSaveActiveEntity({ provinceId: "province-30", entity: a, expectedNodeId: a.id }).accepted, true);
+  assert.equal(toolSaveActiveEntity({ provinceId: "province-30", entity: b, expectedNodeId: b.id }).accepted, true);
+
+  // sibling nearby is fine
+  assert.equal(toolLinkEntities({ provinceId: "province-30", fromId: a.id, toId: b.id, relationType: "nearby" }).linked, true);
+
+  // gateway_city requires a city target
+  assert.throws(() => toolLinkEntities({ provinceId: "province-30", fromId: a.id, toId: b.id, relationType: "gateway_city" }), /city/);
+
+  // parent requires a real administrative ancestor
+  assert.throws(() => toolLinkEntities({ provinceId: "province-30", fromId: a.id, toId: b.id, relationType: "parent" }), /ancestor/);
+});

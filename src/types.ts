@@ -73,7 +73,7 @@ export interface RegistryEntry {
   id: string;
   slug: string;
   path: string;
-  status: "active";
+  status: "active" | "pending";
   name: string;
   type: string;
   subType?: string;

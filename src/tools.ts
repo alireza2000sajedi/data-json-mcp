@@ -175,11 +175,25 @@ export function toolReserveEntityId(args: { provinceId: string; entityKind: stri
   const kindNodeType: NodeType = args.entityKind === "camping" ? "camping" : args.entityKind === "poi" ? "place" : (args.entityKind as NodeType);
   const nodeType: NodeType = ["province", "county", "city", "village", "place", "camping"].includes(kindNodeType) ? kindNodeType : "place";
 
+  // Real reservation: persist a pending registry entry so a later reserve call
+  // (or a concurrent agent) cannot return the same id/slug. save_active_entity
+  // promotes it to "active" when the entity is committed.
+  upsertRegistry(state, {
+    id,
+    slug,
+    path: "",
+    status: "pending",
+    name: "",
+    type: "",
+  });
+  writeNotes(state);
+
   return {
     id,
     slug,
     entityKind: args.entityKind,
     nodeType,
+    status: "pending",
     suggestedCanonicalPath: suggestedPath(nodeType, args.provinceId, id),
   };
 }
@@ -402,6 +416,24 @@ export function toolLinkEntities(args: {
   if (!from) throw new Error(`Entity '${args.fromId}' not found.`);
   if (!to) throw new Error(`Entity '${args.toId}' not found.`);
 
+  // Semantic validation (structural checks are not enough):
+  const state = readNotes(args.provinceId);
+  const fromAncestors = new Set(ancestorChain(state, args.fromId).map((n) => n.nodeId));
+  const toAncestors = new Set(ancestorChain(state, args.toId).map((n) => n.nodeId));
+  const toType = entityNodeType(to.entity);
+  if (args.relationType === "parent" && !fromAncestors.has(args.toId)) {
+    throw new Error(`relationType 'parent' requires the target '${args.toId}' to be a real administrative ancestor of '${args.fromId}'.`);
+  }
+  if (args.relationType === "child" && !toAncestors.has(args.fromId)) {
+    throw new Error(`relationType 'child' requires '${args.fromId}' to be a real administrative ancestor of the target '${args.toId}'.`);
+  }
+  if (args.relationType === "gateway_city" && toType !== "city") {
+    throw new Error(`relationType 'gateway_city' requires the target '${args.toId}' to be a city (got ${toType}).`);
+  }
+  if (args.relationType === "nearby" && (fromAncestors.has(args.toId) || toAncestors.has(args.fromId))) {
+    throw new Error(`relationType 'nearby' must not point at an administrative parent/child; '${args.fromId}' and '${args.toId}' are in a parent-child line.`);
+  }
+
   const fromRel = (from.entity.relations as any[]) ?? [];
   if (fromRel.some((r) => r?.placeId === args.toId && r?.relationType === args.relationType)) {
     throw new Error(`Relation '${args.relationType}' from '${args.fromId}' to '${args.toId}' already exists.`);
@@ -500,20 +532,6 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       break;
     }
 
-    case "add_source_matrix_entry":
-      ensureNode(state, String(p.nodeId));
-      addSourceMatrixEntry(state, {
-        id: newId("src"),
-        nodeId: String(p.nodeId),
-        query: String(p.query ?? ""),
-        sourceUrl: String(p.sourceUrl ?? ""),
-        sourceTitle: String(p.sourceTitle ?? ""),
-        resultSummary: String(p.resultSummary ?? ""),
-        ownershipStatus: (p.ownershipStatus as OwnershipStatus) ?? "unverified",
-        discoveredNames: p.discoveredNames,
-      });
-      break;
-
     case "update_registry":
       upsertRegistry(state, {
         id: String(p.id),
@@ -579,7 +597,15 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     }
   }
 
-  const complete = scope.definitionOfDone && invalidRelations.length === 0;
+  const complete =
+    scope.definitionOfDone &&
+    invalidRelations.length === 0 &&
+    incompleteMedia.length === 0 &&
+    incompleteCosts.length === 0 &&
+    missingEvidence.length === 0 &&
+    openCandidates.length === 0 &&
+    unresolvedConflicts.length === 0 &&
+    missingAdministrativeNodes.length === 0;
 
   return {
     complete,

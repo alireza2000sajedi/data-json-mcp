@@ -89,6 +89,7 @@ node mcp-client.mjs read planro://rules/brand-voice
 
 - **سلسله‌مراتب، نه مسطح**: هر County/City/Village/Place جستجوی مستقل دارد. Query استان فقط برای خود استان است.
 - **مالکیت Source**: نتیجه، Fact، Source، Media، Cost یا متنِ Parent بدون تحقیق اختصاصی به Child منتقل نمی‌شود. Query «جاهای دیدنی استان همدان» هرگز Source شهرستان فامنین نیست.
+- **ownershipStatus صادقانه**: آن را فقط بعد از باز کردن و بررسی واقعی صفحه انتخاب کن — نه صرفاً برای عبور از Gate. اگر صفحه را ندیده‌ای، `unverified` بگذار.
 - **nearby هرگز Parent/Child نیست**. هر Relation فقط به Entity واقعی اشاره می‌کند.
 - **Active-only**: هیچ JSON ناقصی ذخیره نمی‌شود. هر JSON ذخیره‌شده `status: "active"` دارد. دادهٔ ناقص فقط Candidate/Task در notes است.
 - **URL خام HTTPS**: بدون Markdown، بدون `&amp;`، بدون فاصله. اگر لایهٔ چت URL را به شکل `[url](url)` رندر کرد نگران نباش — MCP هنگام ذخیره خودش آن را به لینک خام تبدیل می‌کند.
@@ -103,7 +104,11 @@ node mcp-client.mjs read planro://rules/brand-voice
 
 ## گزارش نهایی
 
-فقط وقتی Scope واقعاً کامل شد، این‌ها را بده:
+فقط وقتی Scope واقعاً کامل شد (`check_definition_of_done` → `complete: true`)، این چرخه را یک بار دیگر طی کن:
+
+1. `validate_province` — همهٔ Entityهای ذخیره‌شده را دوباره اعتبارسنجی کن.
+2. اگر `invalid > 0` بود، خطاها را اصلاح کن، دوباره `validate_province` و سپس `check_definition_of_done` بزن.
+3. فقط وقتی `check_definition_of_done` → `complete: true` و `validate_province` → `invalid: 0` شد، این‌ها را بده:
 - `province_id`
 - مسیر خروجی (`output/{province_id}/`)
 - تعداد رکورد (Entityهای active)

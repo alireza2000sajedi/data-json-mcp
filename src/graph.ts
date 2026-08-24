@@ -30,6 +30,46 @@ export function nodeTypeOrder(t: NodeType): number {
   return NODE_TYPE_ORDER.indexOf(t);
 }
 
+/**
+ * Priority of a child node type *given its parent's type*.
+ *
+ * A node's own places/campsites are visited before descending into its child
+ * administrative units, matching the mandatory completion order in the prompt:
+ *
+ *   province → province-level places/camping → counties
+ *   county   → districts → ruralDistricts → county-level places → cities → villages → camping
+ *   district → ruralDistricts → cities → villages → places → camping
+ *   ruralDistrict → villages → places → camping
+ *   city     → city-level places → villages → camping
+ *   village  → village-level places → camping
+ */
+function siblingPriority(parentType: NodeType | null, childType: NodeType): number {
+  let order: Partial<Record<NodeType, number>>;
+  switch (parentType) {
+    case "province":
+      order = { place: 0, camping: 1, county: 2 };
+      break;
+    case "county":
+      order = { district: 0, ruralDistrict: 1, place: 2, city: 3, village: 4, camping: 5 };
+      break;
+    case "district":
+      order = { ruralDistrict: 0, city: 1, village: 2, place: 3, camping: 4 };
+      break;
+    case "ruralDistrict":
+      order = { village: 0, place: 1, camping: 2 };
+      break;
+    case "city":
+      order = { place: 0, village: 1, camping: 2 };
+      break;
+    case "village":
+      order = { place: 0, camping: 1 };
+      break;
+    default:
+      return nodeTypeOrder(childType);
+  }
+  return order[childType] ?? 10;
+}
+
 export interface NodeStatus {
   node: NodeRecord;
   entityActive: boolean;
@@ -88,8 +128,9 @@ export function traverse(provinceId: string): NodeRecord[] {
     if (!byParent.has(key)) byParent.set(key, []);
     byParent.get(key)!.push(n);
   }
-  for (const arr of byParent.values()) {
-    arr.sort((a, b) => nodeTypeOrder(a.nodeType) - nodeTypeOrder(b.nodeType));
+  for (const [parentId, arr] of byParent) {
+    const parentType = parentId === null ? null : (state.nodes.find((n) => n.nodeId === parentId)?.nodeType ?? null);
+    arr.sort((a, b) => siblingPriority(parentType, a.nodeType) - siblingPriority(parentType, b.nodeType));
   }
 
   const order: NodeRecord[] = [];

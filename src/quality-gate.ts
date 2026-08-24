@@ -207,6 +207,7 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     usedSlugs.add(e.entity.slug);
   }
   for (const r of state.registry) {
+    if (r.status === "pending") continue; // a pending reservation belongs to this upcoming save
     usedIds.add(r.id);
     usedSlugs.add(r.slug);
   }

@@ -75,7 +75,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 npm test               # build + node --test tests/
 ```
 
-۳۵ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، و ساختار پوشهٔ سلسله‌مراتبی).
+۳۹ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، و ساختار پوشهٔ سلسله‌مراتبی).
 
 ---
 
@@ -87,7 +87,7 @@ npm test               # build + node --test tests/
 | `get_next_research_node` | `provinceId` | اولین Node ناتمام در پیمایش عمقی + Context اداری + taskهای اجباری |
 | `get_node_context` | `provinceId`, `nodeId` | nodeType، canonicalName، parent، administrativePath، نامهای جایگزین، Relations، discovery tracks |
 | `find_existing_entity` | `provinceId`, `name`, … | match قطعی/احتمالی + دلیل + مسیر canonical (ضد تکراری) |
-| `reserve_entity_id` | `provinceId`, `entityKind`, `preferredSlug` | id یکتا، slug یکتا، مسیر پیشنهادی |
+| `reserve_entity_id` | `provinceId`, `entityKind`, `preferredSlug` | id یکتا + slug یکتا + **رزرو واقعی** (ثبت pending در Registry که در ذخیره، active می‌شود) |
 | `record_search_result` | `provinceId`, `nodeId`, `query`, `sourceUrl`, `sourceTitle`, `resultSummary`, `ownershipStatus` | ثبت Source Matrix با مالکیت Context |
 | `create_candidate` | `provinceId`, `nodeId`, `name`, … | فقط در notes.md (هیچ JSON ساخته نمی‌شود) |
 | `resolve_candidate` | `provinceId`, `candidateId`, `outcome` | بستن Candidate |
@@ -107,7 +107,9 @@ npm test               # build + node --test tests/
 
 ### `update_notes` operationها
 
-`add_research_coverage` · `add_conflict` · `resolve_conflict` · `add_discovery_task` · `complete_discovery_task` · `mark_node_complete` · `add_source_matrix_entry` · `update_registry` · `register_node`
+`add_research_coverage` · `add_conflict` · `resolve_conflict` · `add_discovery_task` · `complete_discovery_task` · `mark_node_complete` · `update_registry` · `register_node`
+
+(ثبت Source Matrix **فقط** از طریق `record_search_result` انجام می‌شود؛ `update_notes` دیگر operation مستقیم برای آن ندارد تا validation مالکیت/URL دور نخورد.)
 
 (هیچ operationای اجازهٔ بازنویسی آزاد کل notes.md را نمی‌دهد.)
 
@@ -139,9 +141,9 @@ npm test               # build + node --test tests/
 
 3. **notes.md ساخت‌یافته و اتمیک**: notes.md شامل بلوک `<!-- planro:state -->` (JSON) + جدولهای قابل‌خواندن (ID Registry، Research coverage، …) است. همهٔ نوشتنها با temp+rename اتمیک انجام می‌شوند و هیچ Toolای «بازنویسی آزاد» ندارد.
 
-4. **پیمایش عمقی (DFS)**: ترتیب `province → county → district → ruralDistrict → city → village → place → camping` ثابت است؛ `next-node` اولین Node ناتمام را برمی‌گرداند، نه یک Node تصادفی. «کامل» بودن یک Node = ذخیرهٔ Entity فعال (برای نوعهای entity) + تکمیل همهٔ `requiredDiscovery` + نبود Candidate/Conflict باز.
+4. **پیمایش عمقی (DFS)**: ترتیب نسبت به والد آگاه است — `province → مکانهای سطح استان/کمپینگ → county → …`؛ یعنی Place/Camp مستقیمِ یک سطح، پیش از ورود به فرزندان اداری آن سطح بازدید می‌شود (مطابق پرامپت). `next-node` اولین Node ناتمام را برمی‌گرداند، نه یک Node تصادفی. «کامل» بودن یک Node = ذخیرهٔ Entity فعال (برای نوعهای entity) + تکمیل همهٔ `requiredDiscovery` + نبود Candidate/Conflict باز.
 
-5. **مالکیت Source (Source Ownership)**: هر Search Result با `ownershipStatus` در Source Matrix ثبت می‌شود. در ذخیره، `evidence.sourceUrl` باید دقیقاً یکی از `sources[].url` باشد و Source باید برای همان Node (یا به‌صورت `belongs_to_child` برای والد) ثبت شده باشد. Source ثبت‌شده برای استان نمی‌تواند Fact اختصاصی شهرستان را پشتیبانی کند.
+5. **مالکیت Source (Source Ownership)**: هر Search Result فقط با `record_search_result` (نه `update_notes`) در Source Matrix ثبت می‌شود و مالکیت + URL خام آنجا validate می‌شود. در ذخیره، `evidence.sourceUrl` باید دقیقاً یکی از `sources[].url` باشد و Source باید برای همان Node (یا به‌صورت `belongs_to_child` برای والد) ثبت شده باشد. Source ثبت‌شده برای استان نمی‌تواند Fact اختصاصی شهرستان را پشتیبانی کند. `link_entities` هم قواعد معنایی را اعمال می‌کند: `parent` باید والد اداری واقعی باشد، `gateway_city` باید شهر باشد، `nearby` نباید والد/فرزند اداری باشد.
 
 6. **مسیر Canonical از Graph گرفته می‌شود** (نه از رشتهٔ نام): ساختار پوشه دقیقاً آینهٔ سلسله‌مراتب اداری واقعی است و پوشهٔ type-prefix (مثل `counties/`) ندارد. هر Entity اداری پوشه‌ای به نام id خودش دارد و زیر پوشهٔ والدهایش قرار می‌گیرد؛ Place/Camp فایل برگ‌مانند داخل پوشهٔ والدش است. روستا و مکان می‌توانند در هر سطحی (استان/شهرستان/شهر/روستا) باشند:
 
@@ -168,7 +170,7 @@ npm test               # build + node --test tests/
 
 12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` / `save_entities` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند.
 
-13. **سرعت (Batch)**: برای جمع‌آوری حجم بالا، `save_entities` چند Entity را در یک فراخوانی ذخیره می‌کند و `discover_subtree` همهٔ Queryهای یک زیردرخت را یک‌جا می‌دهد تا Agent بتواند جستجوها را موازی اجرا کند. ترتیب در `save_entities` مهم است: والدها قبل از فرزندان.
+13. **سرعت (Batch)**: برای جمع‌آوری حجم بالا، `save_entities` چند Entity را در یک فراخوانی ذخیره می‌کند و `discover_subtree` همهٔ Queryهای یک زیردرخت را یک‌جا می‌دهد تا Agent بتواند جستجوها را موازی اجرا کند. ترتیب در `save_entities` مهم است: والدها قبل از فرزندان. توجه: این **نوشتن ترتیبیِ اعتبارسنجی‌شده** است، نه تراکنش اتمیک — هر Entity مستقلاً validate و نوشته می‌شود و نتایج تک‌به‌تک برمی‌گردد.
 
 14. **URLها خودکار نرمال می‌شوند**: چون لایهٔ چتِ Agent گاهی URL را به شکل Markdown (`[url](url)`) رندر می‌کند، `save_active_entity` و `save_entities` پیش از اعتبارسنجی، همهٔ فیلدهای URL را به لینک خام `https://…` تبدیل می‌کنند و همان نسخهٔ تمیز را ذخیره می‌کنند. لازم نیست Agent نگران این خطای رندر باشد.
 
