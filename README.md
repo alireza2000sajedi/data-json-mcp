@@ -95,6 +95,7 @@ npm test               # build + node --test tests/
 | `link_entities` | `provinceId`, `fromId`, `toId`, `relationType`, … | Relation معتبر + به‌روزرسانی هر دو فایل |
 | `update_notes` | `provinceId`, `operation`, `payload` | به‌روزرسانی ساخت‌یافته و قابل‌ردیابی notes |
 | `check_definition_of_done` | `provinceId` | complete + موارد ناقص + nextAction |
+| `discover_node` | `provinceId`, `nodeType`, `canonicalName`, `context?` | لیست Queryهای ساخت‌یافتهٔ همان Node (تولیدکنندهٔ Query، بدون اتصال به اینترنت) |
 
 ### `ownershipStatus` (در `record_search_result`)
 
@@ -146,6 +147,8 @@ npm test               # build + node --test tests/
 9. **خطاهای ساخت‌یافته**: خروجی رد، `{ accepted:false, errors:[{code,path,message}], warnings:[] }` است. کدها مانند `SOURCE_OWNERSHIP_MISMATCH`، `URL_NOT_RAW_HTTPS`، `EVIDENCE_SOURCE_NOT_IN_SOURCES`، `MEDIA_OWNERSHIP_MISMATCH`، `COST_MIN_GT_MAX` و … هستند.
 
 10. **بدون Loop خودکار**: MCP فقط Tool/Resource می‌دهد؛ حلقهٔ «ادامه تا پایان Scope» وظیفهٔ Runner بیرونی است (همان‌طور که در پرامپت مشخص شده).
+
+11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `PLANRO_AGENT_PROMPT.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
 
 ---
 

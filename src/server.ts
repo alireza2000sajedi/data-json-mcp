@@ -14,6 +14,7 @@ import {
   toolLinkEntities,
   toolUpdateNotes,
   toolCheckDefinitionOfDone,
+  toolDiscoverNode,
 } from "./tools.js";
 
 export function createServer(): McpServer {
@@ -150,6 +151,27 @@ export function createServer(): McpServer {
     "Check whether the province scope meets its Definition of Done.",
     { provinceId: z.string().min(1) },
     toolCheckDefinitionOfDone,
+  );
+
+  register(
+    "discover_node",
+    "Generate node-scoped discovery query strings (query generator only — never performs the search).",
+    {
+      provinceId: z.string().min(1),
+      nodeType: z.enum(["province", "county", "district", "ruralDistrict", "city", "village", "place", "camping"]),
+      canonicalName: z.string().min(1),
+      context: z
+        .object({
+          province: z.string().optional(),
+          county: z.string().optional(),
+          district: z.string().optional(),
+          ruralDistrict: z.string().optional(),
+          city: z.string().optional(),
+          village: z.string().optional(),
+        })
+        .optional(),
+    },
+    toolDiscoverNode,
   );
 
   return server;

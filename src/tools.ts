@@ -36,6 +36,7 @@ import {
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
+import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
 import type { NotesState, NodeType, OwnershipStatus, PlaceEntity } from "./types.js";
 
 // --- shared helpers ---
@@ -546,5 +547,28 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     incompleteCosts,
     missingEvidence,
     nextAction: complete ? null : scope.nextRequiredNode?.nodeId ?? "discover province administrative structure",
+  };
+}
+
+// ============================================================================
+// 13. discover_node — generates node-scoped queries (query generator, no network)
+// ============================================================================
+export function toolDiscoverNode(args: {
+  provinceId: string;
+  nodeType: string;
+  canonicalName: string;
+  context?: DiscoveryContext;
+}) {
+  if (!DISCOVERY_NODE_TYPES.includes(args.nodeType as NodeType)) {
+    throw new Error(`nodeType must be one of: ${DISCOVERY_NODE_TYPES.join(", ")}`);
+  }
+  const queries = buildDiscoveryQueries(args.nodeType as NodeType, args.canonicalName, args.context ?? {});
+  return {
+    provinceId: args.provinceId,
+    nodeType: args.nodeType,
+    canonicalName: args.canonicalName,
+    context: args.context ?? {},
+    queries,
+    note: "Run each query with your own search tools, then record every result via record_search_result with an ownershipStatus. A query for this node must not be reused to back facts of a parent or child node.",
   };
 }

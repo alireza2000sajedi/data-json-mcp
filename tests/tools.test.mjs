@@ -135,6 +135,28 @@ test("check_definition_of_done reports incomplete state", async () => {
   assert.ok(Array.isArray(r.nextAction) === false || typeof r.nextAction === "string" || r.nextAction === null);
 });
 
+test("discover_node generates node-scoped queries (no network, no cross-node leakage)", async () => {
+  const { toolDiscoverNode } = await import("../dist/tools.js");
+  const r = toolDiscoverNode({ provinceId: "province-30", nodeType: "county", canonicalName: "فامنین" });
+  assert.equal(r.nodeType, "county");
+  assert.ok(r.queries.length > 0);
+  // Every county query must embed the county name, never the province-level phrasing.
+  for (const q of r.queries) {
+    assert.ok(q.query.includes("شهرستان فامنین"), `query must be county-scoped: ${q.query}`);
+  }
+
+  // POI queries must carry geographic context.
+  const poi = toolDiscoverNode({
+    provinceId: "province-30",
+    nodeType: "place",
+    canonicalName: "مسجد جامع",
+    context: { province: "همدان", county: "فامنین", city: "فامنین" },
+  });
+  for (const q of poi.queries) {
+    assert.ok(!/^مسجد جامع$/.test(q.query), `POI query must not be a bare name: ${q.query}`);
+  }
+});
+
 test("village entity requires full six-category checklist", async () => {
   const { validateEntity } = await import("../dist/quality-gate.js");
   await seedProvinceHierarchy();
