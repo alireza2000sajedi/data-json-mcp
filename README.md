@@ -42,7 +42,7 @@ data-json-mcp/
 │   ├── dataset.ts            ← فایلهای Entity، مسیر canonical، ID/slug
 │   ├── quality-gate.ts       ← دروازهٔ کیفیت پیش از ذخیره
 │   ├── resources.ts          ← ۱۱ Resource
-│   └── tools.ts              ← ۱۶ Tool
+│   └── tools.ts              ← ۱۷ Tool
 └── tests/                    ← تستهای node:test
 ```
 
@@ -75,7 +75,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 npm test               # build + node --test tests/
 ```
 
-۳۳ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، و ساختار پوشهٔ سلسله‌مراتبی).
+۳۵ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، و ساختار پوشهٔ سلسله‌مراتبی).
 
 ---
 
@@ -99,6 +99,7 @@ npm test               # build + node --test tests/
 | `discover_node` | `provinceId`, `nodeType`, `canonicalName`, `context?` | لیست Queryهای ساخت‌یافتهٔ همان Node (تولیدکنندهٔ Query، بدون اتصال به اینترنت) |
 | `discover_subtree` | `provinceId`, `nodeId?` | همهٔ Queryهای یک زیردرخت (یا کل استان) در یک فراخوانی، برای جستجوی موازی |
 | `validate_province` | `provinceId` | بازبینی همهٔ Entityهای ذخیره‌شده و گزارش خطاهای ساخت‌یافته (evidence ناقص، ناسازگاری مالکیت و…) |
+| `list_pending_nodes` | `provinceId` | صف کامل کار: همهٔ Nodeهای ناتمام به ترتیب عمقی (برای batch و ادامهٔ برنامه‌ریزی) |
 
 ### `ownershipStatus` (در `record_search_result`)
 

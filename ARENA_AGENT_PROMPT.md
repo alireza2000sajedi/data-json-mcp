@@ -32,7 +32,7 @@ npm run build
 node mcp-client.mjs list-tools
 ```
 
-این باید فهرست ۱۶ Tool را نشان دهد. از این پس، همهٔ عملیات داده‌ای را از طریق همین کلاینت انجام بده.
+این باید فهرست ۱۷ Tool را نشان دهد. از این پس، همهٔ عملیات داده‌ای را از طریق همین کلاینت انجام بده.
 
 ## نحوهٔ استفاده از ابزارها
 
@@ -69,6 +69,7 @@ node mcp-client.mjs read planro://rules/brand-voice
 
 این حلقه را تکرار کن تا `check_definition_of_done` مقدار `complete: true` بدهد:
 
+0. **صف کار** — `list_pending_nodes` بزن تا همهٔ Nodeهای ناتمام را به ترتیب ببینی. این فهرست پایان کار نیست؛ باید تک‌تک کامل شوند.
 1. **وضعیت Scope** — `get_scope_state` بزن و استان را بشناس.
 2. **اولین Node ناتمام** — `get_next_research_node` بزن؛ این Node در پیمایش عمقی (Province → County → District → Rural District → City/Village → Place) تعیین می‌شود، نه تصادفی.
 3. **Context اداری** — `get_node_context` بزن تا administrativePath، نام‌های جایگزین و discovery tracks را بدانی.
@@ -96,6 +97,9 @@ node mcp-client.mjs read planro://rules/brand-voice
 - **Cost**: فقط `IRT`، `forTravelers: 1`، `priceAsOf` واقعی، سه Tier، و `inflationCategory` قابل‌پوشش توسط CPI.
 - **لحن برند**: بدون صفت تبلیغاتی (بهترین/زیباترین/جادویی)، بدون هوش مصنوعی/سیستم هوشمند در متن، بدون کلیشهٔ رباتی — مگر با Evidence اختصاصی.
 - **ادامهٔ اجباری**: بعد از هر Checkpoint داخلی، اولین Node ناتمام را بگیر و ادامه بده. گزارش «کار تمام شد» فقط وقتی مجاز است که `check_definition_of_done` مقدار `complete: true` بدهد.
+- **کشف ساختار ≠ تکمیل**: ثبت ۱۰ شهرستان در notes فقط «کشف ساختار» است. برای هر شهرستان باید Entity کامل بسازی و ذخیره کنی، بعد شهرها/روستاها/POIهایش. اگر فقط ساختار را ثبت کنی و توقف کنی، Scope کامل نشده است.
+- **Batch، نه یکی‌یکی**: چند Entity کامل را با `save_entities` در یک فراخوانی ذخیره کن و برای چند شهرستان هم‌زمان جستجو کن.
+- **از سرگیری (Resume)**: اگر این پرامپت دوباره با همان `province_id` اجرا شد، از notes موجود ادامه بده (`list_pending_nodes` / `get_scope_state`) و از نو شروع نکن. پیشرفت قبلی در notes.md ماندگار است.
 
 ## گزارش نهایی
 

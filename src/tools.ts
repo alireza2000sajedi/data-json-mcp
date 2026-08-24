@@ -624,7 +624,7 @@ export function toolValidateProvince(args: { provinceId: string }) {
   const state = readNotes(args.provinceId);
   const stored = listEntities(args.provinceId);
   const entities = stored.map((e) => {
-    const result = validateEntity(e.entity, { provinceId: args.provinceId, expectedNodeId: e.entity.id, state });
+    const result = validateEntity(e.entity, { provinceId: args.provinceId, expectedNodeId: e.entity.id, state, skipSelfDuplicate: true });
     return {
       entityId: e.entity.id,
       path: e.path,
@@ -701,5 +701,33 @@ export function toolDiscoverSubtree(args: { provinceId: string; nodeId?: string 
     nodeCount: results.length,
     note: "All query strings for the subtree at once, so you can run searches in parallel. Every query is already scoped to its own node — do not reuse a node's query to back a parent/child fact.",
     nodes: results,
+  };
+}
+
+// ============================================================================
+// 16. list_pending_nodes — full work queue (all incomplete nodes in DFS order)
+// ============================================================================
+export function toolListPendingNodes(args: { provinceId: string }) {
+  const nodes = traverse(args.provinceId).map((n) => {
+    const st = nodeStatus(args.provinceId, n);
+    return {
+      nodeId: n.nodeId,
+      nodeType: n.nodeType,
+      canonicalName: n.canonicalName,
+      parentNodeId: n.parentNodeId,
+      entityActive: st.entityActive,
+      pendingDiscovery: st.pendingDiscovery,
+      openCandidates: st.openCandidates,
+      openConflicts: st.openConflicts,
+      complete: st.complete,
+    };
+  });
+  const pending = nodes.filter((n) => !n.complete);
+  return {
+    provinceId: args.provinceId,
+    total: nodes.length,
+    complete: nodes.length - pending.length,
+    pending: pending.length,
+    nodes: pending,
   };
 }

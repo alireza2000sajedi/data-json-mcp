@@ -28,7 +28,7 @@ npm run build
 
 node mcp-client.mjs list-tools
 
-این باید فهرست ۱۶ Tool را نشان دهد. از این پس همهٔ عملیات داده‌ای را از همین کلاینت انجام بده.
+این باید فهرست ۱۷ Tool را نشان دهد. از این پس همهٔ عملیات داده‌ای را از همین کلاینت انجام بده.
 
 نحوهٔ استفاده از ابزارها
 
@@ -56,6 +56,7 @@ place.schema.json تنها مرجع ساختار، Required، Enum و Validation
 
 این حلقه را تکرار کن تا check_definition_of_done مقدار complete: true بدهد:
 
+0. list_pending_nodes — صف کامل کار را ببین: همهٔ Nodeهای ناتمام به ترتیب عمقی. این فهرست پایان کار نیست؛ باید تک‌تک کامل شوند.
 1. get_scope_state — وضعیت کل Scope، Candidateها، Conflictها و DoD.
 2. get_next_research_node — اولین Node ناتمام در پیمایش عمقی (نه تصادفی).
 3. get_node_context — administrativePath، نام‌های جایگزین، discovery tracks.
@@ -86,6 +87,9 @@ place.schema.json تنها مرجع ساختار، Required، Enum و Validation
 - Cost: فقط IRT، forTravelers=1، priceAsOf واقعی، سه Tier economy/standard/comfortable، و inflationCategory قابل‌پوشش توسط CPI.
 - لحن برند: بدون صفت تبلیغاتی (بهترین/زیباترین/جادویی)، بدون هوش مصنوعی/سیستم هوشمند در متن، بدون کلیشهٔ رباتی — مگر با Evidence اختصاصی.
 - ادامهٔ اجباری: بعد از هر Checkpoint داخلی، اولین Node ناتمام را بگیر و ادامه بده. گزارش «کار تمام شد» فقط وقتی مجاز است که check_definition_of_done مقدار complete: true بدهد.
+- کشف ساختار ≠ تکمیل: ثبت ۱۰ شهرستان در notes فقط «کشف ساختار» است. برای هر شهرستان باید Entity کامل بسازی و ذخیره کنی، بعد شهرها/روستاها/POIهایش. اگر فقط ساختار را ثبت کنی و توقف کنی، Scope کامل نشده است.
+- Batch، نه یکی‌یکی: چند Entity کامل را با save_entities در یک فراخوانی ذخیره کن. برای چند شهرستان هم‌زمان جستجو کن.
+- از سرگیری (Resume): اگر این پرامپت دوباره با همان province_id اجرا شد، از notes موجود ادامه بده (list_pending_nodes / get_scope_state) و از نو شروع نکن. پیشرفت قبلی در notes.md ماندگار است.
 - ذخیره فقط از مسیر MCP: هرگز JSON را مستقیم با bash یا heredoc ننویس. تنها راه ذخیرهٔ Entity، Toolهای «save_active_entity» و «save_entities» است. نوشتن مستقیم، دروازهٔ کیفیت را دور می‌زند.
 - URL خام HTTPS: بدون Markdown، بدون &amp;، بدون فاصله و متن اضافی. اگر لایهٔ چت URL را به شکل [url](url) رندر کرد نگران نباش — MCP هنگام ذخیره، خودش آن را به لینک خام تبدیل می‌کند و نسخهٔ تمیز را ذخیره می‌کند.
 - تکمیل Discovery: برای کامل شدن هر Node، بعد از اتمام تحقیق، discovery trackهای آن را با update_notes (operation=complete_discovery_task) کامل کن و سپس mark_node_complete بزن. بدون این دو گام، Scope هرگز complete نمی‌شود.

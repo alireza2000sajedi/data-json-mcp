@@ -304,3 +304,34 @@ test("discover_subtree returns node-scoped queries for a whole subtree at once",
   const sub = toolDiscoverSubtree({ provinceId: "province-30", nodeId: "county-30-1" });
   assert.ok(sub.nodes.every((n) => n.nodeId !== "province-30"), "subtree must exclude the province");
 });
+
+test("validate_province does not flag a stored entity as a duplicate of itself", async () => {
+  const { toolValidateProvince, toolSaveActiveEntity } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+  const entity = makeValidPlace();
+  const r = toolSaveActiveEntity({ provinceId: "province-30", entity, expectedNodeId: entity.id });
+  assert.equal(r.accepted, true);
+
+  const report = toolValidateProvince({ provinceId: "province-30" });
+  assert.equal(report.total, 1, JSON.stringify(report));
+  assert.equal(report.valid, 1, JSON.stringify(report));
+  assert.equal(report.invalid, 0, JSON.stringify(report.entities));
+});
+
+test("list_pending_nodes returns the full incomplete work queue", async () => {
+  const { toolListPendingNodes } = await import("../dist/tools.js");
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "complete" });
+  notes.upsertRegistry(state, { id: "province-30", slug: "hamedan-province", path: "province.json", status: "active", name: "همدان", type: "other", subType: "province" });
+  for (const track of ["counties", "provincePlaces", "camping"]) notes.completeDiscoveryTask(state, "province-30", track);
+  notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "city-30-1", nodeType: "city", canonicalName: "فامنین", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(state);
+
+  const r = toolListPendingNodes({ provinceId: "province-30" });
+  assert.equal(r.total, 3);
+  assert.equal(r.pending, 2, JSON.stringify(r.nodes));
+  assert.equal(r.nodes[0].nodeId, "county-30-1", "DFS order: county before city");
+  assert.equal(r.nodes[1].nodeId, "city-30-1");
+});

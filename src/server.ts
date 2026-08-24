@@ -18,6 +18,7 @@ import {
   toolValidateProvince,
   toolSaveEntities,
   toolDiscoverSubtree,
+  toolListPendingNodes,
 } from "./tools.js";
 
 export function createServer(): McpServer {
@@ -201,6 +202,13 @@ export function createServer(): McpServer {
     "Generate node-scoped discovery queries for every node in a subtree (or the whole province) at once, so searches can be run in parallel. Query generator only — never performs the search.",
     { provinceId: z.string().min(1), nodeId: z.string().min(1).optional() },
     toolDiscoverSubtree,
+  );
+
+  register(
+    "list_pending_nodes",
+    "Return the full work queue: every incomplete node in depth-first order (with pending discovery, open candidates/conflicts, entity-active status). Use it to plan and batch the remaining work instead of stopping after structure discovery.",
+    { provinceId: z.string().min(1) },
+    toolListPendingNodes,
   );
 
   return server;

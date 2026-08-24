@@ -8,6 +8,11 @@ export interface QualityContext {
   expectedNodeId: string;
   /** Pre-loaded notes state (read fresh inside if omitted). */
   state?: NotesState;
+  /**
+   * When true, the entity's own id/slug are not treated as duplicates. Used by
+   * re-validation tools (validate_province) that re-check already-stored files.
+   */
+  skipSelfDuplicate?: boolean;
 }
 
 const DEPRECATED_KEYS = ["parentId", "children", "nearbyPlaces", "nearbyCities", "osmRaw", "name.local", "name.alternatives", "metadata"];
@@ -205,11 +210,13 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     usedIds.add(r.id);
     usedSlugs.add(r.slug);
   }
-  if (usedIds.has(entity.id)) {
-    addError(errors, "DUPLICATE_ID", "id", `Entity id '${entity.id}' already exists in the dataset.`);
-  }
-  if (usedSlugs.has(entity.slug)) {
-    addError(errors, "DUPLICATE_SLUG", "slug", `Entity slug '${entity.slug}' already exists in the dataset.`);
+  if (!ctx.skipSelfDuplicate) {
+    if (usedIds.has(entity.id)) {
+      addError(errors, "DUPLICATE_ID", "id", `Entity id '${entity.id}' already exists in the dataset.`);
+    }
+    if (usedSlugs.has(entity.slug)) {
+      addError(errors, "DUPLICATE_SLUG", "slug", `Entity slug '${entity.slug}' already exists in the dataset.`);
+    }
   }
 
   // ---- B. Evidence & source ----
