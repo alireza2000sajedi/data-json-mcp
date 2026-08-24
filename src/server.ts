@@ -15,6 +15,7 @@ import {
   toolUpdateNotes,
   toolCheckDefinitionOfDone,
   toolDiscoverNode,
+  toolValidateProvince,
 } from "./tools.js";
 
 export function createServer(): McpServer {
@@ -172,6 +173,13 @@ export function createServer(): McpServer {
         .optional(),
     },
     toolDiscoverNode,
+  );
+
+  register(
+    "validate_province",
+    "Re-validate every stored entity in a province and report structured errors (e.g. markdown URLs, missing evidence, ownership mismatch).",
+    { provinceId: z.string().min(1) },
+    toolValidateProvince,
   );
 
   return server;

@@ -96,6 +96,7 @@ npm test               # build + node --test tests/
 | `update_notes` | `provinceId`, `operation`, `payload` | به‌روزرسانی ساخت‌یافته و قابل‌ردیابی notes |
 | `check_definition_of_done` | `provinceId` | complete + موارد ناقص + nextAction |
 | `discover_node` | `provinceId`, `nodeType`, `canonicalName`, `context?` | لیست Queryهای ساخت‌یافتهٔ همان Node (تولیدکنندهٔ Query، بدون اتصال به اینترنت) |
+| `validate_province` | `provinceId` | بازبینی همهٔ Entityهای ذخیره‌شده و گزارش خطاهای ساخت‌یافته (URL Markdown، evidence ناقص، ناسازگاری مالکیت و…) |
 
 ### `ownershipStatus` (در `record_search_result`)
 
@@ -103,7 +104,7 @@ npm test               # build + node --test tests/
 
 ### `update_notes` operationها
 
-`add_research_coverage` · `add_conflict` · `resolve_conflict` · `add_discovery_task` · `mark_node_complete` · `add_source_matrix_entry` · `update_registry` · `register_node`
+`add_research_coverage` · `add_conflict` · `resolve_conflict` · `add_discovery_task` · `complete_discovery_task` · `mark_node_complete` · `add_source_matrix_entry` · `update_registry` · `register_node`
 
 (هیچ operationای اجازهٔ بازنویسی آزاد کل notes.md را نمی‌دهد.)
 
@@ -150,6 +151,8 @@ npm test               # build + node --test tests/
 10. **بدون Loop خودکار**: MCP فقط Tool/Resource می‌دهد؛ حلقهٔ «ادامه تا پایان Scope» وظیفهٔ Runner بیرونی است (همان‌طور که در پرامپت مشخص شده).
 
 11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `PLANRO_AGENT_PROMPT.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
+
+12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند. برای پیدا کردن فایل‌هایی که از مسیر درست رد شده‌اند (مثلاً URL به شکل Markdown `[url](url)`)، `validate_province` همهٔ Entityهای ذخیره‌شده را دوباره اعتبارسنجی می‌کند.
 
 ---
 

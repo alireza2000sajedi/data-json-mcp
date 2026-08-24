@@ -157,6 +157,58 @@ test("discover_node generates node-scoped queries (no network, no cross-node lea
   }
 });
 
+test("complete_discovery_task unblocks mark_node_complete and definition of done", async () => {
+  const { toolUpdateNotes } = await import("../dist/tools.js");
+  const notes = await import("../dist/notes.js");
+  const { readNotes, writeNotes, upsertNode, upsertRegistry } = notes;
+
+  // province-30 with entity active, discovery tasks all open
+  let state = readNotes("province-30");
+  upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "research_required" });
+  upsertRegistry(state, { id: "province-30", slug: "hamedan-province", path: "province.json", status: "active", name: "همدان", type: "other", subType: "province" });
+  for (const track of ["counties", "provincePlaces", "camping"]) {
+    notes.addDiscoveryTask(state, "province-30", track);
+  }
+  writeNotes(state);
+
+  // mark_node_complete should be refused while discovery tracks are open
+  assert.throws(() => toolUpdateNotes({ provinceId: "province-30", operation: "mark_node_complete", payload: { nodeId: "province-30" } }));
+
+  // complete each discovery track
+  for (const track of ["counties", "provincePlaces", "camping"]) {
+    const r = toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "province-30", track } });
+    assert.equal(r.updated, true);
+  }
+
+  // now mark_node_complete succeeds
+  const r2 = toolUpdateNotes({ provinceId: "province-30", operation: "mark_node_complete", payload: { nodeId: "province-30" } });
+  assert.equal(r2.updated, true);
+
+  const { getScopeState } = await import("../dist/graph.js");
+  const scope = getScopeState("province-30");
+  assert.equal(scope.definitionOfDone, true);
+});
+
+test("validate_province reports markdown URL errors in stored entities", async () => {
+  const { toolValidateProvince, toolSaveActiveEntity } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+  const entity = makeValidPlace();
+  const r = toolSaveActiveEntity({ provinceId: "province-30", entity, expectedNodeId: entity.id });
+  assert.equal(r.accepted, true);
+
+  // Rewrite the stored file with a markdown URL (simulating an agent that bypassed the gate).
+  const fs = await import("node:fs");
+  const { listEntities } = await import("../dist/dataset.js");
+  const stored = listEntities("province-30")[0];
+  const bad = JSON.parse(fs.readFileSync(stored.path, "utf8"));
+  bad.sources[0].url = `[${bad.sources[0].url}](${bad.sources[0].url})`;
+  fs.writeFileSync(stored.path, JSON.stringify(bad, null, 2));
+
+  const report = toolValidateProvince({ provinceId: "province-30" });
+  assert.equal(report.invalid, 1, JSON.stringify(report.entities));
+  assert.ok(report.entities[0].errors.some((e) => e.code === "URL_NOT_RAW_HTTPS"), JSON.stringify(report.entities[0].errors.map((e) => e.code)));
+});
+
 test("village entity requires full six-category checklist", async () => {
   const { validateEntity } = await import("../dist/quality-gate.js");
   await seedProvinceHierarchy();

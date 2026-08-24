@@ -29,6 +29,23 @@ test("rejects markdown URL in sources", async () => {
   assert.ok(codes(r).some((c) => c === "URL_NOT_RAW_HTTPS" || c === "SCHEMA_VIOLATION"), `unexpected codes: ${codes(r)}`);
 });
 
+test("rejects full markdown link format [url](url) in media and sources", async () => {
+  const entity = makeValidPlace({
+    sources: [{ title: "X", url: "[https://fa.wikipedia.org/wiki/A](https://fa.wikipedia.org/wiki/A)", type: "wiki", accessedAt: "2026-08-24" }],
+    media: {
+      thumbnail: {
+        url: "[https://commons.wikimedia.org/wiki/File:T.jpg](https://commons.wikimedia.org/wiki/File:T.jpg)",
+        alt: "x", caption: "x", credit: "c", license: "CC-BY-SA-4.0", source: "Wikimedia Commons",
+        sourceUrl: "[https://commons.wikimedia.org/wiki/File:T.jpg](https://commons.wikimedia.org/wiki/File:T.jpg)",
+      },
+      images: Array.from({ length: 10 }, (_, i) => mediaItem(i)),
+    },
+  });
+  const r = await validate(entity);
+  assert.equal(r.accepted, false);
+  assert.ok(codes(r).includes("URL_NOT_RAW_HTTPS"), `codes: ${codes(r)}`);
+});
+
 test("rejects evidence.sourceUrl outside sources", async () => {
   const entity = makeValidPlace({ evidence: [{ field: "content.summary", claim: "x", sourceUrl: "https://not-a-source.example.com" }] });
   const r = await validate(entity);

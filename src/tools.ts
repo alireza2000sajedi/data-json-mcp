@@ -442,6 +442,15 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       break;
     }
 
+    case "complete_discovery_task": {
+      const nodeId = String(p.nodeId);
+      const track = String(p.track);
+      if (!nodeId || !track) throw new Error("complete_discovery_task requires nodeId and track.");
+      if (!findNode(state, nodeId)) throw new Error(`Node '${nodeId}' is not registered. Register it first (register_node / add_discovery_task).`);
+      completeDiscoveryTask(state, nodeId, track);
+      break;
+    }
+
     case "mark_node_complete": {
       const nodeId = String(p.nodeId);
       if (!findNode(state, nodeId)) {
@@ -570,5 +579,32 @@ export function toolDiscoverNode(args: {
     context: args.context ?? {},
     queries,
     note: "Run each query with your own search tools, then record every result via record_search_result with an ownershipStatus. A query for this node must not be reused to back facts of a parent or child node.",
+  };
+}
+
+// ============================================================================
+// 14. validate_province — re-validate every stored entity and report errors
+// ============================================================================
+export function toolValidateProvince(args: { provinceId: string }) {
+  const state = readNotes(args.provinceId);
+  const stored = listEntities(args.provinceId);
+  const entities = stored.map((e) => {
+    const result = validateEntity(e.entity, { provinceId: args.provinceId, expectedNodeId: e.entity.id, state });
+    return {
+      entityId: e.entity.id,
+      path: e.path,
+      name: e.entity.name?.fa ?? "",
+      accepted: result.accepted,
+      errors: result.errors,
+      warnings: result.warnings,
+    };
+  });
+  const invalid = entities.filter((e) => !e.accepted);
+  return {
+    provinceId: args.provinceId,
+    total: entities.length,
+    valid: entities.length - invalid.length,
+    invalid: invalid.length,
+    entities: invalid,
   };
 }
