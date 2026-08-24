@@ -21,6 +21,65 @@ export function isRawHttpsUrl(url: unknown): boolean {
   return true;
 }
 
+/**
+ * Extract the raw HTTPS URL out of a possibly-markdown-wrapped string.
+ *
+ * The research agent's chat layer sometimes renders a URL as `[url](url)` or
+ * `url](url)`. The underlying link is correct, so we recover it instead of
+ * rejecting the entity: take the last `https?://…` token in the string.
+ * Already-clean URLs pass through unchanged.
+ */
+export function normalizeUrlString(value: unknown): string {
+  if (typeof value !== "string") return "";
+  const s = value.trim();
+  if (!s) return "";
+  const matches = s.match(/https?:\/\/[^\s)\]]+/g);
+  if (matches && matches.length > 0) return matches[matches.length - 1];
+  return s;
+}
+
+/**
+ * Deep-clone an entity and normalize every URL-bearing field in place, so a
+ * markdown-mangled URL never blocks (or corrupts) the save. Used before
+ * validation and persistence; `validateEntity` itself stays strict/pure.
+ */
+export function normalizeEntityUrls(entity: PlaceEntity): PlaceEntity {
+  const out = structuredClone(entity) as PlaceEntity;
+  const set = (obj: Record<string, unknown>, key: string) => {
+    if (typeof obj[key] === "string") obj[key] = normalizeUrlString(obj[key]);
+  };
+
+  for (const s of ((out.sources as any[]) ?? [])) if (s) set(s, "url");
+  for (const ev of ((out.evidence as any[]) ?? [])) if (ev) set(ev, "sourceUrl");
+
+  const media = out.media as any;
+  const mediaItems: any[] = [];
+  if (media?.thumbnail) mediaItems.push(media.thumbnail);
+  for (const img of ((media?.images as any[]) ?? [])) if (img) mediaItems.push(img);
+  for (const v of ((media?.videos as any[]) ?? [])) if (v) mediaItems.push(v);
+  for (const p of ((media?.panoramas as any[]) ?? [])) if (p) mediaItems.push(p);
+  for (const a of ((media?.audios as any[]) ?? [])) if (a) mediaItems.push(a);
+  for (const item of mediaItems) {
+    set(item, "url");
+    set(item, "sourceUrl");
+  }
+
+  const contact = out.contact as any;
+  if (contact) {
+    set(contact, "website");
+    set(contact, "instagram");
+  }
+  const external = out.external as any;
+  if (external) {
+    set(external, "googleMapsUrl");
+    set(external, "osmUrl");
+  }
+  const costs = out.costs as any;
+  for (const item of ((costs?.items as any[]) ?? [])) if (item) set(item, "sourceUrl");
+
+  return out;
+}
+
 function addError(errors: QualityError[], code: string, path: string, message: string): void {
   errors.push({ code, path, message });
 }

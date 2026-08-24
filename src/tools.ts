@@ -25,6 +25,7 @@ import {
   findExistingEntity,
   entityNodeType,
   writeEntityFile,
+  ancestorChain,
 } from "./dataset.js";
 import {
   getScopeState,
@@ -34,7 +35,7 @@ import {
   REQUIRED_DISCOVERY,
   traverse,
 } from "./graph.js";
-import { validateEntity, isRawHttpsUrl } from "./quality-gate.js";
+import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
 import type { NotesState, NodeType, OwnershipStatus, PlaceEntity } from "./types.js";
@@ -184,17 +185,21 @@ export function toolReserveEntityId(args: { provinceId: string; entityKind: stri
 }
 
 function suggestedPath(nodeType: NodeType, provinceId: string, id: string): string {
+  // The real path is resolved at save time from the registered parent chain;
+  // this is only a hint of the shape (folders mirror the admin hierarchy).
   switch (nodeType) {
     case "province":
       return "province.json";
     case "county":
-      return `counties/${id}/county.json`;
+      return `${id}/county.json`;
     case "city":
-      return `counties/{countyId}/cities/${id}/city.json`;
+      return `{countyId}/${id}/city.json`;
     case "village":
-      return `counties/{countyId}/villages/${id}/village.json`;
+      return `{parentFolder}/${id}/village.json`;
+    case "camping":
+      return `{parentFolder}/${id}.json`;
     default:
-      return `places/${id}.json`;
+      return `{parentFolder}/${id}.json`;
   }
 }
 
@@ -296,7 +301,8 @@ export function toolResolveCandidate(args: { provinceId: string; candidateId: st
 // ============================================================================
 export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEntity; expectedNodeId: string }) {
   const state = readNotes(args.provinceId);
-  const result = validateEntity(args.entity, {
+  const entity = normalizeEntityUrls(args.entity);
+  const result = validateEntity(entity, {
     provinceId: args.provinceId,
     expectedNodeId: args.expectedNodeId,
     state,
@@ -308,7 +314,7 @@ export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEn
 
   let pathResult;
   try {
-    pathResult = canonicalPath(args.provinceId, state, args.entity, args.expectedNodeId);
+    pathResult = canonicalPath(args.provinceId, state, entity, args.expectedNodeId);
   } catch (e) {
     return {
       accepted: false,
@@ -319,26 +325,55 @@ export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEn
 
   // Resolve any matching open candidate for this node.
   const matchedCandidates = state.candidates.filter(
-    (c) => c.state === "open" && c.nodeId === args.expectedNodeId && (c.name === args.entity.name?.fa || (args.entity.alternativeNames as string[] | undefined)?.includes(c.name)),
+    (c) => c.state === "open" && c.nodeId === args.expectedNodeId && (c.name === entity.name?.fa || (entity.alternativeNames as string[] | undefined)?.includes(c.name)),
   );
   for (const c of matchedCandidates) {
     setCandidateOutcome(state, c.id, "promoted_to_active");
   }
 
-  saveEntity(args.provinceId, args.entity, args.expectedNodeId, pathResult);
+  saveEntity(args.provinceId, entity, args.expectedNodeId, pathResult);
 
   return {
     accepted: true,
-    entityId: args.entity.id,
+    entityId: entity.id,
     path: pathResult.relPath,
     warnings: result.warnings,
     resolvedCandidates: matchedCandidates.map((c) => c.id),
     summary: {
-      type: args.entity.type,
-      subType: args.entity.subType,
-      name: args.entity.name?.fa,
-      images: (args.entity.media?.images as any[] | undefined)?.length ?? 0,
+      type: entity.type,
+      subType: entity.subType,
+      name: entity.name?.fa,
+      images: (entity.media?.images as any[] | undefined)?.length ?? 0,
     },
+  };
+}
+
+// ============================================================================
+// 9b. save_entities — batch save (order matters: parents before children)
+// ============================================================================
+export function toolSaveEntities(args: { provinceId: string; entities: Array<{ entity: PlaceEntity; expectedNodeId: string }> }) {
+  if (!Array.isArray(args.entities) || args.entities.length === 0) {
+    throw new Error("entities must be a non-empty array of { entity, expectedNodeId }.");
+  }
+  const results = args.entities.map(({ entity, expectedNodeId }) => {
+    // Each item is saved sequentially, so a later entity already sees earlier
+    // ones on disk (duplicate id/slug and parent relations are enforced).
+    const r = toolSaveActiveEntity({ provinceId: args.provinceId, entity, expectedNodeId });
+    return {
+      entityId: entity?.id,
+      accepted: r.accepted,
+      path: r.accepted ? r.path : undefined,
+      errors: r.accepted ? undefined : r.errors,
+      warnings: r.warnings,
+    };
+  });
+  const accepted = results.filter((r) => r.accepted).length;
+  return {
+    provinceId: args.provinceId,
+    submitted: results.length,
+    accepted,
+    rejected: results.length - accepted,
+    results,
   };
 }
 
@@ -606,5 +641,65 @@ export function toolValidateProvince(args: { provinceId: string }) {
     valid: entities.length - invalid.length,
     invalid: invalid.length,
     entities: invalid,
+  };
+}
+
+// ============================================================================
+// 15. discover_subtree — bulk query generation for a whole subtree (parallel search)
+// ============================================================================
+function contextForNode(state: NotesState, nodeId: string): DiscoveryContext {
+  const ctx: DiscoveryContext = {};
+  for (const n of ancestorChain(state, nodeId)) {
+    if (n.nodeType === "province") ctx.province = n.canonicalName;
+    else if (n.nodeType === "county") ctx.county = n.canonicalName;
+    else if (n.nodeType === "district") ctx.district = n.canonicalName;
+    else if (n.nodeType === "ruralDistrict") ctx.ruralDistrict = n.canonicalName;
+    else if (n.nodeType === "city") ctx.city = n.canonicalName;
+    else if (n.nodeType === "village") ctx.village = n.canonicalName;
+  }
+  return ctx;
+}
+
+export function toolDiscoverSubtree(args: { provinceId: string; nodeId?: string }) {
+  const state = readNotes(args.provinceId);
+
+  let nodes = state.nodes;
+  if (args.nodeId) {
+    const root = findNode(state, args.nodeId);
+    if (!root) throw new Error(`Node '${args.nodeId}' is not registered for province '${args.provinceId}'.`);
+    const childrenOf = new Map<string, string[]>();
+    for (const n of state.nodes) {
+      const k = n.parentNodeId ?? "";
+      if (!childrenOf.has(k)) childrenOf.set(k, []);
+      childrenOf.get(k)!.push(n.nodeId);
+    }
+    const ids = new Set<string>();
+    const collect = (id: string) => {
+      ids.add(id);
+      for (const c of childrenOf.get(id) ?? []) collect(c);
+    };
+    collect(args.nodeId);
+    nodes = state.nodes.filter((n) => ids.has(n.nodeId));
+  }
+
+  const results = nodes
+    .map((n) => {
+      const context = contextForNode(state, n.nodeId);
+      let queries: ReturnType<typeof buildDiscoveryQueries> = [];
+      try {
+        queries = buildDiscoveryQueries(n.nodeType, n.canonicalName, context);
+      } catch {
+        queries = [];
+      }
+      return { nodeId: n.nodeId, nodeType: n.nodeType, canonicalName: n.canonicalName, context, queries };
+    })
+    .filter((r) => r.queries.length > 0);
+
+  return {
+    provinceId: args.provinceId,
+    nodeId: args.nodeId ?? null,
+    nodeCount: results.length,
+    note: "All query strings for the subtree at once, so you can run searches in parallel. Every query is already scoped to its own node — do not reuse a node's query to back a parent/child fact.",
+    nodes: results,
   };
 }

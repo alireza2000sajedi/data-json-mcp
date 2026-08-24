@@ -95,10 +95,6 @@ export function ancestorChain(state: NotesState, nodeId: string): NodeRecord[] {
   return chain;
 }
 
-function ancestorOfType(chain: NodeRecord[], type: NodeType): NodeRecord | undefined {
-  return chain.find((n) => n.nodeType === type);
-}
-
 export interface CanonicalPathResult {
   relPath: string;
   absPath: string;
@@ -106,47 +102,45 @@ export interface CanonicalPathResult {
 
 /**
  * Compute the canonical relative path for an entity under output/{provinceId}.
- * Requires the administrative hierarchy to be registered in notes (parent chain).
+ *
+ * The folder tree mirrors the real administrative hierarchy (no type-prefix
+ * folders like `counties/`). Each administrative entity lives inside a folder
+ * named by its own id, nested under the folders of its entity ancestors:
+ *
+ *   province.json
+ *   county-30-1/county.json
+ *   county-30-1/city-30-1/city.json
+ *   county-30-1/city-30-1/village-30-v1/village.json
+ *   county-30-1/city-30-1/village-30-v1/place-30-1.json
+ *   county-30-1/place-30-2.json          (place directly under a county)
+ *   place-30-3.json                       (place directly under the province)
+ *
+ * Villages and places may live at any level (province / county / city / village),
+ * matching where the node was actually registered in the graph.
  */
 export function canonicalPath(provinceId: string, state: NotesState, entity: PlaceEntity, expectedNodeId: string): CanonicalPathResult {
   const nodeType = entityNodeType(entity);
-  const chain = ancestorChain(state, expectedNodeId);
-  const province = ancestorOfType(chain, "province");
-  const county = ancestorOfType(chain, "county");
-  const city = ancestorOfType(chain, "city");
-  const village = ancestorOfType(chain, "village");
 
-  const id = entity.id;
   let relPath: string;
+  if (nodeType === "province") {
+    relPath = "province.json";
+  } else {
+    const chain = ancestorChain(state, expectedNodeId); // [self, parent, ..., province]
+    // Entity-type ancestors in province→parent order (skip district/ruralDistrict
+    // grouping nodes and the province itself, which is the output root).
+    const ancestors = [...chain]
+      .reverse() // [province, ..., parent, self]
+      .slice(1, chain.length - 1)
+      .filter((n) => n.nodeType === "county" || n.nodeType === "city" || n.nodeType === "village")
+      .map((n) => n.nodeId);
 
-  switch (nodeType) {
-    case "province":
-      relPath = "province.json";
-      break;
-    case "county":
-      relPath = path.join("counties", id, "county.json");
-      break;
-    case "city": {
-      if (!county) throw new Error("City entity requires a registered county ancestor.");
-      relPath = path.join("counties", county.nodeId, "cities", id, "city.json");
-      break;
+    if (nodeType === "place" || nodeType === "camping") {
+      // Places/campsites are leaf files directly inside their parent's folder.
+      relPath = path.join(...ancestors, `${entity.id}.json`);
+    } else {
+      // Administrative entities own a folder (they contain children).
+      relPath = path.join(...ancestors, entity.id, `${nodeType}.json`);
     }
-    case "village": {
-      if (!county) throw new Error("Village entity requires a registered county ancestor.");
-      relPath = path.join("counties", county.nodeId, "villages", id, "village.json");
-      break;
-    }
-    case "camping":
-    case "place": {
-      if (village) relPath = path.join("counties", county!.nodeId, "villages", village.nodeId, "places", `${id}.json`);
-      else if (city) relPath = path.join("counties", county!.nodeId, "cities", city.nodeId, "places", `${id}.json`);
-      else if (county) relPath = path.join("counties", county.nodeId, "places", `${id}.json`);
-      else if (province) relPath = path.join("places", `${id}.json`);
-      else relPath = path.join("places", `${id}.json`);
-      break;
-    }
-    default:
-      throw new Error(`Unknown node type: ${nodeType}`);
   }
 
   const absPath = safeJoin(provinceDir(provinceId), relPath.split("/"));

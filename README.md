@@ -41,8 +41,8 @@ data-json-mcp/
 │   ├── graph.ts              ← مدل Node، پیمایش عمقی، scope state
 │   ├── dataset.ts            ← فایلهای Entity، مسیر canonical، ID/slug
 │   ├── quality-gate.ts       ← دروازهٔ کیفیت پیش از ذخیره
-│   ├── resources.ts          ← ۹ Resource
-│   └── tools.ts              ← ۱۲ Tool
+│   ├── resources.ts          ← ۱۱ Resource
+│   └── tools.ts              ← ۱۶ Tool
 └── tests/                    ← تستهای node:test
 ```
 
@@ -75,7 +75,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 npm test               # build + node --test tests/
 ```
 
-۲۱ تست، شامل همهٔ موارد اجباری (رد URL Markdown، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، و پیمایش عمقی Node ناتمام).
+۳۳ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، و ساختار پوشهٔ سلسله‌مراتبی).
 
 ---
 
@@ -92,11 +92,13 @@ npm test               # build + node --test tests/
 | `create_candidate` | `provinceId`, `nodeId`, `name`, … | فقط در notes.md (هیچ JSON ساخته نمی‌شود) |
 | `resolve_candidate` | `provinceId`, `candidateId`, `outcome` | بستن Candidate |
 | `save_active_entity` | `provinceId`, `entity`, `expectedNodeId` | دروازهٔ کیفیت کامل → ذخیره در مسیر canonical یا خطای ساخت‌یافته |
+| `save_entities` | `provinceId`, `entities[]` | ذخیرهٔ دسته‌جمعی چند Entity در یک فراخوانی (یک round-trip به‌جای N) — والدها را قبل از فرزندان بگذارید |
 | `link_entities` | `provinceId`, `fromId`, `toId`, `relationType`, … | Relation معتبر + به‌روزرسانی هر دو فایل |
 | `update_notes` | `provinceId`, `operation`, `payload` | به‌روزرسانی ساخت‌یافته و قابل‌ردیابی notes |
 | `check_definition_of_done` | `provinceId` | complete + موارد ناقص + nextAction |
 | `discover_node` | `provinceId`, `nodeType`, `canonicalName`, `context?` | لیست Queryهای ساخت‌یافتهٔ همان Node (تولیدکنندهٔ Query، بدون اتصال به اینترنت) |
-| `validate_province` | `provinceId` | بازبینی همهٔ Entityهای ذخیره‌شده و گزارش خطاهای ساخت‌یافته (URL Markdown، evidence ناقص، ناسازگاری مالکیت و…) |
+| `discover_subtree` | `provinceId`, `nodeId?` | همهٔ Queryهای یک زیردرخت (یا کل استان) در یک فراخوانی، برای جستجوی موازی |
+| `validate_province` | `provinceId` | بازبینی همهٔ Entityهای ذخیره‌شده و گزارش خطاهای ساخت‌یافته (evidence ناقص، ناسازگاری مالکیت و…) |
 
 ### `ownershipStatus` (در `record_search_result`)
 
@@ -140,7 +142,18 @@ npm test               # build + node --test tests/
 
 5. **مالکیت Source (Source Ownership)**: هر Search Result با `ownershipStatus` در Source Matrix ثبت می‌شود. در ذخیره، `evidence.sourceUrl` باید دقیقاً یکی از `sources[].url` باشد و Source باید برای همان Node (یا به‌صورت `belongs_to_child` برای والد) ثبت شده باشد. Source ثبت‌شده برای استان نمی‌تواند Fact اختصاصی شهرستان را پشتیبانی کند.
 
-6. **مسیر Canonical از Graph گرفته می‌شود** (نه از رشتهٔ نام): محل ذخیره با راه‌رفتن روی `parentNodeId`ها (استان → شهرستان → شهر/روستا) محاسبه می‌شود، مطابق ساختار `output/{province_id}/…` در README. City/Village/Place بدون والد شهرستانی ثبت‌شده، رد می‌شوند.
+6. **مسیر Canonical از Graph گرفته می‌شود** (نه از رشتهٔ نام): ساختار پوشه دقیقاً آینهٔ سلسله‌مراتب اداری واقعی است و پوشهٔ type-prefix (مثل `counties/`) ندارد. هر Entity اداری پوشه‌ای به نام id خودش دارد و زیر پوشهٔ والدهایش قرار می‌گیرد؛ Place/Camp فایل برگ‌مانند داخل پوشهٔ والدش است. روستا و مکان می‌توانند در هر سطحی (استان/شهرستان/شهر/روستا) باشند:
+
+   ```
+   output/{provinceId}/
+   ├── province.json
+   ├── county-30-1/county.json
+   ├── county-30-1/city-30-1/city.json
+   ├── county-30-1/city-30-1/village-30-v1/village.json
+   ├── county-30-1/city-30-1/village-30-v1/place-30-3.json
+   ├── county-30-1/place-30-1.json          ← مکان مستقیم زیر شهرستان
+   └── place-30-4.json                       ← مکان مستقیم زیر استان
+   ```
 
 7. **ID/slug یکتا**: الگوی README (`province-{n}`, `county-{province}-{n}`, `city-…`, `village-…-v{n}`, `place-…`) رعایت می‌شود و قبل از تخصیص، Registry و همهٔ فایلهای JSON اسکن می‌شوند.
 
@@ -152,7 +165,11 @@ npm test               # build + node --test tests/
 
 11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `PLANRO_AGENT_PROMPT.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
 
-12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند. برای پیدا کردن فایل‌هایی که از مسیر درست رد شده‌اند (مثلاً URL به شکل Markdown `[url](url)`)، `validate_province` همهٔ Entityهای ذخیره‌شده را دوباره اعتبارسنجی می‌کند.
+12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` / `save_entities` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند.
+
+13. **سرعت (Batch)**: برای جمع‌آوری حجم بالا، `save_entities` چند Entity را در یک فراخوانی ذخیره می‌کند و `discover_subtree` همهٔ Queryهای یک زیردرخت را یک‌جا می‌دهد تا Agent بتواند جستجوها را موازی اجرا کند. ترتیب در `save_entities` مهم است: والدها قبل از فرزندان.
+
+14. **URLها خودکار نرمال می‌شوند**: چون لایهٔ چتِ Agent گاهی URL را به شکل Markdown (`[url](url)`) رندر می‌کند، `save_active_entity` و `save_entities` پیش از اعتبارسنجی، همهٔ فیلدهای URL را به لینک خام `https://…` تبدیل می‌کنند و همان نسخهٔ تمیز را ذخیره می‌کنند. لازم نیست Agent نگران این خطای رندر باشد.
 
 ---
 

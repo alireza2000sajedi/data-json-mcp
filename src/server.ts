@@ -16,6 +16,8 @@ import {
   toolCheckDefinitionOfDone,
   toolDiscoverNode,
   toolValidateProvince,
+  toolSaveEntities,
+  toolDiscoverSubtree,
 } from "./tools.js";
 
 export function createServer(): McpServer {
@@ -180,6 +182,25 @@ export function createServer(): McpServer {
     "Re-validate every stored entity in a province and report structured errors (e.g. markdown URLs, missing evidence, ownership mismatch).",
     { provinceId: z.string().min(1) },
     toolValidateProvince,
+  );
+
+  register(
+    "save_entities",
+    "Batch-save many entities in a single call (speed: one round-trip instead of N). Order matters — put parents before children so relations resolve. Each entity is URL-normalized, validated, and written independently; per-entity results are returned.",
+    {
+      provinceId: z.string().min(1),
+      entities: z
+        .array(z.object({ entity: z.record(z.unknown()), expectedNodeId: z.string().min(1) }))
+        .min(1),
+    },
+    toolSaveEntities,
+  );
+
+  register(
+    "discover_subtree",
+    "Generate node-scoped discovery queries for every node in a subtree (or the whole province) at once, so searches can be run in parallel. Query generator only — never performs the search.",
+    { provinceId: z.string().min(1), nodeId: z.string().min(1).optional() },
+    toolDiscoverSubtree,
   );
 
   return server;

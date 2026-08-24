@@ -87,7 +87,7 @@ test("rejects a nearby entity promoted to parent (parent must be an ancestor)", 
   // so we register it through notes registry + a real file is not required for existence
   // (existence is based on stored entities). Write a minimal file directly.
   const { writeEntityFile } = await import("../dist/dataset.js");
-  const path = (await import("../dist/config.js")).safeJoin(outputDir, ["province-30", "counties", "county-30-9", "county.json"]);
+  const path = (await import("../dist/config.js")).safeJoin(outputDir, ["province-30", "county-30-9", "county.json"]);
   writeEntityFile(path, { id: "county-30-9", slug: "other-county", type: "other", subType: "county", status: "active", name: { fa: "دیگر" } });
 
   const r = await validate(entity);

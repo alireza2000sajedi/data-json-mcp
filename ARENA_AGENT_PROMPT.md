@@ -32,7 +32,7 @@ npm run build
 node mcp-client.mjs list-tools
 ```
 
-این باید فهرست ۱۳ Tool را نشان دهد. از این پس، همهٔ عملیات داده‌ای را از طریق همین کلاینت انجام بده.
+این باید فهرست ۱۶ Tool را نشان دهد. از این پس، همهٔ عملیات داده‌ای را از طریق همین کلاینت انجام بده.
 
 ## نحوهٔ استفاده از ابزارها
 
@@ -72,15 +72,17 @@ node mcp-client.mjs read planro://rules/brand-voice
 1. **وضعیت Scope** — `get_scope_state` بزن و استان را بشناس.
 2. **اولین Node ناتمام** — `get_next_research_node` بزن؛ این Node در پیمایش عمقی (Province → County → District → Rural District → City/Village → Place) تعیین می‌شود، نه تصادفی.
 3. **Context اداری** — `get_node_context` بزن تا administrativePath، نام‌های جایگزین و discovery tracks را بدانی.
-4. **Queryهای اختصاصی Node** — `discover_node` بزن و لیست Queryهای همان Node را بگیر.
-5. **جستجو** — با ابزار جستجوی خودت (Search وب) هر Query را اجرا کن.
+4. **Queryهای اختصاصی Node** — `discover_node` بزن و لیست Queryهای همان Node را بگیر. برای سرعت، `discover_subtree` یک‌بار همهٔ Queryهای زیردرخت را بده.
+5. **جستجو** — با ابزار جستجوی خودت (Search وب) هر Query را اجرا کن (موازی، چند جستجو هم‌زمان).
 6. **ثبت نتیجه** — هر نتیجه را با `record_search_result` ثبت کن و `ownershipStatus` را دقیق بگذار: `belongs_to_node` / `belongs_to_parent` / `belongs_to_child` / `nearby_only` / `unverified` / `rejected`.
 7. **ضد تکراری** — پیش از ساخت Entity، `find_existing_entity` بزن.
 8. **رزرو ID** — `reserve_entity_id` بزن تا id و slug یکتا بگیری.
 9. **Entity ناقص** → `create_candidate` (فقط در notes، هرگز JSON).
-10. **Entity کامل** → `save_active_entity` با `expectedNodeId` درست. اگر خطا گرفت، خطاها را بخوان، اصلاح کن و دوباره امتحان کن.
+10. **Entity کامل** → `save_active_entity` با `expectedNodeId` درست. اگر خطا گرفت، خطاها را بخوان، اصلاح کن و دوباره امتحان کن. برای حجم بالا، `save_entities` با آرایه‌ای از چند Entity (والدها قبل از فرزندان) همه را یک‌جا ذخیره کن.
 11. **Relations** → `link_entities` برای اتصال Entityها (فقط به Entity واقعی و موجود).
-12. **DoD** → `check_definition_of_done` و اگر `complete` نبود به گام ۲ برگرد.
+12. **تکمیل Discovery** → بعد از اتمام تحقیق هر track، `update_notes` با `operation=complete_discovery_task` بزن.
+13. **تکمیل Node** → وقتی Entity فعال + همهٔ discovery trackها کامل + بدون Candidate/Conflict باز شد، `mark_node_complete` بزن.
+14. **DoD** → `check_definition_of_done` و اگر `complete` نبود به گام ۲ برگرد.
 
 ## قواعد غیرقابل‌مذاکره (این‌ها را هرگز نشکن)
 
@@ -88,7 +90,7 @@ node mcp-client.mjs read planro://rules/brand-voice
 - **مالکیت Source**: نتیجه، Fact، Source، Media، Cost یا متنِ Parent بدون تحقیق اختصاصی به Child منتقل نمی‌شود. Query «جاهای دیدنی استان همدان» هرگز Source شهرستان فامنین نیست.
 - **nearby هرگز Parent/Child نیست**. هر Relation فقط به Entity واقعی اشاره می‌کند.
 - **Active-only**: هیچ JSON ناقصی ذخیره نمی‌شود. هر JSON ذخیره‌شده `status: "active"` دارد. دادهٔ ناقص فقط Candidate/Task در notes است.
-- **URL خام HTTPS**: بدون Markdown، بدون `&amp;`، بدون فاصله.
+- **URL خام HTTPS**: بدون Markdown، بدون `&amp;`، بدون فاصله. اگر لایهٔ چت URL را به شکل `[url](url)` رندر کرد نگران نباش — MCP هنگام ذخیره خودش آن را به لینک خام تبدیل می‌کند.
 - **Evidence**: هر Fact مهم `evidence.sourceUrl` دارد که دقیقاً یکی از `sources[].url` است.
 - **Media فعال**: یک Thumbnail + ۱۰ تا ۲۰ تصویر غیرتکراری با source/credit/license واقعی. Thumbnail در images تکرار نمی‌شود.
 - **Cost**: فقط `IRT`، `forTravelers: 1`، `priceAsOf` واقعی، سه Tier، و `inflationCategory` قابل‌پوشش توسط CPI.

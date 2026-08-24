@@ -28,7 +28,7 @@ npm run build
 
 node mcp-client.mjs list-tools
 
-این باید فهرست ۱۳ Tool را نشان دهد. از این پس همهٔ عملیات داده‌ای را از همین کلاینت انجام بده.
+این باید فهرست ۱۶ Tool را نشان دهد. از این پس همهٔ عملیات داده‌ای را از همین کلاینت انجام بده.
 
 نحوهٔ استفاده از ابزارها
 
@@ -59,14 +59,15 @@ place.schema.json تنها مرجع ساختار، Required، Enum و Validation
 1. get_scope_state — وضعیت کل Scope، Candidateها، Conflictها و DoD.
 2. get_next_research_node — اولین Node ناتمام در پیمایش عمقی (نه تصادفی).
 3. get_node_context — administrativePath، نام‌های جایگزین، discovery tracks.
-4. discover_node — لیست Queryهای اختصاصی همان Node.
-5. جستجو با ابزار خودت — هر Query را با Search وب اجرا کن.
+4. discover_node — لیست Queryهای اختصاصی همان Node. برای سرعت، discover_subtree یک‌بار همهٔ Queryهای زیردرخت را بده و جستجوها را موازی اجرا کن.
+5. جستجو با ابزار خودت — هر Query را با Search وب اجرا کن (موازی، چند جستجو هم‌زمان).
 6. record_search_result — هر نتیجه را با ownershipStatus ثبت کن:
    belongs_to_node | belongs_to_parent | belongs_to_child | nearby_only | unverified | rejected
 7. find_existing_entity — پیش از ساخت Entity برای جلوگیری از تکراری.
 8. reserve_entity_id — گرفتن id و slug یکتا.
 9. Entity ناقص → create_candidate (فقط در notes، هرگز JSON).
 10. Entity کامل → save_active_entity با expectedNodeId درست. اگر خطا گرفت، خطاها را بخوان، اصلاح کن و دوباره امتحان کن.
+    برای حجم بالا: save_entities با آرایه‌ای از چند Entity (والدها قبل از فرزندان) همه را در یک فراخوانی ذخیره کن.
 11. Relations → link_entities (فقط به Entity واقعی و موجود).
 12. complete_discovery_task — بعد از اتمام تحقیق هر track (از طریق update_notes) آن را کامل کن.
 13. mark_node_complete — وقتی Entity فعال + همهٔ discovery trackها کامل + بدون Candidate/Conflict باز شد.
@@ -85,8 +86,8 @@ place.schema.json تنها مرجع ساختار، Required، Enum و Validation
 - Cost: فقط IRT، forTravelers=1، priceAsOf واقعی، سه Tier economy/standard/comfortable، و inflationCategory قابل‌پوشش توسط CPI.
 - لحن برند: بدون صفت تبلیغاتی (بهترین/زیباترین/جادویی)، بدون هوش مصنوعی/سیستم هوشمند در متن، بدون کلیشهٔ رباتی — مگر با Evidence اختصاصی.
 - ادامهٔ اجباری: بعد از هر Checkpoint داخلی، اولین Node ناتمام را بگیر و ادامه بده. گزارش «کار تمام شد» فقط وقتی مجاز است که check_definition_of_done مقدار complete: true بدهد.
-- ذخیره فقط از مسیر MCP: هرگز JSON را مستقیم با bash یا heredoc ننویس. تنها راه ذخیرهٔ Entity، Tool «save_active_entity» است. اگر فایل را مستقیم بنویسی، دروازهٔ کیفیت دور می‌خورد و URLها به شکل Markdown (مثل [url](url)) در دیتا می‌مانند.
-- URL خام: اگر URL به شکل Markdown رندر شده، مقصد لینک را استخراج کن و فقط URL خام HTTPS را بده. هرگز رشتهٔ [url](url) را در JSON نگذار.
+- ذخیره فقط از مسیر MCP: هرگز JSON را مستقیم با bash یا heredoc ننویس. تنها راه ذخیرهٔ Entity، Toolهای «save_active_entity» و «save_entities» است. نوشتن مستقیم، دروازهٔ کیفیت را دور می‌زند.
+- URL خام HTTPS: بدون Markdown، بدون &amp;، بدون فاصله و متن اضافی. اگر لایهٔ چت URL را به شکل [url](url) رندر کرد نگران نباش — MCP هنگام ذخیره، خودش آن را به لینک خام تبدیل می‌کند و نسخهٔ تمیز را ذخیره می‌کند.
 - تکمیل Discovery: برای کامل شدن هر Node، بعد از اتمام تحقیق، discovery trackهای آن را با update_notes (operation=complete_discovery_task) کامل کن و سپس mark_node_complete بزن. بدون این دو گام، Scope هرگز complete نمی‌شود.
 
 ترتیب اجباری تکمیل (پیمایش عمقی)

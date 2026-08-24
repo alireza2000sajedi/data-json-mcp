@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { setupEnv, cleanup, clearOutput, makeValidPlace, makeVillage, seedProvinceHierarchy, sixChecklist } from "./helpers.mjs";
+import { makeCity } from "./helpers.mjs";
 
 const outputDir = setupEnv();
 
@@ -44,9 +45,9 @@ test("save_active_entity stores a valid entity at its canonical path", async () 
   const r = toolSaveActiveEntity({ provinceId: "province-30", entity, expectedNodeId: entity.id });
 
   assert.equal(r.accepted, true, JSON.stringify(r.errors ?? r));
-  assert.equal(r.path, "counties/county-30-1/places/place-30-1.json");
+  assert.equal(r.path, "county-30-1/place-30-1.json");
 
-  const abs = `${outputDir}/province-30/counties/county-30-1/places/place-30-1.json`;
+  const abs = `${outputDir}/province-30/county-30-1/place-30-1.json`;
   assert.ok(fs.existsSync(abs), `expected file at ${abs}`);
   const stored = JSON.parse(fs.readFileSync(abs, "utf8"));
   assert.equal(stored.status, "active");
@@ -54,7 +55,7 @@ test("save_active_entity stores a valid entity at its canonical path", async () 
   // Registry updated
   const notes = await import("../dist/notes.js");
   const state = notes.readNotes("province-30");
-  assert.ok(state.registry.some((x) => x.id === "place-30-1" && x.path === "counties/county-30-1/places/place-30-1.json"));
+  assert.ok(state.registry.some((x) => x.id === "place-30-1" && x.path === "county-30-1/place-30-1.json"));
 });
 
 test("save_active_entity rejects invalid entity without writing any file", async () => {
@@ -65,7 +66,7 @@ test("save_active_entity rejects invalid entity without writing any file", async
 
   assert.equal(r.accepted, false);
   assert.ok(Array.isArray(r.errors) && r.errors.length > 0);
-  assert.equal(fs.existsSync(`${outputDir}/province-30/counties/county-30-1/places/place-30-1.json`), false);
+  assert.equal(fs.existsSync(`${outputDir}/province-30/county-30-1/place-30-1.json`), false);
 });
 
 test("next node returns first unfinished node in depth-first order", async () => {
@@ -91,7 +92,7 @@ test("next node returns first unfinished node in depth-first order", async () =>
 
   // Now complete the county; next should be the city.
   state = readNotes("province-30");
-  upsertRegistry(state, { id: "county-30-1", slug: "famnin-county", path: "counties/county-30-1/county.json", status: "active", name: "فامنین", type: "other", subType: "county" });
+  upsertRegistry(state, { id: "county-30-1", slug: "famnin-county", path: "county-30-1/county.json", status: "active", name: "فامنین", type: "other", subType: "county" });
   for (const track of ["districts", "ruralDistricts", "cities", "villages", "countyPlaces", "camping"]) completeDiscoveryTask(state, "county-30-1", track);
   writeNotes(state);
 
@@ -217,4 +218,89 @@ test("village entity requires full six-category checklist", async () => {
   const r = validateEntity(v, { provinceId: "province-30", expectedNodeId: v.id });
   assert.equal(r.accepted, false);
   assert.ok(r.errors.some((e) => e.code === "CHECKLIST_CATEGORY_MISSING"), JSON.stringify(r.errors.map((e) => e.code)));
+});
+
+test("canonicalPath nests by administrative hierarchy (village/place at any level)", async () => {
+  const notes = await import("../dist/notes.js");
+  const { canonicalPath } = await import("../dist/dataset.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "research_required" });
+  notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "city-30-1", nodeType: "city", canonicalName: "فامنین", parentNodeId: "county-30-1", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "village-30-v1", nodeType: "village", canonicalName: "روستای فامنین", parentNodeId: "city-30-1", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "village-30-v2", nodeType: "village", canonicalName: "روستای دیگر", parentNodeId: "county-30-1", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "place-30-1", nodeType: "place", canonicalName: "مسجد", parentNodeId: "county-30-1", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "place-30-2", nodeType: "place", canonicalName: "مکان شهر", parentNodeId: "city-30-1", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "place-30-3", nodeType: "place", canonicalName: "مکان روستا", parentNodeId: "village-30-v1", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "place-30-4", nodeType: "place", canonicalName: "مکان استانی", parentNodeId: "province-30", state: "research_required" });
+  notes.writeNotes(state);
+
+  const mk = (id, type, subType) => ({ id, slug: id, type, subType, status: "active", name: { fa: "x" } });
+
+  assert.equal(canonicalPath("province-30", state, mk("province-30", "other", "province"), "province-30").relPath, "province.json");
+  assert.equal(canonicalPath("province-30", state, mk("county-30-1", "other", "county"), "county-30-1").relPath, "county-30-1/county.json");
+  assert.equal(canonicalPath("province-30", state, mk("city-30-1", "city"), "city-30-1").relPath, "county-30-1/city-30-1/city.json");
+  assert.equal(canonicalPath("province-30", state, mk("village-30-v1", "village"), "village-30-v1").relPath, "county-30-1/city-30-1/village-30-v1/village.json");
+  assert.equal(canonicalPath("province-30", state, mk("village-30-v2", "village"), "village-30-v2").relPath, "county-30-1/village-30-v2/village.json");
+  assert.equal(canonicalPath("province-30", state, mk("place-30-1", "historical", "mosque"), "place-30-1").relPath, "county-30-1/place-30-1.json");
+  assert.equal(canonicalPath("province-30", state, mk("place-30-2", "historical", "mosque"), "place-30-2").relPath, "county-30-1/city-30-1/place-30-2.json");
+  assert.equal(canonicalPath("province-30", state, mk("place-30-3", "historical", "mosque"), "place-30-3").relPath, "county-30-1/city-30-1/village-30-v1/place-30-3.json");
+  assert.equal(canonicalPath("province-30", state, mk("place-30-4", "historical", "mosque"), "place-30-4").relPath, "place-30-4.json");
+});
+
+test("save_active_entity auto-normalizes markdown URLs before saving", async () => {
+  const { toolSaveActiveEntity } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+  const raw = "https://example.com/famnin";
+  const entity = makeValidPlace({
+    sources: [{ title: "Example", url: `[${raw}](${raw})`, type: "official", accessedAt: "2026-08-24" }],
+  });
+  const r = toolSaveActiveEntity({ provinceId: "province-30", entity, expectedNodeId: entity.id });
+  assert.equal(r.accepted, true, JSON.stringify(r.errors));
+  const { findEntityById } = await import("../dist/dataset.js");
+  const stored = findEntityById("province-30", entity.id);
+  assert.equal(stored.entity.sources[0].url, raw, "saved source URL must be the raw link, not markdown");
+});
+
+test("save_entities batch-saves multiple entities in one call", async () => {
+  const { toolSaveEntities } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "place-30-2", nodeType: "place", canonicalName: "مکان دیگر", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(state);
+
+  const a = makeValidPlace();
+  const b = makeValidPlace({ id: "place-30-2", slug: "other-place", name: { fa: "مکان دیگر" } });
+  const r = toolSaveEntities({
+    provinceId: "province-30",
+    entities: [
+      { entity: a, expectedNodeId: a.id },
+      { entity: b, expectedNodeId: b.id },
+    ],
+  });
+  assert.equal(r.submitted, 2);
+  assert.equal(r.accepted, 2, JSON.stringify(r.results));
+  assert.equal(r.results[0].path, "county-30-1/place-30-1.json");
+  assert.equal(r.results[1].path, "county-30-1/place-30-2.json");
+});
+
+test("discover_subtree returns node-scoped queries for a whole subtree at once", async () => {
+  const { toolDiscoverSubtree } = await import("../dist/tools.js");
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "research_required" });
+  notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
+  notes.upsertNode(state, { nodeId: "city-30-1", nodeType: "city", canonicalName: "فامنین", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(state);
+
+  const r = toolDiscoverSubtree({ provinceId: "province-30" });
+  assert.equal(r.nodeCount, 3);
+  const county = r.nodes.find((n) => n.nodeType === "county");
+  assert.ok(county.queries.some((q) => q.query.includes("شهرستان فامنین")));
+  const city = r.nodes.find((n) => n.nodeType === "city");
+  assert.equal(city.context.county, "فامنین");
+
+  const sub = toolDiscoverSubtree({ provinceId: "province-30", nodeId: "county-30-1" });
+  assert.ok(sub.nodes.every((n) => n.nodeId !== "province-30"), "subtree must exclude the province");
 });
