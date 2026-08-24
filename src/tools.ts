@@ -33,6 +33,7 @@ import {
   nodeStatus,
   administrativePath,
   REQUIRED_DISCOVERY,
+  TRACK_CHILD_TYPE,
   traverse,
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
@@ -514,7 +515,18 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       const track = String(p.track);
       if (!nodeId || !track) throw new Error("complete_discovery_task requires nodeId and track.");
       if (!findNode(state, nodeId)) throw new Error(`Node '${nodeId}' is not registered. Register it first (register_node / add_discovery_task).`);
-      completeDiscoveryTask(state, nodeId, track);
+      const childType = TRACK_CHILD_TYPE[track];
+      if (childType) {
+        const count = Number(p.count);
+        if (!Number.isInteger(count) || count < 0) {
+          throw new Error(
+            `complete_discovery_task track '${track}' requires a non-negative integer 'count' = the full number of ${track} you discovered (e.g. 10 for counties). This is the completion contract.`,
+          );
+        }
+        completeDiscoveryTask(state, nodeId, track, count);
+      } else {
+        completeDiscoveryTask(state, nodeId, track);
+      }
       break;
     }
 

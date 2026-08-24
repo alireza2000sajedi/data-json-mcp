@@ -70,7 +70,7 @@ place.schema.json تنها مرجع ساختار، Required، Enum و Validation
 10. Entity کامل → save_active_entity با expectedNodeId درست. اگر خطا گرفت، خطاها را بخوان، اصلاح کن و دوباره امتحان کن.
     برای حجم بالا: save_entities با آرایه‌ای از چند Entity (والدها قبل از فرزندان) همه را در یک فراخوانی ذخیره کن.
 11. Relations → link_entities (فقط به Entity واقعی و موجود).
-12. complete_discovery_task — بعد از اتمام تحقیق هر track (از طریق update_notes) آن را کامل کن.
+12. complete_discovery_task — بعد از اتمام تحقیق هر track آن را کامل کن و «count» را با تعداد کاملِ واحدهایی که کشف کردی بده (مثلاً counties: 10). این عدد قرارداد تکمیل است؛ DoD چک می‌کند که دقیقاً همین تعداد Node ثبت شده باشد.
 13. mark_node_complete — وقتی Entity فعال + همهٔ discovery trackها کامل + بدون Candidate/Conflict باز شد.
 14. check_definition_of_done — اگر complete نبود، به گام ۲ برگرد.
 15. validate_province — پیش از گزارش نهایی، همهٔ Entityهای ذخیره‌شده را بازبینی کن.
@@ -89,6 +89,7 @@ place.schema.json تنها مرجع ساختار، Required، Enum و Validation
 - لحن برند: بدون صفت تبلیغاتی (بهترین/زیباترین/جادویی)، بدون هوش مصنوعی/سیستم هوشمند در متن، بدون کلیشهٔ رباتی — مگر با Evidence اختصاصی.
 - ادامهٔ اجباری: بعد از هر Checkpoint داخلی، اولین Node ناتمام را بگیر و ادامه بده. گزارش «کار تمام شد» فقط وقتی مجاز است که check_definition_of_done مقدار complete: true بدهد.
 - کشف ساختار ≠ تکمیل: ثبت ۱۰ شهرستان در notes فقط «کشف ساختار» است. برای هر شهرستان باید Entity کامل بسازی و ذخیره کنی، بعد شهرها/روستاها/POIهایش. اگر فقط ساختار را ثبت کنی و توقف کنی، Scope کامل نشده است.
+- تعداد واقعی، نه زیرمجموعه: وقتی یک discovery track را complete می‌کنی، count باید «تعداد کاملِ» واحدهای کشف‌شده باشد (مثلاً همهٔ ۱۰ شهرستان همدان)، نه فقط آن‌هایی که تاکنون Entity ساخته‌ای. اگر count کمتر از واقعیت بدهی، DoD به‌اشتباه complete می‌شود و این تخلف است.
 - Batch، نه یکی‌یکی: چند Entity کامل را با save_entities در یک فراخوانی ذخیره کن. برای چند شهرستان هم‌زمان جستجو کن.
 - از سرگیری (Resume): اگر این پرامپت دوباره با همان province_id اجرا شد، از notes موجود ادامه بده (list_pending_nodes / get_scope_state) و از نو شروع نکن. پیشرفت قبلی در notes.md ماندگار است.
 - ذخیره فقط از مسیر MCP: هرگز JSON را مستقیم با bash یا heredoc ننویس. تنها راه ذخیرهٔ Entity، Toolهای «save_active_entity» و «save_entities» است. نوشتن مستقیم، دروازهٔ کیفیت را دور می‌زند.

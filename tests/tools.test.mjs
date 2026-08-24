@@ -175,9 +175,9 @@ test("complete_discovery_task unblocks mark_node_complete and definition of done
   // mark_node_complete should be refused while discovery tracks are open
   assert.throws(() => toolUpdateNotes({ provinceId: "province-30", operation: "mark_node_complete", payload: { nodeId: "province-30" } }));
 
-  // complete each discovery track
+  // complete each discovery track (declaring the count discovered: 0 children)
   for (const track of ["counties", "provincePlaces", "camping"]) {
-    const r = toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "province-30", track } });
+    const r = toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "province-30", track, count: 0 } });
     assert.equal(r.updated, true);
   }
 
@@ -404,4 +404,39 @@ test("link_entities enforces semantic relation rules", async () => {
 
   // parent requires a real administrative ancestor
   assert.throws(() => toolLinkEntities({ provinceId: "province-30", fromId: a.id, toId: b.id, relationType: "parent" }), /ancestor/);
+});
+
+test("DoD refuses completion when a declared county count is unmet", async () => {
+  const notes = await import("../dist/notes.js");
+  const { toolUpdateNotes } = await import("../dist/tools.js");
+  const { getScopeState } = await import("../dist/graph.js");
+
+  // province registered, declares 10 counties but only 1 county node exists.
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "complete" });
+  notes.upsertRegistry(state, { id: "province-30", slug: "p", path: "province.json", status: "active", name: "همدان", type: "other", subType: "province" });
+  notes.completeDiscoveryTask(state, "province-30", "counties", 10);
+  notes.completeDiscoveryTask(state, "province-30", "provincePlaces", 0);
+  notes.completeDiscoveryTask(state, "province-30", "camping", 0);
+  notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "کبودرآهنگ", parentNodeId: "province-30", state: "complete" });
+  notes.writeNotes(state);
+
+  const scope = getScopeState("province-30");
+  assert.equal(scope.definitionOfDone, false, "province must not be done when declared 10 counties but 1 registered");
+  assert.ok(
+    scope.blockingReasons.some((r) => /counties: declared 10 but 1 registered/.test(r)),
+    JSON.stringify(scope.blockingReasons),
+  );
+});
+
+test("complete_discovery_task rejects a missing count for countable tracks", async () => {
+  const { toolUpdateNotes } = await import("../dist/tools.js");
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "research_required" });
+  notes.writeNotes(state);
+  assert.throws(
+    () => toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "province-30", track: "counties" } }),
+    /count/,
+  );
 });

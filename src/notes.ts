@@ -189,10 +189,13 @@ export function addDiscoveryTask(state: NotesState, nodeId: string, track: strin
   }
 }
 
-export function completeDiscoveryTask(state: NotesState, nodeId: string, track: string): void {
+export function completeDiscoveryTask(state: NotesState, nodeId: string, track: string, declaredCount?: number): void {
   addDiscoveryTask(state, nodeId, track);
   const t = state.discoveryTasks.find((x) => x.nodeId === nodeId && x.track === track);
-  if (t) t.state = "complete";
+  if (t) {
+    t.state = "complete";
+    if (typeof declaredCount === "number") t.declaredCount = declaredCount;
+  }
 }
 
 // --- Candidates ---

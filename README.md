@@ -94,7 +94,7 @@ npm test               # build + node --test tests/
 | `save_active_entity` | `provinceId`, `entity`, `expectedNodeId` | دروازهٔ کیفیت کامل → ذخیره در مسیر canonical یا خطای ساخت‌یافته |
 | `save_entities` | `provinceId`, `entities[]` | ذخیرهٔ دسته‌جمعی چند Entity در یک فراخوانی (یک round-trip به‌جای N) — والدها را قبل از فرزندان بگذارید |
 | `link_entities` | `provinceId`, `fromId`, `toId`, `relationType`, … | Relation معتبر + به‌روزرسانی هر دو فایل |
-| `update_notes` | `provinceId`, `operation`, `payload` | به‌روزرسانی ساخت‌یافته و قابل‌ردیابی notes |
+| `update_notes` | `provinceId`, `operation`, `payload` | به‌روزرسانی ساخت‌یافته و قابل‌ردیابی notes — `complete_discovery_task` نیازمند `count` (تعداد کاملِ واحدهای کشف‌شده) است |
 | `check_definition_of_done` | `provinceId` | complete + موارد ناقص + nextAction |
 | `discover_node` | `provinceId`, `nodeType`, `canonicalName`, `context?` | لیست Queryهای ساخت‌یافتهٔ همان Node (تولیدکنندهٔ Query، بدون اتصال به اینترنت) |
 | `discover_subtree` | `provinceId`, `nodeId?` | همهٔ Queryهای یک زیردرخت (یا کل استان) در یک فراخوانی، برای جستجوی موازی |
@@ -141,7 +141,7 @@ npm test               # build + node --test tests/
 
 3. **notes.md ساخت‌یافته و اتمیک**: notes.md شامل بلوک `<!-- planro:state -->` (JSON) + جدولهای قابل‌خواندن (ID Registry، Research coverage، …) است. همهٔ نوشتنها با temp+rename اتمیک انجام می‌شوند و هیچ Toolای «بازنویسی آزاد» ندارد.
 
-4. **پیمایش عمقی (DFS)**: ترتیب نسبت به والد آگاه است — `province → مکانهای سطح استان/کمپینگ → county → …`؛ یعنی Place/Camp مستقیمِ یک سطح، پیش از ورود به فرزندان اداری آن سطح بازدید می‌شود (مطابق پرامپت). `next-node` اولین Node ناتمام را برمی‌گرداند، نه یک Node تصادفی. «کامل» بودن یک Node = ذخیرهٔ Entity فعال (برای نوعهای entity) + تکمیل همهٔ `requiredDiscovery` + نبود Candidate/Conflict باز.
+4. **پیمایش عمقی (DFS) + قرارداد تعداد (Count)**: ترتیب نسبت به والد آگاه است — `province → مکانهای سطح استان/کمپینگ → county → …`؛ یعنی Place/Camp مستقیمِ یک سطح، پیش از ورود به فرزندان اداری آن سطح بازدید می‌شود (مطابق پرامپت). `next-node` اولین Node ناتمام را برمی‌گرداند، نه یک Node تصادفی. «کامل» بودن یک Node = ذخیرهٔ Entity فعال (برای نوعهای entity) + تکمیل همهٔ `requiredDiscovery` + نبود Candidate/Conflict باز. علاوه بر آن، هر discovery track قابل‌شمارش (مثل `counties`) هنگام تکمیل باید `count` (تعداد کاملِ واحدهای کشف‌شده) را اعلام کند و DoD چک می‌کند که دقیقاً همان تعداد Node ثبت شده باشد — این مانع ادعای `complete` با تنها ۱ شهرستان از ۱۰ شهرستان می‌شود.
 
 5. **مالکیت Source (Source Ownership)**: هر Search Result فقط با `record_search_result` (نه `update_notes`) در Source Matrix ثبت می‌شود و مالکیت + URL خام آنجا validate می‌شود. در ذخیره، `evidence.sourceUrl` باید دقیقاً یکی از `sources[].url` باشد و Source باید برای همان Node (یا به‌صورت `belongs_to_child` برای والد) ثبت شده باشد. Source ثبت‌شده برای استان نمی‌تواند Fact اختصاصی شهرستان را پشتیبانی کند. `link_entities` هم قواعد معنایی را اعمال می‌کند: `parent` باید والد اداری واقعی باشد، `gateway_city` باید شهر باشد، `nearby` نباید والد/فرزند اداری باشد.
 

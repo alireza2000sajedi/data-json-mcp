@@ -14,6 +14,22 @@ export const REQUIRED_DISCOVERY: Record<NodeType, string[]> = {
   camping: [],
 };
 
+/**
+ * Which child node type a discovery track enumerates. Used to verify that a
+ * completed track's declared count matches the nodes actually registered.
+ */
+export const TRACK_CHILD_TYPE: Record<string, NodeType> = {
+  counties: "county",
+  districts: "district",
+  ruralDistricts: "ruralDistrict",
+  cities: "city",
+  villages: "village",
+  provincePlaces: "place",
+  countyPlaces: "place",
+  places: "place",
+  camping: "camping",
+};
+
 /** Depth-first sibling ordering (province → county → district → ruralDistrict → city → village → place → camping). */
 const NODE_TYPE_ORDER: NodeType[] = [
   "province",
@@ -106,6 +122,19 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
   if (pendingDiscovery.length > 0) blockingReasons.push(`pending discovery: ${pendingDiscovery.join(", ")}`);
   if (openCandidates.length > 0) blockingReasons.push(`${openCandidates.length} open candidate(s)`);
   if (openConflicts.length > 0) blockingReasons.push(`${openConflicts.length} open conflict(s)`);
+
+  // A completed discovery track with a declared count must actually have that
+  // many child nodes registered. This is what prevents an agent from declaring
+  // a province "done" after registering only 1 of its 10 counties.
+  for (const t of tasks) {
+    if (t.state !== "complete" || typeof t.declaredCount !== "number") continue;
+    const childType = TRACK_CHILD_TYPE[t.track];
+    if (!childType) continue;
+    const actual = state.nodes.filter((n) => n.parentNodeId === node.nodeId && n.nodeType === childType).length;
+    if (actual !== t.declaredCount) {
+      blockingReasons.push(`${t.track}: declared ${t.declaredCount} but ${actual} registered`);
+    }
+  }
 
   return {
     node,

@@ -33,6 +33,8 @@ export interface DiscoveryTask {
   nodeId: string;
   track: string;
   state: "open" | "complete";
+  /** Declared number of child units discovered for this track (e.g. 10 counties). */
+  declaredCount?: number;
 }
 
 export interface Candidate {

@@ -81,7 +81,7 @@ node mcp-client.mjs read planro://rules/brand-voice
 9. **Entity ناقص** → `create_candidate` (فقط در notes، هرگز JSON).
 10. **Entity کامل** → `save_active_entity` با `expectedNodeId` درست. اگر خطا گرفت، خطاها را بخوان، اصلاح کن و دوباره امتحان کن. برای حجم بالا، `save_entities` با آرایه‌ای از چند Entity (والدها قبل از فرزندان) همه را یک‌جا ذخیره کن.
 11. **Relations** → `link_entities` برای اتصال Entityها (فقط به Entity واقعی و موجود).
-12. **تکمیل Discovery** → بعد از اتمام تحقیق هر track، `update_notes` با `operation=complete_discovery_task` بزن.
+12. **تکمیل Discovery** → بعد از اتمام تحقیق هر track، `update_notes` با `operation=complete_discovery_task` بزن و **`count`** را با تعداد کاملِ واحدهای کشف‌شده بده (مثلاً `counties: 10`). DoD چک می‌کند که دقیقاً همین تعداد Node ثبت شده باشد.
 13. **تکمیل Node** → وقتی Entity فعال + همهٔ discovery trackها کامل + بدون Candidate/Conflict باز شد، `mark_node_complete` بزن.
 14. **DoD** → `check_definition_of_done` و اگر `complete` نبود به گام ۲ برگرد.
 
@@ -99,6 +99,7 @@ node mcp-client.mjs read planro://rules/brand-voice
 - **لحن برند**: بدون صفت تبلیغاتی (بهترین/زیباترین/جادویی)، بدون هوش مصنوعی/سیستم هوشمند در متن، بدون کلیشهٔ رباتی — مگر با Evidence اختصاصی.
 - **ادامهٔ اجباری**: بعد از هر Checkpoint داخلی، اولین Node ناتمام را بگیر و ادامه بده. گزارش «کار تمام شد» فقط وقتی مجاز است که `check_definition_of_done` مقدار `complete: true` بدهد.
 - **کشف ساختار ≠ تکمیل**: ثبت ۱۰ شهرستان در notes فقط «کشف ساختار» است. برای هر شهرستان باید Entity کامل بسازی و ذخیره کنی، بعد شهرها/روستاها/POIهایش. اگر فقط ساختار را ثبت کنی و توقف کنی، Scope کامل نشده است.
+- **تعداد واقعی، نه زیرمجموعه**: وقتی یک discovery track را `complete` می‌کنی، `count` باید تعداد کاملِ واحدهای کشف‌شده باشد (مثلاً همهٔ ۱۰ شهرستان همدان)، نه فقط آن‌هایی که Entity ساخته‌ای. `count` کمتر از واقعیت → DoD به‌اشتباه `complete` می‌شود؛ این تخلف است.
 - **Batch، نه یکی‌یکی**: چند Entity کامل را با `save_entities` در یک فراخوانی ذخیره کن و برای چند شهرستان هم‌زمان جستجو کن.
 - **از سرگیری (Resume)**: اگر این پرامپت دوباره با همان `province_id` اجرا شد، از notes موجود ادامه بده (`list_pending_nodes` / `get_scope_state`) و از نو شروع نکن. پیشرفت قبلی در notes.md ماندگار است.
 
