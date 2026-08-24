@@ -152,7 +152,7 @@ npm test               # build + node --test tests/
 ## محدودیت‌های شناخته‌شده
 
 - **Provenance وابسته به ثبت پژوهشگر است، نه صرف URL**: بررسی «تصویر استان برای شهرستان»، «منبع واقعی بودن»، «لینک مجوز همان فایل» و «واقعی بودن priceAsOf» به provenance ثبت‌شده توسط Agent (`record_search_result` و Source Matrix) وابسته است. MCP فقط ناسازگاری‌های ثبت‌شده را رد می‌کند؛ نمی‌تواند محتوای وب را scrape یا راستی‌آزمایی کند.
-- **لحن برند (Brand Voice)** با سه دسته هیوریستیک به‌صورت Warning داده می‌شود، نه رد قطعی: `BRAND_VOICE_SUPERLATIVE` (صفات تبلیغاتی مانند بهترین/زیباترین/جادویی)، `BRAND_VOICE_TECH_NOISE` (هوش مصنوعی/سیستم هوشمند/فناوری…)، `BRAND_VOICE_CLICHE` (کلیشهٔ رباتی مانند «تجربه‌ای … فراهم می‌کند»). این‌ها Warning هستند چون بررسی «آیا ادعا Evidence اختصاصی دارد یا نه» به provenance ثبت‌شده وابسته است؛ مرجع کامل مثالها در `planro://rules/brand-voice` است.
+- **لحن برند (Brand Voice)** با سه دسته هیوریستیک کنترل می‌شود: `BRAND_VOICE_SUPERLATIVE` (صفات تبلیغاتی مانند بهترین/زیباترین/جادویی)، `BRAND_VOICE_TECH_NOISE` (هوش مصنوعی/سیستم هوشمند/فناوری…)، `BRAND_VOICE_CLICHE` (کلیشهٔ رباتی مانند «تجربه‌ای … فراهم می‌کند»). **تصمیم نهایی**: این موارد **خطای blocking** هستند، مگر اینکه برای همان فیلد، `evidence` اختصاصی ثبت شده باشد — در این صورت به Warning تنزل می‌یابند (چون README می‌گوید ادعاهایی مثل «قدیمی‌ترین» فقط «با Evidence اختصاصی» مجازند). مرجع کامل مثالها در `planro://rules/brand-voice` است.
 - **تطبیق نام→id اداری** در مسیر canonical به ثبت صحیح سلسله‌مراتب Nodeها (via `register_node` / `add_discovery_task` با `parentNodeId`) وابسته است.
 - این پروژه **پیش‌نمونه** است؛ `reserve_entity_id`، slug و الگوی ID مطابق README پیاده شده اما transliteration فارسی→لاتین فعلاً حداقلی است (به `preferredSlug` ارائه‌شده توسط Agent متکی است).
 

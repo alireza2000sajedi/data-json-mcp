@@ -172,7 +172,7 @@ test("rejects city without county", async () => {
   assert.ok(codes(r).includes("HIERARCHY_COUNTY"), `codes: ${codes(r)}`);
 });
 
-test("brand voice: flags superlative, tech-noise and cliché wording as warnings", async () => {
+test("brand voice: unevidenced superlative/tech/cliché wording is rejected (blocking)", async () => {
   const entity = makeValidPlace({
     content: {
       summary: { fa: "مسجد تاریخی فامنین" },
@@ -180,15 +180,33 @@ test("brand voice: flags superlative, tech-noise and cliché wording as warnings
     },
   });
   const r = await validate(entity);
+  const ecodes = r.errors.map((e) => e.code);
+  assert.ok(ecodes.includes("BRAND_VOICE_SUPERLATIVE"), `errors: ${ecodes}`);
+  assert.ok(ecodes.includes("BRAND_VOICE_TECH_NOISE"), `errors: ${ecodes}`);
+  assert.ok(ecodes.includes("BRAND_VOICE_CLICHE"), `errors: ${ecodes}`);
+  assert.equal(r.accepted, false);
+});
+
+test("brand voice: evidence-backed superlative is downgraded to a warning (not blocking)", async () => {
+  const entity = makeValidPlace({
+    content: {
+      summary: { fa: "مسجد تاریخی فامنین" },
+      description: { fa: "قدیمی‌ترین مسجد فامنین با معماری خشتی" },
+    },
+    // Dedicated evidence for the description field.
+    evidence: [
+      { field: "content.description", claim: "قدیمی‌ترین مسجد فامنین", sourceUrl: "https://example.com/famnin" },
+    ],
+  });
+  const r = await validate(entity);
+  const ecodes = r.errors.map((e) => e.code);
   const wcodes = r.warnings.map((w) => w.code);
-  assert.ok(wcodes.includes("BRAND_VOICE_SUPERLATIVE"), `warnings: ${wcodes}`);
-  assert.ok(wcodes.includes("BRAND_VOICE_TECH_NOISE"), `warnings: ${wcodes}`);
-  assert.ok(wcodes.includes("BRAND_VOICE_CLICHE"), `warnings: ${wcodes}`);
-  // Warnings must not block acceptance (they are evidence-dependent).
+  assert.ok(!ecodes.includes("BRAND_VOICE_SUPERLATIVE"), `should not error: ${ecodes}`);
+  assert.ok(wcodes.includes("BRAND_VOICE_SUPERLATIVE"), `should warn: ${wcodes}`);
   assert.equal(r.accepted, true);
 });
 
-test("brand voice: clean factual copy produces no brand-voice warnings", async () => {
+test("brand voice: clean factual copy produces no brand-voice flags", async () => {
   const entity = makeValidPlace({
     content: {
       summary: { fa: "مسجد تاریخی فامنین" },
@@ -196,7 +214,11 @@ test("brand voice: clean factual copy produces no brand-voice warnings", async (
     },
   });
   const r = await validate(entity);
+  const ecodes = r.errors.map((e) => e.code);
   const wcodes = r.warnings.map((w) => w.code);
+  assert.ok(!ecodes.includes("BRAND_VOICE_SUPERLATIVE"), `errors: ${ecodes}`);
+  assert.ok(!ecodes.includes("BRAND_VOICE_TECH_NOISE"), `errors: ${ecodes}`);
+  assert.ok(!ecodes.includes("BRAND_VOICE_CLICHE"), `errors: ${ecodes}`);
   assert.ok(!wcodes.includes("BRAND_VOICE_SUPERLATIVE"), `warnings: ${wcodes}`);
   assert.ok(!wcodes.includes("BRAND_VOICE_TECH_NOISE"), `warnings: ${wcodes}`);
   assert.ok(!wcodes.includes("BRAND_VOICE_CLICHE"), `warnings: ${wcodes}`);

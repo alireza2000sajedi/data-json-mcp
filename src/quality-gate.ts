@@ -29,6 +29,46 @@ function addWarning(warnings: QualityError[], code: string, path: string, messag
   warnings.push({ code, path, message });
 }
 
+/**
+ * Does this entity carry a *dedicated* evidence entry for the given text field?
+ *
+ * A flagged promotional/tech/cliché claim is only acceptable (→ warning instead
+ * of a blocking error) when the agent documented a source for that exact field
+ * or the claim text shares tokens with an evidence `claim`. This mirrors the
+ * README rule: «ادعاهای … فقط با Evidence اختصاصی وارد می‌شوند».
+ */
+function hasDedicatedEvidence(entity: PlaceEntity, fieldPath: string, text: string): boolean {
+  const evidence = (entity.evidence as any[]) ?? [];
+  const normPath = (p: string) =>
+    String(p ?? "")
+      .replace(/\.(fa|en)$/, "")
+      .replace(/\[\d+\]/g, ".")
+      .replace(/\.+/g, ".")
+      .toLowerCase();
+  const tokenize = (s: string): string[] => {
+    const toks = String(s)
+      .replace(/\u200c/g, " ")
+      .split(/[^آ-یa-z0-9]+/i)
+      .map((w) => w.trim().toLowerCase())
+      .filter((w) => w.length >= 3);
+    return toks;
+  };
+  const base = normPath(fieldPath);
+  const textTokens = tokenize(text);
+
+  for (const ev of evidence) {
+    const f = normPath(ev?.field);
+    if (f && (f === base || f.startsWith(base + ".") || base.startsWith(f + "."))) {
+      return true;
+    }
+    const claimTokens = tokenize(ev?.claim);
+    let shared = 0;
+    for (const t of textTokens) if (claimTokens.includes(t)) shared++;
+    if (shared >= 2) return true;
+  }
+  return false;
+}
+
 export function validateEntity(entity: PlaceEntity, ctx: QualityContext): QualityResult {
   const errors: QualityError[] = [];
   const warnings: QualityError[] = [];
@@ -431,32 +471,36 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
   for (const [i, img] of ((mediaAny?.videos as any[]) ?? []).entries()) mediaTexts.push([img?.alt, `media.videos[${i}].alt`], [img?.caption, `media.videos[${i}].caption`]);
   textFields.push(...mediaTexts);
 
-  const seenWarnings = new Set<string>();
+  const seen = new Set<string>();
+  const flag = (key: string, code: string, p: string, text: string, errorMsg: string, warnMsg: string) => {
+    if (seen.has(key)) return;
+    seen.add(key);
+    if (hasDedicatedEvidence(entity, p, text)) {
+      // Dedicated evidence present → downgrade to a warning for human review.
+      addWarning(warnings, code, p, warnMsg);
+    } else {
+      addError(errors, code, p, errorMsg);
+    }
+  };
+
   for (const [text, p] of textFields) {
     if (typeof text !== "string" || text.length === 0) continue;
     const t = normalize(text);
     if (SUPERLATIVES.test(t)) {
-      const key = `superlative:${p}`;
-      if (!seenWarnings.has(key)) {
-        seenWarnings.add(key);
-        addWarning(warnings, "BRAND_VOICE_SUPERLATIVE", p, "Superlative/promotional wording (بهترین، زیباترین، جادویی…) — must be backed by dedicated evidence or removed.");
-      }
+      flag(`superlative:${p}`, "BRAND_VOICE_SUPERLATIVE", p, text,
+        "Superlative/promotional wording without dedicated evidence is rejected — remove it or add an evidence entry for this field.",
+        "Superlative wording is backed by dedicated evidence; keep under human review.");
     }
     if (TECH_NOISE.test(t)) {
-      const key = `tech:${p}`;
-      if (!seenWarnings.has(key)) {
-        seenWarnings.add(key);
-        addWarning(warnings, "BRAND_VOICE_TECH_NOISE", p, "Technology/AI wording (هوش مصنوعی، سیستم هوشمند…) is only allowed for a real on-site service with dedicated evidence.");
-      }
+      flag(`tech:${p}`, "BRAND_VOICE_TECH_NOISE", p, text,
+        "Technology/AI wording without dedicated evidence is rejected — remove it or add evidence for a real on-site service.",
+        "Technology wording has dedicated evidence; keep under human review.");
     }
     if (CLICHES.test(t)) {
-      const key = `cliche:${p}`;
-      if (!seenWarnings.has(key)) {
-        seenWarnings.add(key);
-        addWarning(warnings, "BRAND_VOICE_CLICHE", p, "Robotic travel-industry cliché («تجربهای … فراهم میکند») — rewrite as a concrete, evidence-based description.");
-      }
+      flag(`cliche:${p}`, "BRAND_VOICE_CLICHE", p, text,
+        "Robotic travel-industry cliché is rejected — rewrite as a concrete, evidence-based description.",
+        "Robotic cliché is backed by dedicated evidence; keep under human review.");
     }
   }
-
   return { accepted: errors.length === 0, errors, warnings };
 }
