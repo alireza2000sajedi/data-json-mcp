@@ -206,6 +206,21 @@ test("brand voice: evidence-backed superlative is downgraded to a warning (not b
   assert.equal(r.accepted, true);
 });
 
+test("brand voice: full blacklist terms and AI-like markers are flagged", async () => {
+  const entity = makeValidPlace({
+    content: {
+      summary: { fa: "مسجد تاریخی فامنین" },
+      description: { fa: "در دنیای پرشتاب امروز، پلنرو با پلتفرم جامع و الگوریتم هوشمند، سفری رؤیایی و بی‌نظیر فراهم می‌کند. همین حالا شروع کنید!" },
+    },
+  });
+  const r = await validate(entity);
+  const ecodes = r.errors.map((e) => e.code);
+  assert.ok(ecodes.includes("BRAND_VOICE_SUPERLATIVE"), `errors: ${ecodes}`); // بی‌نظیر
+  assert.ok(ecodes.includes("BRAND_VOICE_TECH_NOISE"), `errors: ${ecodes}`); // پلتفرم جامع / الگوریتم هوشمند
+  assert.ok(ecodes.includes("BRAND_VOICE_CLICHE"), `errors: ${ecodes}`); // سفر رؤیایی / فراهم می‌کند / در دنیای پرشتاب امروز / همین حالا شروع کنید
+  assert.equal(r.accepted, false);
+});
+
 test("brand voice: clean factual copy produces no brand-voice flags", async () => {
   const entity = makeValidPlace({
     content: {

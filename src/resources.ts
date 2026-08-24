@@ -50,6 +50,11 @@ export function registerResources(server: McpServer): void {
     return textResource(uri.href, text, "text/markdown");
   });
 
+  server.registerResource("brand-voice-guide", "planro://rules/brand-voice-guide", { title: "Planro brand voice guide", description: "Full brand voice guide: tone settings, blacklist, sentence rules, AI-like markers.", mimeType: "text/markdown" }, async (uri) => {
+    const text = fs.readFileSync(path.join(config.datasetDir, "brand_voice.md"), "utf8");
+    return textResource(uri.href, text, "text/markdown");
+  });
+
   // --- province resources ---
   const provinceTpl = (name: string, handler: (provinceId: string, uri: string) => ReadResourceResult) => {
     const template = new ResourceTemplate(`planro://province/{provinceId}/${name}`, { list: undefined });
