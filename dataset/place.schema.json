@@ -1,0 +1,2071 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/place.schema.json",
+  "title": "TourismPlace",
+  "description": "اسکیمای واحد برای مکان‌های گردشگری. فیلدهای derived (search/quality/graph) فقط توسط pipeline نوشته می‌شوند.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "slug",
+    "type",
+    "status",
+    "name",
+    "location",
+    "content",
+    "visit",
+    "evidence"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "شناسهٔ یکتای پایدار پروژه؛ باید از الگوی ID تعریف‌شده در README.md پیروی کند."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "اسلاگ لاتین یکتا برای URL"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "archived"
+      ]
+    },
+    "type": {
+      "enum": [
+        "natural",
+        "historical",
+        "religious",
+        "museum",
+        "village",
+        "city",
+        "park",
+        "recreational",
+        "market",
+        "accommodation",
+        "restaurant",
+        "route",
+        "other"
+      ]
+    },
+    "subType": {
+      "type": "string",
+      "description": "مثل waterfall, cave, palace, bazaar, caravanserai …"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "name": {
+      "type": "object",
+      "required": [
+        "fa"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fa": {
+          "type": "string",
+          "minLength": 1
+        },
+        "en": {
+          "type": "string"
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "country",
+        "province",
+        "coordinates",
+        "address"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "country": {
+          "type": "string",
+          "default": "Iran"
+        },
+        "countryCode": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "province": {
+          "type": "string"
+        },
+        "county": {
+          "type": "string",
+          "description": "شهرستان"
+        },
+        "district": {
+          "type": "string",
+          "description": "بخش"
+        },
+        "ruralDistrict": {
+          "type": "string",
+          "description": "دهستان"
+        },
+        "city": {
+          "type": "string"
+        },
+        "village": {
+          "type": "string"
+        },
+        "address": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "full": {
+              "type": "string",
+              "minLength": 1
+            },
+            "postalCode": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "full"
+          ]
+        },
+        "coordinates": {
+          "type": "object",
+          "required": [
+            "latitude",
+            "longitude"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "longitude": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "elevationMeters": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "plusCode": {
+              "type": "string"
+            },
+            "geoJson": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "description": "برای محدوده‌های چندضلعی (پارک ملی، دریاچه…)"
+            },
+            "boundingbox": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "minItems": 4,
+              "maxItems": 4,
+              "description": "Bounding box از Nominatim با ترتیب [lat_min, lat_max, lon_min, lon_max]؛ هر مقدار number یا numeric string است."
+            }
+          }
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": [
+        "summary"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "$ref": "#/$defs/i18nText"
+        },
+        "description": {
+          "$ref": "#/$defs/i18nText"
+        },
+        "history": {
+          "type": "string",
+          "minLength": 1
+        },
+        "architecture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "culture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "whyVisit": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "heritage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nationalRegistration": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "registered": {
+              "type": "boolean"
+            },
+            "registrationNumber": {
+              "type": "string"
+            },
+            "year": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        },
+        "unesco": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "enum": [
+                "inscribed",
+                "tentative",
+                "none"
+              ]
+            },
+            "year": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "reference": {
+              "type": "string",
+              "description": "شماره پرونده یونسکو"
+            }
+          }
+        }
+      }
+    },
+    "contact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "phone": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "website": {
+          "type": "string",
+          "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$",
+          "minLength": 1
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "instagram": {
+          "type": "string",
+          "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$",
+          "minLength": 1
+        }
+      }
+    },
+    "visit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "durationMinutes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "typical": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "max": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        "bestTimeOfDay": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "sunrise",
+              "morning",
+              "noon",
+              "afternoon",
+              "sunset",
+              "night"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "bestSeasons": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "spring",
+              "summer",
+              "autumn",
+              "winter"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "bestMonths": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "uniqueItems": true,
+          "description": "تنها منبع حقیقت برای ماه‌های پیشنهادی — در climate تکرار نمی‌شود"
+        },
+        "openingHours": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alwaysOpen": {
+              "type": "boolean"
+            },
+            "regular": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "days",
+                  "open",
+                  "close"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "days": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "sat",
+                        "sun",
+                        "mon",
+                        "tue",
+                        "wed",
+                        "thu",
+                        "fri"
+                      ]
+                    },
+                    "minItems": 1
+                  },
+                  "open": {
+                    "type": "string",
+                    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "close": {
+                    "type": "string",
+                    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                  }
+                }
+              }
+            },
+            "exceptions": {
+              "type": "array",
+              "description": "تعطیلات رسمی، رمضان، نوروز…",
+              "items": {
+                "type": "object",
+                "required": [
+                  "label"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "closed": {
+                    "type": "boolean"
+                  },
+                  "open": {
+                    "type": "string"
+                  },
+                  "close": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "entryFee": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "isFree": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "domestic": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "قیمت اتباع داخلی به واحد currency"
+            },
+            "foreign": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "قیمت اتباع خارجی"
+            },
+            "currency": {
+              "enum": [
+                "IRR",
+                "IRT"
+              ],
+              "description": "صریح: ریال یا تومان"
+            },
+            "lastUpdated": {
+              "type": "string",
+              "format": "date"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "difficulty": {
+          "enum": [
+            "easy",
+            "moderate",
+            "hard",
+            "extreme",
+            null
+          ]
+        },
+        "requiresReservation": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "requiresGuide": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "crowdLevel": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "typical": {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                null
+              ]
+            },
+            "peak": {
+              "type": "string",
+              "description": "مثلاً «تعطیلات نوروز و آخر هفته‌ها»"
+            }
+          }
+        }
+      },
+      "minProperties": 1
+    },
+    "features": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "به‌جای بولین‌های بسته. نبودن آیتم = نامشخص؛ منفی صریح با پیشوند not_",
+      "items": {
+        "enum": [
+          "family_friendly",
+          "kids_friendly",
+          "elderly_friendly",
+          "wheelchair_accessible",
+          "not_wheelchair_accessible",
+          "pet_friendly",
+          "not_pet_friendly",
+          "photography",
+          "photography_restricted",
+          "camping",
+          "hiking",
+          "cycling",
+          "swimming",
+          "romantic",
+          "adventure",
+          "eco_tourism",
+          "religious_site",
+          "sunrise_spot",
+          "sunset_spot",
+          "stargazing"
+        ]
+      }
+    },
+    "facilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "parking",
+          "toilet",
+          "prayer_room",
+          "restaurant",
+          "cafe",
+          "buffet",
+          "souvenir_shop",
+          "accommodation_nearby",
+          "atm",
+          "first_aid",
+          "drinking_water",
+          "wifi",
+          "guide_service",
+          "ticket_office",
+          "rest_area",
+          "playground"
+        ]
+      }
+    },
+    "activities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nature": {
+          "$ref": "#/$defs/score"
+        },
+        "history": {
+          "$ref": "#/$defs/score"
+        },
+        "architecture": {
+          "$ref": "#/$defs/score"
+        },
+        "photography": {
+          "$ref": "#/$defs/score"
+        },
+        "adventure": {
+          "$ref": "#/$defs/score"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/score"
+        },
+        "family": {
+          "$ref": "#/$defs/score"
+        },
+        "overall": {
+          "$ref": "#/$defs/score"
+        }
+      }
+    },
+    "transportation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "roadAccess": {
+          "enum": [
+            "paved",
+            "gravel",
+            "offroad",
+            "no_road",
+            null
+          ]
+        },
+        "publicTransport": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "publicTransportNotes": {
+          "type": "string"
+        },
+        "nearestAirport": {
+          "$ref": "#/$defs/transportNode"
+        },
+        "nearestRailwayStation": {
+          "$ref": "#/$defs/transportNode"
+        },
+        "nearestBusTerminal": {
+          "$ref": "#/$defs/transportNode"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "climate": {
+      "type": "object",
+      "description": "فقط داده‌ی اقلیمی؛ bestMonths در visit است",
+      "additionalProperties": false,
+      "properties": {
+        "avoidMonths": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "uniqueItems": true
+        },
+        "rainSensitive": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "snowAccessible": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "summerAvgTempC": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "winterAvgTempC": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mobileCoverage": {
+          "enum": [
+            "full",
+            "partial",
+            "none",
+            null
+          ]
+        },
+        "emergencyNumbers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "culturalNotes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dressCode": {
+          "$ref": "#/$defs/faText"
+        },
+        "etiquette": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/faText"
+          }
+        }
+      }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "thumbnail": {
+          "$ref": "#/$defs/mediaItem"
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/mediaItem"
+          },
+          "description": "از ۰ تا حداکثر ۲۰ لینک مستقیم تصویر مرتبط و غیرتکراری. برای status=active حداقل ۱۰ تصویر لازم است.",
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "videos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/mediaItem"
+          }
+        },
+        "panoramas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/mediaItem"
+          }
+        },
+        "audios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/mediaItem"
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "array",
+      "description": "جایگزین واحد برای nearbyPlaces / recommendedNextPlaces / nearbyVillages / nearbyCities / parentId / children",
+      "items": {
+        "type": "object",
+        "required": [
+          "placeId",
+          "relationType"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "denormalized برای نمایش سریع"
+          },
+          "relationType": {
+            "enum": [
+              "parent",
+              "child",
+              "nearby",
+              "recommended_next",
+              "same_route",
+              "alternative",
+              "gateway_city"
+            ]
+          },
+          "distanceKm": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "travelTimeMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "$ref": "#/$defs/faText"
+          },
+          "months": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            }
+          },
+          "description": {
+            "$ref": "#/$defs/faText"
+          }
+        }
+      }
+    },
+    "localFoods": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/namedItem"
+      }
+    },
+    "souvenirs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/namedItem"
+      }
+    },
+    "faq": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "question",
+          "answer"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "answer": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "tips": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "category",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "دسته‌بندی خطر (مثلاً جاده، کمپ، حیوانات)"
+          },
+          "text": {
+            "type": "string",
+            "description": "متن هشدار"
+          }
+        }
+      },
+      "description": "هشدارهای دسته‌بندی‌شده برای وسیله سفر، کمپ، حیوانات و عمومی"
+    },
+    "typeSpecific": {
+      "type": "object",
+      "description": "فیلدهای مخصوص هر type؛ فقط بلاک مرتبط با type پر می‌شود",
+      "additionalProperties": false,
+      "properties": {
+        "village": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "isTourismVillage": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "traditionalArchitecture": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "localLanguage": {
+              "type": "string"
+            },
+            "mainJobs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "famousFor": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "population": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "count": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "censusYear": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "natural": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "protectedArea": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "protectionLevel": {
+              "type": "string"
+            },
+            "flora": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "fauna": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "religious": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "religion": {
+              "type": "string"
+            },
+            "activeWorship": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "nonBelieversAllowed": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "seo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "url",
+          "type",
+          "accessedAt"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$",
+            "minLength": 1
+          },
+          "type": {
+            "enum": [
+              "official",
+              "wiki",
+              "news",
+              "book",
+              "field_visit",
+              "ai_generated",
+              "other"
+            ]
+          },
+          "accessedAt": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "external": {
+      "type": "object",
+      "description": "شناسه‌های سرویس‌های بیرونی — تنها جای placeId گوگل",
+      "additionalProperties": false,
+      "properties": {
+        "googlePlaceId": {
+          "type": "string"
+        },
+        "googleMapsUrl": {
+          "type": "string",
+          "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$",
+          "minLength": 1
+        },
+        "googleRating": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 5
+        },
+        "googleReviewCount": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "osmId": {
+          "type": "string"
+        },
+        "wikidataId": {
+          "type": "string"
+        },
+        "fetchedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "osmUrl": {
+          "type": "string",
+          "minLength": 1,
+          "description": "URL خام درخواست API زندهٔ Nominatim یا OpenStreetMap که دادهٔ مکانی از آن دریافت شده است؛ نه URL صفحهٔ نمایشی و نه Markdown.",
+          "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$"
+        }
+      },
+      "dependentRequired": {
+        "osmUrl": [
+          "fetchedAt"
+        ],
+        "osmId": [
+          "osmUrl",
+          "fetchedAt"
+        ]
+      }
+    },
+    "derived": {
+      "type": "object",
+      "description": "فقط توسط pipeline نوشته می‌شود؛ دستی ویرایش نشود",
+      "readOnly": true,
+      "additionalProperties": false,
+      "properties": {
+        "search": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "searchText": {
+              "type": "string"
+            },
+            "boost": {
+              "type": "number",
+              "default": 1
+            },
+            "popularity": {
+              "type": "number",
+              "default": 0
+            }
+          }
+        },
+        "quality": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "completeness": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "verifiedFields": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missingFields": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "graph": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "stubPlacesCreated": {
+              "type": "integer"
+            },
+            "relationsAdded": {
+              "type": "integer"
+            },
+            "stubPlaceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "alternativeNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "همه‌ی املاها و نام‌های جایگزین (فارسی، انگلیسی، آوانگاری، نام تاریخی)"
+    },
+    "travelChecklist": {
+      "type": "object",
+      "description": "چک‌لیست سفر مرتبط با Entity. برای Province/County/City/Village/Natural/Route/Accommodation/Campground همهٔ شش حالت لازم است؛ برای POIهای دیگر فقط حالت‌های واقعاً مرتبط وارد می‌شوند.",
+      "additionalProperties": false,
+      "properties": {
+        "tour": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[^.!؟?؛:\\n]+$",
+            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+          }
+        },
+        "personalCar": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[^.!؟?؛:\\n]+$",
+            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+          }
+        },
+        "airplane": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[^.!؟?؛:\\n]+$",
+            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+          }
+        },
+        "camping": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[^.!؟?؛:\\n]+$",
+            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+          }
+        },
+        "train": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[^.!؟?؛:\\n]+$",
+            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+          }
+        },
+        "bus": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[^.!؟?؛:\\n]+$",
+            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+          }
+        }
+      },
+      "minProperties": 1
+    },
+    "evidence": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "نگاشت Factهای مهم به Source واقعی. هر sourceUrl باید دقیقاً یکی از sources[].url باشد.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "claim",
+          "sourceUrl"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "description": "مسیر فیلد یا موضوع Fact؛ مانند content.description یا location.coordinates"
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceUrl": {
+            "type": "string",
+            "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$"
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "costs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "currency",
+        "priceAsOf",
+        "forTravelers",
+        "items",
+        "estimatedVisitTotal"
+      ],
+      "properties": {
+        "currency": {
+          "const": "IRT",
+          "description": "تمام قیمت‌ها به تومان ایران هستند."
+        },
+        "priceAsOf": {
+          "type": "string",
+          "format": "date",
+          "description": "تاریخ واقعی مشاهده یا برآورد قیمت."
+        },
+        "forTravelers": {
+          "type": "integer",
+          "const": 1,
+          "description": "برآورد پیش‌فرض برای یک مسافر؛ هزینه‌های مشترک با unit مشخص می‌شوند."
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "category",
+              "name",
+              "required",
+              "unit",
+              "budget",
+              "inflationCategory",
+              "sourceUrl"
+            ],
+            "properties": {
+              "category": {
+                "enum": [
+                  "entry",
+                  "food",
+                  "beverage",
+                  "snack",
+                  "restaurant",
+                  "cafe",
+                  "transport_local",
+                  "parking",
+                  "accommodation",
+                  "camping",
+                  "guide",
+                  "equipment_rental",
+                  "shopping",
+                  "souvenir",
+                  "toll",
+                  "insurance",
+                  "other"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "unit": {
+                "enum": [
+                  "per_person",
+                  "per_vehicle",
+                  "per_room",
+                  "per_night",
+                  "per_visit",
+                  "per_item"
+                ]
+              },
+              "quantity": {
+                "type": "number",
+                "minimum": 0,
+                "default": 1
+              },
+              "budget": {
+                "$ref": "#/$defs/budgetTiers"
+              },
+              "inflationCategory": {
+                "enum": [
+                  "all_items",
+                  "food_and_beverages",
+                  "restaurants_and_hotels",
+                  "transport",
+                  "recreation_and_culture",
+                  "clothing_and_footwear",
+                  "health",
+                  "miscellaneous_goods"
+                ]
+              },
+              "sourceUrl": {
+                "type": "string",
+                "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "estimatedVisitTotal": {
+          "$ref": "#/$defs/budgetTiers"
+        },
+        "calculationNotes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "i18nText": {
+      "type": "object",
+      "required": [
+        "fa"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fa": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        }
+      }
+    },
+    "score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 10
+    },
+    "mediaItem": {
+      "type": "object",
+      "required": [
+        "url",
+        "alt",
+        "caption",
+        "credit",
+        "license",
+        "source",
+        "sourceUrl"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caption": {
+          "type": "string",
+          "minLength": 1
+        },
+        "credit": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string",
+          "description": "شناسهٔ مجوز واقعی فایل. all-rights-reserved فقط با سیاست انتشار صریح پروژه قابل‌قبول است.",
+          "enum": [
+            "CC0-1.0",
+            "Public-Domain",
+            "CC-BY-2.0",
+            "CC-BY-2.5",
+            "CC-BY-3.0",
+            "CC-BY-4.0",
+            "CC-BY-SA-2.0",
+            "CC-BY-SA-2.5",
+            "CC-BY-SA-3.0",
+            "CC-BY-SA-4.0",
+            "all-rights-reserved"
+          ]
+        },
+        "width": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "height": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "isPrimary": {
+          "type": "boolean"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "نام منبع تصویر، مانند Wikimedia Commons"
+        },
+        "sourceUrl": {
+          "type": "string",
+          "minLength": 1,
+          "description": "URL خام صفحهٔ فایل یا صفحهٔ مبدأ/مجوز؛ Markdown ممنوع",
+          "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$"
+        },
+        "photographer": {
+          "type": "string",
+          "description": "نام پدیدآورنده یا عکاس از متادیتای واقعی"
+        }
+      }
+    },
+    "namedItem": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "image": {
+          "type": "string"
+        }
+      }
+    },
+    "transportNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "placeId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "distanceKm": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "travelTimeMinutes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "latitude": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "مختصات از سرچ زنده؛ null ممنوع."
+        },
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "مختصات از سرچ زنده؛ null ممنوع."
+        }
+      },
+      "required": [
+        "name",
+        "latitude",
+        "longitude"
+      ]
+    },
+    "faText": {
+      "type": "string",
+      "minLength": 1
+    },
+    "costRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "min": {
+                "type": "integer"
+              },
+              "max": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ]
+          },
+          "then": {
+            "properties": {
+              "max": {
+                "minimum": 0
+              }
+            }
+          }
+        }
+      ],
+      "description": "بازه هزینه به تومان (IRT). min نباید از max بیشتر باشد؛ این رابطه در Quality Gate بررسی می‌شود."
+    },
+    "budgetTiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "economy",
+        "standard",
+        "comfortable"
+      ],
+      "properties": {
+        "economy": {
+          "$ref": "#/$defs/costRange"
+        },
+        "standard": {
+          "$ref": "#/$defs/costRange"
+        },
+        "comfortable": {
+          "$ref": "#/$defs/costRange"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "active"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "media"
+        ],
+        "properties": {
+          "media": {
+            "required": [
+              "thumbnail",
+              "images"
+            ],
+            "properties": {
+              "images": {
+                "minItems": 10
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": {
+              "type": {
+                "const": "city"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "properties": {
+              "type": {
+                "const": "village"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "properties": {
+              "type": {
+                "const": "natural"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "properties": {
+              "type": {
+                "const": "route"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "properties": {
+              "type": {
+                "const": "accommodation"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "properties": {
+              "type": {
+                "const": "other"
+              },
+              "subType": {
+                "enum": [
+                  "province",
+                  "county"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "subType"
+            ]
+          },
+          {
+            "properties": {
+              "type": {
+                "const": "recreational"
+              },
+              "subType": {
+                "const": "campground"
+              }
+            },
+            "required": [
+              "type",
+              "subType"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "required": [
+          "travelChecklist"
+        ],
+        "properties": {
+          "travelChecklist": {
+            "required": [
+              "tour",
+              "personalCar",
+              "airplane",
+              "camping",
+              "train",
+              "bus"
+            ],
+            "properties": {
+              "tour": {
+                "minItems": 1
+              },
+              "personalCar": {
+                "minItems": 1
+              },
+              "airplane": {
+                "minItems": 1
+              },
+              "camping": {
+                "minItems": 1
+              },
+              "train": {
+                "minItems": 1
+              },
+              "bus": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "active"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "costs"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "other"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "subType"
+        ],
+        "properties": {
+          "subType": {
+            "enum": [
+              "province",
+              "county"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "other"
+          },
+          "subType": {
+            "const": "province"
+          }
+        },
+        "required": [
+          "type",
+          "subType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "required": [
+              "province"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "other"
+          },
+          "subType": {
+            "const": "county"
+          }
+        },
+        "required": [
+          "type",
+          "subType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "required": [
+              "province",
+              "county"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "city"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "required": [
+              "province",
+              "county",
+              "city"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "village"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "required": [
+              "province",
+              "county",
+              "ruralDistrict",
+              "village"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "village"
+          }
+        },
+        "required": [
+          "type",
+          "typeSpecific"
+        ]
+      },
+      "then": {
+        "properties": {
+          "typeSpecific": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "natural"
+                  ]
+                },
+                {
+                  "required": [
+                    "religious"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "natural"
+          }
+        },
+        "required": [
+          "type",
+          "typeSpecific"
+        ]
+      },
+      "then": {
+        "properties": {
+          "typeSpecific": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "village"
+                  ]
+                },
+                {
+                  "required": [
+                    "religious"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "religious"
+          }
+        },
+        "required": [
+          "type",
+          "typeSpecific"
+        ]
+      },
+      "then": {
+        "properties": {
+          "typeSpecific": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "village"
+                  ]
+                },
+                {
+                  "required": [
+                    "natural"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "not": {
+              "enum": [
+                "village",
+                "natural",
+                "religious"
+              ]
+            }
+          }
+        },
+        "required": [
+          "type",
+          "typeSpecific"
+        ]
+      },
+      "then": {
+        "properties": {
+          "typeSpecific": {
+            "maxProperties": 0
+          }
+        }
+      }
+    }
+  ]
+}
