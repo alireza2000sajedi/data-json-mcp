@@ -45,12 +45,7 @@ export function registerResources(server: McpServer): void {
     return textResource(uri.href, text, "application/json");
   });
 
-  server.registerResource("brand-voice", "planro://rules/brand-voice", { title: "Planro brand voice examples", description: "Before/after examples of brand-compliant vs. rejected copy.", mimeType: "text/markdown" }, async (uri) => {
-    const text = fs.readFileSync(path.join(config.datasetDir, "brand_voice_example.md"), "utf8");
-    return textResource(uri.href, text, "text/markdown");
-  });
-
-  server.registerResource("brand-voice-guide", "planro://rules/brand-voice-guide", { title: "Planro brand voice guide", description: "Full brand voice guide: tone settings, blacklist, sentence rules, AI-like markers.", mimeType: "text/markdown" }, async (uri) => {
+  server.registerResource("brand-voice-guide", "planro://rules/brand-voice-guide", { title: "Planro brand voice (v1.0)", description: "Verbal identity & brand tone v1.0 (single source): language modes, vocabulary system & blacklist, CTA rules, AI voice, 100 before/after examples, quality test, plus the applied dataset-content example (Masuleh appendix).", mimeType: "text/markdown" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "brand_voice.md"), "utf8");
     return textResource(uri.href, text, "text/markdown");
   });

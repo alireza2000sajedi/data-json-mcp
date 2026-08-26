@@ -7,10 +7,45 @@
 
 1. `README.md`: Scope، رفتار Agent، کیفیت تحقیق، ساختار فایل و Definition of Done.
 2. `place.schema.json`: نام کلیدها، نوع داده، `required`، enum، الگوها و اعتبارسنجی JSON.
-3. `input/`: دادهٔ کمکی؛ منبع قانون یا مختصات نیست.
+3. `input/`: ساختار اداری کامل ۳۱ استان (`1.json` تا `31.json`) — چک‌لیست مرجع کشف اداری و مبنای `count` قرارداد تکمیل؛ اما منبع Evidence، Fact، مختصات یا قیمت نیست (تفصیل در بخش ۱-۱).
 
 - README و Prompt نباید فهرست موازی Required بسازند؛ Requiredها فقط از Schema خوانده می‌شوند.
 - در تعارض اجرایی، README مقدم است؛ در تعارض ساختار JSON، Schema مقدم است.
+
+## 1-1. دیتای ورودی `input/` — ساختار اداری کامل استان‌ها
+
+پوشهٔ `input/` ریشهٔ ریپو شامل ۳۱ فایل JSON است — `1.json` تا `31.json` — که هر کدام اطلاعات کامل یک استان را دارد. برای `province-{n}` فایل `input/{n}.json` است (مثلاً `province-30` → `input/30.json`).
+
+ساختار هر فایل:
+
+```json
+{
+  "id": 1,
+  "name": "نام استان",
+  "counties": [
+    {
+      "name": "نام شهرستان",
+      "cities": ["نام شهرها"],
+      "villages": ["نام روستاها"]
+    }
+  ]
+}
+```
+
+- `id`: شناسهٔ استان؛ همان عدد Entity استان (`province-{id}`).
+- `name`: نام فارسی استان.
+- `counties`: فهرست کامل شهرستان‌های استان؛ هر شهرستان دارای:
+  - `name`: نام شهرستان؛
+  - `cities`: فهرست شهرهای آن شهرستان؛
+  - `villages`: فهرست روستاهای آن شهرستان.
+
+قواعد استفادهٔ Agent:
+
+1. **چک‌لیست مرجع کشف اداری**: در گام Discovery هر Node، فایل input مبنای شروع است. همهٔ شهرستان‌ها، شهرها و روستاهای فایل باید پوشش داده شوند: هر مورد یا Node/Entity واقعی می‌شود یا دلیل مستند (Conflict یا تصمیم Deduplication) در notes می‌گیرد. غافل‌گذاشتن موارد فایل، نقض کامل‌بودن کشف است.
+2. **مبنای `count` قرارداد تکمیل**: هنگام `complete_discovery_task`، `count` باید با این فایل سازگار باشد (مثلاً همدان در `input/30.json` دارای ۹ شهرستان است → `count: 9`؛ تعداد شهرها و روستاهای هر شهرستان نیز از همین فایل خوانده می‌شود). `count` غیرواقعی، DoD را به‌اشتباه complete می‌کند و تخلف است.
+3. **نام‌ها initial هستند**: نام Canonical، نام‌های جایگزین، مالکیت والد و تعلق جغرافیایی با تحقیق زندهٔ وب تعیین و Cross-check می‌شود؛ نه کورکورانه از input.
+4. **input منبع Evidence نیست**: Fact، مختصات، قیمت، ساعت کاری، تصویر و هر دادهٔ محتوایی فقط از Sourceهای وب ثبت‌شده در Source Matrix می‌آید (مختصات input ممنوع است — بخش ۸).
+5. **تضاد با واقعیت** (تقسیمات جدید، تغییر نام، انحلال): در notes به‌عنوان Conflict ثبت و تصمیم بر اساس تحقیق و منابع رسمی گرفته می‌شود.
 
 ## 2. نقش Agent
 
@@ -75,7 +110,7 @@ Agent خودش باید دربارهٔ پایین‌ترین سطح اداری �
 ```
 
 - هیچ جاذبه‌ای فقط در description یا tags نام برده نمی‌شود؛ باید Entity مستقل یا Candidate مستند در notes باشد.
-- Placeهای Province در `output/{province_id}/places/`، Placeهای County در `counties/{county_id}/places/`، Placeهای City در `cities/{city_id}/places/` و Placeهای Village در `villages/{village_id}/places/` ذخیره می‌شوند.
+- Placeهای Province مستقیم در ریشهٔ پوشهٔ استان، Placeهای County در پوشهٔ خود County، Placeهای City/Village در پوشهٔ خودشان ذخیره می‌شوند — ساختار پوشه دقیقاً آینهٔ سلسله‌مراتب اداری واقعی است (تفصیل در بخش ۴).
 
 ### ممنوعیت توقف میان Scope
 
@@ -140,15 +175,18 @@ County → District/Rural District discovery → Cities → Villages → named P
 output/{province_id}/
 ├── notes.md
 ├── province.json
-├── places/{place_id}.json
-└── counties/{county_id}/
-    ├── county.json
-    ├── places/{place_id}.json
-    ├── cities/{city_id}/city.json
-    └── villages/{village_id}/village.json
+├── county-{p}-{n}/county.json
+├── county-{p}-{n}/city-{p}-{n}/city.json
+├── county-{p}-{n}/city-{p}-{n}/village-{p}-v{n}/village.json
+├── county-{p}-{n}/city-{p}-{n}/village-{p}-v{n}/place-{p}-{n}.json
+├── county-{p}-{n}/place-{p}-{n}.json        ← POI مستقیم زیر شهرستان
+└── place-{p}-{n}.json                        ← POI مستقیم زیر استان
 ```
 
-- POI خارج از شهر/روستای مشخص در `counties/{county_id}/places/` ذخیره می‌شود؛ District و Rural District آن در `location` ثبت می‌شود.
+- ساختار پوشه دقیقاً آینهٔ سلسله‌مراتب اداری واقعی است و پوشهٔ type-prefix (مثل `places/` یا `counties/`) ندارد. هر Entity اداری پوشه‌ای به نام id خودش دارد و Place/Camp فایل برگ‌مانند داخل پوشهٔ والد واقعی‌اش است.
+- روستا و مکان می‌توانند در هر سطحی (استان/شهرستان/شهر/روستا) باشند — همان جایی که Node در Graph ثبت شده است.
+- مسیر Canonical را همیشه MCP از گراف سلسله‌مراتب می‌گیرد (`save_active_entity` / `save_entities`)؛ Agent هرگز مسیر را دستی نمی‌سازد.
+- POI خارج از شهر/روستای مشخص، مستقیم زیر شهرستان یا استان (والد واقعی‌اش) ذخیره می‌شود؛ District و Rural District آن در `location` ثبت می‌شود.
 - هر Entity فقط یک محل Canonical دارد.
 - Relation فقط در `relations` و با Entity واقعیِ دارای فایل ثبت می‌شود.
 
@@ -332,6 +370,8 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 
 ### لحن برند
 
+مرجع کامل و اجرایی لحن برند، سند واحد **«هویت کلامی و لحن برند — نسخه ۱.۰ نهایی»** در `dataset/brand_voice.md` است (حالت‌های زبانی، سیستم واژگان و لیست سیاه، فراخوان اقدام، صدای هوش مصنوعی، ۱۰۰ نمونه قبل/بعد، آزمون کیفیت + پیوست نمونهٔ کاربردی روی محتوای Dataset — ماسوله). در تعارض بین نمونه‌های قدیمی و قواعد آن سند، خودِ سند مرجع است.
+
 هسته: «از نیت به تجربه» — ایده: «از بریم تا رفتیم» — پیام: «پیدا کن یا بساز. با هم برو.»
 
 متن آرام، انسانی، دقیق و عمل‌گراست؛ اغراق، کلیشه، لحن رباتی، فناوری بی‌ربط و Fact بی‌منبع ممنوع است.
@@ -474,12 +514,18 @@ adjustedCost = baseCost × CPI[targetMonth][inflationCategory] ÷ CPI[priceAsOfM
 
 - Git فقط وقتی کاربر در همان Task صریحاً فعال کرده اجرا می‌شود.
 - در Task فعال: بعد از هر ۵ فایل تغییرکرده Commit و Push؛ Batch نهایی کمتر از ۵ هم Commit/Push می‌شود.
+- **پوش کردن Output به Git اهمیت حیاتی ندارد**: Commit محلی Checkpoint واقعی است. اگر Push ممکن نبود یا شکست خورد، همان Commit محلی کافی است؛ شکست Push فقط در notes ثبت می‌شود و هرگز مجوز توقف، گزارش کاربرمحور یا درخواست تأیید نیست. اولویت Agent ساخت فایل‌های کامل Dataset در `output/{province_id}/` از مسیر MCP است، نه مدیریت Git.
 - تحقیق می‌تواند موازی باشد؛ نوشتن فایل، notes، Commit و Push خطی و تک‌نخی است.
 - Branch جدید ساخته نشود.
 
 ```text
 add province {province_id} data batch
 ```
+
+### زیپ نهایی Output
+
+- فقط پس از پایان واقعی Scope (Definition of Done کامل + Validation پاس)، کل پوشهٔ `output/{province_id}/` یک‌جا زیپ می‌شود (مثلاً `output-{province_id}.zip` در ریشهٔ ریپو) و مسیر آن در گزارش نهایی می‌آید.
+- زیپ جای چک‌پوینت‌های Git (Commit) را نمی‌گیرد؛ الویت ثبت پیشرفت با Commit است و Push اختیاری است.
 
 ## 16. Definition of Done
 
@@ -495,7 +541,7 @@ Scope فقط وقتی کامل است که:
 - [ ] `notes.md`، ID Registry و Git checkpoint به‌روزند؛
 - [ ] هیچ Candidate قابل‌پیگیری، Conflict قابل‌حل یا کار قابل‌انجامی باقی نمانده است.
 
-فقط در این وضعیت گزارش نهایی شامل province_id، مسیر خروجی، تعداد رکورد، Validation، notes و آخرین Commit/Push داده می‌شود.
+فقط در این وضعیت گزارش نهایی شامل province_id، مسیر خروجی، تعداد رکورد، Validation، notes، آخرین Commit و مسیر بستهٔ زیپ نهایی داده می‌شود.
 
 ## 17. Discovery سلسله‌مراتبی و مالکیت Context
 

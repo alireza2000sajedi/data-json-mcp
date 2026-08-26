@@ -238,6 +238,20 @@ test("brand voice: full blacklist terms and AI-like markers are flagged", async 
   assert.equal(r.accepted, false);
 });
 
+test("brand voice: v1.0 blacklist additions are flagged (نگین، بهشت گمشده، اداری، فشار زمانی)", async () => {
+  const entity = makeValidPlace({
+    content: {
+      summary: { fa: "مسجد تاریخی فامنین" },
+      description: { fa: "این منطقه نگین گردشگری و بهشت گمشده ایران است؛ لطفاً جهت بازدید نسبت به تهیه بلیت اقدام نمایید و همین حالا فرصت استثنایی را از دست ندهید." },
+    },
+  });
+  const r = await validate(entity);
+  const ecodes = r.errors.map((e) => e.code);
+  assert.ok(ecodes.includes("BRAND_VOICE_SUPERLATIVE"), `errors: ${ecodes}`); // نگین / بهشت گمشده
+  assert.ok(ecodes.includes("BRAND_VOICE_CLICHE"), `errors: ${ecodes}`); // اقدام نمایید / همین حالا / فرصت استثنایی / از دست نده
+  assert.equal(r.accepted, false);
+});
+
 test("brand voice: clean factual copy produces no brand-voice flags", async () => {
   const entity = makeValidPlace({
     content: {

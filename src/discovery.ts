@@ -3,7 +3,7 @@ import type { NodeType } from "./types.js";
 /**
  * Fixed, node-scoped discovery query templates.
  *
- * Source of truth: dataset/PLANRO_AGENT_PROMPT.txt ("Discovery استان / County /
+ * Source of truth: prompt.txt ("Discovery استان / County /
  * District / Rural District / City / Village / POI").
  *
  * These tools ONLY generate query strings — they never perform the search. The

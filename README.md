@@ -25,12 +25,14 @@ Agent / LLM
 data-json-mcp/
 ├── package.json
 ├── tsconfig.json
-├── dataset/                  ← Source of Truth (اسکیماها و README، read-only)
+├── prompt.txt                ← پرامپت واحد Agent تحقیق (تنها پرامپت مجاز)
+├── mcp-client.mjs            ← کلاینت CLI برای فراخوانی Toolها از شل
+├── dataset/                  ← Source of Truth (اسکیماها و قانون‌نامه، read-only)
 │   ├── README.md
-│   ├── PLANRO_AGENT_PROMPT.txt
-│   ├── place.schema.json
+│   ├── brand_voice.md        ← هویت کلامی و لحن برند — نسخه ۱.۰ نهایی (+ پیوست نمونهٔ کاربردی)
 │   ├── iran-cpi.schema.json
-│   └── brand_voice_example.md
+│   └── place.schema.json
+├── input/                    ← ساختار اداری کامل ۳۱ استان (1.json … 31.json)
 ├── src/
 │   ├── index.ts              ← نقطهٔ ورود stdio
 │   ├── server.ts             ← ثبت Toolها و Resourceها
@@ -41,10 +43,14 @@ data-json-mcp/
 │   ├── graph.ts              ← مدل Node، پیمایش عمقی، scope state
 │   ├── dataset.ts            ← فایلهای Entity، مسیر canonical، ID/slug
 │   ├── quality-gate.ts       ← دروازهٔ کیفیت پیش از ذخیره
-│   ├── resources.ts          ← ۱۱ Resource
+│   ├── resources.ts          ← ۱۰ Resource
 │   └── tools.ts              ← ۱۷ Tool
 └── tests/                    ← تستهای node:test
 ```
+
+### دیتای ورودی `input/`
+
+پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `dataset/README.md` بخش ۱-۱ و در `prompt.txt`.)
 
 مسیرها از طریق متغیر محیطی قابل تغییرند (پیش‌فرض: داخل خود پروژه):
 
@@ -120,8 +126,7 @@ npm test               # build + node --test tests/
 | URI | محتوا |
 |---|---|
 | `planro://rules/readme` | متن README (Source of Truth) |
-| `planro://rules/brand-voice` | مثالهای قبل/بعدِ لحن برند (brand_voice_example.md) |
-| `planro://rules/brand-voice-guide` | راهنمای کامل لحن برند: تنظیم لحن، لیست سیاه، قواعد جمله، نشانه‌های متن AI‌گون (brand_voice.md) |
+| `planro://rules/brand-voice-guide` | هویت کلامی و لحن برند — نسخه ۱.۰ نهایی (فایل واحد): حالت‌های زبانی، سیستم واژگان و لیست سیاه، فراخوان اقدام، صدای هوش مصنوعی، ۱۰۰ نمونه قبل/بعد، آزمون کیفیت + پیوست نمونهٔ کاربردی روی محتوای Dataset — ماسوله (brand_voice.md) |
 | `planro://schema/place` | `place.schema.json` |
 | `planro://schema/iran-cpi` | `iran-cpi.schema.json` |
 | `planro://province/{provinceId}/notes` | notes.md |
@@ -166,7 +171,7 @@ npm test               # build + node --test tests/
 
 10. **بدون Loop خودکار**: MCP فقط Tool/Resource می‌دهد؛ حلقهٔ «ادامه تا پایان Scope» وظیفهٔ Runner بیرونی است (همان‌طور که در پرامپت مشخص شده).
 
-11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `PLANRO_AGENT_PROMPT.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
+11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `prompt.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
 
 12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` / `save_entities` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند.
 
@@ -179,7 +184,7 @@ npm test               # build + node --test tests/
 ## محدودیت‌های شناخته‌شده
 
 - **Provenance وابسته به ثبت پژوهشگر است، نه صرف URL**: بررسی «تصویر استان برای شهرستان»، «منبع واقعی بودن»، «لینک مجوز همان فایل» و «واقعی بودن priceAsOf» به provenance ثبت‌شده توسط Agent (`record_search_result` و Source Matrix) وابسته است. MCP فقط ناسازگاری‌های ثبت‌شده را رد می‌کند؛ نمی‌تواند محتوای وب را scrape یا راستی‌آزمایی کند.
-- **لحن برند (Brand Voice)** با سه دسته هیوریستیک کنترل می‌شود: `BRAND_VOICE_SUPERLATIVE` (صفات تبلیغاتی مانند بهترین/زیباترین/جادویی)، `BRAND_VOICE_TECH_NOISE` (هوش مصنوعی/سیستم هوشمند/فناوری…)، `BRAND_VOICE_CLICHE` (کلیشهٔ رباتی مانند «تجربه‌ای … فراهم می‌کند»). **تصمیم نهایی**: این موارد **خطای blocking** هستند، مگر اینکه برای همان فیلد، `evidence` اختصاصی ثبت شده باشد — در این صورت به Warning تنزل می‌یابند (چون README می‌گوید ادعاهایی مثل «قدیمی‌ترین» فقط «با Evidence اختصاصی» مجازند). مرجع کامل مثالها در `planro://rules/brand-voice` و راهنمای کامل لحن (تنظیم لحن، لیست سیاه، نشانه‌های متن AI‌گون) در `planro://rules/brand-voice-guide` است.
+- **لحن برند (Brand Voice)** با سه دسته هیوریستیک کنترل می‌شود: `BRAND_VOICE_SUPERLATIVE` (صفات تبلیغاتی مانند بهترین/زیباترین/جادویی و واژه‌های ممنوع نسخه ۱.۰ مانند «نگین»، «بهشت گمشده»، «رؤیایی»)، `BRAND_VOICE_TECH_NOISE` (هوش مصنوعی/سیستم هوشمند/فناوری/الگوریتم قدرتمند…)، `BRAND_VOICE_CLICHE` (کلیشهٔ رباتی مانند «تجربه‌ای … فراهم می‌کند» و واژه‌های اداری/فشار زمانی مانند «نمایید»، «در راستای»، «همین حالا»، «فرصت استثنایی»). **تصمیم نهایی**: این موارد **خطای blocking** هستند، مگر اینکه برای همان فیلد، `evidence` اختصاصی ثبت شده باشد — در این صورت به Warning تنزل می‌یابند (چون README می‌گوید ادعاهایی مثل «قدیمی‌ترین» فقط «با Evidence اختصاصی» مجازند). مرجع کامل: سند واحد «هویت کلامی و لحن برند — نسخه ۱.۰ نهایی» (به‌همراه پیوست نمونهٔ کاربردی روی محتوای Dataset) در `planro://rules/brand-voice-guide` است.
 - **تطبیق نام→id اداری** در مسیر canonical به ثبت صحیح سلسله‌مراتب Nodeها (via `register_node` / `add_discovery_task` با `parentNodeId`) وابسته است.
 - این پروژه **پیش‌نمونه** است؛ `reserve_entity_id`، slug و الگوی ID مطابق README پیاده شده اما transliteration فارسی→لاتین فعلاً حداقلی است (به `preferredSlug` ارائه‌شده توسط Agent متکی است).
 
