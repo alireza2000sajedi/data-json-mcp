@@ -25,12 +25,15 @@ Agent / LLM
 data-json-mcp/
 ├── package.json
 ├── tsconfig.json
-├── dataset/                  ← Source of Truth (اسکیماها و README، read-only)
+├── prompt.txt                ← پرامپت واحد Agent تحقیق (تنها پرامپت مجاز)
+├── mcp-client.mjs            ← کلاینت CLI برای فراخوانی Toolها از شل
+├── dataset/                  ← Source of Truth (اسکیماها و قانون‌نامه، read-only)
 │   ├── README.md
-│   ├── PLANRO_AGENT_PROMPT.txt
 │   ├── place.schema.json
 │   ├── iran-cpi.schema.json
+│   ├── brand_voice.md
 │   └── brand_voice_example.md
+├── input/                    ← ساختار اداری کامل ۳۱ استان (1.json … 31.json)
 ├── src/
 │   ├── index.ts              ← نقطهٔ ورود stdio
 │   ├── server.ts             ← ثبت Toolها و Resourceها
@@ -45,6 +48,10 @@ data-json-mcp/
 │   └── tools.ts              ← ۱۷ Tool
 └── tests/                    ← تستهای node:test
 ```
+
+### دیتای ورودی `input/`
+
+پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `dataset/README.md` بخش ۱-۱ و در `prompt.txt`.)
 
 مسیرها از طریق متغیر محیطی قابل تغییرند (پیش‌فرض: داخل خود پروژه):
 
@@ -166,7 +173,7 @@ npm test               # build + node --test tests/
 
 10. **بدون Loop خودکار**: MCP فقط Tool/Resource می‌دهد؛ حلقهٔ «ادامه تا پایان Scope» وظیفهٔ Runner بیرونی است (همان‌طور که در پرامپت مشخص شده).
 
-11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `PLANRO_AGENT_PROMPT.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
+11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `prompt.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
 
 12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` / `save_entities` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند.
 
