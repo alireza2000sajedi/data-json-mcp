@@ -512,13 +512,18 @@ adjustedCost = baseCost × CPI[targetMonth][inflationCategory] ÷ CPI[priceAsOfM
 
 - Git فقط وقتی کاربر در همان Task صریحاً فعال کرده اجرا می‌شود.
 - در Task فعال: بعد از هر ۵ فایل تغییرکرده Commit و Push؛ Batch نهایی کمتر از ۵ هم Commit/Push می‌شود.
-- **پوش کردن (Push) اهمیت حیاتی ندارد**: Commit محلی Checkpoint واقعی است. اگر Push ممکن نبود یا شکست خورد، همان Commit محلی کافی است؛ شکست Push فقط در notes ثبت می‌شود و هرگز مجوز توقف، گزارش کاربرمحور یا درخواست تأیید نیست. اولویت Agent ساخت فایل‌های کامل Dataset از مسیر MCP است، نه مدیریت Git.
+- **پوش کردن Output به Git اهمیت حیاتی ندارد**: Commit محلی Checkpoint واقعی است. اگر Push ممکن نبود یا شکست خورد، همان Commit محلی کافی است؛ شکست Push فقط در notes ثبت می‌شود و هرگز مجوز توقف، گزارش کاربرمحور یا درخواست تأیید نیست. اولویت Agent ساخت فایل‌های کامل Dataset در `output/{province_id}/` از مسیر MCP است، نه مدیریت Git.
 - تحقیق می‌تواند موازی باشد؛ نوشتن فایل، notes، Commit و Push خطی و تک‌نخی است.
 - Branch جدید ساخته نشود.
 
 ```text
 add province {province_id} data batch
 ```
+
+### زیپ نهایی Output
+
+- فقط پس از پایان واقعی Scope (Definition of Done کامل + Validation پاس)، کل پوشهٔ `output/{province_id}/` یک‌جا زیپ می‌شود (مثلاً `output-{province_id}.zip` در ریشهٔ ریپو) و مسیر آن در گزارش نهایی می‌آید.
+- زیپ جای چک‌پوینت‌های Git (Commit) را نمی‌گیرد؛ الویت ثبت پیشرفت با Commit است و Push اختیاری است.
 
 ## 16. Definition of Done
 
@@ -534,7 +539,7 @@ Scope فقط وقتی کامل است که:
 - [ ] `notes.md`، ID Registry و Git checkpoint به‌روزند؛
 - [ ] هیچ Candidate قابل‌پیگیری، Conflict قابل‌حل یا کار قابل‌انجامی باقی نمانده است.
 
-فقط در این وضعیت گزارش نهایی شامل province_id، مسیر خروجی، تعداد رکورد، Validation، notes و آخرین Commit/Push داده می‌شود.
+فقط در این وضعیت گزارش نهایی شامل province_id، مسیر خروجی، تعداد رکورد، Validation، notes، آخرین Commit و مسیر بستهٔ زیپ نهایی داده می‌شود.
 
 ## 17. Discovery سلسله‌مراتبی و مالکیت Context
 
