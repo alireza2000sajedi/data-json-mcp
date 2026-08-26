@@ -33,8 +33,7 @@ PLANRO — پرامپت واحد Agent تحقیق و تولید دیتا
 | `dataset/README.md` | قانون‌نامهٔ واحد: قواعد رفتاری، سلسله‌مراتب، Definition of Done | `planro://rules/readme` |
 | `dataset/place.schema.json` | تنها مرجع ساختار JSON: کلیدها، Required، Enum، Pattern | `planro://schema/place` |
 | `dataset/iran-cpi.schema.json` | شاخص CPI و دسته‌های تورم | `planro://schema/iran-cpi` |
-| `dataset/brand_voice_example.md` | مثال‌های قبل/بعد لحن برند | `planro://rules/brand-voice` |
-| `dataset/brand_voice.md` | راهنمای کامل لحن برند (لیست سیاه، نشانه‌های متن AI‌گون) | `planro://rules/brand-voice-guide` |
+| `dataset/brand_voice.md` | هویت کلامی و لحن برند — نسخه ۱.۰ نهایی (فایل واحد): حالت‌های زبانی، واژگان و لیست سیاه، فراخوان اقدام، صدای هوش مصنوعی، ۱۰۰ نمونه قبل/بعد، آزمون کیفیت + پیوست نمونهٔ کاربردی روی محتوای Dataset (ماسوله) | `planro://rules/brand-voice-guide` |
 | `input/1.json` … `input/31.json` | ساختار اداری کامل ۳۱ استان (چک‌لیست مرجع کشف) | — |
 | `src/` + `mcp-client.mjs` | خود MCP Server پلنرو (۱۷ Tool، ۱۱ Resource) | — |
 
