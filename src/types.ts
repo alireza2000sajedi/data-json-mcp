@@ -88,6 +88,14 @@ export interface ResearchCoverageEntry {
   resultSummary: string;
 }
 
+export interface DodStatus {
+  lastCheck: string;       // ISO timestamp
+  dodComplete: boolean;    // from check_definition_of_done
+  validateInvalid: number; // from validate_province
+  validateTotal: number;
+  issues: string[];        // compact list of blocking issues (max 10)
+}
+
 export interface NotesState {
   provinceId: string;
   lastUpdate: string;
@@ -100,6 +108,7 @@ export interface NotesState {
   registry: RegistryEntry[];
   researchCoverage: ResearchCoverageEntry[];
   nextStep: string;
+  dodStatus: DodStatus | null;
 }
 
 export interface QualityError {

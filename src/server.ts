@@ -49,7 +49,7 @@ export function createServer(): McpServer {
 
   register(
     "get_next_research_node",
-    "Return the first unfinished node in depth-first administrative traversal.",
+    "Return the first unfinished node in depth-first administrative traversal. When done:true, returns a reminder to run DoD checks before final report.",
     { provinceId: z.string().min(1) },
     toolGetNextResearchNode,
   );
@@ -152,7 +152,7 @@ export function createServer(): McpServer {
 
   register(
     "check_definition_of_done",
-    "Check whether the province scope meets its Definition of Done.",
+    "Check whether the province scope meets its Definition of Done. Result is persisted to notes.md DoD section. MUST be run (returning complete:true) together with validate_province (returning invalid:0) before producing the final report.",
     { provinceId: z.string().min(1) },
     toolCheckDefinitionOfDone,
   );
@@ -180,7 +180,7 @@ export function createServer(): McpServer {
 
   register(
     "validate_province",
-    "Re-validate every stored entity in a province and report structured errors (e.g. markdown URLs, missing evidence, ownership mismatch).",
+    "Re-validate every stored entity in a province and report structured errors. Result is persisted to notes.md DoD section. MUST be run (returning invalid:0) together with check_definition_of_done (returning complete:true) before producing the final report.",
     { provinceId: z.string().min(1) },
     toolValidateProvince,
   );
@@ -206,7 +206,7 @@ export function createServer(): McpServer {
 
   register(
     "list_pending_nodes",
-    "Return the full work queue: every incomplete node in depth-first order (with pending discovery, open candidates/conflicts, entity-active status). Use it to plan and batch the remaining work instead of stopping after structure discovery.",
+    "Return the full work queue: every incomplete node in depth-first order. When pending:0, returns a reminder to run DoD checks before final report.",
     { provinceId: z.string().min(1) },
     toolListPendingNodes,
   );
