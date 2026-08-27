@@ -1,5 +1,6 @@
 import { readNotes, findMediaDeficit } from "./notes.js";
 import { listEntities, ENTITY_NODE_TYPES } from "./dataset.js";
+import { sourceCoverageFor } from "./source-policy.js";
 import type { NotesState, NodeType, NodeRecord, DiscoveryTask } from "./types.js";
 
 /** Fixed required-discovery mapping per node type. */
@@ -160,6 +161,19 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
     }
   }
 
+  // Source-policy coverage: the mandatory primary sources must have been
+  // searched (and recorded) for this node before it can count as complete.
+  // Only checked when nothing else blocks, to keep large provinces fast.
+  if (blockingReasons.length === 0 && isEntityType) {
+    const coverage = sourceCoverageFor(state, node.nodeType, node.nodeId);
+    if (!coverage.satisfied) {
+      blockingReasons.push(
+        `source coverage ${coverage.searchedCount}/${coverage.required} primary sources ` +
+          `(search the mandatory sources first: ${coverage.searched.filter((s) => !s.searched).map((s) => s.domain).join(", ")})`,
+      );
+    }
+  }
+
   return {
     node,
     entityActive,
@@ -227,6 +241,54 @@ export function isWithinActiveScope(state: NotesState, nodeId: string): boolean 
 }
 
 /**
+ * True when the province stage is finished (province node complete) and the
+ * staged workflow is waiting for the USER to pick the next scope
+ * (county/city/village). In this state DFS pauses: completing or closing any
+ * other node requires set_active_scope first. Selecting the province itself as
+ * the active scope switches to a continuous whole-province run.
+ */
+export function awaitingScopeSelection(state: NotesState): boolean {
+  if (state.activeScopeId) return false;
+  const province = state.nodes.find((n) => n.nodeType === "province");
+  if (!province || (province.state !== "complete" && province.state !== "media_deficit")) return false;
+  const isDone = (n: NodeRecord) => n.state === "complete" || n.state === "media_deficit";
+  const pending = state.nodes.filter((n) => !isDone(n));
+  if (pending.length === 0) return false;
+
+  // The province stage also covers places/camping directly under the province:
+  // while those are still open, DFS continues inside the province stage.
+  const countyIds = new Set(state.nodes.filter((n) => n.nodeType === "county").map((n) => n.nodeId));
+  const insideCounty = (n: NodeRecord): boolean => {
+    if (n.nodeType === "county") return true;
+    let cur: NodeRecord | undefined = n;
+    const seen = new Set<string>();
+    while (cur?.parentNodeId && !seen.has(cur.nodeId)) {
+      seen.add(cur.nodeId);
+      if (countyIds.has(cur.parentNodeId)) return true;
+      cur = state.nodes.find((x) => x.nodeId === cur!.parentNodeId);
+    }
+    return false;
+  };
+  if (pending.some((n) => !insideCounty(n))) return false;
+  return true;
+}
+
+/**
+ * Node ids that belong to the currently active scope's subtree, or null when
+ * no scope is active (province-wide mode). Used by every DoD/complete check so
+ * a finished county scope can report complete:true while sibling counties stay
+ * pending for their own runs (staged workflow).
+ */
+export function scopedNodeIds(state: NotesState): Set<string> | null {
+  if (!state.activeScopeId) return null;
+  const ids = new Set<string>([state.activeScopeId]);
+  for (const n of state.nodes) {
+    if (isSubtreeNode(state, n.nodeId, state.activeScopeId)) ids.add(n.nodeId);
+  }
+  return ids;
+}
+
+/**
  * First unfinished node in depth-first traversal, or null.
  *
  * When a staged scope is active (`activeScopeId` set), the traversal is
@@ -235,6 +297,11 @@ export function isWithinActiveScope(state: NotesState, nodeId: string): boolean 
  */
 export function nextRequiredNode(provinceId: string): NodeRecord | null {
   const state = readNotes(provinceId);
+  // Staged workflow: after the province stage is complete and no scope has
+  // been selected, DFS pauses — the agent must ask the user for the next
+  // scope (resolve_scope_name + set_active_scope) instead of auto-diving
+  // into the first county.
+  if (awaitingScopeSelection(state)) return null;
   const order = traverse(provinceId);
   const active = state.activeScopeId ? state.nodes.find((n) => n.nodeId === state.activeScopeId) : null;
   const scoped = active ? order.filter((n) => isSubtreeNode(state, n.nodeId, active.nodeId)) : order;
@@ -248,6 +315,8 @@ export interface ScopeState {
   provinceId: string;
   /** Currently selected staged scope nodeId (null = province-wide). */
   activeScopeId: string | null;
+  /** True when the province stage is done and the user must pick the next scope. */
+  awaitingScopeSelection: boolean;
   discoveredNodes: number;
   activeEntities: number;
   /** Nodes closed via the §9 media-deficit disposition (recorded, unresolved). */
@@ -265,23 +334,34 @@ export function getScopeState(provinceId: string): ScopeState {
   const nodes = state.nodes;
   const activeEntities = listEntities(provinceId).filter((e) => e.entity.status === "active").length;
   const mediaDeficitNodes = state.mediaDeficits.filter((d) => d.state === "recorded");
-  const openCandidates = state.candidates.filter((c) => c.state === "open");
-  const openConflicts = state.conflicts.filter((c) => c.state === "open");
+  const scopeIds = scopedNodeIds(state);
+  const openCandidates = state.candidates.filter(
+    (c) => c.state === "open" && (scopeIds === null || scopeIds.has(c.nodeId)),
+  );
+  const openConflicts = state.conflicts.filter(
+    (c) => c.state === "open" && (scopeIds === null || scopeIds.has(c.nodeId)),
+  );
 
   const next = nextRequiredNode(provinceId);
   const blockingReasons: string[] = [];
   if (nodes.length === 0) blockingReasons.push("no administrative nodes discovered");
-  for (const n of nodes) {
+  // Scope-aware DoD: when a staged scope is active, only the nodes of that
+  // scope's subtree count towards definition-of-done. Sibling counties / the
+  // province stay pending for their own separate runs (STAGED_WORKFLOW.md), so
+  // they must not keep a finished scope stuck at complete:false forever.
+  const doDNodes = scopeIds === null ? nodes : nodes.filter((n) => scopeIds.has(n.nodeId));
+  for (const n of doDNodes) {
     blockingReasons.push(...nodeStatus(provinceId, n).blockingReasons.map((r) => `${n.nodeId}: ${r}`));
   }
   if (openCandidates.length > 0) blockingReasons.push(`${openCandidates.length} open candidate(s)`);
   if (openConflicts.length > 0) blockingReasons.push(`${openConflicts.length} open conflict(s)`);
 
-  const definitionOfDone = blockingReasons.length === 0 && nodes.length > 0;
+  const definitionOfDone = blockingReasons.length === 0 && doDNodes.length > 0;
 
   return {
     provinceId,
     activeScopeId: state.activeScopeId,
+    awaitingScopeSelection: awaitingScopeSelection(state),
     discoveredNodes: nodes.length,
     activeEntities,
     mediaDeficitNodes,

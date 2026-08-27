@@ -39,6 +39,8 @@ const PROVINCE_QUERIES = (name: string): DiscoveryQuery[] => [
   { query: `شهرستان های استان ${name}`, lang: "fa", purpose: "counties" },
   { query: `بخش های استان ${name}`, lang: "fa", purpose: "districts" },
   { query: `دهستان های استان ${name}`, lang: "fa", purpose: "rural districts" },
+  { query: `عکس استان ${name}`, lang: "fa", purpose: "media: web image search (fa)" },
+  { query: `${name} Iran photos`, lang: "en", purpose: "media: image search (en, Commons + web)" },
 ];
 
 const COUNTY_QUERIES = (name: string): DiscoveryQuery[] => [
@@ -51,6 +53,8 @@ const COUNTY_QUERIES = (name: string): DiscoveryQuery[] => [
   { query: `روستاهای شهرستان ${name}`, lang: "fa", purpose: "villages" },
   { query: `روستاهای گردشگری شهرستان ${name}`, lang: "fa", purpose: "tourism villages" },
   { query: `طبیعت شهرستان ${name}`, lang: "fa", purpose: "nature" },
+  { query: `عکس شهرستان ${name}`, lang: "fa", purpose: "media: web image search (fa)" },
+  { query: `${name} Iran photos`, lang: "en", purpose: "media: image search (en, Commons + web)" },
 ];
 
 const DISTRICT_QUERIES = (name: string): DiscoveryQuery[] => [
@@ -74,6 +78,8 @@ const CITY_QUERIES = (name: string): DiscoveryQuery[] => [
   { query: `بازار شهر ${name}`, lang: "fa", purpose: "bazaars/markets" },
   { query: `اقامتگاه های شهر ${name}`, lang: "fa", purpose: "accommodation" },
   { query: `رستوران های شهر ${name}`, lang: "fa", purpose: "restaurants" },
+  { query: `عکس شهر ${name}`, lang: "fa", purpose: "media: web image search (fa)" },
+  { query: `${name} Iran city photos`, lang: "en", purpose: "media: image search (en, Commons + web)" },
 ];
 
 const VILLAGE_QUERIES = (name: string): DiscoveryQuery[] => [
@@ -83,6 +89,9 @@ const VILLAGE_QUERIES = (name: string): DiscoveryQuery[] => [
   { query: `معماری روستای ${name}`, lang: "fa", purpose: "architecture" },
   { query: `کمپینگ روستای ${name}`, lang: "fa", purpose: "camping" },
   { query: `اقامتگاه روستای ${name}`, lang: "fa", purpose: "accommodation" },
+  { query: `عکس روستای ${name}`, lang: "fa", purpose: "media: web image search (fa)" },
+  { query: `تصاویر روستای ${name}`, lang: "fa", purpose: "media: web image search (fa, variant)" },
+  { query: `${name} village Iran photo`, lang: "en", purpose: "media: image search (en, Commons + web)" },
 ];
 
 const PLACE_QUERIES = (name: string, ctx: DiscoveryContext): DiscoveryQuery[] => {
@@ -92,6 +101,9 @@ const PLACE_QUERIES = (name: string, ctx: DiscoveryContext): DiscoveryQuery[] =>
   else if (ctx.county) queries.push({ query: `${name} ${ctx.county} ${ctx.province ?? ""}`.trim(), lang: "fa", purpose: "POI with county context" });
   else if (ctx.province) queries.push({ query: `${name} ${ctx.province}`, lang: "fa", purpose: "POI with province context" });
   if (ctx.province) queries.push({ query: `${name} ${ctx.province} Iran`, lang: "en", purpose: "English disambiguation with Iran" });
+  const mediaScope = [ctx.city ?? ctx.county ?? ctx.village, ctx.province].filter(Boolean).join(" ");
+  queries.push({ query: `عکس ${name} ${mediaScope}`.trim(), lang: "fa", purpose: "media: web image search (fa)" });
+  queries.push({ query: `${name} ${mediaScope} photo`, lang: "en", purpose: "media: image search (en, Commons + web)" });
   return queries;
 };
 
@@ -102,6 +114,7 @@ const CAMPING_QUERIES = (name: string, ctx: DiscoveryContext): DiscoveryQuery[] 
   queries.push({ query: `کمپ ${name} ${scope}`.trim(), lang: "fa", purpose: "campsite" });
   queries.push({ query: `اقامتگاه موقت ${name} ${scope}`.trim(), lang: "fa", purpose: "temporary accommodation" });
   if (ctx.province) queries.push({ query: `${name} camping ${ctx.province} Iran`, lang: "en", purpose: "English camping search" });
+  queries.push({ query: `عکس ${name} ${scope}`.trim(), lang: "fa", purpose: "media: web image search (fa)" });
   return queries;
 };
 

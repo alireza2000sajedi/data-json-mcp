@@ -41,6 +41,21 @@ export function registerResources(server: McpServer): void {
     return textResource(uri.href, text, "application/json");
   });
 
+  server.registerResource(
+    "source-policy",
+    "planro://rules/source-policy",
+    {
+      title: "Planro source policy",
+      description:
+        "Mandatory primary sources (Kojaro, Jabama Mag, Alibaba Mag, Lastsecond, Flytoday), fallback sources (Wikipedia/Commons etc.) and the coverage contract (all primaries per entity node, 2 per village).",
+      mimeType: "application/json",
+    },
+    async (uri) => {
+      const text = fs.readFileSync(path.join(config.datasetDir, "source_policy.json"), "utf8");
+      return textResource(uri.href, text, "application/json");
+    },
+  );
+
   server.registerResource("iran-cpi-schema", "planro://schema/iran-cpi", { title: "Iran CPI schema", mimeType: "application/json" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "iran-cpi.schema.json"), "utf8");
     return textResource(uri.href, text, "application/json");

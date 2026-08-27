@@ -38,20 +38,27 @@
 
 ## ۳. قرارداد هر اجرا (یک Scope در هر اجرا)
 
-### Scope A — استخراج ساختار استان (Province Discovery)
+### Scope A — مرحلهٔ استان (Province Stage): ساختار + Entity استان
 
 1. کاربر فقط استان را می‌گوید (مثلاً `استان همدان`).
-2. `import_province_scopes` را صدا بزن (یا `planro://scopes/{provinceId}` را بخوان).
-3. `investigation` نمی‌شود: **نه Deep Research، نه POI، نه Entity، نه هیچ شهر/شهرستانی**.
-4. خروجی را گزارش کن و **کاملاً متوقف شو**.
+2. `import_province_scopes` را صدا بزن (یا `planro://scopes/{provinceId}` را بخوان)؛ ساختار اداری
+   (شهرستان/شهر/روستا) بدون Entity ثبت می‌شود.
+3. تحقیق کامل **Entity خودِ استان**: جغرافیا، اقلیم، تاریخ، جاذبه‌های شاخص استانی، رسانه (Best-Effort طبق §9
+   پرامپت)، Costs — و ذخیرهٔ `province.json` با `save_active_entity`. مکان‌ها/کمپینگ‌های «سطح استان» نیز
+   در همین مرحله کشف و ذخیره می‌شوند. Entity شهرستان/شهر/روستا ساخته نمی‌شود؛ نام‌های دیده‌شده فقط notes.
+4. وقتی نود استان `complete` شد، `get_next_research_node` حالت `awaitingScopeSelection` برمی‌گرداند:
+   گزارش خلاصهٔ استان + فهرست شهرستان‌ها (نام + id) + یک سؤال: «کدام شهرستان/شهر/روستا؟» و **متوقف شو**.
+5. نام فارسی انتخابی کاربر را با `resolve_scope_name` به id تبدیل کن (از کاربر id نخواه مگر نام واقعاً مبهم/
+   همنام باشد — در آن حالت فهرست کاندیداها را نشان بده). تا انتخاب Scope، هیچ نود دیگری complete نمی‌شود.
 
 ### Scope B — Deep Research یک شهرستان/شهر
 
 1. کاربر می‌گوید: `همدان → فامنین`.
-2. `set_active_scope` با `nodeId` همان واحد (مثلاً `county-30-5`).
+2. `resolve_scope_name` (در صورت نام فارسی) و سپس `set_active_scope` با `nodeId` همان واحد (مثلاً `county-30-5`).
 3. فقط زیردرخت همان Scope فعال می‌شود (`get_next_research_node`/DFS روی همان Scope قفل می‌شود).
-4. تحقیق کامل Scope («فامنین + زیرمجموعه‌های لازم»)، ساخت فایل‌ها، ذخیره، Checkpoint و `mark_node_complete`.
-5. **توقف**؛ Scope بعدی فقط با دستور کاربر.
+4. انتخاب شهرستان = کل زیردرخت آن (بخش/دهستان/شهر/روستا + مکان‌های داخلشان)؛ والد فقط Context است.
+5. تحقیق کامل Scope، ساخت فایل‌ها، ذخیره، Checkpoint و `mark_node_complete`.
+6. **توقف**؛ Scope بعدی فقط با دستور کاربر.
 
 ### Scope C / D — روستا یا POI
 
@@ -60,8 +67,12 @@
 ## ۴. قوانین غیرقابل‌نقض
 
 - هر اجرا **یک Scope**؛ سراغ Scope دیگر نرو و اطلاعات آن را فقط در notes نگه دار.
+- `check_definition_of_done` و `get_scope_state` هم **Scope-محور**ند: وقتی Scope فعالی داریم، فقط زیردرخت همان Scope سنجیده می‌شود؛ `complete:true` یعنی پایان همان Scope فعال — حتی اگر سایر شهرستان‌ها/روستاهای استان هنوز pending باشند (آنها برای اجراهای بعدی منتظر می‌مانند).
 - پس از پایان Scope: فایل‌ها + وضعیت ذخیره شود، Scope `completed` شود، اجرا متوقف شود، منتظر دستور بمان.
 - **Resume:** ابتدا `get_scope_state`/`get_next_research_node` را بخوان؛ فقط Scope ناتمام بعدی را اجرا کن؛
   فایل تکمیل‌شده دوباره تولید نشود مگر با دستور صریح.
 - `set_active_scope` با `nodeId: null` بازگشت به حالت استان‌محور است.
 - `mark_node_complete` برای نودهای خارج از Scope فعال با خطای `SCOPE VIOLATION` رد می‌شود.
+- بعد از `complete` شدن نود استان بدون Scope فعال، تا انتخاب کاربر حالت `AWAITING SCOPE SELECTION` برقرار است؛
+  `get_next_research_node` در این حالت `awaitingScopeSelection: true` و `node: null` برمی‌گرداند و
+  `mark_node_complete`/`mark_node_media_deficit` نودهای دیگر رد می‌شوند.

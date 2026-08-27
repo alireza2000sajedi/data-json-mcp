@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { setupEnv, cleanup, clearOutput, makeValidPlace, makeVillage, seedProvinceHierarchy, sixChecklist } from "./helpers.mjs";
+import { setupEnv, cleanup, clearOutput, makeValidPlace, makeVillage, seedProvinceHierarchy, sixChecklist, addPrimarySourceCoverage, mediaItem } from "./helpers.mjs";
 import { makeCity } from "./helpers.mjs";
 
 const outputDir = setupEnv();
@@ -83,6 +83,9 @@ test("next node returns first unfinished node in depth-first order", async () =>
   upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
   // a city under the county (also incomplete)
   upsertNode(state, { nodeId: "city-30-1", nodeType: "city", canonicalName: "فامنین", parentNodeId: "county-30-1", state: "research_required" });
+  // staged workflow: after the province stage, work continues inside a selected scope
+  state.activeScopeId = "county-30-1";
+  addPrimarySourceCoverage(notes, state, "county-30-1", 5);
   writeNotes(state);
 
   const { nextRequiredNode } = await import("../dist/graph.js");
@@ -94,6 +97,7 @@ test("next node returns first unfinished node in depth-first order", async () =>
   state = readNotes("province-30");
   upsertRegistry(state, { id: "county-30-1", slug: "famnin-county", path: "county-30-1/county.json", status: "active", name: "فامنین", type: "other", subType: "county" });
   for (const track of ["districts", "ruralDistricts", "cities", "villages", "countyPlaces", "camping"]) completeDiscoveryTask(state, "county-30-1", track);
+  addPrimarySourceCoverage(notes, state, "county-30-1", 5);
   writeNotes(state);
 
   const next2 = nextRequiredNode("province-30");
@@ -141,10 +145,15 @@ test("discover_node generates node-scoped queries (no network, no cross-node lea
   const r = toolDiscoverNode({ provinceId: "province-30", nodeType: "county", canonicalName: "فامنین" });
   assert.equal(r.nodeType, "county");
   assert.ok(r.queries.length > 0);
-  // Every county query must embed the county name, never the province-level phrasing.
+  // Every county query must embed the county name (fa or en phrasing), never the province-level phrasing.
   for (const q of r.queries) {
-    assert.ok(q.query.includes("شهرستان فامنین"), `query must be county-scoped: ${q.query}`);
+    assert.ok(q.query.includes("فامنین"), `query must be county-scoped: ${q.query}`);
+    assert.ok(!q.query.includes("استان همدان"), `query must not leak the province phrasing: ${q.query}`);
   }
+  assert.ok(
+    r.queries.filter((q) => q.query.includes("شهرستان فامنین")).length >= 5,
+    "the Persian discovery queries must keep the full county-scoped phrasing",
+  );
 
   // POI queries must carry geographic context.
   const poi = toolDiscoverNode({
@@ -179,6 +188,14 @@ test("complete_discovery_task unblocks mark_node_complete and definition of done
   for (const track of ["counties", "provincePlaces", "camping"]) {
     const r = toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "province-30", track, count: 0 } });
     assert.equal(r.updated, true);
+  }
+
+  // satisfy the mandatory primary-source coverage for the province node
+  {
+    const notes = await import("../dist/notes.js");
+    let st = notes.readNotes("province-30");
+    addPrimarySourceCoverage(notes, st, "province-30", 5);
+    notes.writeNotes(st);
   }
 
   // now mark_node_complete succeeds
@@ -327,6 +344,7 @@ test("list_pending_nodes returns the full incomplete work queue", async () => {
   for (const track of ["counties", "provincePlaces", "camping"]) notes.completeDiscoveryTask(state, "province-30", track);
   notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
   notes.upsertNode(state, { nodeId: "city-30-1", nodeType: "city", canonicalName: "فامنین", parentNodeId: "county-30-1", state: "research_required" });
+  addPrimarySourceCoverage(notes, state, "province-30", 5);
   notes.writeNotes(state);
 
   const r = toolListPendingNodes({ provinceId: "province-30" });
@@ -344,6 +362,7 @@ test("traversal visits province-level places before counties", async () => {
   for (const t of ["counties", "provincePlaces", "camping"]) notes.completeDiscoveryTask(state, "province-30", t);
   notes.upsertNode(state, { nodeId: "place-30-1", nodeType: "place", canonicalName: "مکان استانی", parentNodeId: "province-30", state: "research_required" });
   notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
+  addPrimarySourceCoverage(notes, state, "province-30", 5);
   notes.writeNotes(state);
 
   const { nextRequiredNode } = await import("../dist/graph.js");
@@ -439,6 +458,7 @@ async function seedDeficitScenario() {
   const { readNotes, writeNotes, upsertNode, upsertRegistry, completeDiscoveryTask } = notes;
 
   let state = readNotes("province-30");
+  state.activeScopeId = "county-30-1"; // staged workflow: work happens inside the selected county scope
   upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "complete" });
   upsertRegistry(state, { id: "province-30", slug: "prov", path: "province.json", status: "active", name: "همدان", type: "other", subType: "province" });
   completeDiscoveryTask(state, "province-30", "counties", 1);
@@ -464,6 +484,11 @@ async function seedDeficitScenario() {
   // city with no entity, discovery closed (0 places, 0 camping)
   completeDiscoveryTask(state, "city-30-2", "places", 0);
   completeDiscoveryTask(state, "city-30-2", "camping", 0);
+  // mandatory primary-source coverage: 5/5 for province/county/city, 2 for the village
+  addPrimarySourceCoverage(notes, state, "province-30", 5);
+  addPrimarySourceCoverage(notes, state, "county-30-1", 5);
+  addPrimarySourceCoverage(notes, state, "city-30-2", 5);
+  addPrimarySourceCoverage(notes, state, "village-30-v1", 5);
   writeNotes(state);
   return notes;
 }
@@ -549,23 +574,23 @@ test("DoD passes with media-deficit nodes reported transparently", async () => {
   assert.equal(dod.mediaDeficitNodes.length, 2, "deficit nodes are reported, not hidden");
 });
 
-test("mark_node_media_deficit guards: active entity, imagesFound>=10, open discovery, DFS order", async () => {
-  const { toolMarkNodeMediaDeficit, toolUpdateNotes } = await import("../dist/tools.js");
+test("mark_node_media_deficit guards: usable candidates, audit range, open discovery, DFS order", async () => {
+  const { toolMarkNodeMediaDeficit, toolUpdateNotes, toolRecordMediaCandidate } = await import("../dist/tools.js");
   await seedDeficitScenario();
 
-  // imagesFound out of range.
+  // imagesFound is an audit number 0..20 — 21 is rejected.
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 10, searchesPerformed: ["a"] }),
-    /imagesFound must be an integer between 0 and 9/,
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 21, searchesPerformed: ["a", "b"] }),
+    /imagesFound must be an integer between 0 and 20/,
   );
-  // Missing searchesPerformed.
+  // Too few searches.
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: [] }),
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 0, searchesPerformed: [] }),
     /searchesPerformed/,
   );
   // Out of DFS order (village while the city is the required node).
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "village-30-v1", reason: "x", imagesFound: 0, searchesPerformed: ["a"] }),
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "village-30-v1", reason: "x", imagesFound: 0, searchesPerformed: ["a", "b"] }),
     /DFS ORDER VIOLATION/,
   );
   // Node with open discovery tracks cannot be marked (reopen the city's tracks).
@@ -574,21 +599,42 @@ test("mark_node_media_deficit guards: active entity, imagesFound>=10, open disco
   rs.discoveryTasks = rs.discoveryTasks.filter((t) => t.nodeId !== "city-30-2");
   notesReopen.writeNotes(rs);
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] }),
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 0, searchesPerformed: ["a", "b"] }),
     /discovery/,
   );
+  // A node WITH usable media candidates must be saved, never closed file-less.
+  toolRecordMediaCandidate({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    imageUrl: "https://cdn.kojaro.com/img/teymurlu-1.jpg",
+    pageUrl: "https://www.kojaro.com/teymurlu/",
+    license: "all-rights-reserved",
+  });
+  assert.throws(
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 0, searchesPerformed: ["a", "b"] }),
+    /HAS 1 usable media candidate/,
+  );
 
-  // Close discovery, then succeed.
+  // Drop the candidate (as if it were later judged unusable), close discovery, then succeed.
+  rs = notesReopen.readNotes("province-30");
+  rs.mediaCandidates = rs.mediaCandidates.filter((c) => c.nodeId !== "city-30-2");
+  notesReopen.writeNotes(rs);
   for (const track of ["places", "camping"]) {
     toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "city-30-2", track, count: 0 } });
   }
-  const ok = toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] });
+  const ok = toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    reason: "هیچ دادهٔ معتبری برای این شهر جمع نشد",
+    imagesFound: 0,
+    searchesPerformed: ["site:kojaro.com تیمورلو", "Google Images: عکس تیمورلو"],
+  });
   assert.equal(ok.recorded, true);
 
   // Double-marking is refused.
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] }),
-    /already has a recorded media-deficit/,
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 0, searchesPerformed: ["a", "b"] }),
+    /already has a recorded file-less disposition/,
   );
 });
 
@@ -650,6 +696,89 @@ test("saving an active entity auto-resolves a recorded media-deficit disposition
   assert.equal(ctx.mediaDeficit, false);
 });
 
+test("DoD is scope-aware: a finished county scope is complete while sibling counties stay pending", async () => {
+  const { toolSetActiveScope, toolMarkNodeMediaDeficit, toolCheckDefinitionOfDone } = await import("../dist/tools.js");
+  await seedDeficitScenario();
+
+  // A second, untouched county in the same province (pending for its own run).
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "county-30-2", nodeType: "county", canonicalName: "شهرستان دیگر", parentNodeId: "province-30", state: "research_required" });
+  notes.writeNotes(state);
+
+  // Lock the run to county-30-1 and finish its remaining nodes via §9.
+  toolSetActiveScope({ provinceId: "province-30", nodeId: "county-30-1" });
+  toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    reason: "کمتر از ۵ تصویر قابل‌انتساب پس از Commons و جستجوی تصویر وب.",
+    imagesFound: 3,
+    searchesPerformed: ["Wikimedia Commons category: Teymurlu", "Google Images: عکس تیمورلو"],
+  });
+  state = notes.readNotes("province-30");
+  notes.completeDiscoveryTask(state, "village-30-v1", "places", 0);
+  notes.completeDiscoveryTask(state, "village-30-v1", "camping", 0);
+  notes.writeNotes(state);
+  toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "village-30-v1",
+    reason: "روستای دورافتاده با کمتر از ۳ تصویر قابل‌انتساب.",
+    imagesFound: 1,
+    searchesPerformed: ["Wikimedia Commons geosearch", "Google Images: عکس روستا"],
+  });
+
+  // Scope-aware DoD: the county scope is COMPLETE although county-30-2 (and the
+  // province node) are still pending province-wide.
+  const dod = toolCheckDefinitionOfDone({ provinceId: "province-30" });
+  assert.equal(dod.scopeId, "county-30-1");
+  assert.equal(dod.complete, true, JSON.stringify(dod));
+  assert.equal(dod.mediaDeficitNodes.length, 2);
+
+  // Province-wide view (no active scope) is NOT complete — sibling county pending.
+  toolSetActiveScope({ provinceId: "province-30", nodeId: null });
+  const dodWide = toolCheckDefinitionOfDone({ provinceId: "province-30" });
+  assert.equal(dodWide.complete, false, "province-wide DoD must stay incomplete while a sibling county is pending");
+  assert.equal(dodWide.scopeId, null);
+});
+
+test("media policy contract: target 10 (village/camping 3) is a goal not a minimum; selection = min(usable, target)", async () => {
+  const { MEDIA_POLICY, mediaPolicyFor, mediaStatusFor } = await import("../dist/media.js");
+  for (const t of ["province", "county", "city", "place"]) {
+    assert.deepEqual(mediaPolicyFor(t), { target: 10, minUsable: 1, max: 20 }, `${t} policy`);
+  }
+  for (const t of ["village", "camping"]) {
+    assert.deepEqual(mediaPolicyFor(t), { target: 3, minUsable: 1, max: 20 }, `${t} policy`);
+  }
+  assert.equal(MEDIA_POLICY.camping.target, 3, "final contract: camping target is 3");
+  assert.equal(mediaStatusFor("place", 10), "complete");
+  assert.equal(mediaStatusFor("place", 4), "partial");
+  assert.equal(mediaStatusFor("place", 0), "unavailable");
+  assert.equal(mediaStatusFor("village", 3), "complete");
+  assert.equal(mediaStatusFor("village", 2), "partial");
+  assert.equal(mediaStatusFor("camping", 3), "complete");
+});
+
+test("discover_node generates image/media queries for every entity node type", async () => {
+  const { buildDiscoveryQueries } = await import("../dist/discovery.js");
+  const cases = [
+    ["province", "آذربایجان شرقی"],
+    ["county", "آذرشهر"],
+    ["city", "تبریز"],
+    ["village", "خاصلو"],
+  ];
+  for (const [type, name] of cases) {
+    const queries = buildDiscoveryQueries(type, name, { province: "آذربایجان شرقی" });
+    const mediaQueries = queries.filter((q) => q.purpose.startsWith("media:"));
+    assert.ok(mediaQueries.length >= 2, `${type} must generate image-search queries`);
+    assert.ok(mediaQueries.some((q) => /عکس|تصاویر/.test(q.query)), `${type} must have a Persian image query`);
+    assert.ok(mediaQueries.some((q) => /photo|photos/i.test(q.query)), `${type} must have an English image query`);
+  }
+  const placeQueries = buildDiscoveryQueries("place", "تپه مصلی", { province: "آذربایجان شرقی", county: "آذرشهر", city: "آذرشهر" });
+  assert.ok(placeQueries.some((q) => q.purpose.startsWith("media:") && q.query.includes("عکس")));
+  const campQueries = buildDiscoveryQueries("camping", "کمپ ائل میدانی", { province: "آذربایجان شرقی", county: "آذرشهر" });
+  assert.ok(campQueries.some((q) => q.purpose.startsWith("media:")));
+});
+
 test("complete_discovery_task rejects a missing count for countable tracks", async () => {
   const { toolUpdateNotes } = await import("../dist/tools.js");
   const notes = await import("../dist/notes.js");
@@ -660,4 +789,203 @@ test("complete_discovery_task rejects a missing count for countable tracks", asy
     () => toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "province-30", track: "counties" } }),
     /count/,
   );
+});
+test("best-effort media: 1 image saves as partial, 0 images saves without media (unavailable)", async () => {
+  const { toolSaveActiveEntity } = await import("../dist/tools.js");
+  const { findEntityById } = await import("../dist/dataset.js");
+  await seedProvinceHierarchy();
+
+  // A POI with a single image (thumbnail reuses it) → saved, status "partial".
+  const one = makeValidPlace({
+    media: { thumbnail: mediaItem(0), images: [mediaItem(0)] },
+  });
+  const r1 = toolSaveActiveEntity({ provinceId: "province-30", entity: one, expectedNodeId: one.id });
+  assert.equal(r1.accepted, true, JSON.stringify(r1.errors ?? r1));
+  const stored1 = findEntityById("province-30", one.id);
+  assert.equal(stored1.entity.media.status, "partial");
+
+  // A POI with NO media at all → REJECTED while primary coverage is incomplete
+  // ("nothing found" is only credible after all five primaries were attempted).
+  const none = makeValidPlace({ id: "place-30-9", slug: "no-media-place", name: { fa: "مکان بدون عکس" } });
+  delete none.media;
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "place-30-9", nodeType: "place", canonicalName: "مکان بدون عکس", parentNodeId: "county-30-1", state: "research_required" });
+  notes.addSourceMatrixEntry(state, { id: "src-9", nodeId: "place-30-9", query: "q", sourceUrl: "https://example.com/famnin", sourceTitle: "Example", resultSummary: "s", ownershipStatus: "belongs_to_node" });
+  notes.writeNotes(state);
+  const rReject = toolSaveActiveEntity({ provinceId: "province-30", entity: none, expectedNodeId: none.id });
+  assert.equal(rReject.accepted, false);
+  assert.ok(rReject.errors.some((e) => e.code === "MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE"), JSON.stringify(rReject.errors));
+  assert.equal(fs.existsSync(`${outputDir}/province-30/county-30-1/place-30-9.json`), false, "no file written on coverage rejection");
+
+  // After recording attempts on all five primaries → accepted with status "unavailable".
+  state = notes.readNotes("province-30");
+  addPrimarySourceCoverage(notes, state, "place-30-9", 5);
+  notes.writeNotes(state);
+  const r2 = toolSaveActiveEntity({ provinceId: "province-30", entity: none, expectedNodeId: none.id });
+  assert.equal(r2.accepted, true, JSON.stringify(r2.errors ?? r2));
+  const stored2 = findEntityById("province-30", none.id);
+  assert.equal(stored2.entity.media.status, "unavailable");
+  assert.ok(!Array.isArray(stored2.entity.media.images) || stored2.entity.media.images.length === 0);
+});
+
+test("media candidate pipeline: record candidates, finalize picks the best set", async () => {
+  const { toolRecordMediaCandidate, toolFinalizeMedia, toolSaveActiveEntity } = await import("../dist/tools.js");
+  const { findEntityById } = await import("../dist/dataset.js");
+  await seedProvinceHierarchy();
+
+  const mk = (i, domain, score) => ({
+    provinceId: "province-30",
+    nodeId: "place-30-1",
+    imageUrl: `https://cdn.${domain}/img-${i}.jpg`,
+    pageUrl: `https://www.${domain}/article-${i}`,
+    license: i === 3 ? "CC-BY-SA-4.0" : "all-rights-reserved",
+    source: domain,
+    credit: `عکاس ${i}`,
+    alt: `نما ${i}`,
+    score,
+  });
+  // 4 candidates + 1 duplicate URL → 4 distinct
+  assert.equal(toolRecordMediaCandidate(mk(1, "kojaro.com", 0.9)).recorded, true);
+  assert.equal(toolRecordMediaCandidate(mk(2, "jabama.com", 0.4)).recorded, true);
+  assert.equal(toolRecordMediaCandidate(mk(3, "commons.wikimedia.org", 0.5)).recorded, true);
+  assert.equal(toolRecordMediaCandidate(mk(4, "lastsecond.ir", 0.7)).recorded, true);
+  const dup = toolRecordMediaCandidate(mk(1, "kojaro.com", 0.9));
+  assert.equal(dup.recorded, false, "duplicate image URL must be idempotent");
+
+  const fin = toolFinalizeMedia({ provinceId: "province-30", nodeId: "place-30-1" });
+  assert.equal(fin.audit.candidates, 4, "duplicate image URL is not stored twice");
+  assert.equal(fin.audit.deduplicated, 4);
+  assert.equal(fin.audit.usable, 4);
+  assert.equal(fin.audit.selectedTotal, 4, "selection = min(usable, target)");
+  assert.equal(fin.audit.target, 10);
+  assert.equal(fin.mediaStatus, "partial", "4 distinct images < target 10 for a place");
+  assert.ok(fin.media.thumbnail, "thumbnail picked from the best candidate");
+  assert.equal(fin.media.images.length, 3);
+
+  // Attach and save: accepted with status partial.
+  const entity = makeValidPlace({ media: fin.media });
+  const save = toolSaveActiveEntity({ provinceId: "province-30", entity, expectedNodeId: entity.id });
+  assert.equal(save.accepted, true, JSON.stringify(save.errors ?? save));
+  const stored = findEntityById("province-30", entity.id);
+  assert.equal(stored.entity.media.status, "partial");
+
+  // Over-target village: 18 usable candidates → only the best 3 are stored (never more than target).
+  const notes = await import("../dist/notes.js");
+  let vstate = notes.readNotes("province-30");
+  notes.upsertNode(vstate, { nodeId: "village-30-v5", nodeType: "village", canonicalName: "روستای پُرعکس", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(vstate);
+  for (let i = 0; i < 18; i++) {
+    toolRecordMediaCandidate({
+      provinceId: "province-30",
+      nodeId: "village-30-v5",
+      imageUrl: `https://cdn.kojaro.com/v-${i}.jpg`,
+      pageUrl: `https://www.kojaro.com/v-${i}`,
+      license: "all-rights-reserved",
+      score: i / 18,
+    });
+  }
+  const vfin = toolFinalizeMedia({ provinceId: "province-30", nodeId: "village-30-v5" });
+  assert.equal(vfin.audit.usable, 18);
+  assert.equal(vfin.audit.selectedTotal, 3, "village with 18 usable images stores only the best 3");
+  assert.equal(vfin.media.images.length, 2, "thumbnail counts inside the 3-image budget");
+  assert.equal(vfin.mediaStatus, "complete");
+  const urls = new Set([vfin.media.thumbnail.url, ...vfin.media.images.map((m) => m.url)]);
+  assert.equal(urls.size, 3, "all stored URLs distinct");
+});
+
+test("media candidates on primary domains count toward source coverage", async () => {
+  const { toolRecordMediaCandidate, toolGetSourceCoverage } = await import("../dist/tools.js");
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "village-30-v9", nodeType: "village", canonicalName: "روستای آزمون", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(state);
+
+  // Final contract: ALL five primaries are required for EVERY entity node (village included);
+  // image candidates discovered on primary pages count as searching that source.
+  const primaries = ["kojaro.com", "jabama.com", "alibaba.ir", "lastsecond.ir", "flytoday.ir"];
+  primaries.forEach((domain, i) => {
+    toolRecordMediaCandidate({ provinceId: "province-30", nodeId: "village-30-v9", imageUrl: `https://cdn.${domain}/a${i}.jpg`, pageUrl: `https://www.${domain}/a${i}`, license: "all-rights-reserved" });
+  });
+
+  const cov = toolGetSourceCoverage({ provinceId: "province-30", nodeId: "village-30-v9" });
+  assert.equal(cov.required, 5);
+  assert.equal(cov.searchedCount, 5);
+  assert.equal(cov.satisfied, true);
+});
+
+test("record_search_result classifies primary/fallback/other against the source policy", async () => {
+  const { toolRecordSearchResult } = await import("../dist/tools.js");
+  await seedProvinceHierarchy();
+
+  const p1 = toolRecordSearchResult({ provinceId: "province-30", nodeId: "place-30-1", query: "q", sourceUrl: "https://www.kojaro.com/x", sourceTitle: "Kojaro", resultSummary: "s", ownershipStatus: "belongs_to_node" });
+  assert.equal(p1.sourceClass, "primary");
+  assert.equal(p1.reminder, undefined);
+
+  const p2 = toolRecordSearchResult({ provinceId: "province-30", nodeId: "place-30-1", query: "q", sourceUrl: "https://fa.wikipedia.org/wiki/X", sourceTitle: "Wiki", resultSummary: "s", ownershipStatus: "belongs_to_node" });
+  assert.equal(p2.sourceClass, "fallback");
+
+  const p3 = toolRecordSearchResult({ provinceId: "province-30", nodeId: "place-30-1", query: "q", sourceUrl: "https://randomblog.ir/x", sourceTitle: "Blog", resultSummary: "s", ownershipStatus: "belongs_to_node" });
+  assert.equal(p3.sourceClass, "other");
+  assert.match(p3.reminder, /NOT in the project source policy/);
+});
+
+test("resolve_scope_name resolves Persian names without asking the user for ids", async () => {
+  const { toolResolveScopeName } = await import("../dist/tools.js");
+
+  // Province name without provinceId.
+  const prov = toolResolveScopeName({ name: "همدان" });
+  assert.equal(prov.resolved, true);
+  assert.equal(prov.provinceId, "province-30");
+
+  // County name inside a province.
+  const county = toolResolveScopeName({ provinceId: "province-1", name: "آذرشهر", expectedType: "county" });
+  assert.equal(county.resolved, true);
+  assert.equal(county.matches[0].nodeId, "county-1-1");
+
+  // Ambiguous duplicate village name → ambiguous with candidate list (only case to ask the user).
+  const reg = (await import("../dist/scopes.js")).buildScopeRegistry("province-30");
+  const byNameType = {};
+  for (const u of Object.values(reg.index)) (byNameType[`${u.type}:${u.name}`] ??= []).push(u);
+  const dup = Object.values(byNameType).find((v) => v.length > 1 && v[0].type === "village");
+  const dupName = dup[0].name;
+  const amb = toolResolveScopeName({ provinceId: "province-30", name: dupName, expectedType: "village" });
+  assert.equal(amb.resolved, false);
+  assert.equal(amb.ambiguous, true);
+  assert.ok(amb.matches.length >= 2);
+
+  // Unknown name → suggestions path, resolved:false.
+  const none = toolResolveScopeName({ provinceId: "province-1", name: "شهرستان ناموجود", expectedType: "county" });
+  assert.equal(none.resolved, false);
+});
+
+test("province stage gate: after the province is complete, DFS waits for the user's scope selection", async () => {
+  const notes = await import("../dist/notes.js");
+  const { toolGetNextResearchNode, toolUpdateNotes, toolSetActiveScope } = await import("../dist/tools.js");
+
+  // Province stage complete (entity + discovery + coverage), one county pending.
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "complete" });
+  notes.upsertRegistry(state, { id: "province-30", slug: "p", path: "province.json", status: "active", name: "همدان", type: "other", subType: "province" });
+  for (const t of ["counties", "provincePlaces", "camping"]) notes.completeDiscoveryTask(state, "province-30", t, 1);
+  notes.upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "research_required" });
+  addPrimarySourceCoverage(notes, state, "province-30", 5);
+  notes.writeNotes(state);
+
+  // get_next_research_node → awaitingScopeSelection
+  const next = toolGetNextResearchNode({ provinceId: "province-30" });
+  assert.equal(next.awaitingScopeSelection, true);
+  assert.equal(next.node, null);
+
+  // Completing a county without selecting a scope is rejected.
+  assert.throws(
+    () => toolUpdateNotes({ provinceId: "province-30", operation: "mark_node_complete", payload: { nodeId: "county-30-1" } }),
+    /AWAITING SCOPE SELECTION/,
+  );
+
+  // After the user picks the scope, DFS unlocks on the county.
+  toolSetActiveScope({ provinceId: "province-30", nodeId: "county-30-1" });
+  const next2 = toolGetNextResearchNode({ provinceId: "province-30" });
+  assert.equal(next2.awaitingScopeSelection, undefined);
+  assert.equal(next2.nodeId, "county-30-1");
 });

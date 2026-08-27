@@ -1,6 +1,7 @@
 import { getSchemas, requiresFullChecklist } from "./schemas.js";
 import { readNotes } from "./notes.js";
 import { listEntities, entityNodeType, ancestorChain } from "./dataset.js";
+import { mediaPolicyFor, mediaStatusFor } from "./media.js";
 import type { NotesState, PlaceEntity, QualityError, QualityResult, NodeRecord } from "./types.js";
 
 export interface QualityContext {
@@ -363,24 +364,29 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     }
   }
 
-  // ---- E. Media ----
+  // ---- E. Media (best-effort policy, §9) ----
+  //
+  // Media is a QUALITY DIMENSION, not a gate: an active entity may be saved
+  // with 1..target-1 images (status "partial") or even with NO media at all
+  // (status "unavailable"). Only structural problems are rejected: duplicates,
+  // more than `max` images, a missing thumbnail when images exist, a
+  // thumbnail-without-images combination, or a media.status that disagrees
+  // with the actual distinct image count.
 
   if (entity.status === "active") {
+    const nodeType = entityNodeType(entity);
+    const policy = mediaPolicyFor(nodeType);
     const images = (media?.images as any[]) ?? [];
     const thumb = media?.thumbnail as any;
-    if (!thumb) {
-      addError(errors, "MEDIA_THUMBNAIL_MISSING", "media.thumbnail", "Active entity requires a thumbnail.");
-    } else {
-      const thumbUrl = thumb.url as string | undefined;
-      if (thumbUrl && images.some((im) => im?.url === thumbUrl)) {
-        addError(errors, "MEDIA_THUMBNAIL_DUPLICATED", "media.thumbnail", "Thumbnail URL must not be repeated in images.");
-      }
-    }
-    if (images.length < 10) {
-      addError(errors, "MEDIA_TOO_FEW_IMAGES", "media.images", `Active entity requires at least 10 images (got ${images.length}).`);
-    }
-    if (images.length > 20) {
-      addError(errors, "MEDIA_TOO_MANY_IMAGES", "media.images", `Active entity allows at most 20 images (got ${images.length}).`);
+
+    // distinct attributable image URLs (thumbnail counts as one when distinct)
+    const distinctUrls = new Set<string>();
+    if (thumb?.url) distinctUrls.add(thumb.url);
+    for (const im of images) if (im?.url) distinctUrls.add(im.url);
+    const derivedStatus = mediaStatusFor(nodeType, distinctUrls.size);
+
+    if (images.length > policy.max) {
+      addError(errors, "MEDIA_TOO_MANY_IMAGES", "media.images", `Active entity allows at most ${policy.max} images (got ${images.length}).`);
     }
     const seen = new Set<string>();
     for (const [i, im] of images.entries()) {
@@ -389,6 +395,32 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
         if (seen.has(u)) addError(errors, "MEDIA_DUPLICATE_IMAGE", `media.images[${i}].url`, `Duplicate image URL '${u}'.`);
         seen.add(u);
       }
+    }
+
+    if (images.length === 0) {
+      if (thumb) {
+        addError(errors, "MEDIA_THUMBNAIL_WITHOUT_IMAGES", "media.thumbnail", "A thumbnail without images is not a valid media object — put the image in media.images (even a single image is a valid partial media set).");
+      }
+    } else {
+      if (!thumb) {
+        addError(errors, "MEDIA_THUMBNAIL_MISSING", "media.thumbnail", "When images exist, a thumbnail is required (use the best image; a single-image set may reuse the same URL).");
+      } else {
+        const thumbUrl = thumb.url as string | undefined;
+        // A single-image entity may reuse its only image as the thumbnail.
+        if (thumbUrl && images.length > 1 && images.some((im) => im?.url === thumbUrl)) {
+          addError(errors, "MEDIA_THUMBNAIL_DUPLICATED", "media.thumbnail", "Thumbnail URL must not be repeated in images (only allowed for a single-image set).");
+        }
+      }
+    }
+
+    const declaredStatus = media?.status as string | undefined;
+    if (declaredStatus !== undefined && declaredStatus !== derivedStatus) {
+      addError(
+        errors,
+        "MEDIA_STATUS_MISMATCH",
+        "media.status",
+        `media.status '${declaredStatus}' does not match the entity's ${distinctUrls.size} distinct image(s) (expected '${derivedStatus}' for this node type with target ${policy.target}).`,
+      );
     }
   }
 

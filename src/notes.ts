@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { config, safeJoin, assertProvinceId } from "./config.js";
+import { mediaPolicyFor } from "./media.js";
 import type {
   NotesState,
   DodStatus,
@@ -12,6 +13,7 @@ import type {
   RegistryEntry,
   ResearchCoverageEntry,
   MediaDeficitRecord,
+  MediaCandidate,
   OwnershipStatus,
 } from "./types.js";
 
@@ -42,6 +44,7 @@ function emptyState(provinceId: string): NotesState {
     candidates: [],
     conflicts: [],
     sourceMatrix: [],
+    mediaCandidates: [],
     registry: [],
     researchCoverage: [],
     mediaDeficits: [],
@@ -147,6 +150,9 @@ function normalizeState(provinceId: string, p: Partial<NotesState>): NotesState 
     candidates,
     conflicts,
     sourceMatrix: Array.isArray(p.sourceMatrix) ? p.sourceMatrix : [],
+    mediaCandidates: Array.isArray((p as Partial<NotesState>).mediaCandidates)
+      ? ((p as Partial<NotesState>).mediaCandidates ?? []) as MediaCandidate[]
+      : [],
     registry: Array.isArray(p.registry) ? p.registry : [],
     researchCoverage: Array.isArray(p.researchCoverage) ? p.researchCoverage : [],
     mediaDeficits,
@@ -261,8 +267,13 @@ function compactStateForStorage(state: NotesState): Record<string, unknown> {
   });
 
   // Discovery tasks: keep all (they're small and needed for nodeStatus checks)
-  // Source matrix: keep last 50 entries to cap growth (older entries are audit-only)
-  const recentSources = state.sourceMatrix.slice(-50);
+  // Source matrix: keep ALL entries — primary-source coverage for node
+  // completion is computed from them, so compacting would silently reopen
+  // completed nodes after a resume.
+  const recentSources = state.sourceMatrix;
+
+  // Media candidates: keep all (they back finalize_media and source coverage).
+  const mediaCandidates = state.mediaCandidates;
 
   // Media-deficit dispositions: recorded ones stay full (they document closed
   // but file-less nodes); resolved ones keep audit fields only.
@@ -282,6 +293,7 @@ function compactStateForStorage(state: NotesState): Record<string, unknown> {
     candidates: compactCandidates,
     conflicts: compactConflicts,
     sourceMatrix: recentSources,
+    mediaCandidates,
     registry: state.registry,
     researchCoverage: state.researchCoverage.slice(-20),
     mediaDeficits: compactDeficits,
@@ -334,9 +346,24 @@ function renderMarkdown(state: NotesState): string {
     .map((d) => {
       const n = state.nodes.find((x) => x.nodeId === d.nodeId);
       const name = n?.canonicalName ?? "";
-      return `- ${d.nodeId} (${n?.nodeType ?? "?"}) ${name} — insufficient_verifiable_media (${d.imagesFound}/10 تصویر آزاد): ${d.reason}`;
+      return `- ${d.nodeId} (${n?.nodeType ?? "?"}) ${name} — closed without JSON (no valid entity data): ${d.reason}`;
     })
     .join("\n");
+
+  // Media pipeline audit: candidates per node (best-effort §9).
+  const candByNode = new Map<string, number>();
+  for (const m of state.mediaCandidates) candByNode.set(m.nodeId, (candByNode.get(m.nodeId) ?? 0) + 1);
+  const candLines =
+    candByNode.size === 0
+      ? "- (none)"
+      : [...candByNode.entries()]
+          .slice(-15)
+          .map(([nodeId, count]) => {
+            const n = state.nodes.find((x) => x.nodeId === nodeId);
+            const target = mediaPolicyFor(n?.nodeType).target;
+            return `- ${nodeId} (${n?.nodeType ?? "?"}) ${n?.canonicalName ?? ""} — ${count} candidate(s), target ${target}`;
+          })
+          .join("\n");
 
   return [
     `# Notes — ${state.provinceId}`,
@@ -356,6 +383,9 @@ function renderMarkdown(state: NotesState): string {
     "",
     "## Media-deficit nodes (closed without JSON, §9)",
     deficitLines || "- (none)",
+    "",
+    "## Media candidates (best-effort, §9)",
+    candLines,
     "",
     "## Open items",
     openItems || "- (none)",

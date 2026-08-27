@@ -84,7 +84,7 @@ test("import_province_scopes registers structure + dedicated ids, no deep resear
   assert.equal(r.provinceName, "همدان");
   assert.deepEqual(r.scopeSummary, { counties: 9, cities: 31, villages: 962 });
   assert.equal(r.registeredNodes, 1 + 9 + 31 + 962);
-  assert.match(r.note, /Stage 1/);
+  assert.match(r.note, /PROVINCE STAGE/);
 
   const st = readNotes("province-30");
   assert.equal(st.nodes.length, 1 + 9 + 31 + 962);
@@ -99,7 +99,7 @@ test("import_province_scopes registers structure + dedicated ids, no deep resear
   assert.equal(task("province-30", "counties").declaredCount, 9);
   assert.equal(task("county-30-5", "cities").declaredCount, 1);
   assert.equal(task("county-30-5", "villages").declaredCount, 63);
-  assert.ok(st.nextStep.includes("Scope A"));
+  assert.ok(st.nextStep.includes("Province stage"));
 });
 
 test("import_province_scopes is idempotent", async () => {

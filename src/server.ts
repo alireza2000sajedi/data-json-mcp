@@ -13,6 +13,10 @@ import {
   toolCreateCandidate,
   toolResolveCandidate,
   toolMarkNodeMediaDeficit,
+  toolRecordMediaCandidate,
+  toolFinalizeMedia,
+  toolResolveScopeName,
+  toolGetSourceCoverage,
   toolSaveActiveEntity,
   toolLinkEntities,
   toolUpdateNotes,
@@ -45,7 +49,7 @@ export function createServer(): McpServer {
 
   register(
     "import_province_scopes",
-    "Scope A (Province Discovery): derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city/village with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}, village-{p}-v{n}). Structure + ids only — no deep research, no POIs, no entity files. Then STOP and wait for the user's scope selection.",
+    "Province Stage, step 1: derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city/village with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}, village-{p}-v{n}). Structure + ids only here — then CONTINUE with the PROVINCE STAGE: full deep research of the province node itself (entity + province-level places + camping + best-effort media from the 5 primary sources), mark it complete, and only then STOP and ask the user for the next county/city/village.",
     { provinceId: z.string().min(1) },
     toolImportProvinceScopes,
   );
@@ -66,7 +70,7 @@ export function createServer(): McpServer {
 
   register(
     "get_next_research_node",
-    "Return the first unfinished node in depth-first administrative traversal. When done:true, returns a reminder to run DoD checks before final report.",
+    "Return the first unfinished node in depth-first administrative traversal. When awaitingScopeSelection:true the province stage is complete: STOP and ask the user for the next scope (resolve names with resolve_scope_name, then set_active_scope). When done:true, run the DoD checks before the final report.",
     { provinceId: z.string().min(1) },
     toolGetNextResearchNode,
   );
@@ -140,20 +144,63 @@ export function createServer(): McpServer {
 
   register(
     "mark_node_media_deficit",
-    "§9 disposition: close the CURRENT required entity node WITHOUT a JSON file when an exhaustive search of free-license archives found fewer than 10 attributable images. Requires imagesFound (0-9), reason, and searchesPerformed list. All discovery tracks must be complete and no open candidates/conflicts remain. The node counts as done for DFS/DoD; saving a real active entity for it later auto-resolves the disposition.",
+    "§9 LAST-RESORT disposition: close the CURRENT required entity node WITHOUT a JSON file. Under the best-effort media policy a lack of images is NOT a reason (1..target-1 images → save with media.status 'partial'; 0 images → save WITHOUT media, status 'unavailable'). Use ONLY when no valid entity data at all could be gathered. Refuses when usable media candidates exist. Requires reason, searchesPerformed (≥2) and closed discovery/candidates/conflicts + primary-source coverage.",
     {
       provinceId: z.string().min(1),
       nodeId: z.string().min(1),
       reason: z.string().min(1),
-      imagesFound: z.number().int().min(0).max(9),
-      searchesPerformed: z.array(z.string().min(1)).min(1),
+      imagesFound: z.number().int().min(0).max(20),
+      searchesPerformed: z.array(z.string().min(1)).min(2),
     },
     toolMarkNodeMediaDeficit,
   );
 
   register(
+    "record_media_candidate",
+    "Best-effort media pipeline step 1 (§9): record EVERY attributable image you find for a node — nothing is discarded for being below target. imageUrl = direct raw HTTPS file URL; pageUrl = the page hosting/licensing it; license from the schema enum (all-rights-reserved is fine for credited web images); optional score 0..1. Image searches on the 5 primary sources also count toward source coverage.",
+    {
+      provinceId: z.string().min(1),
+      nodeId: z.string().min(1),
+      imageUrl: z.string().min(1),
+      pageUrl: z.string().min(1),
+      license: z.string().min(1),
+      source: z.string().optional(),
+      credit: z.string().optional(),
+      alt: z.string().optional(),
+      caption: z.string().optional(),
+      score: z.number().min(0).max(1).optional(),
+    },
+    toolRecordMediaCandidate,
+  );
+
+  register(
+    "finalize_media",
+    "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and store the BEST min(usable, target) images — never more than target (target: 10 for province/county/city/place, 3 for village/camping; the thumbnail counts inside this budget; 20 is only the absolute validation cap). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
+    { provinceId: z.string().min(1), nodeId: z.string().min(1) },
+    toolFinalizeMedia,
+  );
+
+  register(
+    "resolve_scope_name",
+    "Resolve a Persian name to its dedicated scope id — never ask the user for raw ids. Without provinceId: resolves a province name across all 31 provinces. With provinceId: resolves county/city/village names (optionally filtered by expectedType). Returns resolved nodeIds, or 'ambiguous' with the candidate list (the ONLY case where asking the user is legitimate), or suggestions.",
+    {
+      provinceId: z.string().min(1).optional(),
+      name: z.string().min(1),
+      expectedType: z.enum(["county", "city", "village"]).optional(),
+    },
+    toolResolveScopeName,
+  );
+
+  register(
+    "get_source_coverage",
+    "Audit the mandatory primary-fact-source searches (dataset/source_policy.json): per-node detail (nodeId) or the list of nodes whose required primary-source coverage is still unsatisfied. All five primaries (Kojaro, Jabama, Alibaba, Lastsecond, Flytoday) are required for EVERY entity node; a recorded no-result/unreachable attempt counts. A node cannot be completed — and an entity cannot be saved with zero images — until its coverage is satisfied.",
+    { provinceId: z.string().min(1), nodeId: z.string().min(1).optional() },
+    toolGetSourceCoverage,
+  );
+
+  register(
     "save_active_entity",
-    "Validate and save an active entity at its canonical path (all-or-nothing quality gate).",
+    "Validate and save an active entity at its canonical path (all-or-nothing quality gate). Media is BEST-EFFORT and NON-BLOCKING: the target (10 for province/county/city/place, 3 for village/camping) is a goal, NOT a minimum — save 1..target-1 images as 'partial'; 0 images after COMPLETE primary-source coverage → save WITHOUT media (status 'unavailable' injected automatically; saving with zero images is rejected with MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE until every mandatory primary source has been attempted/recorded). Never store more than target images (advisory) / 20 (hard cap); credited web images (all-rights-reserved) are acceptable.",
     { provinceId: z.string().min(1), entity: z.record(z.any()), expectedNodeId: z.string().min(1) },
     toolSaveActiveEntity,
   );
@@ -182,14 +229,14 @@ export function createServer(): McpServer {
 
   register(
     "check_definition_of_done",
-    "Check whether the province scope meets its Definition of Done. Result is persisted to notes.md DoD section. MUST be run (returning complete:true) together with validate_province (returning invalid:0) before producing the final report.",
+    "Check whether the scope meets its Definition of Done. Scope-aware: when a scope is active (set_active_scope), only that scope's subtree counts — a finished county/village/POI scope reports complete:true while other scopes stay pending for their own runs. Result is persisted to notes.md DoD section. MUST be run (returning complete:true) together with validate_province (returning invalid:0) before producing the final report of the current scope.",
     { provinceId: z.string().min(1) },
     toolCheckDefinitionOfDone,
   );
 
   register(
     "discover_node",
-    "Generate node-scoped discovery query strings (query generator only — never performs the search).",
+    "Generate node-scoped discovery query strings (query generator only — never performs the search). Includes media/image queries (fa+en): run them with web image search (Google/Bing Images) and Wikimedia Commons to collect the node's attributable images.",
     {
       provinceId: z.string().min(1),
       nodeType: z.enum(["province", "county", "district", "ruralDistrict", "city", "village", "place", "camping"]),

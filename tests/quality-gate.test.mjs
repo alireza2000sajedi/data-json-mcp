@@ -113,11 +113,73 @@ test("rejects thumbnail duplicated inside images", async () => {
   assert.ok(codes(r).includes("MEDIA_THUMBNAIL_DUPLICATED"), `codes: ${codes(r)}`);
 });
 
-test("rejects 9 images for active entity", async () => {
-  const entity = makeValidPlace({ media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 9 }, (_, i) => mediaItem(i)) } });
-  const r = await validate(entity);
-  assert.equal(r.accepted, false);
-  assert.ok(codes(r).includes("MEDIA_TOO_FEW_IMAGES"), `codes: ${codes(r)}`);
+test("media is best-effort: 1-2 images are valid (partial), 0 images valid (unavailable), 21 rejected", async () => {
+  // register the village/city nodes so their parent chain resolves
+  {
+    const notes = await import("../dist/notes.js");
+    let st = notes.readNotes("province-30");
+    notes.upsertNode(st, { nodeId: "village-30-v1", nodeType: "village", canonicalName: "فامنین", parentNodeId: "county-30-1", state: "research_required" });
+    notes.upsertNode(st, { nodeId: "city-30-1", nodeType: "city", canonicalName: "فامنین", parentNodeId: "county-30-1", state: "research_required" });
+    notes.writeNotes(st);
+  }
+
+  // POI with only 2 images → VALID under the best-effort policy (partial).
+  const poi2 = makeValidPlace({ media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 2 }, (_, i) => mediaItem(i)) } });
+  const rPoi2 = await validate(poi2);
+  assert.equal(rPoi2.accepted, true, `2 images must be accepted (partial): ${codes(rPoi2)}`);
+
+  // Village with a SINGLE image, thumbnail reusing the same URL → allowed.
+  const village1 = makeVillage({
+    media: { thumbnail: mediaItem(0), images: [mediaItem(0)] },
+    location: { country: "Iran", province: "همدان", county: "فامنین", ruralDistrict: "دهستان پیشخور", village: "فامنین", coordinates: { latitude: 35.1, longitude: 48.9 }, address: { full: "x" } },
+  });
+  const rVillage1 = await validate(village1);
+  assert.equal(rVillage1.accepted, true, `single-image village must be accepted: ${codes(rVillage1)}`);
+
+  // NO media at all → VALID (status unavailable; entity data is still valuable).
+  const noMedia = makeValidPlace({});
+  delete noMedia.media;
+  const rNoMedia = await validate(noMedia);
+  assert.equal(rNoMedia.accepted, true, `entity without media must be accepted: ${codes(rNoMedia)}`);
+
+  // City with 4 images (below the 10 target) → VALID partial, not rejected.
+  const city4 = makeCity({
+    media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 4 }, (_, i) => mediaItem(i)) },
+    location: { country: "Iran", province: "همدان", county: "فامنین", city: "فامنین", coordinates: { latitude: 35.1, longitude: 48.9 }, address: { full: "x" } },
+  });
+  const rCity4 = await validate(city4);
+  assert.equal(rCity4.accepted, true, `city with 4 images must be accepted (partial): ${codes(rCity4)}`);
+
+  // 21 images → still rejected (hard cap 20).
+  const city21 = makeCity({
+    media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 21 }, (_, i) => mediaItem(i)) },
+    location: { country: "Iran", province: "همدان", county: "فامنین", city: "فامنین", coordinates: { latitude: 35.1, longitude: 48.9 }, address: { full: "x" } },
+  });
+  const rCity21 = await validate(city21);
+  assert.ok(codes(rCity21).includes("MEDIA_TOO_MANY_IMAGES"), `codes: ${codes(rCity21)}`);
+});
+
+test("media status contract: mismatch rejected, thumbnail-without-images rejected", async () => {
+  // Declared status disagrees with the actual count (9 images + distinct thumb = 10 distinct → complete for a place).
+  const mismatch = makeValidPlace({ media: { status: "unavailable", thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 10 }, (_, i) => mediaItem(i)) } });
+  const r1 = await validate(mismatch);
+  assert.equal(r1.accepted, false);
+  assert.ok(codes(r1).includes("MEDIA_STATUS_MISMATCH"), `codes: ${codes(r1)}`);
+
+  // Consistent status passes.
+  const ok = makeValidPlace({ media: { status: "complete", thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 10 }, (_, i) => mediaItem(i)) } });
+  const r2 = await validate(ok);
+  assert.equal(r2.accepted, true, `codes: ${codes(r2)}`);
+
+  // Thumbnail without images is a structural error.
+  const thumbOnly = makeValidPlace({ media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }) } });
+  const r3 = await validate(thumbOnly);
+  assert.ok(codes(r3).includes("MEDIA_THUMBNAIL_WITHOUT_IMAGES"), `codes: ${codes(r3)}`);
+
+  // Thumbnail duplicated inside a multi-image set remains an error.
+  const dup = makeValidPlace({ media: { thumbnail: mediaItem(0), images: Array.from({ length: 10 }, (_, i) => mediaItem(i)) } });
+  const r4 = await validate(dup);
+  assert.ok(codes(r4).includes("MEDIA_THUMBNAIL_DUPLICATED"), `codes: ${codes(r4)}`);
 });
 
 test("rejects 21 images for active entity", async () => {
