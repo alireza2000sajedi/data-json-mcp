@@ -1,4 +1,4 @@
-import { readNotes } from "./notes.js";
+import { readNotes, findMediaDeficit } from "./notes.js";
 import { listEntities, ENTITY_NODE_TYPES } from "./dataset.js";
 import type { NotesState, NodeType, NodeRecord, DiscoveryTask } from "./types.js";
 
@@ -106,6 +106,8 @@ function siblingPriority(parentType: NodeType | null, childType: NodeType): numb
 export interface NodeStatus {
   node: NodeRecord;
   entityActive: boolean;
+  /** True when the node is closed via the §9 media-deficit disposition (no JSON file, terminal). */
+  mediaDeficit: boolean;
   completedDiscovery: string[];
   pendingDiscovery: string[];
   openCandidates: number;
@@ -123,6 +125,11 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
   const state = readNotes(provinceId);
   const isEntityType = ENTITY_NODE_TYPES.includes(node.nodeType);
   const entityActive = isEntityType ? nodeHasEntity(state, node.nodeId) : true;
+  // §9 media-deficit disposition: an entity-bearing node that could not meet the
+  // 10-image bar after an exhaustive search is closed WITHOUT a JSON file. All
+  // other completion conditions (discovery, candidates, conflicts, counts)
+  // still apply — only the missing active entity is waived.
+  const mediaDeficit = isEntityType && !entityActive && !!findMediaDeficit(state, node.nodeId);
 
   const required = REQUIRED_DISCOVERY[node.nodeType] ?? [];
   const tasks = state.discoveryTasks.filter((t) => t.nodeId === node.nodeId);
@@ -135,7 +142,7 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
   const openConflicts = state.conflicts.filter((c) => c.nodeId === node.nodeId && c.state === "open");
 
   const blockingReasons: string[] = [];
-  if (isEntityType && !entityActive) blockingReasons.push("entity not saved as active");
+  if (isEntityType && !entityActive && !mediaDeficit) blockingReasons.push("entity not saved as active");
   if (pendingDiscovery.length > 0) blockingReasons.push(`pending discovery: ${pendingDiscovery.join(", ")}`);
   if (openCandidates.length > 0) blockingReasons.push(`${openCandidates.length} open candidate(s)`);
   if (openConflicts.length > 0) blockingReasons.push(`${openConflicts.length} open conflict(s)`);
@@ -156,6 +163,7 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
   return {
     node,
     entityActive,
+    mediaDeficit,
     completedDiscovery,
     pendingDiscovery,
     openCandidates: openCandidates.length,
@@ -212,6 +220,8 @@ export interface ScopeState {
   provinceId: string;
   discoveredNodes: number;
   activeEntities: number;
+  /** Nodes closed via the §9 media-deficit disposition (recorded, unresolved). */
+  mediaDeficitNodes: unknown[];
   openCandidates: unknown[];
   openConflicts: unknown[];
   nextRequiredNode: NodeRecord | null;
@@ -224,6 +234,7 @@ export function getScopeState(provinceId: string): ScopeState {
   const state = readNotes(provinceId);
   const nodes = state.nodes;
   const activeEntities = listEntities(provinceId).filter((e) => e.entity.status === "active").length;
+  const mediaDeficitNodes = state.mediaDeficits.filter((d) => d.state === "recorded");
   const openCandidates = state.candidates.filter((c) => c.state === "open");
   const openConflicts = state.conflicts.filter((c) => c.state === "open");
 
@@ -242,6 +253,7 @@ export function getScopeState(provinceId: string): ScopeState {
     provinceId,
     discoveredNodes: nodes.length,
     activeEntities,
+    mediaDeficitNodes,
     openCandidates,
     openConflicts,
     nextRequiredNode: next,
