@@ -725,17 +725,19 @@ export function toolFinalizeMedia(args: { provinceId: string; nodeId: string }) 
     .filter((m) => isRawHttpsUrl(m.imageUrl) && isRawHttpsUrl(m.pageUrl) && schemas.approvedLicenses.includes(m.license))
     .sort((a, b) => candidateRank(b) - candidateRank(a));
 
+  // FINAL CONTRACT: the stored set is exactly the best min(usable, target)
+  // distinct images — NEVER more than target. The thumbnail counts inside this
+  // budget: best candidate → thumbnail, the rest (up to target-1) → images.
+  // A single-image set may reuse its only image as the thumbnail.
+  const selected = Math.min(usable.length, policy.target);
   let thumbnail: MediaCandidate | null = null;
   let images: MediaCandidate[] = [];
-  if (usable.length > policy.max) {
-    images = usable.slice(0, policy.max);
-    thumbnail = usable[policy.max]; // first spare candidate → distinct thumbnail URL
-  } else if (usable.length === 1) {
-    images = usable;
-    thumbnail = usable[0]; // single-image set may reuse its only image as thumbnail
-  } else if (usable.length >= 2) {
+  if (selected === 1) {
     thumbnail = usable[0];
-    images = usable.slice(1);
+    images = [usable[0]];
+  } else if (selected >= 2) {
+    thumbnail = usable[0];
+    images = usable.slice(1, selected);
   }
 
   const distinct = new Set<string>([...images.map((m) => m.imageUrl), ...(thumbnail ? [thumbnail.imageUrl] : [])]).size;
@@ -748,21 +750,29 @@ export function toolFinalizeMedia(args: { provinceId: string; nodeId: string }) 
   };
 
   state.nextStep =
-    `Media finalized for ${args.nodeId}: ${all.length} candidate(s) → ${usable.length} usable → ` +
-    `${images.length} image(s) + thumbnail (${status}; target ${policy.target}). Attach media to the entity and save_active_entity.`;
+    `Media finalized for ${args.nodeId}: ${all.length} candidate(s) → ${usable.length} usable → best ${distinct} of target ${policy.target} stored ` +
+    `(${images.length} in images + distinct thumbnail; ${status}). Attach media to the entity and save_active_entity.`;
   writeNotes(state);
 
   return {
     provinceId: args.provinceId,
     nodeId: args.nodeId,
     policy,
-    audit: { candidates: all.length, deduplicated: byUrl.size, usable: usable.length, keptImages: images.length, keptThumbnail: !!thumbnail },
+    audit: {
+      candidates: all.length,
+      deduplicated: byUrl.size,
+      usable: usable.length,
+      selectedTotal: distinct,
+      target: policy.target,
+      keptImages: images.length,
+      keptThumbnail: !!thumbnail,
+    },
     mediaStatus: status,
     media,
     note:
       status === "unavailable"
-        ? "No usable image candidates — save the entity WITHOUT media (media.status 'unavailable' is injected automatically at save)."
-        : "Attach this media object to your entity (entity.media = ...) and save with save_active_entity. media.status is verified automatically.",
+        ? "No usable image candidates — save the entity WITHOUT media (media.status 'unavailable' is injected automatically at save; primary-source coverage must be complete)."
+        : `Stored the best ${distinct} image(s) (target ${policy.target}, never more): thumbnail + ${images.length} in images. Attach this media object to entity.media and save with save_active_entity.`,
   };
 }
 
@@ -895,14 +905,51 @@ export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEn
 
   // Best-effort media policy (§9): always carry a media.status that matches the
   // actual distinct image count (unavailable when there is no usable image).
+  let distinctImageCount = 0;
   {
     const nodeType = entityNodeType(entity);
     const media = (entity.media ?? {}) as Record<string, unknown>;
     const distinct = new Set<string>();
     if (typeof (media.thumbnail as any)?.url === "string") distinct.add((media.thumbnail as any).url);
     for (const im of ((media.images as any[]) ?? [])) if (typeof im?.url === "string") distinct.add(im.url);
+    distinctImageCount = distinct.size;
     media.status = mediaStatusFor(nodeType, distinct.size);
     entity = { ...entity, media } as PlaceEntity;
+  }
+
+  // FINAL CONTRACT (§9): an entity may only be saved WITHOUT images after the
+  // mandatory primary-source coverage for its node is complete — "nothing
+  // found" is credible only after all required primaries were attempted.
+  let mediaAdvisory: string | undefined;
+  {
+    const nodeType = entityNodeType(entity);
+    const policy = mediaPolicyFor(nodeType);
+    if (distinctImageCount === 0) {
+      const coverage = sourceCoverageFor(state, nodeType, args.expectedNodeId);
+      if (!coverage.satisfied) {
+        const missing = coverage.searched.filter((x) => !x.searched).map((x) => `${x.name} (${x.domain})`).join("، ");
+        return {
+          accepted: false,
+          errors: [
+            {
+              code: "MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE",
+              path: "media",
+              message:
+                `Cannot save '${args.expectedNodeId}' with ZERO images: primary-source coverage is ` +
+                `${coverage.searchedCount}/${coverage.required} (missing: ${missing}). Search/attempt every mandatory primary ` +
+                `source and record it with record_search_result (a recorded "no result/unreachable" attempt counts), then save. ` +
+                `Zero images is NOT a failure — but it is only allowed after the full required coverage.`,
+            },
+          ],
+          warnings: [],
+        };
+      }
+    } else if (distinctImageCount > policy.target) {
+      mediaAdvisory =
+        `Media advisory: ${distinctImageCount} distinct images exceed the target ${policy.target} for this entity type. ` +
+        `The final selection must not exceed the target — keep the best ${policy.target} (finalize_media does this automatically). ` +
+        `The save is accepted (hard cap is ${policy.max}), but trim to the best ${policy.target}.`;
+    }
   }
 
   // DFS advisory: warn if saving for a node that's not the current required node
@@ -966,6 +1013,7 @@ export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEn
     },
   };
   if (dfsWarning) response.dfsWarning = dfsWarning;
+  if (mediaAdvisory) response.mediaAdvisory = mediaAdvisory;
   return response;
 }
 

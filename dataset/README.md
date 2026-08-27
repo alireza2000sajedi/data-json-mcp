@@ -302,8 +302,9 @@ F. Costها و قیمت‌ها
 ۴) Lastsecond (lastsecond.ir)   ۵) Flytoday (flytoday.ir)
 ```
 
-- Coverage اجباری (با `get_source_coverage` قابل‌استعلام و در DoD مسجل): هر نود استان/شهرستان/شهر/مکان/کمپینگ باید در همهٔ ۵ منبع Primary بررسی شده باشد (all)؛ هر روستا در حداقل ۲ منبع Primary.
+- Coverage اجباری (با `get_source_coverage` قابل‌استعلام، در DoD مسجل و در ذخیرهٔ ۰-عکس اجرا): هر نود Entity — استان/شهرستان/شهر/روستا/مکان/کمپینگ، بدون استثنا — باید در همهٔ ۵ منبع Primary attempted باشد؛ Coverage فقط با attempted یا ثبت صریحِ unavailable/unreachable برای هر ۵ منبع کامل می‌شود.
 - Wikipedia / Wikimedia Commons فقط Fallback و Cross-check هستند و جای Primary را نمی‌گیرند؛ منابع خارج از سیاست (`other`) فقط با ثبت دلیل.
+- تفکیک مهم: این ۵ منبع، منابع «FACT» اجباری‌اند؛ برای «عکس» سیاست جدا داریم (Media Sources در `source_policy.json` و §12): عکس از هر منبع مجازی فقط با بررسی مالکیت/انتساب و ثبت pageUrl + credit + license وارد Dataset می‌شود (لایسنس آزاد ترجیح دارد اما شرط نیست).
 - منابع مکمل (بدون جایگزینی Primaryها):
 
 ```text
@@ -410,13 +411,14 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 
 ## 12. Media و حق کپی‌رایت — سیاست Best-Effort
 
-- رسانه Best-Effort است: «هدف» (target) از «حداقلِ قابل‌ذخیره» جدا است و هیچ Entity به‌خاطر کم‌بودن عکس discard نمی‌شود.
-- هدف تصویر متمایز (Best-Effort، غیرمسدودکننده): استان/شهرستان/شهر/مکان/کمپینگ = ۱۰ | روستا = ۳.
+- رسانه Best-Effort و غیرمسدودکننده است: Target «هدفِ تعداد عکس باکیفیت» است، نه حداقلِ اجباری؛ هیچ Entity به‌خاطر کمتر بودن از Target رد، discard یا media_deficit نمی‌شود.
+- هدف تصویر متمایز (target): استان/شهرستان/شهر/مکان = ۱۰ | روستا/کمپینگ = ۳.
+- قانون انتخاب نهایی: بهترینِ min(تعداد usable, target) تصویر ذخیره می‌شود — هرگز بیشتر از target؛ تامبنیل جزو همین بودجه است (بهترین → تامبنیل، بقیه تا سقف target → images). مثال: شهر با ۱۵ عکس usable → فقط بهترین ۱۰؛ روستا با ۱۸ عکس → فقط بهترین ۳.
+- ۲۰ فقط سقف مطلق اعتبارسنجی است (schema maxItems / Quality Gate)؛ پایپ‌لاین استاندارد (finalize_media) هرگز بالای target ذخیره نمی‌کند و save_active_entity در صورت عبور از target هشدار trim می‌دهد.
 - حداقلِ قابل‌ذخیره: ۱ تصویر قابل‌انتساب — حتی ۱ عکس هم ذخیره می‌شود (`media.status = partial`).
-- سقف: ۲۰ تصویر؛ عکس‌های بیشتر از هدف تا سقف ۲۰ همه ذخیره می‌شوند (حذف «فقط بهترین‌ها» ممنوع).
-- بعد از جستجوی کامل رسانه هیچ عکسی پیدا نشد → Entity بدون `media` با `mediaStatus = unavailable` ذخیره می‌شود؛ دادهٔ فکت هرگز حذف نمی‌شود.
+- بعد از Coverage کامل منابع Primary هیچ عکسی پیدا نشد → Entity بدون `media` با `mediaStatus = unavailable` ذخیره می‌شود (۰ عکس ≠ شکست)؛ ذخیرهٔ ۰-عکس پیش از Coverage کامل با خطای `MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE` رد می‌شود؛ دادهٔ فکت هرگز حذف نمی‌شود.
 - `media.status` (سه‌حالته، خودکار توسط `save_active_entity` تزریق می‌شود): `complete` (رسیده به هدف) | `partial` (۱ تا هدف منهای ۱) | `unavailable` (۰ عکس).
-- پایپ‌لاین رسانه: `record_media_candidate` (هر کاندید همان لحظه ثبت می‌شود؛ idempotent با nodeId+imageUrl؛ Audit Trail در notes) → جستجوی Exhaustive → `finalize_media` (dedupe + رتبه‌بندی: score + لایسنس آزاد + منبع Primary؛ تامبنیل متمایز از images مگر تنها ۱ تصویر باشد) → قرار دادن آبجکت در Entity و `save_active_entity`.
+- پایپ‌لاین رسانه: `record_media_candidate` (هر کاندید همان لحظه ثبت می‌شود؛ idempotent با nodeId+imageUrl؛ Audit Trail در notes) → جستجوی Exhaustive (هر ۵ منبع Primary + fallbackهای مجاز) → `finalize_media` (dedupe + رتبه‌بندی: score + لایسنس آزاد + منبع Primary؛ انتخاب = بهترین min(usable, target) با تامبنیل متمایز) → قرار دادن آبجکت در Entity و `save_active_entity`.
 - منبع تصویر فقط ویکی‌مدیا نیست: جستجوی تصویر وب (Google/Bing Images)، پنج منبع Primary سیاست منبع (§7)، خبرگزاری‌ها، سایت‌های رسمی مکان‌ها و وبلاگ‌های معتبر مجازند.
 - اولویت انتخاب: منابع Primary → Wikimedia Commons / Wikipedia → CC یا Public Domain روشن → تصاویر وب با لایسنس `all-rights-reserved` (با کردیت کامل و sourceUrl صفحهٔ منبع). لایسنس آزاد شرط نیست؛ شرط، قابل‌انتساب بودنِ واقعی تصویر به همان Entity است.
 - برای رسیدن به هدف، عکس تکراری، نامرتبط یا غیرقابل‌انتساب (همسایه/والد) اضافه نکن؛ عکس جعلی ممنوع.
@@ -562,9 +564,9 @@ Scope فقط وقتی کامل است که:
 - [ ] Camping جداگانه بررسی شده؛
 - [ ] Deduplication، Relations و Canonical storage انجام شده؛
 - [ ] همهٔ Requiredهای Schema و Quality Gate پاس شده‌اند؛
-- [ ] URLها خام HTTPS و تصاویر تا سقف ۲۰، غیرتکراری، دارای کردیت/منبع معتبر و با media.status سازگار با تعداد واقعی‌اند (هدف Best-Effort: ۱۰ برای هر Entity، ۳ برای روستا)؛
+- [ ] URLها خام HTTPS و تصاویر غیرتکراری، دارای کردیت/منبع معتبر، حداکثر به اندازهٔ target (۱۰ برای استان/شهرستان/شهر/مکان، ۳ برای روستا/کمپینگ) و با media.status سازگار با تعداد واقعی‌اند؛
 - [ ] Evidence برای Factهای مهم وجود دارد؛
-- [ ] Coverage منابع Primary (§7) برای همهٔ نودهای Entity داخل Scope محقق شده (۵ از ۵ برای استان/شهرستان/شهر/مکان/کمپینگ؛ ۲ برای روستا) و در notes مسجل است؛
+- [ ] Coverage منابع Primary (§7) برای همهٔ نودهای Entity داخل Scope محقق شده (۵ از ۵ برای هر نود Entity، شامل روستا) و در notes مسجل است؛
 - [ ] `notes.md`، ID Registry و Git checkpoint به‌روزند؛
 - [ ] هیچ Candidate قابل‌پیگیری، Conflict قابل‌حل یا کار قابل‌انجامی باقی نمانده است.
 

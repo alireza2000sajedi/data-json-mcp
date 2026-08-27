@@ -1,27 +1,93 @@
 {
-  "$comment": "Source Policy پلنرو — منابع جستجوی اجباری پروژه. primary: جستجوی هر نود باید اول با این منابع (به ترتیب priority) انجام شود؛ fallback: منابع دوم برای cross-check و تکمیل. enforcement: تعداد منبع primary لازم برای کامل‌شدن هر نوع نود — \"all\" یعنی هر ۵ منبع باید حداقل یک بار برای آن نود جستجو/ثبت شده باشند، عدد یعنی حداقل آن تعداد منبع متمایز. دامنه‌ها را می‌توانید آزادانه ویرایش کنید (بدون نیاز به تغییر کد).",
-  "primary": [
-    { "name": "Kojaro", "domain": "kojaro.com", "priority": 1, "mandatory": true },
-    { "name": "Jabama Mag", "domain": "jabama.com", "priority": 2, "mandatory": true },
-    { "name": "Alibaba Mag", "domain": "alibaba.ir", "priority": 3, "mandatory": true },
-    { "name": "Lastsecond", "domain": "lastsecond.ir", "priority": 4, "mandatory": true },
-    { "name": "Flytoday", "domain": "flytoday.ir", "priority": 5, "mandatory": true }
+  "$comment": "سیاست منبع پلنرو (قرارداد نهایی). primaryFactSources: منابع FACT اجباری — جستجوی هر نود Entity باید اول با این ۵ منبع به ترتیب priority انجام شود و Coverage هر ۵ منبع (searched یا ثبتِ صریح unreachable) برای کامل‌شدن نود لازم است؛ fallback فقط cross-check/تکمیل است و جایگزین Primary نمی‌شود. mediaSources: منابع مجاز تصویر — عکس از هر منبعی فقط با pageUrl مبدأ + credit + license واقعی ثبت می‌شود (لایسنس آزاد ترجیح دارد اما شرط نیست؛ مالکیت/انتساب‌پذیری شرط است). enforcement: \"all\" یعنی هر ۵ منبع primary برای آن نوع نود باید attempted/ثبت شده باشند.",
+  "primaryFactSources": [
+    {
+      "name": "Kojaro",
+      "domain": "kojaro.com",
+      "priority": 1,
+      "mandatory": true
+    },
+    {
+      "name": "Jabama Mag",
+      "domain": "jabama.com",
+      "priority": 2,
+      "mandatory": true
+    },
+    {
+      "name": "Alibaba Mag",
+      "domain": "alibaba.ir",
+      "priority": 3,
+      "mandatory": true
+    },
+    {
+      "name": "Lastsecond",
+      "domain": "lastsecond.ir",
+      "priority": 4,
+      "mandatory": true
+    },
+    {
+      "name": "Flytoday",
+      "domain": "flytoday.ir",
+      "priority": 5,
+      "mandatory": true
+    }
   ],
+  "mediaSources": {
+    "$comment": "منابع مجاز پیدا کردن/ثبت عکس (متفاوت از منابع FACT). هر عکس باید imageUrl خام + pageUrl صفحهٔ مبدأ/لایسنس + credit + license داشته باشد.",
+    "allowed": [
+      {
+        "name": "Primary travel sources",
+        "note": "صفحات خودِ ۵ منبع Primary (کاندید رسانه از این دامنه‌ها هم در Coverage منابع همان نود حساب می‌شود)"
+      },
+      {
+        "name": "Wikimedia Commons",
+        "domain": "commons.wikimedia.org",
+        "note": "لایسنس آزاد CC0/CC-BY/CC-BY-SA/PD — امتیاز رتبه‌بندی"
+      },
+      {
+        "name": "Official site of the place",
+        "note": "سایت رسمی مکان/شهرداری/میراث"
+      },
+      {
+        "name": "News agencies & reputable Persian travel media",
+        "note": "با کردیت کامل، all-rights-reserved مجاز است"
+      }
+    ],
+    "licenseRule": "free license preferred, never required — attribution + real ownership/assignability to the SAME node is the requirement"
+  },
   "fallback": [
-    { "name": "Wikipedia", "domain": "wikipedia.org" },
-    { "name": "Wikidata", "domain": "wikidata.org" },
-    { "name": "Wikimedia Commons", "domain": "commons.wikimedia.org" },
-    { "name": "OpenStreetMap / Nominatim", "domain": "openstreetmap.org" },
-    { "name": "Encyclopaedia Iranica", "domain": "iranicaonline.org" },
-    { "name": "Government (IR)", "domain": "gov.ir" }
+    {
+      "name": "Wikipedia",
+      "domain": "wikipedia.org"
+    },
+    {
+      "name": "Wikidata",
+      "domain": "wikidata.org"
+    },
+    {
+      "name": "Wikimedia Commons",
+      "domain": "commons.wikimedia.org"
+    },
+    {
+      "name": "OpenStreetMap / Nominatim",
+      "domain": "openstreetmap.org"
+    },
+    {
+      "name": "Encyclopaedia Iranica",
+      "domain": "iranicaonline.org"
+    },
+    {
+      "name": "Government (IR)",
+      "domain": "gov.ir"
+    }
   ],
   "enforcement": {
     "province": "all",
     "county": "all",
     "city": "all",
-    "village": 2,
-    "place": 2,
-    "camping": 2,
+    "village": "all",
+    "place": "all",
+    "camping": "all",
     "district": 0,
     "ruralDistrict": 0
   }

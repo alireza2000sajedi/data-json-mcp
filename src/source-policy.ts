@@ -4,12 +4,22 @@ import { config } from "./config.js";
 import type { NotesState, NodeType } from "./types.js";
 
 /**
- * Source Policy (dataset/source_policy.json) — the project's MANDATORY search
- * sources. Primary sources (owner-defined, priority 1..5) must be searched
- * FIRST for every node; everything else (Wikipedia, Wikidata, Commons, OSM…)
- * is fallback/cross-check. The MCP enforces per-node coverage: a node cannot
- * be completed until the required number of distinct primary sources has been
- * searched and recorded for it.
+ * Source Policy (dataset/source_policy.json) — the project's MANDATORY sources,
+ * split into two contracts (final round):
+ *
+ *   1. primaryFactSources — the owner's five mandatory FACT sources (priority
+ *      1..5). Every entity node must be searched on ALL five, in priority
+ *      order, BEFORE secondary/fallback sources; a source that turned up
+ *      nothing (or was unreachable) still counts only when the attempt is
+ *      recorded. Wikipedia/Wikidata/Commons/OSM… are fallback/cross-check and
+ *      can never silently substitute a primary.
+ *   2. mediaSources — the permitted image sources for the media pipeline
+ *      (§9): images may come from any of these with real pageUrl + credit +
+ *      license metadata (free license preferred, never required).
+ *
+ * The MCP enforces per-node primary coverage: a node cannot be completed (and
+ * an entity cannot be saved WITHOUT images) until the required primary sources
+ * have been attempted and recorded for it.
  */
 
 export interface PrimarySourceDef {
@@ -24,10 +34,18 @@ export interface FallbackSourceDef {
   domain: string;
 }
 
+export interface MediaSourceRule {
+  name: string;
+  domain?: string;
+  note?: string;
+}
+
 export interface SourcePolicyConfig {
   primary: PrimarySourceDef[];
   fallback: FallbackSourceDef[];
   enforcement: Partial<Record<NodeType, "all" | number>>;
+  /** Permitted image sources for the media pipeline (guidance + ranking hints). */
+  mediaSources?: { allowed?: MediaSourceRule[]; licenseRule?: string };
 }
 
 const DEFAULT_POLICY: SourcePolicyConfig = {
@@ -45,12 +63,13 @@ const DEFAULT_POLICY: SourcePolicyConfig = {
     { name: "OpenStreetMap / Nominatim", domain: "openstreetmap.org" },
   ],
   enforcement: {
+    // Final contract: ALL five primary sources for EVERY entity node type.
     province: "all",
     county: "all",
     city: "all",
-    village: 2,
-    place: 2,
-    camping: 2,
+    village: "all",
+    place: "all",
+    camping: "all",
     district: 0,
     ruralDistrict: 0,
   },
@@ -64,10 +83,12 @@ export function getSourcePolicy(): SourcePolicyConfig {
   try {
     if (fs.existsSync(file)) {
       const raw = JSON.parse(fs.readFileSync(file, "utf8")) as Partial<SourcePolicyConfig>;
+      const primary = (raw as Record<string, unknown>).primaryFactSources ?? raw.primary;
       cached = {
-        primary: Array.isArray(raw.primary) && raw.primary.length > 0 ? (raw.primary as PrimarySourceDef[]) : DEFAULT_POLICY.primary,
+        primary: Array.isArray(primary) && primary.length > 0 ? (primary as PrimarySourceDef[]) : DEFAULT_POLICY.primary,
         fallback: Array.isArray(raw.fallback) ? (raw.fallback as FallbackSourceDef[]) : DEFAULT_POLICY.fallback,
         enforcement: raw.enforcement ?? DEFAULT_POLICY.enforcement,
+        mediaSources: raw.mediaSources,
       };
       return cached;
     }

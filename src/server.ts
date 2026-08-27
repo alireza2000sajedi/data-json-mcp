@@ -175,7 +175,7 @@ export function createServer(): McpServer {
 
   register(
     "finalize_media",
-    "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and pick the best set (target: 10 for province/county/city/place/camping, 3 for village; cap 20). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
+    "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and store the BEST min(usable, target) images — never more than target (target: 10 for province/county/city/place, 3 for village/camping; the thumbnail counts inside this budget; 20 is only the absolute validation cap). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
     { provinceId: z.string().min(1), nodeId: z.string().min(1) },
     toolFinalizeMedia,
   );
@@ -193,14 +193,14 @@ export function createServer(): McpServer {
 
   register(
     "get_source_coverage",
-    "Audit the mandatory primary-source searches (dataset/source_policy.json): per-node detail (nodeId) or the list of nodes whose required primary-source coverage is still unsatisfied. A node cannot be completed until its coverage is satisfied.",
+    "Audit the mandatory primary-fact-source searches (dataset/source_policy.json): per-node detail (nodeId) or the list of nodes whose required primary-source coverage is still unsatisfied. All five primaries (Kojaro, Jabama, Alibaba, Lastsecond, Flytoday) are required for EVERY entity node; a recorded no-result/unreachable attempt counts. A node cannot be completed — and an entity cannot be saved with zero images — until its coverage is satisfied.",
     { provinceId: z.string().min(1), nodeId: z.string().min(1).optional() },
     toolGetSourceCoverage,
   );
 
   register(
     "save_active_entity",
-    "Validate and save an active entity at its canonical path (all-or-nothing quality gate). Media is BEST-EFFORT: save whatever attributable images were found (even 1 → status 'partial'); 0 images → save WITHOUT media (status 'unavailable' is injected automatically). Targets: 10 for province/county/city/place/camping, 3 for village; cap 20; credited web images (all-rights-reserved) are acceptable.",
+    "Validate and save an active entity at its canonical path (all-or-nothing quality gate). Media is BEST-EFFORT and NON-BLOCKING: the target (10 for province/county/city/place, 3 for village/camping) is a goal, NOT a minimum — save 1..target-1 images as 'partial'; 0 images after COMPLETE primary-source coverage → save WITHOUT media (status 'unavailable' injected automatically; saving with zero images is rejected with MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE until every mandatory primary source has been attempted/recorded). Never store more than target images (advisory) / 20 (hard cap); credited web images (all-rights-reserved) are acceptable.",
     { provinceId: z.string().min(1), entity: z.record(z.any()), expectedNodeId: z.string().min(1) },
     toolSaveActiveEntity,
   );

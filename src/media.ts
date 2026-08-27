@@ -9,11 +9,15 @@ import type { NodeType } from "./types.js";
  *               valuable and must never be discarded).
  *   max       — hard cap of stored images (schema maxItems).
  *
- * Decisions (owner-approved 2026-08-28):
- *   province/county/city/place/camping: target 10
- *   village:                             target 3
- *   minUsable = 1 for every type; 0 usable images → the entity is still saved
- *   WITHOUT media and media.status = "unavailable".
+ * FINAL CONTRACT (owner-approved 2026-08-28, round 2):
+ *   target    = the preferred number of high-quality images — NOT a minimum.
+ *               province/county/city/place: 10 | village/camping: 3
+ *   selection = the best min(usableCount, target) distinct images, NEVER more
+ *               than target (the thumbnail counts inside this budget).
+ *   max = 20 is only the absolute validation backstop (schema maxItems /
+ *   MEDIA_TOO_MANY_IMAGES); the normal pipeline never stores above target.
+ *   0 usable images after full primary coverage → the entity is still saved
+ *   WITHOUT media and media.status = "unavailable" (never a rejection).
  *
  * mediaStatus:
  *   complete    — distinct images >= target
@@ -34,7 +38,7 @@ export const MEDIA_POLICY: Record<NodeType, MediaPolicyEntry> = {
   city: { target: 10, minUsable: 1, max: 20 },
   village: { target: 3, minUsable: 1, max: 20 },
   place: { target: 10, minUsable: 1, max: 20 },
-  camping: { target: 10, minUsable: 1, max: 20 },
+  camping: { target: 3, minUsable: 1, max: 20 },
   district: { target: 3, minUsable: 1, max: 20 },
   ruralDistrict: { target: 3, minUsable: 1, max: 20 },
 };
@@ -54,4 +58,4 @@ export function mediaStatusFor(nodeType: NodeType | null | undefined, distinctIm
 
 /** Human-readable policy summary (used in tool output/messages). */
 export const MEDIA_POLICY_SUMMARY =
-  "best-effort: target 10 images for province/county/city/place/camping, 3 for village; save whatever is found (partial OK, even 1 image); 0 images → save WITHOUT media (status unavailable); hard cap 20";
+  "best-effort, non-blocking: target 10 images for province/county/city/place, 3 for village/camping (target is a goal, NOT a minimum); save min(usable, target) best images — never more than target; 1..target-1 → partial; 0 images after full primary coverage → save WITHOUT media (unavailable); 20 is only the absolute validation cap";

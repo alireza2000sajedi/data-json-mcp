@@ -488,7 +488,7 @@ async function seedDeficitScenario() {
   addPrimarySourceCoverage(notes, state, "province-30", 5);
   addPrimarySourceCoverage(notes, state, "county-30-1", 5);
   addPrimarySourceCoverage(notes, state, "city-30-2", 5);
-  addPrimarySourceCoverage(notes, state, "village-30-v1", 2);
+  addPrimarySourceCoverage(notes, state, "village-30-v1", 5);
   writeNotes(state);
   return notes;
 }
@@ -741,17 +741,21 @@ test("DoD is scope-aware: a finished county scope is complete while sibling coun
   assert.equal(dodWide.scopeId, null);
 });
 
-test("media policy contract: targets are best-effort (10 per entity, 3 per village), cap 20, statuses derived", async () => {
+test("media policy contract: target 10 (village/camping 3) is a goal not a minimum; selection = min(usable, target)", async () => {
   const { MEDIA_POLICY, mediaPolicyFor, mediaStatusFor } = await import("../dist/media.js");
-  for (const t of ["province", "county", "city", "place", "camping"]) {
+  for (const t of ["province", "county", "city", "place"]) {
     assert.deepEqual(mediaPolicyFor(t), { target: 10, minUsable: 1, max: 20 }, `${t} policy`);
   }
-  assert.deepEqual(mediaPolicyFor("village"), { target: 3, minUsable: 1, max: 20 }, "village policy");
+  for (const t of ["village", "camping"]) {
+    assert.deepEqual(mediaPolicyFor(t), { target: 3, minUsable: 1, max: 20 }, `${t} policy`);
+  }
+  assert.equal(MEDIA_POLICY.camping.target, 3, "final contract: camping target is 3");
   assert.equal(mediaStatusFor("place", 10), "complete");
   assert.equal(mediaStatusFor("place", 4), "partial");
   assert.equal(mediaStatusFor("place", 0), "unavailable");
   assert.equal(mediaStatusFor("village", 3), "complete");
   assert.equal(mediaStatusFor("village", 2), "partial");
+  assert.equal(mediaStatusFor("camping", 3), "complete");
 });
 
 test("discover_node generates image/media queries for every entity node type", async () => {
@@ -800,13 +804,23 @@ test("best-effort media: 1 image saves as partial, 0 images saves without media 
   const stored1 = findEntityById("province-30", one.id);
   assert.equal(stored1.entity.media.status, "partial");
 
-  // A POI with NO media at all → saved, status "unavailable" injected.
+  // A POI with NO media at all → REJECTED while primary coverage is incomplete
+  // ("nothing found" is only credible after all five primaries were attempted).
   const none = makeValidPlace({ id: "place-30-9", slug: "no-media-place", name: { fa: "مکان بدون عکس" } });
   delete none.media;
   const notes = await import("../dist/notes.js");
   let state = notes.readNotes("province-30");
   notes.upsertNode(state, { nodeId: "place-30-9", nodeType: "place", canonicalName: "مکان بدون عکس", parentNodeId: "county-30-1", state: "research_required" });
   notes.addSourceMatrixEntry(state, { id: "src-9", nodeId: "place-30-9", query: "q", sourceUrl: "https://example.com/famnin", sourceTitle: "Example", resultSummary: "s", ownershipStatus: "belongs_to_node" });
+  notes.writeNotes(state);
+  const rReject = toolSaveActiveEntity({ provinceId: "province-30", entity: none, expectedNodeId: none.id });
+  assert.equal(rReject.accepted, false);
+  assert.ok(rReject.errors.some((e) => e.code === "MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE"), JSON.stringify(rReject.errors));
+  assert.equal(fs.existsSync(`${outputDir}/province-30/county-30-1/place-30-9.json`), false, "no file written on coverage rejection");
+
+  // After recording attempts on all five primaries → accepted with status "unavailable".
+  state = notes.readNotes("province-30");
+  addPrimarySourceCoverage(notes, state, "place-30-9", 5);
   notes.writeNotes(state);
   const r2 = toolSaveActiveEntity({ provinceId: "province-30", entity: none, expectedNodeId: none.id });
   assert.equal(r2.accepted, true, JSON.stringify(r2.errors ?? r2));
@@ -843,8 +857,10 @@ test("media candidate pipeline: record candidates, finalize picks the best set",
   assert.equal(fin.audit.candidates, 4, "duplicate image URL is not stored twice");
   assert.equal(fin.audit.deduplicated, 4);
   assert.equal(fin.audit.usable, 4);
+  assert.equal(fin.audit.selectedTotal, 4, "selection = min(usable, target)");
+  assert.equal(fin.audit.target, 10);
   assert.equal(fin.mediaStatus, "partial", "4 distinct images < target 10 for a place");
-  assert.ok(fin.media.thumbnail, "thumbnail picked from the best spare candidate");
+  assert.ok(fin.media.thumbnail, "thumbnail picked from the best candidate");
   assert.equal(fin.media.images.length, 3);
 
   // Attach and save: accepted with status partial.
@@ -853,6 +869,29 @@ test("media candidate pipeline: record candidates, finalize picks the best set",
   assert.equal(save.accepted, true, JSON.stringify(save.errors ?? save));
   const stored = findEntityById("province-30", entity.id);
   assert.equal(stored.entity.media.status, "partial");
+
+  // Over-target village: 18 usable candidates → only the best 3 are stored (never more than target).
+  const notes = await import("../dist/notes.js");
+  let vstate = notes.readNotes("province-30");
+  notes.upsertNode(vstate, { nodeId: "village-30-v5", nodeType: "village", canonicalName: "روستای پُرعکس", parentNodeId: "county-30-1", state: "research_required" });
+  notes.writeNotes(vstate);
+  for (let i = 0; i < 18; i++) {
+    toolRecordMediaCandidate({
+      provinceId: "province-30",
+      nodeId: "village-30-v5",
+      imageUrl: `https://cdn.kojaro.com/v-${i}.jpg`,
+      pageUrl: `https://www.kojaro.com/v-${i}`,
+      license: "all-rights-reserved",
+      score: i / 18,
+    });
+  }
+  const vfin = toolFinalizeMedia({ provinceId: "province-30", nodeId: "village-30-v5" });
+  assert.equal(vfin.audit.usable, 18);
+  assert.equal(vfin.audit.selectedTotal, 3, "village with 18 usable images stores only the best 3");
+  assert.equal(vfin.media.images.length, 2, "thumbnail counts inside the 3-image budget");
+  assert.equal(vfin.mediaStatus, "complete");
+  const urls = new Set([vfin.media.thumbnail.url, ...vfin.media.images.map((m) => m.url)]);
+  assert.equal(urls.size, 3, "all stored URLs distinct");
 });
 
 test("media candidates on primary domains count toward source coverage", async () => {
@@ -862,13 +901,16 @@ test("media candidates on primary domains count toward source coverage", async (
   notes.upsertNode(state, { nodeId: "village-30-v9", nodeType: "village", canonicalName: "روستای آزمون", parentNodeId: "county-30-1", state: "research_required" });
   notes.writeNotes(state);
 
-  // village enforcement = 2 primary sources; two image searches on kojaro + jabama satisfy it
-  toolRecordMediaCandidate({ provinceId: "province-30", nodeId: "village-30-v9", imageUrl: "https://cdn.kojaro.com/a.jpg", pageUrl: "https://www.kojaro.com/a", license: "all-rights-reserved" });
-  toolRecordMediaCandidate({ provinceId: "province-30", nodeId: "village-30-v9", imageUrl: "https://cdn.jabama.com/b.jpg", pageUrl: "https://www.jabama.com/b", license: "all-rights-reserved" });
+  // Final contract: ALL five primaries are required for EVERY entity node (village included);
+  // image candidates discovered on primary pages count as searching that source.
+  const primaries = ["kojaro.com", "jabama.com", "alibaba.ir", "lastsecond.ir", "flytoday.ir"];
+  primaries.forEach((domain, i) => {
+    toolRecordMediaCandidate({ provinceId: "province-30", nodeId: "village-30-v9", imageUrl: `https://cdn.${domain}/a${i}.jpg`, pageUrl: `https://www.${domain}/a${i}`, license: "all-rights-reserved" });
+  });
 
   const cov = toolGetSourceCoverage({ provinceId: "province-30", nodeId: "village-30-v9" });
-  assert.equal(cov.required, 2);
-  assert.equal(cov.searchedCount, 2);
+  assert.equal(cov.required, 5);
+  assert.equal(cov.searchedCount, 5);
   assert.equal(cov.satisfied, true);
 });
 
