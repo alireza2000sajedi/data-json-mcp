@@ -8,6 +8,7 @@ import { readNotes, notesPath } from "./notes.js";
 import { getScopeState, nextRequiredNode, traverse, administrativePath, nodeStatus, REQUIRED_DISCOVERY } from "./graph.js";
 import { listEntities } from "./dataset.js";
 import { readReadme } from "./schemas.js";
+import { buildScopeRegistry, listProvinceScopesIndex } from "./scopes.js";
 
 function jsonResource(uri: string, data: unknown): ReadResourceResult {
   return { contents: [{ uri, mimeType: "application/json", text: JSON.stringify(data, null, 2) }] };
@@ -48,6 +49,19 @@ export function registerResources(server: McpServer): void {
   server.registerResource("brand-voice-guide", "planro://rules/brand-voice-guide", { title: "Planro brand voice (v1.0)", description: "Verbal identity & brand tone v1.0 (single source): language modes, vocabulary system & blacklist, CTA rules, AI voice, 100 before/after examples, quality test, plus the applied dataset-content example (Masuleh appendix).", mimeType: "text/markdown" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "brand_voice.md"), "utf8");
     return textResource(uri.href, text, "text/markdown");
+  });
+
+  // --- scope registry resources (dedicated scope ids) ---
+  server.registerResource("scopes-index", "planro://scopes", { title: "All province scope ids", description: "Index of the 31 provinces with their county scope ids and counts — the entry point of the staged workflow (Scope A).", mimeType: "application/json" }, async (uri) =>
+    jsonResource(uri.href, { provinces: listProvinceScopesIndex() }),
+  );
+
+  const scopesTpl = new ResourceTemplate("planro://scopes/{provinceId}", { list: undefined });
+  server.registerResource("scopes", scopesTpl, { title: "Province scope registry", description: "Deterministic scope ids (county/city/village) for a province, derived from input/{n}.json: tree + id index + name lookup.", mimeType: "application/json" }, async (uri) => {
+    const m = uri.pathname.match(/^\/([^/]+)$/);
+    const provinceId = m?.[1];
+    if (!provinceId) throw new Error("Invalid scopes resource uri: planro://scopes/{provinceId}");
+    return jsonResource(uri.href, buildScopeRegistry(provinceId));
   });
 
   // --- province resources ---

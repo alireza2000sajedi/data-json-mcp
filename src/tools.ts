@@ -40,10 +40,12 @@ import {
   traverse,
   getCurrentBranch,
   isOnCurrentBranch,
+  isWithinActiveScope,
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
+import { buildScopeRegistry } from "./scopes.js";
 import type { NotesState, NodeType, OwnershipStatus, PlaceEntity, MediaDeficitRecord } from "./types.js";
 
 // --- shared helpers ---
@@ -87,6 +89,7 @@ export function toolGetScopeState(args: { provinceId: string }) {
   const s = getScopeState(args.provinceId);
   return {
     provinceId: s.provinceId,
+    activeScopeId: s.activeScopeId,
     discoveredNodes: s.discoveredNodes,
     activeEntities: s.activeEntities,
     mediaDeficitNodes: s.mediaDeficitNodes,
@@ -96,6 +99,101 @@ export function toolGetScopeState(args: { provinceId: string }) {
     definitionOfDone: s.definitionOfDone,
     blockingReasons: s.blockingReasons,
     scopeStatus: s.scopeStatus,
+  };
+}
+
+// ============================================================================
+// 1-a. import_province_scopes (Scope A — Province Discovery, IDs only)
+// ============================================================================
+/**
+ * Stage 1 of the staged workflow: derive the complete administrative scope
+ * list of a province from the reference checklist (input/{n}.json) and give
+ * every unit a dedicated, deterministic id (county-{p}-{n}, city-{p}-{n},
+ * village-{p}-v{n}). Only structure is registered — NO deep research, NO POI
+ * extraction, NO entity files. The agent stops after this call.
+ */
+export function toolImportProvinceScopes(args: { provinceId: string }) {
+  const registry = buildScopeRegistry(args.provinceId);
+  const state = readNotes(args.provinceId);
+
+  // Province node (root).
+  ensureNode(state, registry.provinceId, { nodeType: "province", name: registry.provinceName, parentNodeId: null });
+  completeDiscoveryTask(state, registry.provinceId, "counties", registry.counts.counties);
+
+  for (const county of registry.tree) {
+    ensureNode(state, county.id, { nodeType: "county", name: county.name, parentNodeId: registry.provinceId });
+    // Cities and villages counts are fully known from the reference checklist.
+    completeDiscoveryTask(state, county.id, "cities", county.cities.length);
+    completeDiscoveryTask(state, county.id, "villages", county.villages.length);
+    for (const city of county.cities) {
+      ensureNode(state, city.id, { nodeType: "city", name: city.name, parentNodeId: county.id });
+    }
+    for (const village of county.villages) {
+      ensureNode(state, village.id, { nodeType: "village", name: village.name, parentNodeId: county.id });
+    }
+  }
+
+  state.nextStep =
+    `Scope A (Province Discovery) done for ${registry.provinceId}: ${registry.counts.counties} counties, ` +
+    `${registry.counts.cities} cities, ${registry.counts.villages} villages registered with dedicated ids. ` +
+    `STOP — no deep research was performed. Await the user's scope selection (by name or id, e.g. ` +
+    `'${registry.provinceId} → ${registry.tree[0]?.id}') and call set_active_scope.`;
+
+  writeNotes(state);
+
+  const next = nextRequiredNode(args.provinceId);
+  return {
+    imported: true,
+    provinceId: registry.provinceId,
+    provinceName: registry.provinceName,
+    source: registry.source,
+    scopeSummary: registry.counts,
+    scopesByCounty: registry.tree.map((c) => ({
+      id: c.id,
+      name: c.name,
+      cities: c.cities.length,
+      villages: c.villages.length,
+    })),
+    registeredNodes: state.nodes.length,
+    nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
+    scopesResource: `planro://scopes/${registry.provinceId}`,
+    note: "Stage 1 (Discovery) complete: structure + dedicated ids only. Nothing deep-researched. Stop and wait for the user's scope selection.",
+  };
+}
+
+// ============================================================================
+// 1-b. set_active_scope (user picks ONE scope for deep research)
+// ============================================================================
+/**
+ * Stage 2 of the staged workflow: the user selected a scope (by id or name).
+ * Lock DFS / next-node / completion to that scope's own subtree so this run
+ * deep-researches ONLY that unit (plus its needed sub-units) and nothing else.
+ * Pass nodeId: null to return to province-wide mode.
+ */
+export function toolSetActiveScope(args: { provinceId: string; nodeId: string | null }) {
+  const state = readNotes(args.provinceId);
+  if (args.nodeId !== null && args.nodeId !== undefined) {
+    if (!findNode(state, args.nodeId)) {
+      throw new Error(
+        `Node '${args.nodeId}' is not registered for '${args.provinceId}'. ` +
+          `Run import_province_scopes first, or read planro://scopes/${args.provinceId} for the valid scope ids.`,
+      );
+    }
+  }
+  const active = args.nodeId ?? null;
+  state.activeScopeId = active;
+  const label = active ? `${findNode(state, active)!.canonicalName} (${active})` : "کل استان (whole province)";
+  state.nextStep = `Active scope set to ${label}. Deep-research ONLY this scope, save its files, checkpoint (complete), then STOP and await the next command.`;
+  writeNotes(state);
+
+  const next = nextRequiredNode(args.provinceId);
+  return {
+    activeScopeId: state.activeScopeId,
+    activeScopeLabel: label,
+    nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
+    note: active
+      ? `Scope locked to ${label}. Everything else stays pending for separate runs.`
+      : "Province-wide mode restored.",
   };
 }
 
@@ -123,6 +221,7 @@ export function toolGetNextResearchNode(args: { provinceId: string }) {
 
   return {
     provinceId: args.provinceId,
+    activeScopeId: state.activeScopeId,
     nodeId: node.nodeId,
     nodeType: node.nodeType,
     canonicalName: node.canonicalName,
@@ -674,6 +773,16 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       const nodeId = String(p.nodeId);
       if (!findNode(state, nodeId)) {
         throw new Error(`Node '${nodeId}' is not registered.`);
+      }
+
+      // Staged-scope enforcement: when a scope is active, only nodes inside its
+      // subtree may be completed; ancestors (e.g. the province) need their own
+      // scope run.
+      if (!isWithinActiveScope(state, nodeId)) {
+        throw new Error(
+          `SCOPE VIOLATION: active scope is '${state.activeScopeId}'. Node '${nodeId}' is outside this scope. ` +
+            `Select it first with set_active_scope, or complete the current scope and stop.`,
+        );
       }
 
       // DFS enforcement: only the current required node can be marked complete

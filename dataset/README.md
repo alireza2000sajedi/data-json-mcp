@@ -160,6 +160,20 @@ County → District/Rural District discovery → Cities → Villages → named P
 - Agent حق ندارد County بعدی را به‌عنوان جایگزین ادامهٔ County ناتمام شروع کند؛ تحقیق موازی ممکن است، اما ذخیره‌سازی و تکمیل Canonical هر County خطی است.
 - `relations.child` فقط برای Entityهایی مجاز است که فایل واقعی‌شان از قبل ساخته شده باشد.
 
+## 3-2. اجرای پلکانی Scope و شناسه‌های اختصاصی
+
+قرارداد اجرای جاری، **Stage-Based** است (مرجع عملیاتی: `STAGED_WORKFLOW.md` در ریشهٔ ریپو):
+
+```text
+Scope A (Province Discovery) → توقف → Scope B (Deep Research یک شهرستان/شهر) → توقف → Scope C (روستا) → توقف → Scope D (POI) → …
+```
+
+- هر اجرای Agent دقیقاً **یک Scope** دارد؛ پس از ذخیرهٔ فایل‌ها، Checkpoint و `completed`، اجرا متوقف می‌شود و برای Scope بعدی منتظر دستور کاربر می‌ماند.
+- `import_province_scopes` فهرست Scopeهای استان را از `input/{n}.json` با **idهای اختصاصیِ قطعی** می‌سازد. الگوها: `province-{n}`، `county-{p}-{n}`، `city-{p}-{n}`، `village-{p}-v{n}` (شمارهٔ شهر/روستا سراسریِ استان است تا نام‌های تکراری یکتا باشند) و بعداً `place-{p}-{n}`.
+- `set_active_scope` Scope انتخابی را قفل می‌کند: `nextRequiredNode`/DFS فقط روی زیردرخت همان Scope کار می‌کند و `mark_node_complete` خارج از آن با `SCOPE VIOLATION` رد می‌شود. والد/همسایه‌ها برای اجراهای بعدی pending می‌مانند.
+- Resume: ابتدا `get_scope_state`/`get_next_research_node` خوانده می‌شود؛ فقط Scope ناتمام بعدی اجرا می‌شود و هیچ فایل تکمیل‌شده‌ای دوباره تولید نمی‌شود.
+- در Scope A هیچ Deep Research، POI، Entity یا Query انجام نمی‌شود؛ فقط ساختار و idها ثبت می‌شوند.
+
 ## 4. مدل Entity و محل ذخیره
 
 | سطح | JSON مستقل | type / subType |

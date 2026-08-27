@@ -208,9 +208,37 @@ export function traverse(provinceId: string): NodeRecord[] {
   return order;
 }
 
-/** First unfinished node in depth-first traversal, or null. */
+/** True when `nodeId` equals `rootId` or is a descendant of it. */
+export function isSubtreeNode(state: NotesState, nodeId: string, rootId: string): boolean {
+  let cur = state.nodes.find((n) => n.nodeId === nodeId);
+  const seen = new Set<string>();
+  while (cur && !seen.has(cur.nodeId)) {
+    if (cur.nodeId === rootId) return true;
+    seen.add(cur.nodeId);
+    cur = cur.parentNodeId ? state.nodes.find((n) => n.nodeId === cur!.parentNodeId) : undefined;
+  }
+  return false;
+}
+
+/** True when the node belongs to the currently selected scope (or when no scope is active). */
+export function isWithinActiveScope(state: NotesState, nodeId: string): boolean {
+  if (!state.activeScopeId) return true;
+  return isSubtreeNode(state, nodeId, state.activeScopeId);
+}
+
+/**
+ * First unfinished node in depth-first traversal, or null.
+ *
+ * When a staged scope is active (`activeScopeId` set), the traversal is
+ * restricted to the scope's own subtree (the scope node + its descendants):
+ * ancestors like the province no longer block DFS inside the selected scope.
+ */
 export function nextRequiredNode(provinceId: string): NodeRecord | null {
-  for (const node of traverse(provinceId)) {
+  const state = readNotes(provinceId);
+  const order = traverse(provinceId);
+  const active = state.activeScopeId ? state.nodes.find((n) => n.nodeId === state.activeScopeId) : null;
+  const scoped = active ? order.filter((n) => isSubtreeNode(state, n.nodeId, active.nodeId)) : order;
+  for (const node of scoped) {
     if (!nodeStatus(provinceId, node).complete) return node;
   }
   return null;
@@ -218,6 +246,8 @@ export function nextRequiredNode(provinceId: string): NodeRecord | null {
 
 export interface ScopeState {
   provinceId: string;
+  /** Currently selected staged scope nodeId (null = province-wide). */
+  activeScopeId: string | null;
   discoveredNodes: number;
   activeEntities: number;
   /** Nodes closed via the §9 media-deficit disposition (recorded, unresolved). */
@@ -251,6 +281,7 @@ export function getScopeState(provinceId: string): ScopeState {
 
   return {
     provinceId,
+    activeScopeId: state.activeScopeId,
     discoveredNodes: nodes.length,
     activeEntities,
     mediaDeficitNodes,
