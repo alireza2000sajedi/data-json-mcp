@@ -10,6 +10,9 @@ export interface StoredEntity {
   entity: PlaceEntity;
 }
 
+/** Files that are not entity data but live inside the province output dir. */
+const NON_ENTITY_FILES = new Set(["notes.state.json", "notes.md"]);
+
 /** Recursively list all `*.json` entity files under the province output dir. */
 export function listEntities(provinceId: string): StoredEntity[] {
   const dir = provinceDir(provinceId);
@@ -17,6 +20,7 @@ export function listEntities(provinceId: string): StoredEntity[] {
   if (!fs.existsSync(dir)) return out;
   const walk = (d: string) => {
     for (const name of fs.readdirSync(d)) {
+      if (NON_ENTITY_FILES.has(name)) continue;
       const full = path.join(d, name);
       const stat = fs.statSync(full);
       if (stat.isDirectory()) walk(full);

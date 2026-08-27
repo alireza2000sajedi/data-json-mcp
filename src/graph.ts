@@ -59,6 +59,20 @@ export function nodeTypeOrder(t: NodeType): number {
  *   city     → city-level places → villages → camping
  *   village  → village-level places → camping
  */
+/**
+ * Priority of a child node type *given its parent's type*.
+ *
+ * Strict DFS order: complete each node's own places/campsites, then descend
+ * into administrative children in hierarchy order. County-level places come
+ * AFTER all administrative children (cities, villages) are fully processed.
+ *
+ *   province → province places → province camping → counties
+ *   county   → districts → ruralDistricts → cities → villages → county places → county camping
+ *   district → ruralDistricts → cities → villages → places → camping
+ *   ruralDistrict → villages → places → camping
+ *   city     → city places → city camping
+ *   village  → village places → village camping
+ */
 function siblingPriority(parentType: NodeType | null, childType: NodeType): number {
   let order: Partial<Record<NodeType, number>>;
   switch (parentType) {
@@ -66,7 +80,8 @@ function siblingPriority(parentType: NodeType | null, childType: NodeType): numb
       order = { place: 0, camping: 1, county: 2 };
       break;
     case "county":
-      order = { district: 0, ruralDistrict: 1, place: 2, city: 3, village: 4, camping: 5 };
+      // Districts first (structure), then cities, then villages, then county-level places last
+      order = { district: 0, ruralDistrict: 1, city: 2, village: 3, place: 4, camping: 5 };
       break;
     case "district":
       order = { ruralDistrict: 0, city: 1, village: 2, place: 3, camping: 4 };
@@ -75,9 +90,11 @@ function siblingPriority(parentType: NodeType | null, childType: NodeType): numb
       order = { village: 0, place: 1, camping: 2 };
       break;
     case "city":
-      order = { place: 0, village: 1, camping: 2 };
+      // City places first, then camping
+      order = { place: 0, camping: 1 };
       break;
     case "village":
+      // Village places first, then camping
       order = { place: 0, camping: 1 };
       break;
     default:
@@ -245,4 +262,36 @@ export function administrativePath(state: NotesState, nodeId: string): string[] 
     cur = cur.parentNodeId ? state.nodes.find((n) => n.nodeId === cur!.parentNodeId) : undefined;
   }
   return ["Iran", ...path];
+}
+
+/**
+ * Returns the current branch in DFS traversal — the path from root to the
+ * current required node. This is the ONLY branch the agent should be working on.
+ */
+export function getCurrentBranch(provinceId: string): NodeRecord[] {
+  const state = readNotes(provinceId);
+  const current = nextRequiredNode(provinceId);
+  if (!current) return []; // All nodes complete
+
+  // Build path from current node up to root
+  const branch: NodeRecord[] = [];
+  let cur: NodeRecord | undefined = current;
+  const seen = new Set<string>();
+  while (cur && !seen.has(cur.nodeId)) {
+    seen.add(cur.nodeId);
+    branch.unshift(cur);
+    cur = cur.parentNodeId ? state.nodes.find((n) => n.nodeId === cur!.parentNodeId) : undefined;
+  }
+  return branch;
+}
+
+/**
+ * Check if a nodeId is allowed for entity saving under DFS rules.
+ * Allowed: any registered node (we can save entities for discovered nodes).
+ * The strict DFS enforcement is on mark_node_complete, not on saving.
+ */
+export function isOnCurrentBranch(provinceId: string, nodeId: string): boolean {
+  const state = readNotes(provinceId);
+  // Allow saving for any registered node
+  return state.nodes.some((n) => n.nodeId === nodeId);
 }

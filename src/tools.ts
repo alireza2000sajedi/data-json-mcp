@@ -13,6 +13,7 @@ import {
   upsertRegistry,
   findNode,
   newId,
+  updateDodStatus,
 } from "./notes.js";
 import {
   listEntities,
@@ -35,6 +36,8 @@ import {
   REQUIRED_DISCOVERY,
   TRACK_CHILD_TYPE,
   traverse,
+  getCurrentBranch,
+  isOnCurrentBranch,
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
@@ -99,10 +102,22 @@ export function toolGetScopeState(args: { provinceId: string }) {
 export function toolGetNextResearchNode(args: { provinceId: string }) {
   const node = nextRequiredNode(args.provinceId);
   if (!node) {
-    return { provinceId: args.provinceId, done: true, node: null };
+    const state = readNotes(args.provinceId);
+    return {
+      provinceId: args.provinceId,
+      done: true,
+      node: null,
+      reminder: "All nodes complete! You MUST now run check_definition_of_done and validate_province. Only when both pass (complete:true AND invalid:0) can you produce the final report.",
+      dodStatus: state.dodStatus
+        ? { checked: true, complete: state.dodStatus.dodComplete, invalid: state.dodStatus.validateInvalid }
+        : { checked: false, complete: false, invalid: -1 },
+    };
   }
   const state = readNotes(args.provinceId);
   const status = nodeStatus(args.provinceId, node);
+  const branch = getCurrentBranch(args.provinceId);
+  const branchPath = branch.map((n) => `${n.canonicalName}(${n.nodeType})`).join(" → ");
+
   return {
     provinceId: args.provinceId,
     nodeId: node.nodeId,
@@ -114,6 +129,12 @@ export function toolGetNextResearchNode(args: { provinceId: string }) {
     requiredDiscovery: REQUIRED_DISCOVERY[node.nodeType],
     pendingDiscovery: status.pendingDiscovery,
     completedDiscovery: status.completedDiscovery,
+    currentBranch: branchPath,
+    dfsInstruction:
+      `DFS ORDER: You MUST work on '${node.nodeId}' (${node.canonicalName}) NOW. ` +
+      `Complete this node FULLY (research, save entity, resolve candidates, complete discovery) before moving to any other node. ` +
+      `Do NOT save entities or mark nodes complete for any other branch. ` +
+      `Order: this node → its places → its first child → that child's places → ... → next sibling.`,
   };
 }
 
@@ -317,6 +338,19 @@ export function toolResolveCandidate(args: { provinceId: string; candidateId: st
 export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEntity; expectedNodeId: string }) {
   const state = readNotes(args.provinceId);
   const entity = normalizeEntityUrls(args.entity);
+
+  // DFS advisory: warn if saving for a node that's not the current required node
+  const current = nextRequiredNode(args.provinceId);
+  let dfsWarning: string | undefined;
+  if (current && current.nodeId !== args.expectedNodeId) {
+    const branch = getCurrentBranch(args.provinceId);
+    const branchPath = branch.map((n) => `${n.nodeId}(${n.nodeType})`).join(" → ");
+    dfsWarning =
+      `DFS ADVISORY: You are saving entity for '${args.expectedNodeId}' but the current required node is '${current.nodeId}'. ` +
+      `Current branch: ${branchPath}. ` +
+      `You can save entities for discovered nodes, but you CANNOT mark them complete until '${current.nodeId}' is fully done.`;
+  }
+
   const result = validateEntity(entity, {
     provinceId: args.provinceId,
     expectedNodeId: args.expectedNodeId,
@@ -348,7 +382,7 @@ export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEn
 
   saveEntity(args.provinceId, entity, args.expectedNodeId, pathResult);
 
-  return {
+  const response: Record<string, unknown> = {
     accepted: true,
     entityId: entity.id,
     path: pathResult.relPath,
@@ -361,6 +395,8 @@ export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEn
       images: (entity.media?.images as any[] | undefined)?.length ?? 0,
     },
   };
+  if (dfsWarning) response.dfsWarning = dfsWarning;
+  return response;
 }
 
 // ============================================================================
@@ -515,6 +551,7 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       const track = String(p.track);
       if (!nodeId || !track) throw new Error("complete_discovery_task requires nodeId and track.");
       if (!findNode(state, nodeId)) throw new Error(`Node '${nodeId}' is not registered. Register it first (register_node / add_discovery_task).`);
+
       const childType = TRACK_CHILD_TYPE[track];
       if (childType) {
         const count = Number(p.count);
@@ -535,12 +572,45 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       if (!findNode(state, nodeId)) {
         throw new Error(`Node '${nodeId}' is not registered.`);
       }
+
+      // DFS enforcement: only the current required node can be marked complete
+      const current = nextRequiredNode(args.provinceId);
+      if (current && current.nodeId !== nodeId) {
+        const branch = getCurrentBranch(args.provinceId);
+        const branchPath = branch.map((n) => `${n.nodeId}(${n.nodeType})`).join(" → ");
+        throw new Error(
+          `DFS ORDER VIOLATION: Cannot mark '${nodeId}' complete — it is not the current required node. ` +
+          `Current required node: '${current.nodeId}' (${current.nodeType}). ` +
+          `Current branch: ${branchPath}. ` +
+          `You MUST complete '${current.nodeId}' first before marking other nodes complete.`,
+        );
+      }
+
       // Gate: refuse unless entity active + all discovery complete + no open candidates/conflicts.
       const status = nodeStatus(args.provinceId, findNode(state, nodeId)!);
       if (!status.complete) {
         throw new Error(`Cannot mark node complete: ${status.blockingReasons.join("; ")}`);
       }
       findNode(state, nodeId)!.state = "complete";
+      
+      // Check if this is the last pending node
+      const pendingCount = traverse(args.provinceId).filter((n) => {
+        const st = nodeStatus(args.provinceId, n);
+        return !st.complete;
+      }).length;
+      
+      if (pendingCount === 0) {
+        writeNotes(state);
+        return { 
+          updated: true, 
+          operation: op, 
+          provinceId: args.provinceId,
+          reminder: "All nodes complete! You MUST now run check_definition_of_done and validate_province. Only when both pass (complete:true AND invalid:0) can you produce the final report.",
+          dodStatus: state.dodStatus 
+            ? { checked: true, complete: state.dodStatus.dodComplete, invalid: state.dodStatus.validateInvalid }
+            : { checked: false, complete: false, invalid: -1 }
+        };
+      }
       break;
     }
 
@@ -619,6 +689,20 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     unresolvedConflicts.length === 0 &&
     missingAdministrativeNodes.length === 0;
 
+  // Build compact issues list for DoD status
+  const issues: string[] = [];
+  if (missingAdministrativeNodes.length > 0) issues.push(`missing admin: ${missingAdministrativeNodes.length}`);
+  if (openCandidates.length > 0) issues.push(`open candidates: ${openCandidates.length}`);
+  if (unresolvedConflicts.length > 0) issues.push(`unresolved conflicts: ${unresolvedConflicts.length}`);
+  if (invalidRelations.length > 0) issues.push(`invalid relations: ${invalidRelations.length}`);
+  if (incompleteMedia.length > 0) issues.push(`incomplete media: ${incompleteMedia.length}`);
+  if (incompleteCosts.length > 0) issues.push(`incomplete costs: ${incompleteCosts.length}`);
+  if (missingEvidence.length > 0) issues.push(`missing evidence: ${missingEvidence.length}`);
+
+  // Update DoD status in notes
+  updateDodStatus(state, complete, state.dodStatus?.validateInvalid ?? -1, state.dodStatus?.validateTotal ?? -1, issues);
+  writeNotes(state);
+
   return {
     complete,
     missingAdministrativeNodes,
@@ -629,6 +713,9 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     incompleteCosts,
     missingEvidence,
     nextAction: complete ? null : scope.nextRequiredNode?.nodeId ?? "discover province administrative structure",
+    reminder: complete
+      ? "DoD check PASSED. Now run validate_province to verify invalid:0 before final report."
+      : `DoD check FAILED (${issues.length} issues). Fix all issues before final report.`,
   };
 }
 
@@ -673,12 +760,37 @@ export function toolValidateProvince(args: { provinceId: string }) {
     };
   });
   const invalid = entities.filter((e) => !e.accepted);
+
+  // Build compact issues list for DoD status
+  const issues: string[] = [];
+  if (invalid.length > 0) {
+    issues.push(`${invalid.length} invalid entities`);
+    // Add first few entity IDs as examples
+    const examples = invalid.slice(0, 5).map(e => e.entityId);
+    if (examples.length > 0) {
+      issues.push(`examples: ${examples.join(", ")}`);
+    }
+  }
+
+  // Update DoD status in notes (preserve dodComplete from last check)
+  updateDodStatus(
+    state,
+    state.dodStatus?.dodComplete ?? false,
+    invalid.length,
+    entities.length,
+    issues,
+  );
+  writeNotes(state);
+
   return {
     provinceId: args.provinceId,
     total: entities.length,
     valid: entities.length - invalid.length,
     invalid: invalid.length,
     entities: invalid,
+    reminder: invalid.length === 0
+      ? "Validation PASSED (invalid:0). If DoD also passed, you may proceed to final report."
+      : `Validation FAILED (${invalid.length} invalid). Fix all errors before final report.`,
   };
 }
 
@@ -761,11 +873,20 @@ export function toolListPendingNodes(args: { provinceId: string }) {
     };
   });
   const pending = nodes.filter((n) => !n.complete);
+  const state = readNotes(args.provinceId);
   return {
     provinceId: args.provinceId,
     total: nodes.length,
     complete: nodes.length - pending.length,
     pending: pending.length,
     nodes: pending,
+    reminder: pending.length === 0
+      ? "All nodes complete! You MUST now run check_definition_of_done and validate_province. Only when both pass (complete:true AND invalid:0) can you produce the final report."
+      : undefined,
+    dodStatus: pending.length === 0
+      ? (state.dodStatus
+          ? { checked: true, complete: state.dodStatus.dodComplete, invalid: state.dodStatus.validateInvalid }
+          : { checked: false, complete: false, invalid: -1 })
+      : undefined,
   };
 }
