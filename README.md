@@ -17,6 +17,11 @@ Agent / LLM
 - ✅ اعتبارسنجی JSON Schema Draft 2020-12 با Ajv + دروازهٔ کیفیت (Quality Gate)
 - ✅ تست با `node:test`
 
+کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود
+(استان فقط برای Discovery → بعداً یک شهرستان/شهر/روستا/POI از سوی کاربر). هر Scope یک **id اختصاصی و
+پایدار** دارد (`province-30`، `county-30-5`، `city-30-12`، `village-30-v2`، `place-30-3`) و پیشرفت بین
+اجراها در `notes.state.json` ذخیره و Resume می‌شود. راهنمای کامل قرارداد اجرا: [`STAGED_WORKFLOW.md`](STAGED_WORKFLOW.md).
+
 ---
 
 ## ساختار پروژه
@@ -26,6 +31,7 @@ data-json-mcp/
 ├── package.json
 ├── tsconfig.json
 ├── prompt.txt                ← پرامپت واحد Agent تحقیق (تنها پرامپت مجاز)
+├── STAGED_WORKFLOW.md        ← قرارداد اجرای پلکانی + شناسه‌های اختصاصی Scope
 ├── mcp-client.mjs            ← کلاینت CLI برای فراخوانی Toolها از شل
 ├── dataset/                  ← Source of Truth (اسکیماها و قانون‌نامه، read-only)
 │   ├── README.md
@@ -41,10 +47,11 @@ data-json-mcp/
 │   ├── schemas.ts            ← بارگذاری/کامپایل Ajv + enumهای schema
 │   ├── notes.ts              ← notes.md ساخت‌یافته (اتمیک)
 │   ├── graph.ts              ← مدل Node، پیمایش عمقی، scope state
+│   ├── scopes.ts             ← رجیستری قطعی IDها (استان/شهرستان/شهر/روستا) از input/
 │   ├── dataset.ts            ← فایلهای Entity، مسیر canonical، ID/slug
 │   ├── quality-gate.ts       ← دروازهٔ کیفیت پیش از ذخیره
-│   ├── resources.ts          ← ۱۰ Resource
-│   └── tools.ts              ← ۱۸ Tool
+│   ├── resources.ts          ← Resourceها
+│   └── tools.ts              ← Toolها
 └── tests/                    ← تستهای node:test
 ```
 
@@ -58,6 +65,7 @@ data-json-mcp/
 |---|---|---|
 | `PLANRO_DATASET_DIR` | `./dataset` | محل اسکیماها و README (فقط خواندنی) |
 | `PLANRO_OUTPUT_DIR` | `./output` | محل `output/{provinceId}/` (خواندنی/نوشتنی) |
+| `PLANRO_INPUT_DIR` | `./input` | محل چک‌لیست‌های اداری `1.json … 31.json` (فقط خواندنی) |
 
 ---
 
@@ -81,7 +89,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 npm test               # build + node --test tests/
 ```
 
-۴۶ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، ساختار پوشهٔ سلسله‌مراتبی، و مسیر شرعی §9: بسته‌شدن نود کم‌رسانه با `mark_node_media_deficit` بدون فایل JSON، پیشروی خودکار DFS، پاس شدن DoD با گزارش شفاف نودهای کم‌رسانه، گاردهای imagesFound/جستجو/ترتیب DFS، و ارتقای خودکار رکورد با ذخیرهٔ فعال بعدی).
+۵۴ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، ساختار پوشهٔ سلسله‌مراتبی، مسیر شرعی §9: بسته‌شدن نود کم‌رسانه با `mark_node_media_deficit` بدون فایل JSON، پیشروی خودکار DFS، پاس شدن DoD با گزارش شفاف نودهای کم‌رسانه، گاردهای imagesFound/جستجو/ترتیب DFS، ارتقای خودکار رکورد با ذخیرهٔ فعال بعدی، و **رجیستری Scope**: قطعی‌بودن و یکتایی idها، ایندکس ۳۱ استان، import بدون Deep Research، idempotence، قفل‌شدن DFS به Scope انتخابی و رد `mark_node_complete` خارج از Scope).
 
 ---
 
@@ -89,7 +97,9 @@ npm test               # build + node --test tests/
 
 | Tool | ورودی کلیدی | خروجی |
 |---|---|---|
-| `get_scope_state` | `provinceId` | وضعیت کامل Scope، Candidateها، Conflictها، DoD، Node بعدی |
+| `import_province_scopes` | `provinceId` | **Scope A (Discovery)**: ثبت ساختار کامل استان از `input/{n}.json` با idهای اختصاصیِ قطعی (`county-{p}-{n}`، `city-{p}-{n}`، `village-{p}-v{n}`) + تکمیل ترک‌های اداری بر مبنای Count — بدون Deep Research و بدون هیچ Entity فایل |
+| `set_active_scope` | `provinceId`, `nodeId` (یا `null`) | **Scope B/C**: قفل DFS/next-node/completion روی زیردرخت همان Scope؛ بقیهٔ واحدها pending می‌مانند |
+| `get_scope_state` | `provinceId` | وضعیت کامل Scope (شامل `activeScopeId`)، Candidateها، Conflictها، DoD، Node بعدی |
 | `get_next_research_node` | `provinceId` | اولین Node ناتمام در پیمایش عمقی + Context اداری + taskهای اجباری |
 | `get_node_context` | `provinceId`, `nodeId` | nodeType، canonicalName، parent، administrativePath، نامهای جایگزین، Relations، discovery tracks |
 | `find_existing_entity` | `provinceId`, `name`, … | match قطعی/احتمالی + دلیل + مسیر canonical (ضد تکراری) |
@@ -126,6 +136,8 @@ npm test               # build + node --test tests/
 
 | URI | محتوا |
 |---|---|
+| `planro://scopes` | ایندکس ۳۱ استان با `provinceId` و `countyId`ها (Scope IDs) |
+| `planro://scopes/{provinceId}` | رجیستری Scopeهای یک استان: `tree` (county → city/village)، `index` (id → واحد)، `indexByName` (نام → idها) — خروجی قطعی از `input/{n}.json` |
 | `planro://rules/readme` | متن README (Source of Truth) |
 | `planro://rules/brand-voice-guide` | هویت کلامی و لحن برند — نسخه ۱.۰ نهایی (فایل واحد): حالت‌های زبانی، سیستم واژگان و لیست سیاه، فراخوان اقدام، صدای هوش مصنوعی، ۱۰۰ نمونه قبل/بعد، آزمون کیفیت + پیوست نمونهٔ کاربردی روی محتوای Dataset — ماسوله (brand_voice.md) |
 | `planro://schema/place` | `place.schema.json` |
@@ -179,6 +191,8 @@ npm test               # build + node --test tests/
 13. **سرعت (Batch)**: برای جمع‌آوری حجم بالا، `save_entities` چند Entity را در یک فراخوانی ذخیره می‌کند و `discover_subtree` همهٔ Queryهای یک زیردرخت را یک‌جا می‌دهد تا Agent بتواند جستجوها را موازی اجرا کند. ترتیب در `save_entities` مهم است: والدها قبل از فرزندان. توجه: این **نوشتن ترتیبیِ اعتبارسنجی‌شده** است، نه تراکنش اتمیک — هر Entity مستقلاً validate و نوشته می‌شود و نتایج تک‌به‌تک برمی‌گردد.
 
 14. **URLها خودکار نرمال می‌شوند**: چون لایهٔ چتِ Agent گاهی URL را به شکل Markdown (`[url](url)`) رندر می‌کند، `save_active_entity` و `save_entities` پیش از اعتبارسنجی، همهٔ فیلدهای URL را به لینک خام `https://…` تبدیل می‌کنند و همان نسخهٔ تمیز را ذخیره می‌کنند. لازم نیست Agent نگران این خطای رندر باشد.
+
+15. **اجرای پلکانی + idهای اختصاصی Scope**: `src/scopes.ts` از `input/{n}.json` یک رجیستری **قطعی** می‌سازد که به هر استان/شهرستان/شهر/روستا یک id پایدار می‌دهد (شمارهٔ شهر و روستا سراسریِ استان است تا نام‌های تکراری id یکتا بگیرند). `import_province_scopes` همان ساختار را فقط به‌عنوان Node (+ ترک‌های اداریِ کامل‌شده با count) در notes ثبت می‌کند — هرگز Entity یا POI نمی‌سازد. `activeScopeId` در حالت `notes.state.json` ذخیره می‌شود و `nextRequiredNode`/DFS را به زیردرخت همان Scope محدود می‌کند؛ `mark_node_complete` برای نودهای خارج از Scope فعال با `SCOPE VIOLATION` رد می‌شود. این یعنی هر اجرا دقیقاً یک Scope دارد؛ والدها/همسایه‌ها برای اجراهای جداگانه pending می‌مانند و Resume از روی state انجام می‌شود.
 
 ---
 

@@ -8,6 +8,8 @@ export interface Config {
   datasetDir: string;
   /** Directory where output/{provinceId} datasets are written. */
   outputDir: string;
+  /** Directory holding the administrative checklist input/1.json … input/31.json. */
+  inputDir: string;
 }
 
 function resolveFromEnv(): Config {
@@ -16,6 +18,7 @@ function resolveFromEnv(): Config {
   return {
     datasetDir: path.resolve(process.env.PLANRO_DATASET_DIR ?? path.join(repoRoot, "dataset")),
     outputDir: path.resolve(process.env.PLANRO_OUTPUT_DIR ?? path.join(repoRoot, "output")),
+    inputDir: path.resolve(process.env.PLANRO_INPUT_DIR ?? path.join(repoRoot, "input")),
   };
 }
 

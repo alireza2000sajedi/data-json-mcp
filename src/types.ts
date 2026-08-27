@@ -123,6 +123,14 @@ export interface NotesState {
   provinceId: string;
   lastUpdate: string;
   scopeStatus: "in_progress" | "complete";
+  /**
+   * The currently selected staged scope (a registered nodeId). When set,
+   * DFS order and the "current branch" are computed inside that scope's
+   * subtree only, so a single scope (county / city / village / place) can be
+   * deep-researched, check-pointed and completed without touching ancestors.
+   * null = province-wide scope (classic whole-province run).
+   */
+  activeScopeId: string | null;
   nodes: NodeRecord[];
   discoveryTasks: DiscoveryTask[];
   candidates: Candidate[];

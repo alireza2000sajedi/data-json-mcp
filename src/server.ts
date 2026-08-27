@@ -2,6 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { registerResources } from "./resources.js";
 import {
+  toolImportProvinceScopes,
+  toolSetActiveScope,
   toolGetScopeState,
   toolGetNextResearchNode,
   toolGetNodeContext,
@@ -42,8 +44,22 @@ export function createServer(): McpServer {
   };
 
   register(
+    "import_province_scopes",
+    "Scope A (Province Discovery): derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city/village with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}, village-{p}-v{n}). Structure + ids only — no deep research, no POIs, no entity files. Then STOP and wait for the user's scope selection.",
+    { provinceId: z.string().min(1) },
+    toolImportProvinceScopes,
+  );
+
+  register(
+    "set_active_scope",
+    "Stage 2 (User Selection): lock the run to ONE scope subtree by its dedicated id (or null to reset to province-wide). DFS order, next-node and completion are then restricted to that scope only; everything else stays pending for separate runs.",
+    { provinceId: z.string().min(1), nodeId: z.string().min(1).nullable() },
+    toolSetActiveScope,
+  );
+
+  register(
     "get_scope_state",
-    "Return the full scope state for a province: open candidates, open conflicts, definition of done, and next node.",
+    "Return the full scope state for a province: active scope, open candidates, open conflicts, definition of done, and next node.",
     { provinceId: z.string().min(1) },
     toolGetScopeState,
   );
