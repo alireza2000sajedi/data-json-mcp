@@ -44,7 +44,7 @@ data-json-mcp/
 │   ├── dataset.ts            ← فایلهای Entity، مسیر canonical، ID/slug
 │   ├── quality-gate.ts       ← دروازهٔ کیفیت پیش از ذخیره
 │   ├── resources.ts          ← ۱۰ Resource
-│   └── tools.ts              ← ۱۷ Tool
+│   └── tools.ts              ← ۱۸ Tool
 └── tests/                    ← تستهای node:test
 ```
 
@@ -81,7 +81,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 npm test               # build + node --test tests/
 ```
 
-۳۹ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، و ساختار پوشهٔ سلسله‌مراتبی).
+۴۶ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، رد ۹/۲۱ تصویر، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، ساختار پوشهٔ سلسله‌مراتبی، و مسیر شرعی §9: بسته‌شدن نود کم‌رسانه با `mark_node_media_deficit` بدون فایل JSON، پیشروی خودکار DFS، پاس شدن DoD با گزارش شفاف نودهای کم‌رسانه، گاردهای imagesFound/جستجو/ترتیب DFS، و ارتقای خودکار رکورد با ذخیرهٔ فعال بعدی).
 
 ---
 
@@ -97,6 +97,7 @@ npm test               # build + node --test tests/
 | `record_search_result` | `provinceId`, `nodeId`, `query`, `sourceUrl`, `sourceTitle`, `resultSummary`, `ownershipStatus` | ثبت Source Matrix با مالکیت Context |
 | `create_candidate` | `provinceId`, `nodeId`, `name`, … | فقط در notes.md (هیچ JSON ساخته نمی‌شود) |
 | `resolve_candidate` | `provinceId`, `candidateId`, `outcome` | بستن Candidate |
+| `mark_node_media_deficit` | `provinceId`, `nodeId`, `reason`, `imagesFound` (۰-۹)، `searchesPerformed[]` | بستن شرعیِ نودِ ناتوان از تأمین ۱۰ تصویر آزاد پس از جستجوی خسته‌نشده (§9 پرامپت) — بدون فایل JSON، نود در DFS/DoD کامل حساب می‌شود؛ ذخیرهٔ فعالِ بعدی همان نود، وضعیت را خودکار resolved می‌کند |
 | `save_active_entity` | `provinceId`, `entity`, `expectedNodeId` | دروازهٔ کیفیت کامل → ذخیره در مسیر canonical یا خطای ساخت‌یافته |
 | `save_entities` | `provinceId`, `entities[]` | ذخیرهٔ دسته‌جمعی چند Entity در یک فراخوانی (یک round-trip به‌جای N) — والدها را قبل از فرزندان بگذارید |
 | `link_entities` | `provinceId`, `fromId`, `toId`, `relationType`, … | Relation معتبر + به‌روزرسانی هر دو فایل |
@@ -140,9 +141,9 @@ npm test               # build + node --test tests/
 
 ## تصمیم‌های مهم معماری
 
-1. **Active-only**: هیچ JSON ناقصی ذخیره نمی‌شود. `save_active_entity` ابتدا کل Quality Gate را اجرا می‌کند و فقط در صورت موفقیت کامل، فایل را (اتمیک) می‌نویسد. status ذخیره‌شده همیشه `active` است (حتی `archived` که Schema اجازه می‌دهد، رد می‌شود).
+1. **Active-only + شرط کمبود رسانه (§9)**: هیچ JSON ناقصی ذخیره نمی‌شود. `save_active_entity` ابتدا کل Quality Gate را اجرا می‌کند و فقط در صورت موفقیت کامل، فایل را (اتمیک) می‌نویسد. status ذخیره‌شده همیشه `active` است (حتی `archived` که Schema اجازه می‌دهد، رد می‌شود). اما برای نودهای اداریِ واقعی که پس از جستجوی خسته‌نشده در آرشیوهای آزاد (Wikimedia Commons، Flickr CC، geosearch، WLM…) کمتر از ۱۰ تصویرِ قابل‌انتساب به خود نود دارند، ابزار `mark_node_media_deficit` مسیر شرعی است: نود با وضعیت `media_deficit` و بدون هیچ فایل JSON بسته می‌شود، رکورد قابل‌ممیزی (`reason`, `imagesFound`, `searchesPerformed`) در notes.state.json می‌ماند، و نود در پیمایش DFS و در `check_definition_of_done` کامل محسوب می‌شود. این ابزار فقط روی نود اجباری فعلی کار می‌کند (همان قاعدهٔ DFS)، ترک‌های کشف باید بسته باشند و Candidate/Conflict باز نباشد؛ اگر بعداً ۱۰+ تصویر پیدا شد و `save_active_entity` اجرا شد، رکورد کمبود خودکار به `resolved/promoted_to_active` تبدیل می‌شود. عکس جعلی، تکراری یا متعلق به همسایه/والد همچنان اکیداً ممنوع است.
 
-2. **Candidate فقط در notes.md**: `create_candidate` هیچ فایلی نمی‌سازد؛ خروجی آن صراحتاً `jsonCreated: false` است.
+2. **Candidate فقط در notes.md**: `create_candidate` هیچ فایلی نمی‌سازد؛ خروجی آن صراحتاً `jsonCreated: false` است. کمبود رسانهٔ نودِ اداری اما Candidate نیست — با `mark_node_media_deficit` ثبت می‌شود (بند ۱) تا برخلاف Candidateِ باز، نود را باز نگه ندارد و چرخهٔ DFS متوقف نشود.
 
 3. **notes.md ساخت‌یافته و اتمیک**: notes.md شامل بلوک `<!-- planro:state -->` (JSON) + جدولهای قابل‌خواندن (ID Registry، Research coverage، …) است. همهٔ نوشتنها با temp+rename اتمیک انجام می‌شوند و هیچ Toolای «بازنویسی آزاد» ندارد.
 

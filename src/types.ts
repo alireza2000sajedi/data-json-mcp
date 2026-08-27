@@ -10,7 +10,7 @@ export type NodeType =
   | "place"
   | "camping";
 
-export type NodeState = "research_required" | "in_progress" | "complete";
+export type NodeState = "research_required" | "in_progress" | "media_deficit" | "complete";
 
 export type OwnershipStatus =
   | "belongs_to_node"
@@ -81,6 +81,29 @@ export interface RegistryEntry {
   subType?: string;
 }
 
+/**
+ * Auditable disposition for an entity-bearing node that could not meet the
+ * active-entity media requirement (10–20 free-license images) after an
+ * exhaustive search (prompt §9). The node is CLOSED without a JSON file;
+ * "recorded" is a terminal, non-blocking state. Saving an active entity for
+ * the same node later flips it to "resolved" (promoted_to_active).
+ */
+export interface MediaDeficitRecord {
+  id: string;
+  nodeId: string;
+  reason: string;
+  /** Always carries "insufficient_verifiable_media". */
+  blockingRequirements: string[];
+  /** Number of distinct, attributable, free-license images actually found (0–9). */
+  imagesFound: number;
+  /** Archives/queries actually searched (audit trail). */
+  searchesPerformed: string[];
+  state: "recorded" | "resolved";
+  outcome?: string;
+  createdAt: string;
+  resolvedAt?: string;
+}
+
 export interface ResearchCoverageEntry {
   entity: string;
   sites: string;
@@ -107,6 +130,7 @@ export interface NotesState {
   sourceMatrix: SourceMatrixEntry[];
   registry: RegistryEntry[];
   researchCoverage: ResearchCoverageEntry[];
+  mediaDeficits: MediaDeficitRecord[];
   nextStep: string;
   dodStatus: DodStatus | null;
 }

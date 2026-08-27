@@ -14,6 +14,8 @@ import {
   findNode,
   newId,
   updateDodStatus,
+  addMediaDeficit,
+  findMediaDeficit,
 } from "./notes.js";
 import {
   listEntities,
@@ -42,7 +44,7 @@ import {
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
-import type { NotesState, NodeType, OwnershipStatus, PlaceEntity } from "./types.js";
+import type { NotesState, NodeType, OwnershipStatus, PlaceEntity, MediaDeficitRecord } from "./types.js";
 
 // --- shared helpers ---
 
@@ -87,6 +89,7 @@ export function toolGetScopeState(args: { provinceId: string }) {
     provinceId: s.provinceId,
     discoveredNodes: s.discoveredNodes,
     activeEntities: s.activeEntities,
+    mediaDeficitNodes: s.mediaDeficitNodes,
     openCandidates: s.openCandidates,
     openConflicts: s.openConflicts,
     nextRequiredNode: s.nextRequiredNode,
@@ -150,6 +153,7 @@ export function toolGetNodeContext(args: { provinceId: string; nodeId: string })
   const entity = listEntities(args.provinceId).find((e) => e.id === args.nodeId);
   const status = nodeStatus(args.provinceId, node);
   const knownRelations = (entity?.entity.relations as any[]) ?? [];
+  const deficit = findMediaDeficit(state, args.nodeId);
   return {
     nodeId: node.nodeId,
     nodeType: node.nodeType,
@@ -160,6 +164,10 @@ export function toolGetNodeContext(args: { provinceId: string; nodeId: string })
     knownRelations: knownRelations.map((r) => ({ placeId: r?.placeId, relationType: r?.relationType })),
     completedDiscoveryTracks: status.completedDiscovery,
     pendingDiscoveryTracks: status.pendingDiscovery,
+    mediaDeficit: status.mediaDeficit,
+    mediaDeficitDetail: deficit
+      ? { reason: deficit.reason, imagesFound: deficit.imagesFound, searchesPerformed: deficit.searchesPerformed, createdAt: deficit.createdAt }
+      : null,
   };
 }
 
@@ -330,6 +338,101 @@ export function toolResolveCandidate(args: { provinceId: string; candidateId: st
   }
   writeNotes(state);
   return { candidateId: args.candidateId, outcome: args.outcome, resolved: true };
+}
+
+// ============================================================================
+// 8b. mark_node_media_deficit — §9 disposition: close an entity node that
+// cannot meet the 10-image media bar after an exhaustive search.
+// ============================================================================
+
+/** Node types that legitimately own a place-schema JSON entity. */
+const MEDIA_DEFICIT_ENTITY_TYPES: NodeType[] = ["province", "county", "city", "village", "place", "camping"];
+
+export function toolMarkNodeMediaDeficit(args: {
+  provinceId: string;
+  nodeId: string;
+  reason: string;
+  imagesFound: number;
+  searchesPerformed?: string[];
+}) {
+  const state = readNotes(args.provinceId);
+  const node = findNode(state, args.nodeId);
+  if (!node) {
+    throw new Error(`Node '${args.nodeId}' is not registered for province '${args.provinceId}'.`);
+  }
+  if (!MEDIA_DEFICIT_ENTITY_TYPES.includes(node.nodeType)) {
+    throw new Error(`mark_node_media_deficit is for entity-bearing nodes (${MEDIA_DEFICIT_ENTITY_TYPES.join(", ")}); node '${args.nodeId}' is a ${node.nodeType}.`);
+  }
+  if (state.registry.some((r) => r.id === args.nodeId && r.status === "active")) {
+    throw new Error(`Node '${args.nodeId}' already has an active entity; the media-deficit disposition is only for nodes WITHOUT an active entity.`);
+  }
+  if (findMediaDeficit(state, args.nodeId)) {
+    throw new Error(`Node '${args.nodeId}' already has a recorded media-deficit disposition.`);
+  }
+  const imagesFound = Number(args.imagesFound);
+  if (!Number.isInteger(imagesFound) || imagesFound < 0 || imagesFound > 9) {
+    throw new Error("imagesFound must be an integer between 0 and 9 — a node with 10+ distinct attributable free-license images MUST be saved as an active entity, not marked deficit.");
+  }
+  const reason = String(args.reason ?? "").trim();
+  if (!reason) {
+    throw new Error("reason is required: document which archives were searched exhaustively and why the available images do not belong to this node.");
+  }
+  const searchesPerformed = (args.searchesPerformed ?? []).map((s) => String(s).trim()).filter(Boolean);
+  if (searchesPerformed.length === 0) {
+    throw new Error("searchesPerformed is required: list the archives/queries actually run (e.g. Wikimedia Commons category, geosearch, Flickr CC).");
+  }
+
+  // DFS enforcement: the disposition may only be placed on the current required
+  // node, same as mark_node_complete — siblings later in the traversal stay closed.
+  const current = nextRequiredNode(args.provinceId);
+  if (current && current.nodeId !== args.nodeId) {
+    const branch = getCurrentBranch(args.provinceId);
+    const branchPath = branch.map((n) => `${n.nodeId}(${n.nodeType})`).join(" → ");
+    throw new Error(
+      `DFS ORDER VIOLATION: Cannot mark '${args.nodeId}' media-deficit — it is not the current required node. ` +
+      `Current required node: '${current.nodeId}' (${current.nodeType}). ` +
+      `Current branch: ${branchPath}. ` +
+      `You MUST complete '${current.nodeId}' first.`,
+    );
+  }
+
+  // All other completion conditions still apply: discovery tracks closed, no
+  // open candidates/conflicts on the node. The only thing waived is the active
+  // entity itself.
+  const before = nodeStatus(args.provinceId, node);
+  const remaining = before.blockingReasons.filter((r) => r !== "entity not saved as active");
+  if (remaining.length > 0) {
+    throw new Error(
+      `Cannot mark '${args.nodeId}' media-deficit: close these first: ${remaining.join("; ")}. ` +
+      `(The media-deficit disposition only waives the missing active entity — it never waives discovery, candidates or conflicts.)`,
+    );
+  }
+
+  const record: MediaDeficitRecord = {
+    id: newId("def"),
+    nodeId: args.nodeId,
+    reason,
+    blockingRequirements: ["insufficient_verifiable_media"],
+    imagesFound,
+    searchesPerformed,
+    state: "recorded",
+    createdAt: new Date().toISOString(),
+  };
+  addMediaDeficit(state, record);
+  upsertNode(state, { ...node, state: "media_deficit" });
+  state.nextStep = `Marked ${args.nodeId} (${node.nodeType}, ${node.canonicalName}) media-deficit (${imagesFound}/10 free images). Continue DFS with the next required node.`;
+  writeNotes(state);
+
+  const next = nextRequiredNode(args.provinceId);
+  return {
+    recorded: true,
+    dispositionId: record.id,
+    nodeId: args.nodeId,
+    nodeState: "media_deficit",
+    imagesFound,
+    note: "Node closed WITHOUT a JSON file (no fabricated data). DFS will move to the next node; mark_node_complete is not needed for this node. If 10+ attributable free images are ever found, save_active_entity for this node flips the disposition to resolved.",
+    nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
+  };
 }
 
 // ============================================================================
@@ -658,6 +761,12 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
 
   const openCandidates = state.candidates.filter((c) => c.state === "open");
   const unresolvedConflicts = state.conflicts.filter((c) => c.state === "open");
+  const mediaDeficitNodes = state.mediaDeficits
+    .filter((d) => d.state === "recorded")
+    .map((d) => {
+      const n = state.nodes.find((x) => x.nodeId === d.nodeId);
+      return { nodeId: d.nodeId, nodeType: n?.nodeType ?? null, name: n?.canonicalName ?? "", imagesFound: d.imagesFound };
+    });
 
   const invalidRelations: string[] = [];
   const knownIds = new Set(listEntities(args.provinceId).map((e) => e.id));
@@ -706,6 +815,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   return {
     complete,
     missingAdministrativeNodes,
+    mediaDeficitNodes,
     openCandidates: openCandidates.map((c) => c.id),
     unresolvedConflicts: unresolvedConflicts.map((c) => c.id),
     invalidRelations,
@@ -866,6 +976,7 @@ export function toolListPendingNodes(args: { provinceId: string }) {
       canonicalName: n.canonicalName,
       parentNodeId: n.parentNodeId,
       entityActive: st.entityActive,
+      mediaDeficit: st.mediaDeficit,
       pendingDiscovery: st.pendingDiscovery,
       openCandidates: st.openCandidates,
       openConflicts: st.openConflicts,

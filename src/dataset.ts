@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { safeJoin, assertProvinceId, assertEntityId } from "./config.js";
-import { provinceDir, readNotes, writeNotes, upsertNode, upsertRegistry, findNode } from "./notes.js";
+import { provinceDir, readNotes, writeNotes, upsertNode, upsertRegistry, findNode, resolveMediaDeficit } from "./notes.js";
 import type { NotesState, NodeType, NodeRecord, PlaceEntity, RegistryEntry } from "./types.js";
 
 export interface StoredEntity {
@@ -153,6 +153,9 @@ export function canonicalPath(provinceId: string, state: NotesState, entity: Pla
 
 export function saveEntity(provinceId: string, entity: PlaceEntity, expectedNodeId: string, canonicalPathResult: CanonicalPathResult): void {
   writeEntityFile(canonicalPathResult.absPath, entity);
+  // Re-read fresh state: other tools (e.g. mark_node_media_deficit,
+  // create_candidate) may have mutated notes after the caller's state was
+  // loaded. Writing a stale copy would silently drop those records.
   const state = readNotes(provinceId);
   const nodeType = entityNodeType(entity);
   const existing = findNode(state, entity.id);
@@ -173,6 +176,9 @@ export function saveEntity(provinceId: string, entity: PlaceEntity, expectedNode
     subType: entity.subType as string | undefined,
   };
   upsertRegistry(state, entry);
+  // If this node was previously closed via the §9 media-deficit disposition,
+  // earning a real active entity flips it to resolved (no stale deficit).
+  resolveMediaDeficit(state, entity.id);
   writeNotes(state);
 }
 

@@ -11,6 +11,7 @@ import type {
   SourceMatrixEntry,
   RegistryEntry,
   ResearchCoverageEntry,
+  MediaDeficitRecord,
   OwnershipStatus,
 } from "./types.js";
 
@@ -42,6 +43,7 @@ function emptyState(provinceId: string): NotesState {
     sourceMatrix: [],
     registry: [],
     researchCoverage: [],
+    mediaDeficits: [],
     nextStep: "",
     dodStatus: null,
   };
@@ -118,6 +120,22 @@ function normalizeState(provinceId: string, p: Partial<NotesState>): NotesState 
       }))
     : [];
 
+  // Restore full shape for media-deficit dispositions.
+  const mediaDeficits: MediaDeficitRecord[] = Array.isArray((p as Partial<NotesState>).mediaDeficits)
+    ? (((p as Partial<NotesState>).mediaDeficits ?? []) as Partial<MediaDeficitRecord>[]).map((d) => ({
+        id: d.id ?? "",
+        nodeId: d.nodeId ?? "",
+        reason: d.reason ?? "",
+        blockingRequirements: d.blockingRequirements ?? ["insufficient_verifiable_media"],
+        imagesFound: typeof d.imagesFound === "number" ? d.imagesFound : 0,
+        searchesPerformed: Array.isArray(d.searchesPerformed) ? d.searchesPerformed : [],
+        state: d.state === "resolved" ? "resolved" : "recorded",
+        outcome: d.outcome,
+        createdAt: d.createdAt ?? "",
+        resolvedAt: d.resolvedAt,
+      }))
+    : [];
+
   return {
     provinceId: provinceId,
     lastUpdate: p.lastUpdate ?? base.lastUpdate,
@@ -129,6 +147,7 @@ function normalizeState(provinceId: string, p: Partial<NotesState>): NotesState 
     sourceMatrix: Array.isArray(p.sourceMatrix) ? p.sourceMatrix : [],
     registry: Array.isArray(p.registry) ? p.registry : [],
     researchCoverage: Array.isArray(p.researchCoverage) ? p.researchCoverage : [],
+    mediaDeficits,
     nextStep: p.nextStep ?? "",
     dodStatus: p.dodStatus ?? null,
   };
@@ -151,14 +170,15 @@ function renderProgressTable(nodes: NodeRecord[]): string {
     if (!m) continue;
     const total = [...m.values()].reduce((a, b) => a + b, 0);
     const c = m.get("complete") ?? 0;
+    const md = m.get("media_deficit") ?? 0;
     const ip = m.get("in_progress") ?? 0;
     const rr = m.get("research_required") ?? 0;
-    rows.push(`| ${t} | ${total} | ${c} | ${ip} | ${rr} |`);
+    rows.push(`| ${t} | ${total} | ${c} | ${md} | ${ip} | ${rr} |`);
   }
   if (rows.length === 0) return "- (no nodes)";
   return [
-    "| type | total | ✓ done | ⟳ wip | ⊘ pending |",
-    "|---|---:|---:|---:|---:|",
+    "| type | total | ✓ done | 📷 media-deficit | ⟳ wip | ⊘ pending |",
+    "|---|---:|---:|---:|---:|---:|",
     ...rows,
   ].join("\n");
 }
@@ -175,6 +195,8 @@ function renderActionableNodes(nodes: NodeRecord[]): string {
     if (n.nodeType === "province" || n.nodeType === "county") return true;
     // Show in-progress nodes of any type (agent is working on these)
     if (n.state === "in_progress") return true;
+    // Show media-deficit cities, villages, places (closed without a JSON file — audit-relevant)
+    if (n.state === "media_deficit" && ["city", "village", "place", "camping"].includes(n.nodeType)) return true;
     // Show complete cities, villages, places (these have actual entity files)
     if (n.state === "complete" && ["city", "village", "place", "camping"].includes(n.nodeType)) return true;
     return false;
@@ -240,6 +262,14 @@ function compactStateForStorage(state: NotesState): Record<string, unknown> {
   // Source matrix: keep last 50 entries to cap growth (older entries are audit-only)
   const recentSources = state.sourceMatrix.slice(-50);
 
+  // Media-deficit dispositions: recorded ones stay full (they document closed
+  // but file-less nodes); resolved ones keep audit fields only.
+  const compactDeficits = state.mediaDeficits.map((d) =>
+    d.state === "recorded"
+      ? d
+      : { id: d.id, nodeId: d.nodeId, imagesFound: d.imagesFound, state: d.state, outcome: d.outcome, resolvedAt: d.resolvedAt },
+  );
+
   return {
     provinceId: state.provinceId,
     lastUpdate: state.lastUpdate,
@@ -251,6 +281,7 @@ function compactStateForStorage(state: NotesState): Record<string, unknown> {
     sourceMatrix: recentSources,
     registry: state.registry,
     researchCoverage: state.researchCoverage.slice(-20),
+    mediaDeficits: compactDeficits,
     nextStep: state.nextStep,
     dodStatus: state.dodStatus,
   };
@@ -258,8 +289,9 @@ function compactStateForStorage(state: NotesState): Record<string, unknown> {
 
 /** Compute the current DFS branch inline (avoids circular dependency with graph.ts). */
 function computeCurrentBranch(state: NotesState): string {
-  // Find first incomplete node in DFS order
-  const incomplete = state.nodes.filter((n) => n.state !== "complete");
+  // Find first incomplete node in DFS order. A media_deficit node is a closed
+  // terminal state, same as complete.
+  const incomplete = state.nodes.filter((n) => n.state !== "complete" && n.state !== "media_deficit");
   if (incomplete.length === 0) return "(all complete)";
 
   // Simple heuristic: find the first incomplete node and build path to root
@@ -294,6 +326,15 @@ function renderMarkdown(state: NotesState): string {
 
   const currentBranch = computeCurrentBranch(state);
 
+  const recordedDeficits = state.mediaDeficits.filter((d) => d.state === "recorded");
+  const deficitLines = recordedDeficits
+    .map((d) => {
+      const n = state.nodes.find((x) => x.nodeId === d.nodeId);
+      const name = n?.canonicalName ?? "";
+      return `- ${d.nodeId} (${n?.nodeType ?? "?"}) ${name} — insufficient_verifiable_media (${d.imagesFound}/10 تصویر آزاد): ${d.reason}`;
+    })
+    .join("\n");
+
   return [
     `# Notes — ${state.provinceId}`,
     `- Updated: ${state.lastUpdate}`,
@@ -308,6 +349,9 @@ function renderMarkdown(state: NotesState): string {
     "",
     "## Registry",
     renderRegistryTable(state.registry),
+    "",
+    "## Media-deficit nodes (closed without JSON, §9)",
+    deficitLines || "- (none)",
     "",
     "## Open items",
     openItems || "- (none)",
@@ -421,6 +465,35 @@ export function upsertRegistry(state: NotesState, entry: RegistryEntry): void {
 
 export function addResearchCoverage(state: NotesState, entry: ResearchCoverageEntry): void {
   state.researchCoverage.push(entry);
+}
+
+// --- Media-deficit dispositions (prompt §9) ---
+
+/** Open (recorded) media-deficit disposition for a node, if any. Resolved (promoted) records are skipped. */
+export function findMediaDeficit(state: NotesState, nodeId: string): MediaDeficitRecord | undefined {
+  // Latest disposition wins, so a node that was recorded then promoted to active
+  // is treated as having no open deficit even though the resolved audit record remains.
+  for (let i = state.mediaDeficits.length - 1; i >= 0; i--) {
+    const d = state.mediaDeficits[i];
+    if (d.nodeId !== nodeId) continue;
+    return d.state === "recorded" ? d : undefined;
+  }
+  return undefined;
+}
+
+/** Record the insufficient_verifiable_media disposition for a node (closes it). */
+export function addMediaDeficit(state: NotesState, record: MediaDeficitRecord): void {
+  state.mediaDeficits.push(record);
+}
+
+/** Clear the recorded disposition when the node later earns an active entity. */
+export function resolveMediaDeficit(state: NotesState, nodeId: string): boolean {
+  const d = findMediaDeficit(state, nodeId);
+  if (!d) return false;
+  d.state = "resolved";
+  d.outcome = "promoted_to_active";
+  d.resolvedAt = new Date().toISOString();
+  return true;
 }
 
 // --- DoD Status ---

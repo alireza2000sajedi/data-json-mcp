@@ -10,6 +10,7 @@ import {
   toolRecordSearchResult,
   toolCreateCandidate,
   toolResolveCandidate,
+  toolMarkNodeMediaDeficit,
   toolSaveActiveEntity,
   toolLinkEntities,
   toolUpdateNotes,
@@ -119,6 +120,19 @@ export function createServer(): McpServer {
     "Resolve an open candidate with an outcome.",
     { provinceId: z.string().min(1), candidateId: z.string().min(1), outcome: z.enum(["promoted_to_active", "not_found_after_research", "duplicate_of_entity", "out_of_scope", "needs_more_research"]) },
     toolResolveCandidate,
+  );
+
+  register(
+    "mark_node_media_deficit",
+    "§9 disposition: close the CURRENT required entity node WITHOUT a JSON file when an exhaustive search of free-license archives found fewer than 10 attributable images. Requires imagesFound (0-9), reason, and searchesPerformed list. All discovery tracks must be complete and no open candidates/conflicts remain. The node counts as done for DFS/DoD; saving a real active entity for it later auto-resolves the disposition.",
+    {
+      provinceId: z.string().min(1),
+      nodeId: z.string().min(1),
+      reason: z.string().min(1),
+      imagesFound: z.number().int().min(0).max(9),
+      searchesPerformed: z.array(z.string().min(1)).min(1),
+    },
+    toolMarkNodeMediaDeficit,
   );
 
   register(

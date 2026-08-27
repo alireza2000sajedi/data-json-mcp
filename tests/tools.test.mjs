@@ -429,6 +429,227 @@ test("DoD refuses completion when a declared county count is unmet", async () =>
   );
 });
 
+/**
+ * Seed: province complete, county complete, a poor-media city (Teymurlu-like)
+ * with its discovery tracks closed, and a village sibling behind it in DFS.
+ * Returns the notes module.
+ */
+async function seedDeficitScenario() {
+  const notes = await import("../dist/notes.js");
+  const { readNotes, writeNotes, upsertNode, upsertRegistry, completeDiscoveryTask } = notes;
+
+  let state = readNotes("province-30");
+  upsertNode(state, { nodeId: "province-30", nodeType: "province", canonicalName: "همدان", parentNodeId: null, state: "complete" });
+  upsertRegistry(state, { id: "province-30", slug: "prov", path: "province.json", status: "active", name: "همدان", type: "other", subType: "province" });
+  completeDiscoveryTask(state, "province-30", "counties", 1);
+  completeDiscoveryTask(state, "province-30", "provincePlaces", 0);
+  completeDiscoveryTask(state, "province-30", "camping", 0);
+
+  upsertNode(state, { nodeId: "county-30-1", nodeType: "county", canonicalName: "فامنین", parentNodeId: "province-30", state: "complete" });
+  upsertRegistry(state, { id: "county-30-1", slug: "county", path: "county-30-1/county.json", status: "active", name: "فامنین", type: "other", subType: "county" });
+  // 1 district + 1 rural district as structural nodes (cities/villages parent to the county).
+  upsertNode(state, { nodeId: "district-30-1", nodeType: "district", canonicalName: "بخش مرکزی", parentNodeId: "county-30-1", state: "complete" });
+  upsertNode(state, { nodeId: "ruralDistrict-30-1", nodeType: "ruralDistrict", canonicalName: "دهستان فامنین", parentNodeId: "county-30-1", state: "complete" });
+  // The poor-media city (Teymurlu-like) and the village sibling, registered before counts are declared.
+  upsertNode(state, { nodeId: "city-30-2", nodeType: "city", canonicalName: "تیمورلو", parentNodeId: "county-30-1", state: "research_required" });
+  upsertNode(state, { nodeId: "village-30-v1", nodeType: "village", canonicalName: "روستای آزمون", parentNodeId: "county-30-1", state: "research_required" });
+  completeDiscoveryTask(state, "district-30-1", "ruralDistricts", 0);
+  completeDiscoveryTask(state, "district-30-1", "cities", 0);
+  completeDiscoveryTask(state, "district-30-1", "villages", 0);
+  completeDiscoveryTask(state, "district-30-1", "places", 0);
+  completeDiscoveryTask(state, "ruralDistrict-30-1", "villages", 0);
+  completeDiscoveryTask(state, "ruralDistrict-30-1", "places", 0);
+  for (const t of ["districts", "ruralDistricts", "cities", "villages", "countyPlaces", "camping"]) completeDiscoveryTask(state, "county-30-1", t, t === "districts" || t === "ruralDistricts" || t === "cities" || t === "villages" ? 1 : 0);
+
+  // city with no entity, discovery closed (0 places, 0 camping)
+  completeDiscoveryTask(state, "city-30-2", "places", 0);
+  completeDiscoveryTask(state, "city-30-2", "camping", 0);
+  writeNotes(state);
+  return notes;
+}
+
+test("mark_node_media_deficit closes a poor-media node without JSON and advances DFS (§9)", async () => {
+  const { toolMarkNodeMediaDeficit, toolListPendingNodes, toolCheckDefinitionOfDone } = await import("../dist/tools.js");
+  await seedDeficitScenario();
+
+  const r = toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    reason: "پس از جستجوی کامل فقط ۳ تصویر آزاد منتسب به خود شهر پیدا شد؛ بقیه نتایج متعلق به ممقان و روستاهای مجاور است.",
+    imagesFound: 3,
+    searchesPerformed: [
+      "Wikimedia Commons category search: Teymurlu",
+      "Commons geosearch within 3km",
+      "Flickr CC search",
+      "Wiki Loves Monuments Iran list",
+    ],
+  });
+  assert.equal(r.recorded, true, JSON.stringify(r));
+  assert.equal(r.nodeState, "media_deficit");
+
+  // No JSON file was written for the city.
+  const { listEntities } = await import("../dist/dataset.js");
+  const ids = listEntities("province-30").map((e) => e.id);
+  assert.ok(!ids.includes("city-30-2"), "no fabricated entity file");
+
+  // DFS moved past the city to the next sibling.
+  const pending = toolListPendingNodes({ provinceId: "province-30" });
+  assert.equal(pending.pending, 1, JSON.stringify(pending.nodes));
+  assert.equal(pending.nodes[0].nodeId, "village-30-v1", "DFS must skip the closed city and reach the village");
+  const cityRow = pending.nodes.find(() => false); // closed node is not in pending list
+  assert.equal(cityRow, undefined);
+
+  // The disposition is visible and auditable in scope state.
+  const { getScopeState } = await import("../dist/graph.js");
+  const scope = getScopeState("province-30");
+  assert.equal(scope.mediaDeficitNodes.length, 1);
+  assert.equal(scope.mediaDeficitNodes[0].nodeId, "city-30-2");
+  assert.equal(scope.mediaDeficitNodes[0].imagesFound, 3);
+  assert.ok(!scope.blockingReasons.some((b) => b.includes("city-30-2")), "closed deficit node must not block DoD");
+
+  // get_node_context exposes the disposition.
+  const { toolGetNodeContext } = await import("../dist/tools.js");
+  const ctx = toolGetNodeContext({ provinceId: "province-30", nodeId: "city-30-2" });
+  assert.equal(ctx.mediaDeficit, true);
+  assert.equal(ctx.mediaDeficitDetail.imagesFound, 3);
+});
+
+test("DoD passes with media-deficit nodes reported transparently", async () => {
+  const { toolMarkNodeMediaDeficit, toolCheckDefinitionOfDone } = await import("../dist/tools.js");
+  await seedDeficitScenario();
+
+  // Close the poor-media city via §9.
+  toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    reason: "فقط ۲ تصویر آزاد منتسب.",
+    imagesFound: 2,
+    searchesPerformed: ["Commons category", "Commons geosearch"],
+  });
+
+  // Close the remaining village the same way (it has discovery tracks open too).
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.completeDiscoveryTask(state, "village-30-v1", "places", 0);
+  notes.completeDiscoveryTask(state, "village-30-v1", "camping", 0);
+  notes.writeNotes(state);
+
+  // village is not the required node until city-30-2 is closed; now it is.
+  const r2 = toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "village-30-v1",
+    reason: "روستای دورافتاده بدون تصویر آزاد منتسب.",
+    imagesFound: 0,
+    searchesPerformed: ["Commons geosearch", "Flickr CC"],
+  });
+  assert.equal(r2.recorded, true);
+
+  const dod = toolCheckDefinitionOfDone({ provinceId: "province-30" });
+  assert.equal(dod.complete, true, JSON.stringify(dod));
+  assert.equal(dod.mediaDeficitNodes.length, 2, "deficit nodes are reported, not hidden");
+});
+
+test("mark_node_media_deficit guards: active entity, imagesFound>=10, open discovery, DFS order", async () => {
+  const { toolMarkNodeMediaDeficit, toolUpdateNotes } = await import("../dist/tools.js");
+  await seedDeficitScenario();
+
+  // imagesFound out of range.
+  assert.throws(
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 10, searchesPerformed: ["a"] }),
+    /imagesFound must be an integer between 0 and 9/,
+  );
+  // Missing searchesPerformed.
+  assert.throws(
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: [] }),
+    /searchesPerformed/,
+  );
+  // Out of DFS order (village while the city is the required node).
+  assert.throws(
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "village-30-v1", reason: "x", imagesFound: 0, searchesPerformed: ["a"] }),
+    /DFS ORDER VIOLATION/,
+  );
+  // Node with open discovery tracks cannot be marked (reopen the city's tracks).
+  const notesReopen = await import("../dist/notes.js");
+  let rs = notesReopen.readNotes("province-30");
+  rs.discoveryTasks = rs.discoveryTasks.filter((t) => t.nodeId !== "city-30-2");
+  notesReopen.writeNotes(rs);
+  assert.throws(
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] }),
+    /discovery/,
+  );
+
+  // Close discovery, then succeed.
+  for (const track of ["places", "camping"]) {
+    toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "city-30-2", track, count: 0 } });
+  }
+  const ok = toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] });
+  assert.equal(ok.recorded, true);
+
+  // Double-marking is refused.
+  assert.throws(
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] }),
+    /already has a recorded media-deficit/,
+  );
+});
+
+test("saving an active entity auto-resolves a recorded media-deficit disposition", async () => {
+  const { toolMarkNodeMediaDeficit, toolSaveActiveEntity, toolGetNodeContext, toolRecordSearchResult } = await import("../dist/tools.js");
+  await seedDeficitScenario();
+
+  toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    reason: "فقط ۳ تصویر.",
+    imagesFound: 3,
+    searchesPerformed: ["Commons category", "Commons geosearch"],
+  });
+  const notes = await import("../dist/notes.js");
+  assert.equal(notes.findMediaDeficit(notes.readNotes("province-30"), "city-30-2").state, "recorded");
+
+  // Later, the agent finds 10+ attributable images and saves the real city entity.
+  const { makeCity } = await import("./helpers.mjs");
+  // Register the entity id under the county so its canonical path resolves.
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { ...notes.findNode(state, "city-30-2"), state: "in_progress" });
+  notes.writeNotes(state);
+  // Record the evidence source against this node (quality gate requirement).
+  toolRecordSearchResult({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    query: "تیمورلو",
+    sourceUrl: "https://example.com/famnin",
+    sourceTitle: "Example",
+    resultSummary: "منبع آزمون برای شهر تیمورلو",
+    ownershipStatus: "belongs_to_node",
+  });
+  const city = makeCity({
+    id: "city-30-2",
+    slug: "teymurlu-city",
+    name: { fa: "تیمورلو" },
+    location: {
+      country: "Iran",
+      province: "همدان",
+      county: "فامنین",
+      city: "تیمورلو",
+      coordinates: { latitude: 37.8, longitude: 45.9 },
+      address: { full: "شهر تیمورلو" },
+    },
+  });
+  const save = toolSaveActiveEntity({ provinceId: "province-30", entity: city, expectedNodeId: city.id });
+  assert.equal(save.accepted, true, JSON.stringify(save.errors ?? save));
+
+  // The open disposition is gone (promoted); the audit record remains as resolved.
+  const s4 = notes.readNotes("province-30");
+  assert.equal(notes.findMediaDeficit(s4, "city-30-2"), undefined, "no OPEN deficit after promotion");
+  const audit = s4.mediaDeficits.find((d) => d.nodeId === "city-30-2");
+  assert.equal(audit.state, "resolved");
+  assert.equal(audit.outcome, "promoted_to_active");
+  const node = notes.findNode(s4, "city-30-2");
+  assert.equal(node.state, "complete");
+  const ctx = toolGetNodeContext({ provinceId: "province-30", nodeId: "city-30-2" });
+  assert.equal(ctx.mediaDeficit, false);
+});
+
 test("complete_discovery_task rejects a missing count for countable tracks", async () => {
   const { toolUpdateNotes } = await import("../dist/tools.js");
   const notes = await import("../dist/notes.js");
