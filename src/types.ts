@@ -69,6 +69,37 @@ export interface SourceMatrixEntry {
   resultSummary: string;
   ownershipStatus: OwnershipStatus;
   discoveredNames?: string[];
+  /** Policy classification, filled automatically by record_search_result. */
+  sourceClass?: "primary" | "fallback" | "other";
+  sourceDomain?: string;
+  sourceName?: string;
+  sourcePriority?: number;
+}
+
+/**
+ * A single image found during media discovery (best-effort pipeline,
+ * prompt §9). Agents record every candidate they find via
+ * record_media_candidate; finalize_media then ranks, deduplicates and picks
+ * the best set for save_active_entity. Nothing found is ever discarded just
+ * because it is below the target count.
+ */
+export interface MediaCandidate {
+  id: string;
+  nodeId: string;
+  /** Direct raw HTTPS URL of the image file itself. */
+  imageUrl: string;
+  /** Page hosting / licensing the image (credit + license context). */
+  pageUrl: string;
+  source: string;
+  credit: string;
+  license: string;
+  alt: string;
+  caption: string;
+  /** Agent's relevance/quality score, 0..1 (default 0.5). */
+  score: number;
+  sourceClass?: "primary" | "fallback" | "other";
+  sourceDomain?: string;
+  createdAt: string;
 }
 
 export interface RegistryEntry {
@@ -82,11 +113,12 @@ export interface RegistryEntry {
 }
 
 /**
- * Auditable disposition for an entity-bearing node that could not meet the
- * active-entity media requirement (10–20 free-license images) after an
- * exhaustive search (prompt §9). The node is CLOSED without a JSON file;
- * "recorded" is a terminal, non-blocking state. Saving an active entity for
- * the same node later flips it to "resolved" (promoted_to_active).
+ * Auditable disposition for an entity-bearing node that is closed WITHOUT a
+ * JSON file. Under the best-effort media policy a lack of images alone is NOT
+ * a reason to use this path (0 images → save WITHOUT media, status
+ * "unavailable"); it is reserved for nodes where no valid entity data at all
+ * could be gathered. "recorded" is a terminal, non-blocking state; saving an
+ * active entity for the same node later flips it to "resolved".
  */
 export interface MediaDeficitRecord {
   id: string;
@@ -94,7 +126,7 @@ export interface MediaDeficitRecord {
   reason: string;
   /** Always carries "insufficient_verifiable_media". */
   blockingRequirements: string[];
-  /** Number of distinct, attributable, free-license images actually found (0–9). */
+  /** Audit: number of usable images actually found (0..20). */
   imagesFound: number;
   /** Archives/queries actually searched (audit trail). */
   searchesPerformed: string[];
@@ -136,6 +168,7 @@ export interface NotesState {
   candidates: Candidate[];
   conflicts: Conflict[];
   sourceMatrix: SourceMatrixEntry[];
+  mediaCandidates: MediaCandidate[];
   registry: RegistryEntry[];
   researchCoverage: ResearchCoverageEntry[];
   mediaDeficits: MediaDeficitRecord[];

@@ -180,3 +180,19 @@ export async function seedProvinceHierarchy(provinceId = "province-30") {
   notes.writeNotes(state);
   return notes;
 }
+
+/** Seed recorded searches on the mandatory primary sources for a node (coverage). */
+export function addPrimarySourceCoverage(notes, state, nodeId, count = 5) {
+  const domains = ["kojaro.com", "jabama.com", "alibaba.ir", "lastsecond.ir", "flytoday.ir"];
+  for (let i = 0; i < count; i++) {
+    notes.addSourceMatrixEntry(state, {
+      id: `cov-${nodeId}-${i}`,
+      nodeId,
+      query: `coverage ${i}`,
+      sourceUrl: `https://www.${domains[i % domains.length]}/${nodeId}/${i}`,
+      sourceTitle: "Primary source",
+      resultSummary: "searched",
+      ownershipStatus: "belongs_to_node",
+    });
+  }
+}

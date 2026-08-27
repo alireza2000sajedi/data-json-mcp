@@ -730,6 +730,11 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "status": {
+          "type": "string",
+          "description": "وضعیت رسانه (خودکار از تعداد تصاویر متمایز نسبت به هدفِ نوع Entity استخراج می‌شود): complete = رسیدن به هدف (استان/شهرستان/شهر/مکان ۱۰، روستا ۳) | partial = بین ۱ تا هدف-۱ | unavailable = هیچ تصویر قابل‌انتسابی پیدا نشد (Entity بدون media ذخیره می‌شود).",
+          "enum": ["complete", "partial", "unavailable"]
+        },
         "thumbnail": {
           "$ref": "#/$defs/mediaItem"
         },
@@ -738,7 +743,7 @@
           "items": {
             "$ref": "#/$defs/mediaItem"
           },
-          "description": "از ۰ تا حداکثر ۲۰ لینک مستقیم تصویر مرتبط و غیرتکراری. حداقل برای status=active بر اساس نوع Entity است: روستا/مکان/کمپینگ ۳، شهر/شهرستان ۵، استان ۱۰. تصاویر وب (جستجوی تصویر گوگل/بینگ، سایت‌های گردشگری و خبری) با کردیت و sourceUrl معتبر و لایسنس all-rights-reserved پذیرفته می‌شود؛ لایسنس آزاد الزامی نیست.",
+          "description": "۰ تا حداکثر ۲۰ لینک مستقیم تصویر مرتبط و غیرتکراری (سیاست Best-Effort §9). هدف (target): استان/شهرستان/شهر/مکان/کمپینگ ۱۰ تصویر، روستا ۳ تصویر؛ هر تعداد پیدا شده (حتی ۱ تصویر) ذخیره می‌شود (status=partial) و نباید دور انداخته شود؛ ۰ تصویر = ذخیره بدون media با status=unavailable. تصاویر وب (جستجوی تصویر گوگل/بینگ، سایت‌های گردشگری و خبری) با کردیت و sourceUrl معتبر و لایسنس all-rights-reserved پذیرفته می‌شود.",
           "minItems": 0,
           "maxItems": 20
         },
@@ -1660,107 +1665,18 @@
         ]
       },
       "then": {
-        "required": [
-          "media"
-        ],
-        "properties": {
-          "media": {
-            "required": [
-              "thumbnail",
-              "images"
-            ],
-            "properties": {
-              "images": {
-                "minItems": 3
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "status": {
-            "const": "active"
-          },
-          "type": {
-            "const": "city"
-          }
-        },
-        "required": [
-          "status",
-          "type"
-        ]
-      },
-      "then": {
         "properties": {
           "media": {
             "properties": {
+              "status": {
+                "enum": [
+                  "complete",
+                  "partial",
+                  "unavailable"
+                ]
+              },
               "images": {
-                "minItems": 5
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "status": {
-            "const": "active"
-          },
-          "type": {
-            "const": "other"
-          },
-          "subType": {
-            "const": "county"
-          }
-        },
-        "required": [
-          "status",
-          "type",
-          "subType"
-        ]
-      },
-      "then": {
-        "properties": {
-          "media": {
-            "properties": {
-              "images": {
-                "minItems": 5
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "status": {
-            "const": "active"
-          },
-          "type": {
-            "const": "other"
-          },
-          "subType": {
-            "const": "province"
-          }
-        },
-        "required": [
-          "status",
-          "type",
-          "subType"
-        ]
-      },
-      "then": {
-        "properties": {
-          "media": {
-            "properties": {
-              "images": {
-                "minItems": 10
+                "maxItems": 20
               }
             }
           }

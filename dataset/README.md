@@ -165,14 +165,14 @@ County → District/Rural District discovery → Cities → Villages → named P
 قرارداد اجرای جاری، **Stage-Based** است (مرجع عملیاتی: `STAGED_WORKFLOW.md` در ریشهٔ ریپو):
 
 ```text
-Scope A (Province Discovery) → توقف → Scope B (Deep Research یک شهرستان/شهر) → توقف → Scope C (روستا) → توقف → Scope D (POI) → …
+Scope A (مرحلهٔ استان: ساختار + Entity استان) → سؤال «کدام شهرستان/شهر/روستا؟» → Scope B (Deep Research یک شهرستان/شهر + زیردرختش) → توقف → Scope C (روستا) → توقف → Scope D (POI) → …
 ```
 
 - هر اجرای Agent دقیقاً **یک Scope** دارد؛ پس از ذخیرهٔ فایل‌ها، Checkpoint و `completed`، اجرا متوقف می‌شود و برای Scope بعدی منتظر دستور کاربر می‌ماند.
 - `import_province_scopes` فهرست Scopeهای استان را از `input/{n}.json` با **idهای اختصاصیِ قطعی** می‌سازد. الگوها: `province-{n}`، `county-{p}-{n}`، `city-{p}-{n}`، `village-{p}-v{n}` (شمارهٔ شهر/روستا سراسریِ استان است تا نام‌های تکراری یکتا باشند) و بعداً `place-{p}-{n}`.
 - `set_active_scope` Scope انتخابی را قفل می‌کند: `nextRequiredNode`/DFS فقط روی زیردرخت همان Scope کار می‌کند و `mark_node_complete` خارج از آن با `SCOPE VIOLATION` رد می‌شود. والد/همسایه‌ها برای اجراهای بعدی pending می‌مانند.
 - Resume: ابتدا `get_scope_state`/`get_next_research_node` خوانده می‌شود؛ فقط Scope ناتمام بعدی اجرا می‌شود و هیچ فایل تکمیل‌شده‌ای دوباره تولید نمی‌شود.
-- در Scope A هیچ Deep Research، POI، Entity یا Query انجام نمی‌شود؛ فقط ساختار و idها ثبت می‌شوند.
+- در Scope A (مرحلهٔ استان) فقط Entity خودِ استان + مکان‌های سطح استان تحقیق و ذخیره می‌شود؛ Entity شهرستان/شهر/روستا ساخته نمی‌شود. پس از آن Agent متوقف می‌شود و می‌پرسد: «کدام شهرستان/شهر/روستا؟» (نام فارسی با `resolve_scope_name` به id تبدیل می‌شود).
 
 ## 4. مدل Entity و محل ذخیره
 
@@ -295,17 +295,25 @@ F. Costها و قیمت‌ها
 
 ## 7. منابع و Evidence
 
-منابع اولویت‌دار، محدودکننده نیستند:
+سیاست منبع (`dataset/source_policy.json`) — پنج منبع Primary اجباری به ترتیب اولویت:
+
+```text
+۱) Kojaro (kojaro.com)   ۲) Jabama Mag (jabama.com)   ۳) Alibaba Mag (alibaba.ir)
+۴) Lastsecond (lastsecond.ir)   ۵) Flytoday (flytoday.ir)
+```
+
+- Coverage اجباری (با `get_source_coverage` قابل‌استعلام و در DoD مسجل): هر نود استان/شهرستان/شهر/مکان/کمپینگ باید در همهٔ ۵ منبع Primary بررسی شده باشد (all)؛ هر روستا در حداقل ۲ منبع Primary.
+- Wikipedia / Wikimedia Commons فقط Fallback و Cross-check هستند و جای Primary را نمی‌گیرند؛ منابع خارج از سیاست (`other`) فقط با ثبت دلیل.
+- منابع مکمل (بدون جایگزینی Primaryها):
 
 ```text
 وب‌سایت‌های رسمی و دولتی، منابع محلی، Google Maps، OpenStreetMap، Nominatim,
-Wikidata، Wikimedia Commons، Wikipedia، UNESCO، Kojaro، Alibaba Mag، Jabama Mag,
-Lastsecond، Flytoday، Eghamat24، Safarmarket، Kite، Mojekooh، Otaghak، MrBilit
+Wikidata، Wikimedia Commons، Wikipedia، UNESCO، Eghamat24، Safarmarket، Kite، Mojekooh، Otaghak، MrBilit
 ```
 
 - Address و Population: اولویت با رسمی/دولتی و منبع محلی.
 - Coordinates: Nominatim، OpenStreetMap و Google Maps همگی جست‌وجو و Cross-check می‌شوند؛ اولویت تصمیم: Nominatim → OSM → Google Maps.
-- برای هر Entity حداقل ۵ سایت متفاوت به‌صورت تصادفی از Kojaro، Alibaba Mag، Jabama Mag، Lastsecond، Flytoday، Eghamat24، Safarmarket، Kite، Mojekooh، Otaghak و MrBilit بررسی می‌شوند.
+- ترتیب جستجوی هر Entity: ابتدا ۵ منبع Primary به ترتیب اولویت (Kojaro → Jabama → Alibaba → Lastsecond → Flytoday) و سپس منابع مکمل؛ نتیجهٔ هر Primary (حتی not-found) با record_search_result ثبت می‌شود و در شمارش Coverage همان Entity حساب می‌شود.
 - برای جلوگیری از حجیم‌شدن notes، برای هر Entity فقط یک ردیف فشرده ثبت شود: `entity ID | 5 sites | query codes | found/not-found/not-relevant`. URL و جزئیات فقط برای Sourceهای واقعی/متناقض ثبت می‌شوند.
 - برای Scope دست‌کم ۱۰ منبع متنوع بررسی می‌شود. برای هر Entity همهٔ Sourceهای واقعی و مرتبط ثبت می‌شوند؛ POI کوچک ممکن است یک Source معتبر داشته باشد، اما Fact حساس Cross-check می‌خواهد.
 - هر Fact مهم باید در `evidence` به Source واقعی خودش وصل شود. `evidence[].sourceUrl` باید دقیقاً یکی از `sources[].url` باشد.
@@ -400,18 +408,22 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 - از کلیشه‌های صنعت سفر و ساختارهای رباتی مانند «تجربه‌ای ... فراهم می‌کند»، «مقصدی ایده‌آل»، «مکان جادویی» و خطاب تبلیغاتی پرهیز کن. متن طبیعی و مشخص بنویس.
 - نام‌بردن از مکان، غذا، اقامتگاه یا فعالیت دیگر فقط وقتی مجاز است که برای آن Entity مستقل یا Candidate مستند در notes وجود داشته باشد.
 
-## 12. Media و حق کپی‌رایت
+## 12. Media و حق کپی‌رایت — سیاست Best-Effort
 
-- هر Entity از ۰ تا حداکثر ۲۰ تصویر مستقیم، مرتبط و غیرتکراری دارد.
-- حداقل تصویر برای `status: active` بر اساس نوع Entity است: روستا، مکان (POI) و کمپینگ ۳ تصویر؛ شهر و شهرستان ۵ تصویر؛ استان ۱۰ تصویر — به‌همراه Thumbnail.
-- منبع تصویر فقط ویکی‌مدیا نیست: جستجوی تصویر وب (Google/Bing Images)، سایت‌های گردشگری فارسی، خبرگزاری‌ها، سایت‌های رسمی مکان‌ها و وبلاگ‌های معتبر مجازند.
-- اولویت انتخاب: Wikimedia Commons / Wikipedia → CC یا Public Domain روشن → تصاویر وب با لایسنس `all-rights-reserved` (با کردیت کامل و sourceUrl صفحهٔ منبع).
-- Entity با تصاویر کمتر از حداقلِ نوع خود نباید JSON ذخیره‌شده داشته باشد؛ جستجوی تصویر (هم Commons و هم جستجوی تصویر وب) باید تا رسیدن به حداقلِ نوع ادامه یابد و فقط پس از اثبات کمبودِ هر دو منبع، مسیر شرعی §9 پرامپت (`mark_node_media_deficit`) اجرا می‌شود.
-- برای رسیدن به حداقل، عکس تکراری، نامرتبط یا غیرقابل‌انتساب اضافه نکن.
+- رسانه Best-Effort است: «هدف» (target) از «حداقلِ قابل‌ذخیره» جدا است و هیچ Entity به‌خاطر کم‌بودن عکس discard نمی‌شود.
+- هدف تصویر متمایز (Best-Effort، غیرمسدودکننده): استان/شهرستان/شهر/مکان/کمپینگ = ۱۰ | روستا = ۳.
+- حداقلِ قابل‌ذخیره: ۱ تصویر قابل‌انتساب — حتی ۱ عکس هم ذخیره می‌شود (`media.status = partial`).
+- سقف: ۲۰ تصویر؛ عکس‌های بیشتر از هدف تا سقف ۲۰ همه ذخیره می‌شوند (حذف «فقط بهترین‌ها» ممنوع).
+- بعد از جستجوی کامل رسانه هیچ عکسی پیدا نشد → Entity بدون `media` با `mediaStatus = unavailable` ذخیره می‌شود؛ دادهٔ فکت هرگز حذف نمی‌شود.
+- `media.status` (سه‌حالته، خودکار توسط `save_active_entity` تزریق می‌شود): `complete` (رسیده به هدف) | `partial` (۱ تا هدف منهای ۱) | `unavailable` (۰ عکس).
+- پایپ‌لاین رسانه: `record_media_candidate` (هر کاندید همان لحظه ثبت می‌شود؛ idempotent با nodeId+imageUrl؛ Audit Trail در notes) → جستجوی Exhaustive → `finalize_media` (dedupe + رتبه‌بندی: score + لایسنس آزاد + منبع Primary؛ تامبنیل متمایز از images مگر تنها ۱ تصویر باشد) → قرار دادن آبجکت در Entity و `save_active_entity`.
+- منبع تصویر فقط ویکی‌مدیا نیست: جستجوی تصویر وب (Google/Bing Images)، پنج منبع Primary سیاست منبع (§7)، خبرگزاری‌ها، سایت‌های رسمی مکان‌ها و وبلاگ‌های معتبر مجازند.
+- اولویت انتخاب: منابع Primary → Wikimedia Commons / Wikipedia → CC یا Public Domain روشن → تصاویر وب با لایسنس `all-rights-reserved` (با کردیت کامل و sourceUrl صفحهٔ منبع). لایسنس آزاد شرط نیست؛ شرط، قابل‌انتساب بودنِ واقعی تصویر به همان Entity است.
+- برای رسیدن به هدف، عکس تکراری، نامرتبط یا غیرقابل‌انتساب (همسایه/والد) اضافه نکن؛ عکس جعلی ممنوع.
 - دانلود تصویر ممنوع؛ فقط URL.
 - هر تصویر URL خام، alt، caption، source، sourceUrl، credit و license واقعی (مطابق enum اسکیما، شامل all-rights-reserved) دارد. photographer فقط اگر در Metadata واقعی موجود است ثبت می‌شود.
-- URL Thumbnail نباید در `images` دوباره تکرار شود.
 - Map می‌تواند Media کمکی باشد، اما Thumbnail باید تا حد ممکن یک تصویر واقعی و نمایندهٔ تجربهٔ مکان باشد.
+- `mark_node_media_deficit` فقط برای «نبودِ کل دادهٔ Entity» است؛ اگر حتی ۱ کاندید رسانهٔ usable ثبت شده باشد، ابزار رد می‌کند و مسیر صحیح `finalize_media` + ذخیرهٔ partial است.
 
 ## 13. هزینه‌های سفر و تورم
 
@@ -477,7 +489,7 @@ adjustedCost = baseCost × CPI[targetMonth][inflationCategory] ÷ CPI[priceAsOfM
 
 ```text
 - URL Markdown، URL غیر HTTPS یا &amp;
-- برای status=active: کمتر از حداقلِ نوع Entity (روستا/مکان/کمپینگ ۳، شهر/شهرستان ۵، استان ۱۰) یا بیشتر از ۲۰ تصویر، نبود Thumbnail یا URL تصویری تکراری
+- برای رسانه (ساختاری، Best-Effort): بیشتر از ۲۰ تصویر، داشتن images بدون Thumbnail، تکرار URL در images یا با Thumbnail، یا ناسازگاری media.status با تعداد واقعی تصاویر (کم‌بودن عکس خطا نیست؛ partial/unavailable مجازند)
 - Object خالی یا رشتهٔ خالی
 - Required ناقص یا visit خالی
 - Transport Node بدون مختصات واقعی
@@ -550,9 +562,9 @@ Scope فقط وقتی کامل است که:
 - [ ] Camping جداگانه بررسی شده؛
 - [ ] Deduplication، Relations و Canonical storage انجام شده؛
 - [ ] همهٔ Requiredهای Schema و Quality Gate پاس شده‌اند؛
-- [ ] URLها خام HTTPS و تصاویر بین حداقلِ نوع Entity (روستا/مکان/کمپینگ ۳، شهر/شهرستان ۵، استان ۱۰) تا ۲۰، غیرتکراری و دارای کردیت/منبع معتبرند؛
+- [ ] URLها خام HTTPS و تصاویر تا سقف ۲۰، غیرتکراری، دارای کردیت/منبع معتبر و با media.status سازگار با تعداد واقعی‌اند (هدف Best-Effort: ۱۰ برای هر Entity، ۳ برای روستا)؛
 - [ ] Evidence برای Factهای مهم وجود دارد؛
-- [ ] Sourceهای Scope و پنج پلتفرم تصادفی هر Entity در notes ثبت شده‌اند؛
+- [ ] Coverage منابع Primary (§7) برای همهٔ نودهای Entity داخل Scope محقق شده (۵ از ۵ برای استان/شهرستان/شهر/مکان/کمپینگ؛ ۲ برای روستا) و در notes مسجل است؛
 - [ ] `notes.md`، ID Registry و Git checkpoint به‌روزند؛
 - [ ] هیچ Candidate قابل‌پیگیری، Conflict قابل‌حل یا کار قابل‌انجامی باقی نمانده است.
 

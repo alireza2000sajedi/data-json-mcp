@@ -2,44 +2,56 @@ import type { NodeType } from "./types.js";
 
 /**
  * Media policy (single source for code; mirrors prompt.txt §9 and
- * dataset/README.md §12).
+ * dataset/README.md §12). BEST-EFFORT model:
  *
- * An ACTIVE entity needs a thumbnail plus a per-type MINIMUM number of
- * distinct, attributable images. Images may come from the open web
- * (Google/Bing image search, tourism sites, news agencies, official sites)
- * with full credit + sourceUrl — a free license is NOT required;
- * `all-rights-reserved` is an approved license in place.schema.json.
+ *   target    — the number of distinct attributable images we AIM for.
+ *   minUsable — the smallest count that still gets SAVED (partial media is
+ *               valuable and must never be discarded).
+ *   max       — hard cap of stored images (schema maxItems).
  *
- *   province      → 10
- *   county        →  5
- *   city          →  5
- *   village       →  3
- *   place (POI)   →  3
- *   camping       →  3
+ * Decisions (owner-approved 2026-08-28):
+ *   province/county/city/place/camping: target 10
+ *   village:                             target 3
+ *   minUsable = 1 for every type; 0 usable images → the entity is still saved
+ *   WITHOUT media and media.status = "unavailable".
  *
- * Maximum for every type: 20.
+ * mediaStatus:
+ *   complete    — distinct images >= target
+ *   partial     — 1 <= distinct images < target
+ *   unavailable — no usable image at all
  */
-export const MAX_IMAGES_PER_ENTITY = 20;
+export interface MediaPolicyEntry {
+  target: number;
+  minUsable: number;
+  max: number;
+}
 
-export const DEFAULT_MIN_IMAGES = 3;
+export type MediaStatus = "complete" | "partial" | "unavailable";
 
-export const MIN_IMAGES_BY_NODE_TYPE: Record<NodeType, number> = {
-  province: 10,
-  county: 5,
-  city: 5,
-  village: 3,
-  place: 3,
-  camping: 3,
-  district: 3,
-  ruralDistrict: 3,
+export const MEDIA_POLICY: Record<NodeType, MediaPolicyEntry> = {
+  province: { target: 10, minUsable: 1, max: 20 },
+  county: { target: 10, minUsable: 1, max: 20 },
+  city: { target: 10, minUsable: 1, max: 20 },
+  village: { target: 3, minUsable: 1, max: 20 },
+  place: { target: 10, minUsable: 1, max: 20 },
+  camping: { target: 10, minUsable: 1, max: 20 },
+  district: { target: 3, minUsable: 1, max: 20 },
+  ruralDistrict: { target: 3, minUsable: 1, max: 20 },
 };
 
-/** Minimum number of distinct attributable images for an active entity of this node type. */
-export function minImagesForNodeType(nodeType: NodeType | null | undefined): number {
-  if (!nodeType) return DEFAULT_MIN_IMAGES;
-  return MIN_IMAGES_BY_NODE_TYPE[nodeType] ?? DEFAULT_MIN_IMAGES;
+export function mediaPolicyFor(nodeType: NodeType | null | undefined): MediaPolicyEntry {
+  if (!nodeType) return MEDIA_POLICY.place;
+  return MEDIA_POLICY[nodeType] ?? MEDIA_POLICY.place;
+}
+
+/** Derive the media status from the number of DISTINCT attributable image URLs. */
+export function mediaStatusFor(nodeType: NodeType | null | undefined, distinctImageCount: number): MediaStatus {
+  const policy = mediaPolicyFor(nodeType);
+  if (distinctImageCount <= 0) return "unavailable";
+  if (distinctImageCount >= policy.target) return "complete";
+  return "partial";
 }
 
 /** Human-readable policy summary (used in tool output/messages). */
-export const MEDIA_MINIMUMS_SUMMARY =
-  "village/place/camping: 3, city/county: 5, province: 10 (max 20 for all; credited web images with all-rights-reserved license are acceptable — a free license is NOT required)";
+export const MEDIA_POLICY_SUMMARY =
+  "best-effort: target 10 images for province/county/city/place/camping, 3 for village; save whatever is found (partial OK, even 1 image); 0 images → save WITHOUT media (status unavailable); hard cap 20";

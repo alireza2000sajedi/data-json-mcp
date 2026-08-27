@@ -41,14 +41,16 @@ import {
   getCurrentBranch,
   isOnCurrentBranch,
   isWithinActiveScope,
+  awaitingScopeSelection,
+  scopedNodeIds,
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
-import { minImagesForNodeType, MAX_IMAGES_PER_ENTITY, MEDIA_MINIMUMS_SUMMARY } from "./media.js";
+import { mediaPolicyFor, mediaStatusFor } from "./media.js";
+import { getSourcePolicy, classifySource, sourceCoverageFor } from "./source-policy.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
-import { buildScopeRegistry } from "./scopes.js";
-import { scopedNodeIds } from "./graph.js";
-import type { NotesState, NodeType, OwnershipStatus, PlaceEntity, MediaDeficitRecord } from "./types.js";
+import { buildScopeRegistry, listProvinceScopesIndex } from "./scopes.js";
+import type { NotesState, NodeType, OwnershipStatus, PlaceEntity, MediaDeficitRecord, MediaCandidate } from "./types.js";
 
 // --- shared helpers ---
 
@@ -92,6 +94,7 @@ export function toolGetScopeState(args: { provinceId: string }) {
   return {
     provinceId: s.provinceId,
     activeScopeId: s.activeScopeId,
+    awaitingScopeSelection: s.awaitingScopeSelection,
     discoveredNodes: s.discoveredNodes,
     activeEntities: s.activeEntities,
     mediaDeficitNodes: s.mediaDeficitNodes,
@@ -136,10 +139,13 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
   }
 
   state.nextStep =
-    `Scope A (Province Discovery) done for ${registry.provinceId}: ${registry.counts.counties} counties, ` +
-    `${registry.counts.cities} cities, ${registry.counts.villages} villages registered with dedicated ids. ` +
-    `STOP — no deep research was performed. Await the user's scope selection (by name or id, e.g. ` +
-    `'${registry.provinceId} → ${registry.tree[0]?.id}') and call set_active_scope.`;
+    `Province stage: structure registered for ${registry.provinceId} (${registry.counts.counties} counties, ` +
+    `${registry.counts.cities} cities, ${registry.counts.villages} villages). NEXT: deep-research the PROVINCE node itself — ` +
+    `get_next_research_node returns '${registry.provinceId}': search it on the 5 mandatory primary sources (see source policy), ` +
+    `save its entity (media is best-effort: target 10 images, partial OK, 0 → save without media), ` +
+    `complete its provincePlaces/camping tracks, then mark_node_complete. ` +
+    `After that STOP and ask the user which county/city/village to continue with ` +
+    `(resolve Persian names to ids with resolve_scope_name).`;
 
   writeNotes(state);
 
@@ -159,7 +165,10 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
     registeredNodes: state.nodes.length,
     nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
     scopesResource: `planro://scopes/${registry.provinceId}`,
-    note: "Stage 1 (Discovery) complete: structure + dedicated ids only. Nothing deep-researched. Stop and wait for the user's scope selection.",
+    note:
+      "Structure + dedicated ids registered. Continue with the PROVINCE STAGE: full research of the province node " +
+      "(entity, province-level places, camping, best-effort media from the 5 primary sources), then STOP and ask the user " +
+      "for the next scope. County/city/village subtrees are separate runs.",
   };
 }
 
@@ -203,6 +212,19 @@ export function toolSetActiveScope(args: { provinceId: string; nodeId: string | 
 // 2. get_next_research_node
 // ============================================================================
 export function toolGetNextResearchNode(args: { provinceId: string }) {
+  const state = readNotes(args.provinceId);
+  if (awaitingScopeSelection(state)) {
+    return {
+      provinceId: args.provinceId,
+      done: false,
+      awaitingScopeSelection: true,
+      node: null,
+      instruction:
+        "PROVINCE STAGE COMPLETE. STOP: report the finished province stage to the user and ask which county/city/village " +
+        "to research next. Resolve the user's Persian name with resolve_scope_name, then call set_active_scope. " +
+        "(For a continuous whole-province run, call set_active_scope with the province id itself.)",
+    };
+  }
   const node = nextRequiredNode(args.provinceId);
   if (!node) {
     const state = readNotes(args.provinceId);
@@ -216,7 +238,6 @@ export function toolGetNextResearchNode(args: { provinceId: string }) {
         : { checked: false, complete: false, invalid: -1 },
     };
   }
-  const state = readNotes(args.provinceId);
   const status = nodeStatus(args.provinceId, node);
   const branch = getCurrentBranch(args.provinceId);
   const branchPath = branch.map((n) => `${n.canonicalName}(${n.nodeType})`).join(" → ");
@@ -369,6 +390,7 @@ export function toolRecordSearchResult(args: {
   }
   const state = readNotes(args.provinceId);
   ensureNode(state, args.nodeId);
+  const classification = classifySource(args.sourceUrl);
   const entry = {
     id: newId("src"),
     nodeId: args.nodeId,
@@ -378,14 +400,26 @@ export function toolRecordSearchResult(args: {
     resultSummary: args.resultSummary,
     ownershipStatus: args.ownershipStatus as OwnershipStatus,
     discoveredNames: args.discoveredNames,
+    sourceClass: classification.sourceClass,
+    sourceDomain: classification.domain,
+    sourceName: classification.name,
+    sourcePriority: classification.priority,
   };
   addSourceMatrixEntry(state, entry);
   writeNotes(state);
+  const coverage = sourceCoverageFor(state, findNode(state, args.nodeId)?.nodeType, args.nodeId);
   return {
     recorded: true,
     entry,
     nodeId: args.nodeId,
     ownershipStatus: args.ownershipStatus,
+    sourceClass: classification.sourceClass,
+    sourceDomain: classification.domain,
+    sourceCoverage: { searchedCount: coverage.searchedCount, required: coverage.required, satisfied: coverage.satisfied },
+    reminder:
+      classification.sourceClass === "other"
+        ? "This source is NOT in the project source policy. The 5 mandatory primary sources (dataset/source_policy.json) must be searched first for every node."
+        : undefined,
   };
 }
 
@@ -442,9 +476,11 @@ export function toolResolveCandidate(args: { provinceId: string; candidateId: st
 }
 
 // ============================================================================
-// 8b. mark_node_media_deficit — §9 disposition: close an entity node that
-// cannot meet its per-type minimum image bar after an exhaustive search
-// (BOTH free-license archives AND general web image search).
+// 8b. mark_node_media_deficit — §9 disposition: close an entity node WITHOUT
+// a JSON file. Under the BEST-EFFORT media policy a lack of images is NOT a
+// reason to use this path (1..target-1 images → save with status "partial";
+// 0 images → save WITHOUT media, status "unavailable"). This disposition is
+// reserved for nodes where NO valid entity data at all could be gathered.
 // ============================================================================
 
 /** Node types that legitimately own a place-schema JSON entity. */
@@ -466,32 +502,35 @@ export function toolMarkNodeMediaDeficit(args: {
     throw new Error(`mark_node_media_deficit is for entity-bearing nodes (${MEDIA_DEFICIT_ENTITY_TYPES.join(", ")}); node '${args.nodeId}' is a ${node.nodeType}.`);
   }
   if (state.registry.some((r) => r.id === args.nodeId && r.status === "active")) {
-    throw new Error(`Node '${args.nodeId}' already has an active entity; the media-deficit disposition is only for nodes WITHOUT an active entity.`);
+    throw new Error(`Node '${args.nodeId}' already has an active entity; the file-less disposition is only for nodes WITHOUT an active entity.`);
   }
   if (findMediaDeficit(state, args.nodeId)) {
-    throw new Error(`Node '${args.nodeId}' already has a recorded media-deficit disposition.`);
+    throw new Error(`Node '${args.nodeId}' already has a recorded file-less disposition.`);
   }
-  const minImages = minImagesForNodeType(node.nodeType);
   const imagesFound = Number(args.imagesFound);
-  if (!Number.isInteger(imagesFound) || imagesFound < 0 || imagesFound >= minImages) {
+  if (!Number.isInteger(imagesFound) || imagesFound < 0 || imagesFound > 20) {
+    throw new Error("imagesFound must be an integer between 0 and 20 (audit of usable images actually found).");
+  }
+  const usableCandidates = (state.mediaCandidates ?? []).filter(
+    (m) => m.nodeId === args.nodeId && getSchemas().approvedLicenses.includes(m.license) && isRawHttpsUrl(m.imageUrl) && isRawHttpsUrl(m.pageUrl),
+  );
+  if (usableCandidates.length > 0) {
     throw new Error(
-      `imagesFound must be an integer between 0 and ${minImages - 1} for a ${node.nodeType} node ` +
-        `(its active-entity minimum is ${minImages} attributable images). A node with ${minImages}+ distinct attributable images ` +
-        `(free-license OR credited web images with all-rights-reserved license) MUST be saved as an active entity, not marked deficit.`,
+      `Node '${args.nodeId}' HAS ${usableCandidates.length} usable media candidate(s) — run finalize_media and save the entity ` +
+        `(media is best-effort: even 1 image is saved as "partial"; media alone is never a reason to close a node without a file).`,
     );
   }
   const reason = String(args.reason ?? "").trim();
   if (!reason) {
     throw new Error(
-      "reason is required: document which image sources were searched (free-license archives AND general web image search) and why the available images do not belong to this node.",
+      "reason is required: document why NO valid entity data at all could be gathered for this node " +
+        "(media shortage is NOT a valid reason under the best-effort policy — 0 images → save without media).",
     );
   }
-  const searchesPerformed = (args.searchesPerformed ?? []).map((s) => String(s).trim()).filter(Boolean);
+  const searchesPerformed = (args.searchesPerformed ?? []).map((x) => String(x).trim()).filter(Boolean);
   if (searchesPerformed.length < 2) {
     throw new Error(
-      "searchesPerformed must list at least 2 distinct searches actually run — the media-deficit disposition is only legitimate " +
-        "after BOTH free-license archives (e.g. Wikimedia Commons category/geosearch) AND general web image search " +
-        "(Google/Bing Images, Persian tourism sites, news agencies) were tried for this node's own name.",
+      "searchesPerformed must list at least 2 distinct searches actually run across the mandatory primary sources and the web.",
     );
   }
 
@@ -502,22 +541,28 @@ export function toolMarkNodeMediaDeficit(args: {
     const branch = getCurrentBranch(args.provinceId);
     const branchPath = branch.map((n) => `${n.nodeId}(${n.nodeType})`).join(" → ");
     throw new Error(
-      `DFS ORDER VIOLATION: Cannot mark '${args.nodeId}' media-deficit — it is not the current required node. ` +
+      `DFS ORDER VIOLATION: Cannot mark '${args.nodeId}' file-less — it is not the current required node. ` +
       `Current required node: '${current.nodeId}' (${current.nodeType}). ` +
       `Current branch: ${branchPath}. ` +
       `You MUST complete '${current.nodeId}' first.`,
     );
   }
+  // Staged workflow: closing a node outside the province stage needs an active scope.
+  if (!current && awaitingScopeSelection(state)) {
+    throw new Error(
+      `AWAITING SCOPE SELECTION: the province stage is complete. Ask the user for the next scope, ` +
+        `resolve it with resolve_scope_name and call set_active_scope before working on '${args.nodeId}'.`,
+    );
+  }
 
   // All other completion conditions still apply: discovery tracks closed, no
-  // open candidates/conflicts on the node. The only thing waived is the active
-  // entity itself.
+  // open candidates/conflicts on the node, primary-source coverage searched.
   const before = nodeStatus(args.provinceId, node);
   const remaining = before.blockingReasons.filter((r) => r !== "entity not saved as active");
   if (remaining.length > 0) {
     throw new Error(
-      `Cannot mark '${args.nodeId}' media-deficit: close these first: ${remaining.join("; ")}. ` +
-      `(The media-deficit disposition only waives the missing active entity — it never waives discovery, candidates or conflicts.)`,
+      `Cannot mark '${args.nodeId}' file-less: close these first: ${remaining.join("; ")}. ` +
+      `(The disposition only waives the missing active entity — it never waives discovery, candidates, conflicts or source coverage.)`,
     );
   }
 
@@ -533,7 +578,7 @@ export function toolMarkNodeMediaDeficit(args: {
   };
   addMediaDeficit(state, record);
   upsertNode(state, { ...node, state: "media_deficit" });
-  state.nextStep = `Marked ${args.nodeId} (${node.nodeType}, ${node.canonicalName}) media-deficit (${imagesFound}/${minImages} attributable images after exhaustive search incl. web image search). Continue DFS with the next required node.`;
+  state.nextStep = `Marked ${args.nodeId} (${node.nodeType}, ${node.canonicalName}) closed without JSON (no valid entity data). Continue with the next required node.`;
   writeNotes(state);
 
   const next = nextRequiredNode(args.provinceId);
@@ -544,9 +589,300 @@ export function toolMarkNodeMediaDeficit(args: {
     nodeState: "media_deficit",
     imagesFound,
     note:
-      `Node closed WITHOUT a JSON file (no fabricated data). DFS will move to the next node; mark_node_complete is not needed for this node. ` +
-      `If ${minImages}+ attributable images (free-license or credited web images) are ever found, save_active_entity for this node flips the disposition to resolved.`,
+      `Node closed WITHOUT a JSON file. This path is ONLY for nodes with no valid entity data at all — a node with ` +
+      `usable images (or any valid data) must be saved via save_active_entity (media is best-effort). mark_node_complete is not needed for this node.`,
     nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
+  };
+}
+
+// ============================================================================
+// 8c. record_media_candidate — best-effort media pipeline (§9), step 1:
+// record EVERY attributable image found (never discard partial findings).
+// ============================================================================
+
+export function toolRecordMediaCandidate(args: {
+  provinceId: string;
+  nodeId: string;
+  imageUrl: string;
+  pageUrl: string;
+  license: string;
+  source?: string;
+  credit?: string;
+  alt?: string;
+  caption?: string;
+  score?: number;
+}) {
+  const state = readNotes(args.provinceId);
+  if (!findNode(state, args.nodeId)) ensureNode(state, args.nodeId);
+  const node = findNode(state, args.nodeId)!;
+  if (!isRawHttpsUrl(args.imageUrl)) {
+    throw new Error("imageUrl must be the raw HTTPS URL of the image file itself (no markdown/whitespace).");
+  }
+  if (!isRawHttpsUrl(args.pageUrl)) {
+    throw new Error("pageUrl must be the raw HTTPS URL of the page hosting/licensing the image.");
+  }
+  const schemas = getSchemas();
+  if (!schemas.approvedLicenses.includes(args.license)) {
+    throw new Error(`license must be one of: ${schemas.approvedLicenses.join(", ")}`);
+  }
+  let score = 0.5;
+  if (args.score !== undefined) {
+    score = Number(args.score);
+    if (!Number.isFinite(score) || score < 0 || score > 1) throw new Error("score must be a number between 0 and 1.");
+  }
+
+  // Idempotent by (nodeId, imageUrl).
+  const dup = state.mediaCandidates.find((m) => m.nodeId === args.nodeId && m.imageUrl === args.imageUrl);
+  if (dup) {
+    const policy = mediaPolicyFor(node.nodeType);
+    const total = state.mediaCandidates.filter((m) => m.nodeId === args.nodeId).length;
+    return { recorded: false, duplicateOf: dup.id, nodeId: args.nodeId, totals: { candidates: total, target: policy.target } };
+  }
+
+  const classification = classifySource(args.pageUrl);
+  const candidate: MediaCandidate = {
+    id: newId("mc"),
+    nodeId: args.nodeId,
+    imageUrl: args.imageUrl,
+    pageUrl: args.pageUrl,
+    source: (args.source ?? classification.name ?? classification.domain).trim(),
+    credit: (args.credit ?? "").trim(),
+    license: args.license,
+    alt: (args.alt ?? "").trim(),
+    caption: (args.caption ?? "").trim(),
+    score,
+    sourceClass: classification.sourceClass,
+    sourceDomain: classification.domain,
+    createdAt: new Date().toISOString(),
+  };
+  state.mediaCandidates.push(candidate);
+
+  const policy = mediaPolicyFor(node.nodeType);
+  const nodeCandidates = state.mediaCandidates.filter((m) => m.nodeId === args.nodeId).length;
+  state.nextStep =
+    `Media candidate ${nodeCandidates} recorded for ${args.nodeId} (target ${policy.target}). ` +
+    (nodeCandidates >= policy.target
+      ? `Target reached — run finalize_media to pick the best set, then save.`
+      : `Keep searching the primary sources and web image search; run finalize_media when done (partial is OK).`);
+  writeNotes(state);
+
+  const coverage = sourceCoverageFor(state, node.nodeType, args.nodeId);
+  return {
+    recorded: true,
+    candidateId: candidate.id,
+    nodeId: args.nodeId,
+    sourceClass: classification.sourceClass,
+    sourceDomain: classification.domain,
+    totals: { candidates: nodeCandidates, target: policy.target },
+    sourceCoverage: { searchedCount: coverage.searchedCount, required: coverage.required, satisfied: coverage.satisfied },
+    note:
+      `Best-effort policy: every attributable image counts — even 1 image is saved as "partial"; 0 images → the entity is ` +
+      `saved WITHOUT media. Do NOT discard images because they are below the target.`,
+  };
+}
+
+// ============================================================================
+// 8d. finalize_media — best-effort media pipeline (§9), step 2: dedupe, rank
+// and pick the best media set for the node. Returns the media object to
+// attach to the entity before save_active_entity (which verifies it).
+// ============================================================================
+
+const FREE_LICENSE_HINTS = ["CC0", "Public-Domain", "CC-BY", "CC-BY-SA"];
+
+function candidateRank(m: MediaCandidate): number {
+  const licenseBonus = FREE_LICENSE_HINTS.some((h) => m.license.startsWith(h)) ? 0.05 : 0;
+  const sourceBonus = m.sourceClass === "primary" ? 0.02 : 0;
+  return m.score + licenseBonus + sourceBonus;
+}
+
+function candidateToMediaItem(m: MediaCandidate, nodeName: string): Record<string, unknown> {
+  const source = m.source || m.sourceDomain || "web";
+  return {
+    url: m.imageUrl,
+    alt: m.alt || `تصویر ${nodeName}`,
+    caption: m.caption || m.alt || nodeName,
+    credit: m.credit || source,
+    license: m.license,
+    source,
+    sourceUrl: m.pageUrl,
+  };
+}
+
+export function toolFinalizeMedia(args: { provinceId: string; nodeId: string }) {
+  const state = readNotes(args.provinceId);
+  const node = findNode(state, args.nodeId);
+  if (!node) throw new Error(`Node '${args.nodeId}' is not registered for province '${args.provinceId}'.`);
+  const policy = mediaPolicyFor(node.nodeType);
+
+  const all = state.mediaCandidates.filter((m) => m.nodeId === args.nodeId);
+  const byUrl = new Map<string, MediaCandidate>();
+  for (const m of all) {
+    const prev = byUrl.get(m.imageUrl);
+    if (!prev || candidateRank(m) > candidateRank(prev)) byUrl.set(m.imageUrl, m);
+  }
+  const schemas = getSchemas();
+  const usable = [...byUrl.values()]
+    .filter((m) => isRawHttpsUrl(m.imageUrl) && isRawHttpsUrl(m.pageUrl) && schemas.approvedLicenses.includes(m.license))
+    .sort((a, b) => candidateRank(b) - candidateRank(a));
+
+  let thumbnail: MediaCandidate | null = null;
+  let images: MediaCandidate[] = [];
+  if (usable.length > policy.max) {
+    images = usable.slice(0, policy.max);
+    thumbnail = usable[policy.max]; // first spare candidate → distinct thumbnail URL
+  } else if (usable.length === 1) {
+    images = usable;
+    thumbnail = usable[0]; // single-image set may reuse its only image as thumbnail
+  } else if (usable.length >= 2) {
+    thumbnail = usable[0];
+    images = usable.slice(1);
+  }
+
+  const distinct = new Set<string>([...images.map((m) => m.imageUrl), ...(thumbnail ? [thumbnail.imageUrl] : [])]).size;
+  const status = mediaStatusFor(node.nodeType, distinct);
+
+  const media: Record<string, unknown> = {
+    status,
+    ...(thumbnail ? { thumbnail: candidateToMediaItem(thumbnail, node.canonicalName) } : {}),
+    ...(images.length > 0 ? { images: images.map((m) => candidateToMediaItem(m, node.canonicalName)) } : {}),
+  };
+
+  state.nextStep =
+    `Media finalized for ${args.nodeId}: ${all.length} candidate(s) → ${usable.length} usable → ` +
+    `${images.length} image(s) + thumbnail (${status}; target ${policy.target}). Attach media to the entity and save_active_entity.`;
+  writeNotes(state);
+
+  return {
+    provinceId: args.provinceId,
+    nodeId: args.nodeId,
+    policy,
+    audit: { candidates: all.length, deduplicated: byUrl.size, usable: usable.length, keptImages: images.length, keptThumbnail: !!thumbnail },
+    mediaStatus: status,
+    media,
+    note:
+      status === "unavailable"
+        ? "No usable image candidates — save the entity WITHOUT media (media.status 'unavailable' is injected automatically at save)."
+        : "Attach this media object to your entity (entity.media = ...) and save with save_active_entity. media.status is verified automatically.",
+  };
+}
+
+// ============================================================================
+// 8e. resolve_scope_name — resolve a Persian name (province/county/city/
+// village) to its dedicated scope id. The agent must NEVER ask the user for
+// raw ids when the name is resolvable (only genuinely ambiguous names are).
+// ============================================================================
+
+function normalizeFa(s: string): string {
+  return String(s ?? "")
+    .trim()
+    .replace(/\u200c/g, " ")
+    .replace(/ى/g, "ی")
+    .replace(/ك/g, "ک")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+}
+
+export function toolResolveScopeName(args: { provinceId?: string; name: string; expectedType?: string }) {
+  const name = String(args.name ?? "").trim();
+  if (!name) throw new Error("name is required (Persian name or scope id).");
+
+  // Bare scope id → resolve directly from the registry.
+  if (/^(province|county|city|village)-[\w-]+$/.test(name)) {
+    const pid = args.provinceId ?? (name.startsWith("province-") ? name : undefined);
+    if (!pid) {
+      throw new Error(`A bare id for '${name}' needs provinceId too (or pass the Persian name instead).`);
+    }
+    const reg = buildScopeRegistry(pid);
+    const unit =
+      reg.index[name] ??
+      (name === reg.provinceId ? { id: reg.provinceId, name: reg.provinceName, type: "province" as const, parentId: "" } : undefined);
+    if (!unit) throw new Error(`'${name}' is not a valid scope id in ${pid}.`);
+    return { resolved: true, provinceId: pid, matches: [{ nodeId: unit.id, name: unit.name, type: unit.type, parentId: unit.parentId }] };
+  }
+
+  // Province name without provinceId → resolve across all 31 provinces.
+  if (!args.provinceId) {
+    const idx = listProvinceScopesIndex();
+    const hits = idx.filter((px) => normalizeFa(px.provinceName) === normalizeFa(name));
+    if (hits.length === 1) {
+      return {
+        resolved: true,
+        provinceId: hits[0].provinceId,
+        matches: [{ nodeId: hits[0].provinceId, name: hits[0].provinceName, type: "province", parentId: null }],
+        nextAction: "This is the province itself. Run import_province_scopes if not done, then continue the province stage.",
+      };
+    }
+    const suggestions = idx.filter((px) => normalizeFa(px.provinceName).includes(normalizeFa(name))).slice(0, 10);
+    throw new Error(
+      hits.length === 0
+        ? `No province named '${name}' found.${suggestions.length ? ` Did you mean: ${suggestions.map((sx) => `${sx.provinceName} (${sx.provinceId})`).join("، ")}` : ""}`
+        : `Ambiguous province name '${name}'.`,
+    );
+  }
+
+  // Inside a province: county/city/village lookup with type filter.
+  const reg = buildScopeRegistry(args.provinceId);
+  const target = normalizeFa(name);
+  const matches = Object.values(reg.index).filter(
+    (u) => normalizeFa(u.name) === target && (!args.expectedType || u.type === args.expectedType),
+  );
+  if (matches.length === 1) {
+    return {
+      resolved: true,
+      provinceId: args.provinceId,
+      matches: [{ nodeId: matches[0].id, name: matches[0].name, type: matches[0].type, parentId: matches[0].parentId }],
+      nextAction: `Call set_active_scope with nodeId '${matches[0].id}' and deep-research that scope.`,
+    };
+  }
+  if (matches.length > 1) {
+    return {
+      resolved: false,
+      ambiguous: true,
+      provinceId: args.provinceId,
+      matches: matches.slice(0, 15).map((u) => ({ nodeId: u.id, name: u.name, type: u.type, parentId: u.parentId })),
+      nextAction: `Name '${name}' matches ${matches.length} units — ask the user to pick one of the listed nodeIds (this is the ONLY case where asking is legitimate).`,
+    };
+  }
+  const contains = Object.values(reg.index)
+    .filter((u) => normalizeFa(u.name).includes(target) && (!args.expectedType || u.type === args.expectedType))
+    .slice(0, 10);
+  return {
+    resolved: false,
+    ambiguous: false,
+    provinceId: args.provinceId,
+    suggestions: contains.map((u) => ({ nodeId: u.id, name: u.name, type: u.type, parentId: u.parentId })),
+    nextAction: contains.length
+      ? `No exact match for '${name}'. Closest suggestions listed — verify with the user or the web before set_active_scope.`
+      : `No match for '${name}' in ${args.provinceId}. Check the spelling (source: input registry).`,
+  };
+}
+
+// ============================================================================
+// 8f. get_source_coverage — audit of the mandatory primary-source searches.
+// ============================================================================
+
+export function toolGetSourceCoverage(args: { provinceId: string; nodeId?: string }) {
+  const state = readNotes(args.provinceId);
+  if (args.nodeId) {
+    const node = findNode(state, args.nodeId);
+    if (!node) throw new Error(`Node '${args.nodeId}' is not registered for province '${args.provinceId}'.`);
+    const coverage = sourceCoverageFor(state, node.nodeType, args.nodeId);
+    return { provinceId: args.provinceId, nodeId: args.nodeId, nodeType: node.nodeType, ...coverage };
+  }
+  const ENTITY_TYPES: NodeType[] = ["province", "county", "city", "village", "place", "camping"];
+  const rows = state.nodes
+    .filter((n) => ENTITY_TYPES.includes(n.nodeType))
+    .map((n) => {
+      const c = sourceCoverageFor(state, n.nodeType, n.nodeId);
+      return { nodeId: n.nodeId, nodeType: n.nodeType, name: n.canonicalName, searchedCount: c.searchedCount, required: c.required, satisfied: c.satisfied };
+    })
+    .filter((r) => !r.satisfied);
+  return {
+    provinceId: args.provinceId,
+    policy: getSourcePolicy().primary.map((px) => `${px.priority}. ${px.name} (${px.domain})`),
+    unsatisfiedCount: rows.length,
+    unsatisfied: rows.slice(0, 50),
+    note: "A node cannot be completed until its required primary-source coverage is satisfied (searches recorded via record_search_result and/or media candidates).",
   };
 }
 
@@ -555,12 +891,28 @@ export function toolMarkNodeMediaDeficit(args: {
 // ============================================================================
 export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEntity; expectedNodeId: string }) {
   const state = readNotes(args.provinceId);
-  const entity = normalizeEntityUrls(args.entity);
+  let entity = normalizeEntityUrls(args.entity);
+
+  // Best-effort media policy (§9): always carry a media.status that matches the
+  // actual distinct image count (unavailable when there is no usable image).
+  {
+    const nodeType = entityNodeType(entity);
+    const media = (entity.media ?? {}) as Record<string, unknown>;
+    const distinct = new Set<string>();
+    if (typeof (media.thumbnail as any)?.url === "string") distinct.add((media.thumbnail as any).url);
+    for (const im of ((media.images as any[]) ?? [])) if (typeof im?.url === "string") distinct.add(im.url);
+    media.status = mediaStatusFor(nodeType, distinct.size);
+    entity = { ...entity, media } as PlaceEntity;
+  }
 
   // DFS advisory: warn if saving for a node that's not the current required node
   const current = nextRequiredNode(args.provinceId);
   let dfsWarning: string | undefined;
-  if (current && current.nodeId !== args.expectedNodeId) {
+  if (!current && awaitingScopeSelection(state)) {
+    dfsWarning =
+      `AWAITING SCOPE SELECTION: the province stage is complete. You may save this entity, but to COMPLETE or close ` +
+      `'${args.expectedNodeId}' you must first ask the user for the scope, resolve it with resolve_scope_name and call set_active_scope.`;
+  } else if (current && current.nodeId !== args.expectedNodeId) {
     const branch = getCurrentBranch(args.provinceId);
     const branchPath = branch.map((n) => `${n.nodeId}(${n.nodeType})`).join(" → ");
     dfsWarning =
@@ -801,6 +1153,17 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
         );
       }
 
+      // Staged workflow gate: after the province stage is complete, no other
+      // node may be completed until the user picks the next scope.
+      const provinceNode = state.nodes.find((n) => n.nodeType === "province");
+      if (awaitingScopeSelection(state) && nodeId !== provinceNode?.nodeId) {
+        throw new Error(
+          `AWAITING SCOPE SELECTION: the province stage is complete. Ask the user which county/city/village to ` +
+            `research next (resolve the Persian name with resolve_scope_name), then call set_active_scope before ` +
+            `completing '${nodeId}'. For a continuous whole-province run, set the active scope to the province id.`,
+        );
+      }
+
       // DFS enforcement: only the current required node can be marked complete
       const current = nextRequiredNode(args.provinceId);
       if (current && current.nodeId !== nodeId) {
@@ -814,12 +1177,29 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
         );
       }
 
-      // Gate: refuse unless entity active + all discovery complete + no open candidates/conflicts.
+      // Gate: refuse unless entity active + all discovery complete + no open candidates/conflicts + source coverage.
       const status = nodeStatus(args.provinceId, findNode(state, nodeId)!);
       if (!status.complete) {
         throw new Error(`Cannot mark node complete: ${status.blockingReasons.join("; ")}`);
       }
       findNode(state, nodeId)!.state = "complete";
+
+      // Province-stage completion → the staged workflow now waits for the user.
+      if (provinceNode && nodeId === provinceNode.nodeId && !state.activeScopeId) {
+        state.nextStep =
+          `PROVINCE STAGE COMPLETE. STOP: report the finished province stage to the user and ask which ` +
+          `county/city/village to research next (resolve names with resolve_scope_name, then set_active_scope).`;
+        writeNotes(state);
+        return {
+          updated: true,
+          operation: op,
+          provinceId: args.provinceId,
+          provinceStageComplete: true,
+          reminder:
+            "Province stage complete! Do NOT auto-dive into counties. Ask the user for the next scope; resolve the " +
+            "Persian name with resolve_scope_name and lock it with set_active_scope.",
+        };
+      }
       
       // Check if this is the last pending node
       const pendingCount = traverse(args.provinceId).filter((n) => {
@@ -915,13 +1295,25 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   const missingEvidence: string[] = [];
   for (const e of listEntities(args.provinceId)) {
     if (e.entity.status === "active") {
-      const images = (e.entity.media?.images as any[]) ?? [];
-      const minImages = minImagesForNodeType(entityNodeType(e.entity));
-      if (!e.entity.media?.thumbnail || images.length < minImages || images.length > MAX_IMAGES_PER_ENTITY) incompleteMedia.push(e.id);
+      // Best-effort media policy: no minimum count — only structural problems
+      // (over-capacity, images without thumbnail) count as incomplete.
+      const media = e.entity.media as any;
+      const images = (media?.images as any[]) ?? [];
+      const policy = mediaPolicyFor(entityNodeType(e.entity));
+      if (images.length > policy.max || (images.length > 0 && !media?.thumbnail)) incompleteMedia.push(e.id);
       if (!e.entity.costs) incompleteCosts.push(e.id);
       if (!Array.isArray(e.entity.evidence) || e.entity.evidence.length === 0) missingEvidence.push(e.id);
     }
   }
+
+  // Primary-source coverage across the scope (nodes blocked on missing searches).
+  const coverageRows = state.nodes
+    .filter((n) => inScope(n.nodeId) && ["province", "county", "city", "village", "place", "camping"].includes(n.nodeType))
+    .map((n) => {
+      const c = sourceCoverageFor(state, n.nodeType, n.nodeId);
+      return { nodeId: n.nodeId, nodeType: n.nodeType, searchedCount: c.searchedCount, required: c.required, satisfied: c.satisfied };
+    })
+    .filter((r) => !r.satisfied);
 
   const complete =
     scope.definitionOfDone &&
@@ -942,6 +1334,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   if (incompleteMedia.length > 0) issues.push(`incomplete media: ${incompleteMedia.length}`);
   if (incompleteCosts.length > 0) issues.push(`incomplete costs: ${incompleteCosts.length}`);
   if (missingEvidence.length > 0) issues.push(`missing evidence: ${missingEvidence.length}`);
+  if (coverageRows.length > 0) issues.push(`missing source coverage: ${coverageRows.length} node(s)`);
 
   // Update DoD status in notes
   updateDodStatus(state, complete, state.dodStatus?.validateInvalid ?? -1, state.dodStatus?.validateTotal ?? -1, issues);
@@ -958,6 +1351,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     incompleteMedia,
     incompleteCosts,
     missingEvidence,
+    missingSourceCoverage: coverageRows.slice(0, 50),
     nextAction: complete ? null : scope.nextRequiredNode?.nodeId ?? "discover province administrative structure",
     reminder: complete
       ? `DoD check PASSED${state.activeScopeId ? ` for scope '${state.activeScopeId}'` : ""}. Now run validate_province to verify invalid:0 before the final report of this scope.`
