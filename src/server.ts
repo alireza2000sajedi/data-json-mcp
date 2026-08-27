@@ -140,20 +140,20 @@ export function createServer(): McpServer {
 
   register(
     "mark_node_media_deficit",
-    "§9 disposition: close the CURRENT required entity node WITHOUT a JSON file when an exhaustive search of free-license archives found fewer than 10 attributable images. Requires imagesFound (0-9), reason, and searchesPerformed list. All discovery tracks must be complete and no open candidates/conflicts remain. The node counts as done for DFS/DoD; saving a real active entity for it later auto-resolves the disposition.",
+    "§9 disposition: close the CURRENT required entity node WITHOUT a JSON file when an exhaustive search — BOTH free-license archives (Wikimedia Commons category/geosearch, Flickr CC…) AND general web image search (Google/Bing Images, Persian tourism sites, news agencies) — found fewer attributable images than this node type's minimum. Minimums: village/place/camping 3, city/county 5, province 10 (max 20). Requires imagesFound (0 … minimum−1), reason, and searchesPerformed with ≥2 entries (at least one web image search). All discovery tracks must be complete and no open candidates/conflicts remain. The node counts as done for DFS/DoD; saving a real active entity for it later auto-resolves the disposition.",
     {
       provinceId: z.string().min(1),
       nodeId: z.string().min(1),
       reason: z.string().min(1),
-      imagesFound: z.number().int().min(0).max(9),
-      searchesPerformed: z.array(z.string().min(1)).min(1),
+      imagesFound: z.number().int().min(0),
+      searchesPerformed: z.array(z.string().min(1)).min(2),
     },
     toolMarkNodeMediaDeficit,
   );
 
   register(
     "save_active_entity",
-    "Validate and save an active entity at its canonical path (all-or-nothing quality gate).",
+    "Validate and save an active entity at its canonical path (all-or-nothing quality gate). Media bar: thumbnail + at least 3 distinct attributable images for village/place/camping, 5 for city/county, 10 for province (max 20). Credited web images (license all-rights-reserved) are acceptable — a free license is NOT required; always try web image search before giving up.",
     { provinceId: z.string().min(1), entity: z.record(z.any()), expectedNodeId: z.string().min(1) },
     toolSaveActiveEntity,
   );
@@ -182,14 +182,14 @@ export function createServer(): McpServer {
 
   register(
     "check_definition_of_done",
-    "Check whether the province scope meets its Definition of Done. Result is persisted to notes.md DoD section. MUST be run (returning complete:true) together with validate_province (returning invalid:0) before producing the final report.",
+    "Check whether the scope meets its Definition of Done. Scope-aware: when a scope is active (set_active_scope), only that scope's subtree counts — a finished county/village/POI scope reports complete:true while other scopes stay pending for their own runs. Result is persisted to notes.md DoD section. MUST be run (returning complete:true) together with validate_province (returning invalid:0) before producing the final report of the current scope.",
     { provinceId: z.string().min(1) },
     toolCheckDefinitionOfDone,
   );
 
   register(
     "discover_node",
-    "Generate node-scoped discovery query strings (query generator only — never performs the search).",
+    "Generate node-scoped discovery query strings (query generator only — never performs the search). Includes media/image queries (fa+en): run them with web image search (Google/Bing Images) and Wikimedia Commons to collect the node's attributable images.",
     {
       provinceId: z.string().min(1),
       nodeType: z.enum(["province", "county", "district", "ruralDistrict", "city", "village", "place", "camping"]),

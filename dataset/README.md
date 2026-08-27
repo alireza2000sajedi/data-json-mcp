@@ -261,7 +261,7 @@ A. ساختار اداری، نام‌ها و جمعیت
 B. مختصات، نشانی و نقشه
 C. Placeها، Villageها و Camping
 D. Sourceها و Evidence
-E. Commons Media
+E. Media (Commons + جستجوی تصویر وب)
 F. Costها و قیمت‌ها
 ```
 
@@ -270,7 +270,7 @@ F. Costها و قیمت‌ها
 - Searchهای مستقل Nominatim، OSM، Google Maps، Commons و پنج منبع تصادفی گردشگری برای همان Entity موازی‌اند.
 - از Source Matrix فشرده در notes استفاده کن تا Query یا Source بررسی‌شده دوباره‌کاری نشود.
 - داده‌های واقعاً مشترک و Sourceدار، مانند CPI، نودهای حمل‌ونقل، مرز اداری و Sourceهای رسمی، در Reference مرکزی نگه‌داری و به Entityها ارجاع شوند؛ Fact اختصاصی هر Entity همچنان جدا تحقیق می‌شود.
-- Media را به‌صورت یک Wave جدا از Commons برای همان Entity جمع کن؛ ابتدا Category و نام انگلیسی/فارسی Entity، سپس Fileهای مستقیم و Metadata را بررسی کن.
+- Media را به‌صورت یک Wave جدا برای همان Entity جمع کن؛ ابتدا Category و نام انگلیسی/فارسی Entity در Commons، سپس جستجوی تصویر وب عمومی (گوگل/بینگ، سایت‌های فارسی گردشگری و خبری) تا رسیدن به حداقلِ تصویرِ نوع همان Entity (§12).
 - نوشتن JSON، Validation، به‌روزرسانی notes، Commit و Push فقط خطی و تک‌نخی انجام می‌شود تا Conflict و دوباره‌کاری ایجاد نشود.
 - سرعت نباید با حذف Village، POI، Source، Evidence، Cost، تصویر یا Cross-check بالا برود.
 
@@ -402,13 +402,14 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 
 ## 12. Media و حق کپی‌رایت
 
-- هر Entity از ۰ تا حداکثر ۲۰ تصویر مستقیم، مرتبط، غیرتکراری و دارای مجوز دارد.
-- برای `status: active` حداقل ۱۰ تصویر معتبر و Thumbnail لازم است.
-- Entity با ۰ تا ۹ تصویر نباید JSON ذخیره‌شده داشته باشد؛ Search Commons و منابع آزاد باید تا رسیدن به حداقل ۱۰ برای Active ادامه یابد.
-- برای رسیدن به حداقل ۱۰، عکس تکراری، نامرتبط یا بی‌مجوز اضافه نکن.
+- هر Entity از ۰ تا حداکثر ۲۰ تصویر مستقیم، مرتبط و غیرتکراری دارد.
+- حداقل تصویر برای `status: active` بر اساس نوع Entity است: روستا، مکان (POI) و کمپینگ ۳ تصویر؛ شهر و شهرستان ۵ تصویر؛ استان ۱۰ تصویر — به‌همراه Thumbnail.
+- منبع تصویر فقط ویکی‌مدیا نیست: جستجوی تصویر وب (Google/Bing Images)، سایت‌های گردشگری فارسی، خبرگزاری‌ها، سایت‌های رسمی مکان‌ها و وبلاگ‌های معتبر مجازند.
+- اولویت انتخاب: Wikimedia Commons / Wikipedia → CC یا Public Domain روشن → تصاویر وب با لایسنس `all-rights-reserved` (با کردیت کامل و sourceUrl صفحهٔ منبع).
+- Entity با تصاویر کمتر از حداقلِ نوع خود نباید JSON ذخیره‌شده داشته باشد؛ جستجوی تصویر (هم Commons و هم جستجوی تصویر وب) باید تا رسیدن به حداقلِ نوع ادامه یابد و فقط پس از اثبات کمبودِ هر دو منبع، مسیر شرعی §9 پرامپت (`mark_node_media_deficit`) اجرا می‌شود.
+- برای رسیدن به حداقل، عکس تکراری، نامرتبط یا غیرقابل‌انتساب اضافه نکن.
 - دانلود تصویر ممنوع؛ فقط URL.
-- اولویت با Wikimedia Commons / Wikipedia و بعد CC یا Public Domain روشن است.
-- هر تصویر URL خام، alt، caption، source، sourceUrl، credit و license واقعی دارد. photographer فقط اگر در Metadata واقعی موجود است ثبت می‌شود.
+- هر تصویر URL خام، alt، caption، source، sourceUrl، credit و license واقعی (مطابق enum اسکیما، شامل all-rights-reserved) دارد. photographer فقط اگر در Metadata واقعی موجود است ثبت می‌شود.
 - URL Thumbnail نباید در `images` دوباره تکرار شود.
 - Map می‌تواند Media کمکی باشد، اما Thumbnail باید تا حد ممکن یک تصویر واقعی و نمایندهٔ تجربهٔ مکان باشد.
 
@@ -476,7 +477,7 @@ adjustedCost = baseCost × CPI[targetMonth][inflationCategory] ÷ CPI[priceAsOfM
 
 ```text
 - URL Markdown، URL غیر HTTPS یا &amp;
-- برای status=active: کمتر از ۱۰ یا بیشتر از ۲۰ تصویر، نبود Thumbnail یا URL تصویری تکراری
+- برای status=active: کمتر از حداقلِ نوع Entity (روستا/مکان/کمپینگ ۳، شهر/شهرستان ۵، استان ۱۰) یا بیشتر از ۲۰ تصویر، نبود Thumbnail یا URL تصویری تکراری
 - Object خالی یا رشتهٔ خالی
 - Required ناقص یا visit خالی
 - Transport Node بدون مختصات واقعی
@@ -549,7 +550,7 @@ Scope فقط وقتی کامل است که:
 - [ ] Camping جداگانه بررسی شده؛
 - [ ] Deduplication، Relations و Canonical storage انجام شده؛
 - [ ] همهٔ Requiredهای Schema و Quality Gate پاس شده‌اند؛
-- [ ] URLها خام HTTPS و تصاویر ۱۰ تا ۲۰، غیرتکراری و دارای مجوزند؛
+- [ ] URLها خام HTTPS و تصاویر بین حداقلِ نوع Entity (روستا/مکان/کمپینگ ۳، شهر/شهرستان ۵، استان ۱۰) تا ۲۰، غیرتکراری و دارای کردیت/منبع معتبرند؛
 - [ ] Evidence برای Factهای مهم وجود دارد؛
 - [ ] Sourceهای Scope و پنج پلتفرم تصادفی هر Entity در notes ثبت شده‌اند؛
 - [ ] `notes.md`، ID Registry و Git checkpoint به‌روزند؛

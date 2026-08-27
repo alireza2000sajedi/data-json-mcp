@@ -44,8 +44,10 @@ import {
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
+import { minImagesForNodeType, MAX_IMAGES_PER_ENTITY, MEDIA_MINIMUMS_SUMMARY } from "./media.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
 import { buildScopeRegistry } from "./scopes.js";
+import { scopedNodeIds } from "./graph.js";
 import type { NotesState, NodeType, OwnershipStatus, PlaceEntity, MediaDeficitRecord } from "./types.js";
 
 // --- shared helpers ---
@@ -441,7 +443,8 @@ export function toolResolveCandidate(args: { provinceId: string; candidateId: st
 
 // ============================================================================
 // 8b. mark_node_media_deficit — §9 disposition: close an entity node that
-// cannot meet the 10-image media bar after an exhaustive search.
+// cannot meet its per-type minimum image bar after an exhaustive search
+// (BOTH free-license archives AND general web image search).
 // ============================================================================
 
 /** Node types that legitimately own a place-schema JSON entity. */
@@ -468,17 +471,28 @@ export function toolMarkNodeMediaDeficit(args: {
   if (findMediaDeficit(state, args.nodeId)) {
     throw new Error(`Node '${args.nodeId}' already has a recorded media-deficit disposition.`);
   }
+  const minImages = minImagesForNodeType(node.nodeType);
   const imagesFound = Number(args.imagesFound);
-  if (!Number.isInteger(imagesFound) || imagesFound < 0 || imagesFound > 9) {
-    throw new Error("imagesFound must be an integer between 0 and 9 — a node with 10+ distinct attributable free-license images MUST be saved as an active entity, not marked deficit.");
+  if (!Number.isInteger(imagesFound) || imagesFound < 0 || imagesFound >= minImages) {
+    throw new Error(
+      `imagesFound must be an integer between 0 and ${minImages - 1} for a ${node.nodeType} node ` +
+        `(its active-entity minimum is ${minImages} attributable images). A node with ${minImages}+ distinct attributable images ` +
+        `(free-license OR credited web images with all-rights-reserved license) MUST be saved as an active entity, not marked deficit.`,
+    );
   }
   const reason = String(args.reason ?? "").trim();
   if (!reason) {
-    throw new Error("reason is required: document which archives were searched exhaustively and why the available images do not belong to this node.");
+    throw new Error(
+      "reason is required: document which image sources were searched (free-license archives AND general web image search) and why the available images do not belong to this node.",
+    );
   }
   const searchesPerformed = (args.searchesPerformed ?? []).map((s) => String(s).trim()).filter(Boolean);
-  if (searchesPerformed.length === 0) {
-    throw new Error("searchesPerformed is required: list the archives/queries actually run (e.g. Wikimedia Commons category, geosearch, Flickr CC).");
+  if (searchesPerformed.length < 2) {
+    throw new Error(
+      "searchesPerformed must list at least 2 distinct searches actually run — the media-deficit disposition is only legitimate " +
+        "after BOTH free-license archives (e.g. Wikimedia Commons category/geosearch) AND general web image search " +
+        "(Google/Bing Images, Persian tourism sites, news agencies) were tried for this node's own name.",
+    );
   }
 
   // DFS enforcement: the disposition may only be placed on the current required
@@ -519,7 +533,7 @@ export function toolMarkNodeMediaDeficit(args: {
   };
   addMediaDeficit(state, record);
   upsertNode(state, { ...node, state: "media_deficit" });
-  state.nextStep = `Marked ${args.nodeId} (${node.nodeType}, ${node.canonicalName}) media-deficit (${imagesFound}/10 free images). Continue DFS with the next required node.`;
+  state.nextStep = `Marked ${args.nodeId} (${node.nodeType}, ${node.canonicalName}) media-deficit (${imagesFound}/${minImages} attributable images after exhaustive search incl. web image search). Continue DFS with the next required node.`;
   writeNotes(state);
 
   const next = nextRequiredNode(args.provinceId);
@@ -529,7 +543,9 @@ export function toolMarkNodeMediaDeficit(args: {
     nodeId: args.nodeId,
     nodeState: "media_deficit",
     imagesFound,
-    note: "Node closed WITHOUT a JSON file (no fabricated data). DFS will move to the next node; mark_node_complete is not needed for this node. If 10+ attributable free images are ever found, save_active_entity for this node flips the disposition to resolved.",
+    note:
+      `Node closed WITHOUT a JSON file (no fabricated data). DFS will move to the next node; mark_node_complete is not needed for this node. ` +
+      `If ${minImages}+ attributable images (free-license or credited web images) are ever found, save_active_entity for this node flips the disposition to resolved.`,
     nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
   };
 }
@@ -860,18 +876,27 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
 export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   const state = readNotes(args.provinceId);
   const scope = getScopeState(args.provinceId);
+  // Scope-aware DoD: with an active scope, only that subtree's candidates,
+  // conflicts and node types count. Sibling scopes stay pending for their own
+  // runs and must not keep a finished scope at complete:false forever.
+  const scopeIds = scopedNodeIds(state);
+  const inScope = (nodeId: string) => scopeIds === null || scopeIds.has(nodeId);
 
   const missingAdministrativeNodes: string[] = [];
-  const nodes = state.nodes;
-  const nodeTypesSeen = new Set(nodes.map((n) => n.nodeType));
-  for (const nt of ["province", "county", "city", "village"] as NodeType[]) {
-    if (!nodeTypesSeen.has(nt)) missingAdministrativeNodes.push(nt);
+  if (scopeIds === null) {
+    // Province-wide mode: the four administrative levels must all be present.
+    // (Inside an active scope — e.g. a single county or village — ancestor
+    // levels are intentionally out of scope, so this check does not apply.)
+    const nodeTypesSeen = new Set(state.nodes.map((n) => n.nodeType));
+    for (const nt of ["province", "county", "city", "village"] as NodeType[]) {
+      if (!nodeTypesSeen.has(nt)) missingAdministrativeNodes.push(nt);
+    }
   }
 
-  const openCandidates = state.candidates.filter((c) => c.state === "open");
-  const unresolvedConflicts = state.conflicts.filter((c) => c.state === "open");
+  const openCandidates = state.candidates.filter((c) => c.state === "open" && inScope(c.nodeId));
+  const unresolvedConflicts = state.conflicts.filter((c) => c.state === "open" && inScope(c.nodeId));
   const mediaDeficitNodes = state.mediaDeficits
-    .filter((d) => d.state === "recorded")
+    .filter((d) => d.state === "recorded" && inScope(d.nodeId))
     .map((d) => {
       const n = state.nodes.find((x) => x.nodeId === d.nodeId);
       return { nodeId: d.nodeId, nodeType: n?.nodeType ?? null, name: n?.canonicalName ?? "", imagesFound: d.imagesFound };
@@ -891,7 +916,8 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   for (const e of listEntities(args.provinceId)) {
     if (e.entity.status === "active") {
       const images = (e.entity.media?.images as any[]) ?? [];
-      if (!e.entity.media?.thumbnail || images.length < 10 || images.length > 20) incompleteMedia.push(e.id);
+      const minImages = minImagesForNodeType(entityNodeType(e.entity));
+      if (!e.entity.media?.thumbnail || images.length < minImages || images.length > MAX_IMAGES_PER_ENTITY) incompleteMedia.push(e.id);
       if (!e.entity.costs) incompleteCosts.push(e.id);
       if (!Array.isArray(e.entity.evidence) || e.entity.evidence.length === 0) missingEvidence.push(e.id);
     }
@@ -923,6 +949,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
 
   return {
     complete,
+    scopeId: state.activeScopeId,
     missingAdministrativeNodes,
     mediaDeficitNodes,
     openCandidates: openCandidates.map((c) => c.id),
@@ -933,7 +960,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     missingEvidence,
     nextAction: complete ? null : scope.nextRequiredNode?.nodeId ?? "discover province administrative structure",
     reminder: complete
-      ? "DoD check PASSED. Now run validate_province to verify invalid:0 before final report."
+      ? `DoD check PASSED${state.activeScopeId ? ` for scope '${state.activeScopeId}'` : ""}. Now run validate_province to verify invalid:0 before the final report of this scope.`
       : `DoD check FAILED (${issues.length} issues). Fix all issues before final report.`,
   };
 }

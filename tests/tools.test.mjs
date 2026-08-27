@@ -141,10 +141,15 @@ test("discover_node generates node-scoped queries (no network, no cross-node lea
   const r = toolDiscoverNode({ provinceId: "province-30", nodeType: "county", canonicalName: "فامنین" });
   assert.equal(r.nodeType, "county");
   assert.ok(r.queries.length > 0);
-  // Every county query must embed the county name, never the province-level phrasing.
+  // Every county query must embed the county name (fa or en phrasing), never the province-level phrasing.
   for (const q of r.queries) {
-    assert.ok(q.query.includes("شهرستان فامنین"), `query must be county-scoped: ${q.query}`);
+    assert.ok(q.query.includes("فامنین"), `query must be county-scoped: ${q.query}`);
+    assert.ok(!q.query.includes("استان همدان"), `query must not leak the province phrasing: ${q.query}`);
   }
+  assert.ok(
+    r.queries.filter((q) => q.query.includes("شهرستان فامنین")).length >= 5,
+    "the Persian discovery queries must keep the full county-scoped phrasing",
+  );
 
   // POI queries must carry geographic context.
   const poi = toolDiscoverNode({
@@ -549,23 +554,29 @@ test("DoD passes with media-deficit nodes reported transparently", async () => {
   assert.equal(dod.mediaDeficitNodes.length, 2, "deficit nodes are reported, not hidden");
 });
 
-test("mark_node_media_deficit guards: active entity, imagesFound>=10, open discovery, DFS order", async () => {
+test("mark_node_media_deficit guards: active entity, imagesFound at the type minimum, open discovery, DFS order", async () => {
   const { toolMarkNodeMediaDeficit, toolUpdateNotes } = await import("../dist/tools.js");
   await seedDeficitScenario();
 
-  // imagesFound out of range.
+  // imagesFound out of range: a CITY needs 5 images, so imagesFound must be 0-4.
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 10, searchesPerformed: ["a"] }),
-    /imagesFound must be an integer between 0 and 9/,
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 5, searchesPerformed: ["a", "b"] }),
+    /imagesFound must be an integer between 0 and 4 for a city node/,
   );
-  // Missing searchesPerformed.
+  // A village (minimum 3) would accept imagesFound up to 2 — checked below via DFS guard.
+  // Missing/too-few searchesPerformed: the deficit disposition requires BOTH
+  // free-license archives AND a general web image search (≥2 distinct searches).
   assert.throws(
     () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: [] }),
     /searchesPerformed/,
   );
+  assert.throws(
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["only-commons"] }),
+    /searchesPerformed must list at least 2/,
+  );
   // Out of DFS order (village while the city is the required node).
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "village-30-v1", reason: "x", imagesFound: 0, searchesPerformed: ["a"] }),
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "village-30-v1", reason: "x", imagesFound: 0, searchesPerformed: ["a", "b"] }),
     /DFS ORDER VIOLATION/,
   );
   // Node with open discovery tracks cannot be marked (reopen the city's tracks).
@@ -574,7 +585,7 @@ test("mark_node_media_deficit guards: active entity, imagesFound>=10, open disco
   rs.discoveryTasks = rs.discoveryTasks.filter((t) => t.nodeId !== "city-30-2");
   notesReopen.writeNotes(rs);
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] }),
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a", "b"] }),
     /discovery/,
   );
 
@@ -582,12 +593,18 @@ test("mark_node_media_deficit guards: active entity, imagesFound>=10, open disco
   for (const track of ["places", "camping"]) {
     toolUpdateNotes({ provinceId: "province-30", operation: "complete_discovery_task", payload: { nodeId: "city-30-2", track, count: 0 } });
   }
-  const ok = toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] });
+  const ok = toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    reason: "x",
+    imagesFound: 2,
+    searchesPerformed: ["Wikimedia Commons category: تیمورلو", "Google Images: عکس شهر تیمورلو آذربایجان"],
+  });
   assert.equal(ok.recorded, true);
 
   // Double-marking is refused.
   assert.throws(
-    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a"] }),
+    () => toolMarkNodeMediaDeficit({ provinceId: "province-30", nodeId: "city-30-2", reason: "x", imagesFound: 2, searchesPerformed: ["a", "b"] }),
     /already has a recorded media-deficit/,
   );
 });
@@ -648,6 +665,82 @@ test("saving an active entity auto-resolves a recorded media-deficit disposition
   assert.equal(node.state, "complete");
   const ctx = toolGetNodeContext({ provinceId: "province-30", nodeId: "city-30-2" });
   assert.equal(ctx.mediaDeficit, false);
+});
+
+test("DoD is scope-aware: a finished county scope is complete while sibling counties stay pending", async () => {
+  const { toolSetActiveScope, toolMarkNodeMediaDeficit, toolCheckDefinitionOfDone } = await import("../dist/tools.js");
+  await seedDeficitScenario();
+
+  // A second, untouched county in the same province (pending for its own run).
+  const notes = await import("../dist/notes.js");
+  let state = notes.readNotes("province-30");
+  notes.upsertNode(state, { nodeId: "county-30-2", nodeType: "county", canonicalName: "شهرستان دیگر", parentNodeId: "province-30", state: "research_required" });
+  notes.writeNotes(state);
+
+  // Lock the run to county-30-1 and finish its remaining nodes via §9.
+  toolSetActiveScope({ provinceId: "province-30", nodeId: "county-30-1" });
+  toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "city-30-2",
+    reason: "کمتر از ۵ تصویر قابل‌انتساب پس از Commons و جستجوی تصویر وب.",
+    imagesFound: 3,
+    searchesPerformed: ["Wikimedia Commons category: Teymurlu", "Google Images: عکس تیمورلو"],
+  });
+  state = notes.readNotes("province-30");
+  notes.completeDiscoveryTask(state, "village-30-v1", "places", 0);
+  notes.completeDiscoveryTask(state, "village-30-v1", "camping", 0);
+  notes.writeNotes(state);
+  toolMarkNodeMediaDeficit({
+    provinceId: "province-30",
+    nodeId: "village-30-v1",
+    reason: "روستای دورافتاده با کمتر از ۳ تصویر قابل‌انتساب.",
+    imagesFound: 1,
+    searchesPerformed: ["Wikimedia Commons geosearch", "Google Images: عکس روستا"],
+  });
+
+  // Scope-aware DoD: the county scope is COMPLETE although county-30-2 (and the
+  // province node) are still pending province-wide.
+  const dod = toolCheckDefinitionOfDone({ provinceId: "province-30" });
+  assert.equal(dod.scopeId, "county-30-1");
+  assert.equal(dod.complete, true, JSON.stringify(dod));
+  assert.equal(dod.mediaDeficitNodes.length, 2);
+
+  // Province-wide view (no active scope) is NOT complete — sibling county pending.
+  toolSetActiveScope({ provinceId: "province-30", nodeId: null });
+  const dodWide = toolCheckDefinitionOfDone({ provinceId: "province-30" });
+  assert.equal(dodWide.complete, false, "province-wide DoD must stay incomplete while a sibling county is pending");
+  assert.equal(dodWide.scopeId, null);
+});
+
+test("media minimums are enforced per node type by the deficit tool and DoD media check", async () => {
+  const { MIN_IMAGES_BY_NODE_TYPE } = await import("../dist/media.js");
+  assert.equal(MIN_IMAGES_BY_NODE_TYPE.village, 3);
+  assert.equal(MIN_IMAGES_BY_NODE_TYPE.place, 3);
+  assert.equal(MIN_IMAGES_BY_NODE_TYPE.camping, 3);
+  assert.equal(MIN_IMAGES_BY_NODE_TYPE.city, 5);
+  assert.equal(MIN_IMAGES_BY_NODE_TYPE.county, 5);
+  assert.equal(MIN_IMAGES_BY_NODE_TYPE.province, 10);
+});
+
+test("discover_node generates image/media queries for every entity node type", async () => {
+  const { buildDiscoveryQueries } = await import("../dist/discovery.js");
+  const cases = [
+    ["province", "آذربایجان شرقی"],
+    ["county", "آذرشهر"],
+    ["city", "تبریز"],
+    ["village", "خاصلو"],
+  ];
+  for (const [type, name] of cases) {
+    const queries = buildDiscoveryQueries(type, name, { province: "آذربایجان شرقی" });
+    const mediaQueries = queries.filter((q) => q.purpose.startsWith("media:"));
+    assert.ok(mediaQueries.length >= 2, `${type} must generate image-search queries`);
+    assert.ok(mediaQueries.some((q) => /عکس|تصاویر/.test(q.query)), `${type} must have a Persian image query`);
+    assert.ok(mediaQueries.some((q) => /photo|photos/i.test(q.query)), `${type} must have an English image query`);
+  }
+  const placeQueries = buildDiscoveryQueries("place", "تپه مصلی", { province: "آذربایجان شرقی", county: "آذرشهر", city: "آذرشهر" });
+  assert.ok(placeQueries.some((q) => q.purpose.startsWith("media:") && q.query.includes("عکس")));
+  const campQueries = buildDiscoveryQueries("camping", "کمپ ائل میدانی", { province: "آذربایجان شرقی", county: "آذرشهر" });
+  assert.ok(campQueries.some((q) => q.purpose.startsWith("media:")));
 });
 
 test("complete_discovery_task rejects a missing count for countable tracks", async () => {

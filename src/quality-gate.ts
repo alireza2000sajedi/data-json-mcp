@@ -1,6 +1,7 @@
 import { getSchemas, requiresFullChecklist } from "./schemas.js";
 import { readNotes } from "./notes.js";
 import { listEntities, entityNodeType, ancestorChain } from "./dataset.js";
+import { minImagesForNodeType, MAX_IMAGES_PER_ENTITY } from "./media.js";
 import type { NotesState, PlaceEntity, QualityError, QualityResult, NodeRecord } from "./types.js";
 
 export interface QualityContext {
@@ -376,11 +377,17 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
         addError(errors, "MEDIA_THUMBNAIL_DUPLICATED", "media.thumbnail", "Thumbnail URL must not be repeated in images.");
       }
     }
-    if (images.length < 10) {
-      addError(errors, "MEDIA_TOO_FEW_IMAGES", "media.images", `Active entity requires at least 10 images (got ${images.length}).`);
+    const minImages = minImagesForNodeType(entityNodeType(entity));
+    if (images.length < minImages) {
+      addError(
+        errors,
+        "MEDIA_TOO_FEW_IMAGES",
+        "media.images",
+        `Active entity of node type '${entityNodeType(entity)}' requires at least ${minImages} images (got ${images.length}). Images with full credit/sourceUrl from the open web (all-rights-reserved) are acceptable — search beyond Wikimedia Commons if needed.`,
+      );
     }
-    if (images.length > 20) {
-      addError(errors, "MEDIA_TOO_MANY_IMAGES", "media.images", `Active entity allows at most 20 images (got ${images.length}).`);
+    if (images.length > MAX_IMAGES_PER_ENTITY) {
+      addError(errors, "MEDIA_TOO_MANY_IMAGES", "media.images", `Active entity allows at most ${MAX_IMAGES_PER_ENTITY} images (got ${images.length}).`);
     }
     const seen = new Set<string>();
     for (const [i, im] of images.entries()) {

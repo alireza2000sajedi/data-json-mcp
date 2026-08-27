@@ -227,6 +227,21 @@ export function isWithinActiveScope(state: NotesState, nodeId: string): boolean 
 }
 
 /**
+ * Node ids that belong to the currently active scope's subtree, or null when
+ * no scope is active (province-wide mode). Used by every DoD/complete check so
+ * a finished county scope can report complete:true while sibling counties stay
+ * pending for their own runs (staged workflow).
+ */
+export function scopedNodeIds(state: NotesState): Set<string> | null {
+  if (!state.activeScopeId) return null;
+  const ids = new Set<string>([state.activeScopeId]);
+  for (const n of state.nodes) {
+    if (isSubtreeNode(state, n.nodeId, state.activeScopeId)) ids.add(n.nodeId);
+  }
+  return ids;
+}
+
+/**
  * First unfinished node in depth-first traversal, or null.
  *
  * When a staged scope is active (`activeScopeId` set), the traversal is
@@ -265,19 +280,29 @@ export function getScopeState(provinceId: string): ScopeState {
   const nodes = state.nodes;
   const activeEntities = listEntities(provinceId).filter((e) => e.entity.status === "active").length;
   const mediaDeficitNodes = state.mediaDeficits.filter((d) => d.state === "recorded");
-  const openCandidates = state.candidates.filter((c) => c.state === "open");
-  const openConflicts = state.conflicts.filter((c) => c.state === "open");
+  const scopeIds = scopedNodeIds(state);
+  const openCandidates = state.candidates.filter(
+    (c) => c.state === "open" && (scopeIds === null || scopeIds.has(c.nodeId)),
+  );
+  const openConflicts = state.conflicts.filter(
+    (c) => c.state === "open" && (scopeIds === null || scopeIds.has(c.nodeId)),
+  );
 
   const next = nextRequiredNode(provinceId);
   const blockingReasons: string[] = [];
   if (nodes.length === 0) blockingReasons.push("no administrative nodes discovered");
-  for (const n of nodes) {
+  // Scope-aware DoD: when a staged scope is active, only the nodes of that
+  // scope's subtree count towards definition-of-done. Sibling counties / the
+  // province stay pending for their own separate runs (STAGED_WORKFLOW.md), so
+  // they must not keep a finished scope stuck at complete:false forever.
+  const doDNodes = scopeIds === null ? nodes : nodes.filter((n) => scopeIds.has(n.nodeId));
+  for (const n of doDNodes) {
     blockingReasons.push(...nodeStatus(provinceId, n).blockingReasons.map((r) => `${n.nodeId}: ${r}`));
   }
   if (openCandidates.length > 0) blockingReasons.push(`${openCandidates.length} open candidate(s)`);
   if (openConflicts.length > 0) blockingReasons.push(`${openConflicts.length} open conflict(s)`);
 
-  const definitionOfDone = blockingReasons.length === 0 && nodes.length > 0;
+  const definitionOfDone = blockingReasons.length === 0 && doDNodes.length > 0;
 
   return {
     provinceId,

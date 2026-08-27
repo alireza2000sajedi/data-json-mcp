@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { config, safeJoin, assertProvinceId } from "./config.js";
+import { minImagesForNodeType } from "./media.js";
 import type {
   NotesState,
   DodStatus,
@@ -334,7 +335,8 @@ function renderMarkdown(state: NotesState): string {
     .map((d) => {
       const n = state.nodes.find((x) => x.nodeId === d.nodeId);
       const name = n?.canonicalName ?? "";
-      return `- ${d.nodeId} (${n?.nodeType ?? "?"}) ${name} — insufficient_verifiable_media (${d.imagesFound}/10 تصویر آزاد): ${d.reason}`;
+      const min = minImagesForNodeType(n?.nodeType);
+      return `- ${d.nodeId} (${n?.nodeType ?? "?"}) ${name} — insufficient_verifiable_media (${d.imagesFound}/${min} تصویر قابل‌انتساب پس از جستجوی آرشیوها و وب): ${d.reason}`;
     })
     .join("\n");
 

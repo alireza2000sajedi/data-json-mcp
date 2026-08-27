@@ -113,11 +113,36 @@ test("rejects thumbnail duplicated inside images", async () => {
   assert.ok(codes(r).includes("MEDIA_THUMBNAIL_DUPLICATED"), `codes: ${codes(r)}`);
 });
 
-test("rejects 9 images for active entity", async () => {
-  const entity = makeValidPlace({ media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 9 }, (_, i) => mediaItem(i)) } });
-  const r = await validate(entity);
-  assert.equal(r.accepted, false);
-  assert.ok(codes(r).includes("MEDIA_TOO_FEW_IMAGES"), `codes: ${codes(r)}`);
+test("media minimums are per node type: POI needs 3, city needs 5, village needs 3", async () => {
+  // POI (historical place) with 2 images → below the 3-image minimum.
+  const poi = makeValidPlace({ media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 2 }, (_, i) => mediaItem(i)) } });
+  const rPoi = await validate(poi);
+  assert.equal(rPoi.accepted, false);
+  assert.ok(codes(rPoi).includes("MEDIA_TOO_FEW_IMAGES"), `codes: ${codes(rPoi)}`);
+
+  // Village with exactly 3 images → passes the media bar (3 is the village minimum).
+  const village = makeVillage({
+    media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 3 }, (_, i) => mediaItem(i)) },
+    location: { country: "Iran", province: "همدان", county: "فامنین", ruralDistrict: "دهستان پیشخور", village: "فامنین", coordinates: { latitude: 35.1, longitude: 48.9 }, address: { full: "x" } },
+  });
+  const rVillage = await validate(village);
+  assert.ok(!codes(rVillage).includes("MEDIA_TOO_FEW_IMAGES"), `village with 3 images must pass the media bar: ${codes(rVillage)}`);
+
+  // City with 4 images → below the 5-image minimum for cities.
+  const city = makeCity({
+    media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 4 }, (_, i) => mediaItem(i)) },
+    location: { country: "Iran", province: "همدان", county: "فامنین", city: "فامنین", coordinates: { latitude: 35.1, longitude: 48.9 }, address: { full: "x" } },
+  });
+  const rCity = await validate(city);
+  assert.ok(codes(rCity).includes("MEDIA_TOO_FEW_IMAGES"), `city with 4 images must fail the media bar: ${codes(rCity)}`);
+
+  // City with exactly 5 images → passes.
+  const city5 = makeCity({
+    media: { thumbnail: mediaItem(99, { url: "https://upload.wikimedia.org/x.jpg" }), images: Array.from({ length: 5 }, (_, i) => mediaItem(i)) },
+    location: { country: "Iran", province: "همدان", county: "فامنین", city: "فامنین", coordinates: { latitude: 35.1, longitude: 48.9 }, address: { full: "x" } },
+  });
+  const rCity5 = await validate(city5);
+  assert.ok(!codes(rCity5).includes("MEDIA_TOO_FEW_IMAGES"), `city with 5 images must pass the media bar: ${codes(rCity5)}`);
 });
 
 test("rejects 21 images for active entity", async () => {
