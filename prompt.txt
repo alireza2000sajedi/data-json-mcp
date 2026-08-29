@@ -170,20 +170,21 @@ Wikidata، دانشنامه ایرانیکا، Wikimedia Commons و Flickr CC.
 
 Primary Source Policy (binding contract text):
 
-The following five sources are mandatory Primary Sources and must be checked in this exact priority order before using secondary/fallback sources:
+The following six sources are mandatory Primary Sources and must be checked in this exact priority order before using secondary/fallback sources:
 
 1. Kajaro (کجارو)
 2. Jabama (جاباما)
 3. Alibaba Mag (علی‌بابا مگ)
 4. Lastsecond (لست‌سکند)
 5. Flytoday (فلای‌تیودی)
+6. Wikipedia (ویکی پدیا)
 
 The Agent must record coverage of all five Primary Sources in the research/DoD state.
 
 Wikipedia, Wikidata, Wikimedia Commons and other secondary sources must not replace or silently substitute for any of these five Primary Sources.
 
 Primary-source coverage is considered complete only when all five required sources have been attempted or explicitly recorded as unavailable/unreachable.
-تذکر مهم: ۵ صفحه مختلف از ویکی‌پدیا یا ۵ فایل مختلف از ویکی‌مدیا تنها ۱ منبع به حساب می‌آیند، نه ۵ منبع. منابع باید در دامنه‌ها و متولیان مستقل باشند. برای POIهای کوچک، ممکن است تنها ۱-۲ منبع معتبر کافی باشد، ولی Factهای حساس و مهم باید با حداقل ۲-۳ منبع Cross-check شوند.
+تذکر مهم: ۵ صفحه مختلف از ویکی‌پدیا یا ۵ فایل مختلف از ویکی‌مدیا تنها ۱ منبع به حساب می‌آیند، نه 6 منبع. منابع باید در دامنه‌ها و متولیان مستقل باشند. برای POIهای کوچک، ممکن است تنها ۱-۲ منبع معتبر کافی باشد، ولی Factهای حساس و مهم باید با حداقل ۲-۳ منبع Cross-check شوند.
 
 معیار راستی‌آزمایی Entity واقعی (Real Entity Verification):
 یک پدیده گردشگری، شهر، روستا یا مکان زمانی به عنوان Real Entity تایید می‌شود که:
