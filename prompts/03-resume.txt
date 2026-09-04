@@ -1,0 +1,16 @@
+# Prompt 03 — Resume
+
+ورودی Runner فقط:
+- province_id
+- scope_id
+
+هدف: ادامه همان Scope، بدون تکرار کار کامل‌شده.
+
+1. `get_scope_state` و `get_next_research_node` را اول بخوان.
+2. فقط اولین Node/Track ناقص در همان Scope را ادامه بده.
+3. Entityهای active را دوباره نساز مگر repair لازم باشد.
+4. Candidateها، Conflictها، source matrix و media candidates قبلی را حفظ و تکمیل کن.
+5. Coverage پنج Primary Source را کنترل کن.
+6. قبل از هر Entity جدید duplicate-check و taxonomy-check انجام بده.
+7. پس از پایان Node از `mark_node_complete` استفاده کن.
+8. وقتی Scope تمام شد، `check_definition_of_done` و `validate_province` را اجرا کن و توقف کن.

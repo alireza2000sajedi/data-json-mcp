@@ -15,12 +15,10 @@ Agent / LLM
 - ✅ بدون HTTP / UI / Docker / database / crawler / scraper / browser automation
 - ✅ فقط Toolهای domain-specific — بدون `run_shell` یا دسترسی آزاد filesystem
 - ✅ اعتبارسنجی JSON Schema Draft 2020-12 با Ajv + دروازهٔ کیفیت (Quality Gate)
-- ✅ تست با `node:test`
 
-کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود
-(استان فقط برای Discovery → بعداً یک شهرستان/شهر/روستا/POI از سوی کاربر). هر Scope یک **id اختصاصی و
+کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود. Runner فقط `province_id` و `scope_id` می‌دهد؛ انتخاب با نام فارسی جزو قرارداد استاندارد نیست. هر Scope یک **id اختصاصی و
 پایدار** دارد (`province-30`، `county-30-5`، `city-30-12`، `village-30-v2`، `place-30-3`) و پیشرفت بین
-اجراها در `notes.state.json` ذخیره و Resume می‌شود. راهنمای کامل قرارداد اجرا: [`STAGED_WORKFLOW.md`](STAGED_WORKFLOW.md).
+اجراها در `notes.state.json` ذخیره و Resume می‌شود. قوانین اجرایی در `prompt.txt` و فایل‌های `prompts/` قرار دارند.
 
 ---
 
@@ -30,11 +28,11 @@ Agent / LLM
 data-json-mcp/
 ├── package.json
 ├── tsconfig.json
-├── prompt.txt                ← پرامپت واحد Agent تحقیق (تنها پرامپت مجاز)
-├── STAGED_WORKFLOW.md        ← قرارداد اجرای پلکانی + شناسه‌های اختصاصی Scope
+├── prompt.txt                ← Master prompt
+├── prompts/                  ← promptهای Start / Scope / Resume / Repair / Final Audit
+├── taxonomy/                 ← taxonomy سراسری + صف proposalهای Agent
 ├── mcp-client.mjs            ← کلاینت CLI برای فراخوانی Toolها از شل
 ├── dataset/                  ← Source of Truth (اسکیماها و قانون‌نامه، read-only)
-│   ├── README.md
 │   ├── brand_voice.md        ← هویت کلامی و لحن برند — نسخه ۱.۰ نهایی (+ پیوست نمونهٔ کاربردی)
 │   ├── source_policy.json     ← سیاست منابع: ۵ منبع Primary اجباری + fallbackها + coverage
 │   ├── iran-cpi.schema.json
@@ -55,12 +53,12 @@ data-json-mcp/
 │   ├── quality-gate.ts       ← دروازهٔ کیفیت پیش از ذخیره
 │   ├── resources.ts          ← Resourceها
 │   └── tools.ts              ← Toolها
-└── tests/                    ← تستهای node:test
+└── scripts/verify-project.mjs ← بررسی ساختار و قراردادهای اصلی پیش از اجرا
 ```
 
 ### دیتای ورودی `input/`
 
-پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `dataset/README.md` بخش ۱-۱ و در `prompt.txt`.)
+پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `prompt.txt` و منابع داخل `dataset/`.)
 
 مسیرها از طریق متغیر محیطی قابل تغییرند (پیش‌فرض: داخل خود پروژه):
 
@@ -69,6 +67,7 @@ data-json-mcp/
 | `PLANRO_DATASET_DIR` | `./dataset` | محل اسکیماها و README (فقط خواندنی) |
 | `PLANRO_OUTPUT_DIR` | `./output` | محل `output/{provinceId}/` (خواندنی/نوشتنی) |
 | `PLANRO_INPUT_DIR` | `./input` | محل چک‌لیست‌های اداری `1.json … 31.json` (فقط خواندنی) |
+| `PLANRO_TAXONOMY_DIR` | `./taxonomy` | Taxonomy سراسری و صف proposalها |
 
 ---
 
@@ -89,10 +88,8 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 ## تست
 
 ```bash
-npm test               # build + node --test tests/
 ```
 
-۶۴ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، **سیاست رسانهٔ Best-Effort** (قبول ۱-۲ تصویر به‌عنوان partial، رد ذخیرهٔ ۰-عکس بدون Coverage کامل با `MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE`، قبول آن پس از Coverage، رد ۲۱ تصویر، رد تکرار تامبنیل در چندتصویری، رد ناسازگاری media.status، رد تامبنیلِ بدون images)، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، ساختار پوشهٔ سلسله‌مراتبی، **پایپ‌لاین رسانه** (ثبت idempotent کاندیدها، finalize با dedupe/رتبه‌بندی/تامبنیل متمایز و انتخاب دقیقاً min(usable, target) — روستای ۱۸-عکسه فقط ۳ عکس ذخیره می‌کند، شمارش کاندیدهای دامنهٔ Primary در Coverage)، **سیاست منبع** (دسته‌بندی primary/fallback/other + یادآور برای other)، **resolve_scope_name** (نام استان، نام شهرستان، همنام مبهم، نام ناموجود)، **گیت مرحلهٔ استان** (awaitingScopeSelection، رد complete بدون انتخاب Scope، باز شدن قفل با set_active_scope)، مسیر شرعی §9: بسته‌شدن نود بدون داده با `mark_node_media_deficit` (رد در حضور کاندید usable، گیت‌های ممیزی/DFS)، پیشروی خودکار DFS، پاس شدن DoD با گزارش شفاف نودهای بدون فایل، **DoD Scope-محور** (پاس شدن Scope شهرستان کامل در حالی که شهرستان همسایه pending است)، **تولید کوئری‌های تصویر/رسانه برای همهٔ انواع نود**، ارتقای خودکار رکورد با ذخیرهٔ فعال بعدی، و **رجیستری Scope**: قطعی‌بودن و یکتایی idها، ایندکس ۳۱ استان، idempotence، قفل‌شدن DFS به Scope انتخابی و رد `mark_node_complete` خارج از Scope).
 
 ---
 
@@ -217,5 +214,4 @@ npm test               # build + node --test tests/
 ```bash
 npm run dev            # اجرا با tsx بدون build
 npm run build          # build
-npm test               # build + test
 ```

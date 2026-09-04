@@ -10,6 +10,8 @@ export interface Config {
   outputDir: string;
   /** Directory holding the administrative checklist input/1.json … input/31.json. */
   inputDir: string;
+  /** Global controlled taxonomy; never province-specific. */
+  taxonomyDir: string;
 }
 
 function resolveFromEnv(): Config {
@@ -19,6 +21,7 @@ function resolveFromEnv(): Config {
     datasetDir: path.resolve(process.env.PLANRO_DATASET_DIR ?? path.join(repoRoot, "dataset")),
     outputDir: path.resolve(process.env.PLANRO_OUTPUT_DIR ?? path.join(repoRoot, "output")),
     inputDir: path.resolve(process.env.PLANRO_INPUT_DIR ?? path.join(repoRoot, "input")),
+    taxonomyDir: path.resolve(process.env.PLANRO_TAXONOMY_DIR ?? path.join(repoRoot, "taxonomy")),
   };
 }
 

@@ -1,0 +1,22 @@
+# Prompt 02 — Run One Scope
+
+ورودی Runner فقط:
+- province_id
+- scope_id
+
+`scope_id` ممکن است county/city/village/place/camping باشد.
+
+1. `get_scope_state`، `get_next_research_node`، `get_node_context` و Resourceهای rules/schema/source-policy/brand-voice/taxonomy را بخوان.
+2. با `set_active_scope(provinceId=province_id, nodeId=scope_id)` اجرا را روی همان Scope قفل کن.
+3. فقط همان Scope و زیردرخت آن را تحقیق کن.
+4. برای هر Entity Node، پنج Primary Source را به ترتیب بررسی و با `record_search_result` ثبت کن؛ no-result/unreachable نیز باید صریح ثبت شود.
+5. fallbackها را فقط برای cross-check و تکمیل استفاده کن.
+6. هر POI را duplicate-check کن؛ مورد اثبات‌نشده را Candidate و مورد خارج از Scope را Notes کن.
+7. taxonomy را فقط از catalogهای سراسری بخوان. اگر مفهوم جدیدی واقعاً لازم شد، proposal ثبت کن؛ proposal را در Entity استفاده نکن.
+8. media را با `record_media_candidate` و `finalize_media` جمع کن. Target تصویر minimum نیست.
+9. Entity را با schema + Quality Gate ذخیره کن.
+10. discovery trackهای Node را کامل کن و سپس `mark_node_complete`.
+11. در پایان `check_definition_of_done` و `validate_province` را اجرا کن.
+12. وقتی `complete:true` و `invalid:0` شد، همین Scope را تمام‌شده بدان و متوقف شو.
+
+هرگز Scope همسایه یا Scope دیگری را خودکار شروع نکن.

@@ -2,6 +2,7 @@ import { getSchemas, requiresFullChecklist } from "./schemas.js";
 import { readNotes } from "./notes.js";
 import { listEntities, entityNodeType, ancestorChain } from "./dataset.js";
 import { mediaPolicyFor, mediaStatusFor } from "./media.js";
+import { getTaxonomy, getSubtype } from "./taxonomy.js";
 import type { NotesState, PlaceEntity, QualityError, QualityResult, NodeRecord } from "./types.js";
 
 export interface QualityContext {
@@ -152,7 +153,38 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     }
   }
 
-  // (b) status must be active only
+  // (b) global taxonomy membership. The schema enforces id shape; this gate enforces
+  // canonical membership and subtype/type compatibility. Proposals are never valid.
+  const taxonomy = getTaxonomy();
+  const taxonomyHas = (domain: keyof typeof taxonomy, id: unknown) =>
+    typeof id === "string" && (taxonomy[domain] as Array<{ id: string }>).some((x) => x.id === id);
+
+  if (!taxonomyHas("types", entity.type)) {
+    addError(errors, "TAXONOMY_TYPE_UNKNOWN", "type", `Unknown canonical type '${entity.type}'.`);
+  }
+  if (entity.subType !== undefined) {
+    const subtype = getSubtype(String(entity.subType));
+    if (!subtype) {
+      addError(errors, "TAXONOMY_SUBTYPE_UNKNOWN", "subType", `Unknown canonical subtype '${entity.subType}'.`);
+    } else if (!subtype.appliesTo.includes(entity.type)) {
+      addError(errors, "TAXONOMY_SUBTYPE_TYPE_MISMATCH", "subType", `Subtype '${entity.subType}' is not valid for type '${entity.type}'.`);
+    }
+  }
+  const taxonomyArrays: Array<[string, keyof typeof taxonomy, unknown]> = [
+    ["categories", "categories", entity.categories],
+    ["activities", "activities", entity.activities],
+    ["features", "features", entity.features],
+    ["facilities", "facilities", entity.facilities],
+    ["safety.risks", "risks", (entity.safety as any)?.risks],
+  ];
+  for (const [field, domain, value] of taxonomyArrays) {
+    if (!Array.isArray(value)) continue;
+    for (const [i, item] of value.entries()) {
+      if (!taxonomyHas(domain, item)) addError(errors, "TAXONOMY_ITEM_UNKNOWN", `${field}[${i}]`, `Unknown canonical taxonomy id '${item}' in ${domain}.`);
+    }
+  }
+
+  // (c) status must be active only
   if (entity.status !== "active") {
     addError(errors, "STATUS_NOT_ACTIVE", "status", "Stored entities must have status 'active'.");
   }

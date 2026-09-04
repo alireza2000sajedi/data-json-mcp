@@ -2,7 +2,7 @@ import type { NodeType } from "./types.js";
 
 /**
  * Media policy (single source for code; mirrors prompt.txt §9 and
- * dataset/README.md §12). BEST-EFFORT model:
+ * قانون رسانهٔ پروژه). BEST-EFFORT model:
  *
  *   target    — the number of distinct attributable images we AIM for.
  *   minUsable — the smallest count that still gets SAVED (partial media is

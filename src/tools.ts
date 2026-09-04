@@ -46,6 +46,7 @@ import {
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
+import { getTaxonomy, getTaxonomyDomain, proposeTaxonomyItem } from "./taxonomy.js";
 import { mediaPolicyFor, mediaStatusFor } from "./media.js";
 import { getSourcePolicy, classifySource, sourceCoverageFor } from "./source-policy.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
@@ -84,6 +85,28 @@ function ensureNode(state: NotesState, nodeId: string, extra?: { nodeType?: Node
       state: "research_required",
     });
   }
+}
+
+// ============================================================================
+// 0. taxonomy tools
+// ============================================================================
+export function toolGetTaxonomy(args: { domain?: string }) {
+  return args.domain ? getTaxonomyDomain(args.domain) : getTaxonomy();
+}
+
+export function toolProposeTaxonomyItem(args: {
+  domain: "types" | "subtypes" | "categories" | "activities" | "features" | "facilities" | "risks";
+  id: string;
+  label: string;
+  description: string;
+  rationale: string;
+  appliesTo?: string[];
+  aliases?: string[];
+  examples?: string[];
+  proposedBy?: string;
+}) {
+  const proposal = proposeTaxonomyItem({ ...args, proposedBy: args.proposedBy ?? "agent" });
+  return { acceptedForProduction: false, proposal, instruction: "Pending maintainer review; do not use this proposal in Entity JSON until it is promoted into the core taxonomy." };
 }
 
 // ============================================================================
@@ -144,8 +167,7 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
     `get_next_research_node returns '${registry.provinceId}': search it on the 5 mandatory primary sources (see source policy), ` +
     `save its entity (media is best-effort: target 10 images, partial OK, 0 → save without media), ` +
     `complete its provincePlaces/camping tracks, then mark_node_complete. ` +
-    `After that STOP and ask the user which county/city/village to continue with ` +
-    `(resolve Persian names to ids with resolve_scope_name).`;
+    `After that STOP and wait for the next scope_id command.`;
 
   writeNotes(state);
 
@@ -220,9 +242,7 @@ export function toolGetNextResearchNode(args: { provinceId: string }) {
       awaitingScopeSelection: true,
       node: null,
       instruction:
-        "PROVINCE STAGE COMPLETE. STOP: report the finished province stage to the user and ask which county/city/village " +
-        "to research next. Resolve the user's Persian name with resolve_scope_name, then call set_active_scope. " +
-        "(For a continuous whole-province run, call set_active_scope with the province id itself.)",
+        "PROVINCE STAGE COMPLETE. STOP. Wait for a user command containing scope_id; valid ids are available from planro://scopes/{provinceId}.",
     };
   }
   const node = nextRequiredNode(args.provinceId);
@@ -1206,9 +1226,7 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       const provinceNode = state.nodes.find((n) => n.nodeType === "province");
       if (awaitingScopeSelection(state) && nodeId !== provinceNode?.nodeId) {
         throw new Error(
-          `AWAITING SCOPE SELECTION: the province stage is complete. Ask the user which county/city/village to ` +
-            `research next (resolve the Persian name with resolve_scope_name), then call set_active_scope before ` +
-            `completing '${nodeId}'. For a continuous whole-province run, set the active scope to the province id.`,
+          `AWAITING SCOPE SELECTION: the province stage is complete. STOP and wait for a scope_id command, then call set_active_scope before completing '${nodeId}'. For a continuous whole-province run, set the active scope to the province id.`,
         );
       }
 
@@ -1235,8 +1253,7 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       // Province-stage completion → the staged workflow now waits for the user.
       if (provinceNode && nodeId === provinceNode.nodeId && !state.activeScopeId) {
         state.nextStep =
-          `PROVINCE STAGE COMPLETE. STOP: report the finished province stage to the user and ask which ` +
-          `county/city/village to research next (resolve names with resolve_scope_name, then set_active_scope).`;
+          `PROVINCE STAGE COMPLETE. STOP. Wait for the next scope_id command, then set_active_scope.`;
         writeNotes(state);
         return {
           updated: true,
@@ -1244,8 +1261,7 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
           provinceId: args.provinceId,
           provinceStageComplete: true,
           reminder:
-            "Province stage complete! Do NOT auto-dive into counties. Ask the user for the next scope; resolve the " +
-            "Persian name with resolve_scope_name and lock it with set_active_scope.",
+            "Province stage complete. Do NOT auto-dive into counties. Wait for a scope_id command and lock it with set_active_scope.",
         };
       }
       
@@ -1371,7 +1387,8 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     missingEvidence.length === 0 &&
     openCandidates.length === 0 &&
     unresolvedConflicts.length === 0 &&
-    missingAdministrativeNodes.length === 0;
+    missingAdministrativeNodes.length === 0 &&
+    coverageRows.length === 0;
 
   // Build compact issues list for DoD status
   const issues: string[] = [];

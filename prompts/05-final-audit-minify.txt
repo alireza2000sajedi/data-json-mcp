@@ -1,0 +1,25 @@
+# Prompt 05 — Final Global Audit & Minify
+
+این Prompt فقط بعد از پایان تمام استان‌ها اجرا می‌شود.
+
+1. تمام outputها را audit کن.
+2. برای همه Entityها بررسی کن:
+   - Schema
+   - canonical taxonomy
+   - subtype/type compatibility
+   - duplicate ID/slug
+   - hierarchy/ownership
+   - relations
+   - evidence/source consistency
+   - five-primary-source coverage
+   - costs/CPI
+   - checklist
+   - media provenance/limits/status
+   - brand voice
+   - forbidden fields (`tags`, `safety.emergencyNumbers`, research notes in user-facing text)
+3. هر خطا را repair کن، سپس دوباره validate کن.
+4. Entityهای ناقص و غیرقابل‌اثبات را بدون حدس‌سازی تعیین تکلیف کن.
+5. فقط وقتی کل dataset `invalid:0` و DoD نهایی کامل است، JSONهای تولیدی را minify کن.
+6. ترتیب کلیدها یا مقدار Factها را فقط برای minification تغییر نده.
+7. taxonomy و prompt/rules را تغییر نده مگر تصمیم maintainer وجود داشته باشد.
+8. در گزارش نهایی فقط وضعیت audit، شمارش خطا/repair و نتیجه minify را اعلام کن.

@@ -26,6 +26,8 @@ import {
   toolSaveEntities,
   toolDiscoverSubtree,
   toolListPendingNodes,
+  toolGetTaxonomy,
+  toolProposeTaxonomyItem,
 } from "./tools.js";
 
 export function createServer(): McpServer {
@@ -48,8 +50,22 @@ export function createServer(): McpServer {
   };
 
   register(
+    "get_taxonomy",
+    "Read the GLOBAL Planro taxonomy shared by every province. Use canonical ids only; never create province-local taxonomy.",
+    { domain: z.enum(["types", "subtypes", "categories", "activities", "features", "facilities", "risks"]).optional() },
+    toolGetTaxonomy,
+  );
+
+  register(
+    "propose_taxonomy_item",
+    "Record a pending Agent Taxonomy proposal when no suitable canonical item exists. A proposal is never production-valid until manually promoted.",
+    { domain: z.enum(["types", "subtypes", "categories", "activities", "features", "facilities", "risks"]), id: z.string().min(1), label: z.string().min(1), description: z.string().min(1), rationale: z.string().min(1), appliesTo: z.array(z.string()).optional(), aliases: z.array(z.string()).optional(), examples: z.array(z.string()).optional(), proposedBy: z.string().optional() },
+    toolProposeTaxonomyItem,
+  );
+
+  register(
     "import_province_scopes",
-    "Province Stage, step 1: derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city/village with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}, village-{p}-v{n}). Structure + ids only here — then CONTINUE with the PROVINCE STAGE: full deep research of the province node itself (entity + province-level places + camping + best-effort media from the 5 primary sources), mark it complete, and only then STOP and ask the user for the next county/city/village.",
+    "Province Stage, step 1: derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city/village with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}, village-{p}-v{n}). Structure + ids only here — then CONTINUE with the PROVINCE STAGE: full deep research of the province node itself (entity + province-level places + camping + best-effort media from the 5 primary sources), mark it complete, and then STOP for the next scope_id command.",
     { provinceId: z.string().min(1) },
     toolImportProvinceScopes,
   );
@@ -70,7 +86,7 @@ export function createServer(): McpServer {
 
   register(
     "get_next_research_node",
-    "Return the first unfinished node in depth-first administrative traversal. When awaitingScopeSelection:true the province stage is complete: STOP and ask the user for the next scope (resolve names with resolve_scope_name, then set_active_scope). When done:true, run the DoD checks before the final report.",
+    "Return the first unfinished node in depth-first administrative traversal. When awaitingScopeSelection:true the province stage is complete: STOP and wait for the next scope_id command, then use set_active_scope. When done:true, run the DoD checks before the final report.",
     { provinceId: z.string().min(1) },
     toolGetNextResearchNode,
   );
@@ -182,7 +198,7 @@ export function createServer(): McpServer {
 
   register(
     "resolve_scope_name",
-    "Resolve a Persian name to its dedicated scope id — never ask the user for raw ids. Without provinceId: resolves a province name across all 31 provinces. With provinceId: resolves county/city/village names (optionally filtered by expectedType). Returns resolved nodeIds, or 'ambiguous' with the candidate list (the ONLY case where asking the user is legitimate), or suggestions.",
+    "Legacy compatibility tool: resolve a Persian name to a registered scope id. The standard Planro workflow supplies scope_id directly and should not need this tool.",
     {
       provinceId: z.string().min(1).optional(),
       name: z.string().min(1),

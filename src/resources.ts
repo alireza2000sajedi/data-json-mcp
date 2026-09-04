@@ -9,6 +9,7 @@ import { getScopeState, nextRequiredNode, traverse, administrativePath, nodeStat
 import { listEntities } from "./dataset.js";
 import { readReadme } from "./schemas.js";
 import { buildScopeRegistry, listProvinceScopesIndex } from "./scopes.js";
+import { getTaxonomy } from "./taxonomy.js";
 
 function jsonResource(uri: string, data: unknown): ReadResourceResult {
   return { contents: [{ uri, mimeType: "application/json", text: JSON.stringify(data, null, 2) }] };
@@ -64,6 +65,19 @@ export function registerResources(server: McpServer): void {
   server.registerResource("brand-voice-guide", "planro://rules/brand-voice-guide", { title: "Planro brand voice (v1.0)", description: "Verbal identity & brand tone v1.0 (single source): language modes, vocabulary system & blacklist, CTA rules, AI voice, 100 before/after examples, quality test, plus the applied dataset-content example (Masuleh appendix).", mimeType: "text/markdown" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "brand_voice.md"), "utf8");
     return textResource(uri.href, text, "text/markdown");
+  });
+
+  // --- global taxonomy resources ---
+  server.registerResource("taxonomy", "planro://taxonomy", { title: "Global taxonomy", description: "Canonical taxonomy shared by every province.", mimeType: "application/json" }, async (uri) =>
+    jsonResource(uri.href, getTaxonomy()),
+  );
+
+  const taxonomyTpl = new ResourceTemplate("planro://taxonomy/{domain}", { list: undefined });
+  server.registerResource("taxonomy-domain", taxonomyTpl, { title: "Taxonomy domain", description: "One canonical taxonomy domain.", mimeType: "application/json" }, async (uri) => {
+    const domain = uri.pathname.split("/")[2];
+    const taxonomy = getTaxonomy() as any;
+    if (!domain || !(domain in taxonomy)) throw new Error(`Unknown taxonomy domain '${domain}'.`);
+    return jsonResource(uri.href, taxonomy[domain]);
   });
 
   // --- scope registry resources (dedicated scope ids) ---

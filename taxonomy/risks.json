@@ -1,0 +1,28 @@
+{
+  "version":"1.0.0",
+  "items":[
+    {"id":"extreme_cold","label":"سرمای شدید","description":"خطر ناشی از سرمای شدید"},
+    {"id":"extreme_heat","label":"گرمای شدید","description":"خطر ناشی از گرمای شدید"},
+    {"id":"snow","label":"برف","description":"شرایط برفی مؤثر بر ایمنی یا دسترسی"},
+    {"id":"avalanche","label":"بهمن","description":"خطر بهمن در مسیرهای مستعد"},
+    {"id":"ice","label":"یخ‌زدگی","description":"خطر یخ و لغزندگی ناشی از آن"},
+    {"id":"slippery_path","label":"مسیر لغزنده","description":"سطح لغزنده در بخشی از مسیر"},
+    {"id":"poor_road","label":"جاده نامناسب","description":"کیفیت پایین یا دسترسی دشوار جاده"},
+    {"id":"offroad","label":"مسیر خارج‌جاده","description":"نیاز به تردد خارج از جاده آسفالته"},
+    {"id":"steep_slope","label":"شیب تند","description":"شیب مؤثر بر ایمنی"},
+    {"id":"cliff","label":"پرتگاه","description":"لبه یا پرتگاه با خطر سقوط"},
+    {"id":"rockfall","label":"ریزش سنگ","description":"احتمال ریزش سنگ"},
+    {"id":"flash_flood","label":"سیلاب","description":"خطر سیلاب ناگهانی"},
+    {"id":"strong_current","label":"جریان شدید آب","description":"خطر جریان آب"},
+    {"id":"unsafe_swimming_water","label":"آب نامناسب برای شنا","description":"نباید بدون مجوز/ایمنی وارد آب شد"},
+    {"id":"river_crossing","label":"عبور از رودخانه","description":"نیاز به عبور از آب یا رودخانه"},
+    {"id":"remote_area","label":"منطقه دورافتاده","description":"فاصله زیاد از خدمات یا دسترسی سریع"},
+    {"id":"limited_mobile_coverage","label":"پوشش محدود موبایل","description":"آنتن‌دهی در همه بخش‌ها تضمین‌شده نیست"},
+    {"id":"wildlife","label":"حیات‌وحش","description":"مواجهه احتمالی با حیوانات وحشی"},
+    {"id":"fire","label":"آتش‌سوزی","description":"خطر آتش، به‌ویژه در طبیعت"},
+    {"id":"dust","label":"گردوغبار","description":"شرایط گردوغبار مؤثر بر دید یا سلامت"},
+    {"id":"sandstorm","label":"طوفان شن","description":"خطر طوفان شن در مناطق مستعد"},
+    {"id":"seasonal_closure","label":"بسته‌شدن فصلی","description":"بسته‌شدن یا محدودیت دسترسی در برخی فصل‌ها"},
+    {"id":"unstable_structure","label":"سازه ناپایدار","description":"خطر ناشی از وضعیت نامطمئن سازه"}
+  ]
+}

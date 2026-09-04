@@ -6,7 +6,7 @@ import { config } from "./config.js";
  * Deterministic Scope Registry.
  *
  * Every administrative unit in the project (province → county → city / village)
- * gets ONE dedicated, stable id following dataset/README.md §5:
+ * gets ONE dedicated, stable id following قرارداد Scope پروژه:
  *
  *   province-{n}
  *   county-{province}-{n}      (n = 1-based index inside the province)

@@ -56,17 +56,12 @@
     },
     "categories": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_-]*$"
       },
-      "uniqueItems": true
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true
+      "description": "Canonical ids from taxonomy/categories.json."
     },
     "name": {
       "type": "object",
@@ -519,7 +514,7 @@
     "features": {
       "type": "array",
       "uniqueItems": true,
-      "description": "به‌جای بولین‌های بسته. نبودن آیتم = نامشخص؛ منفی صریح با پیشوند not_",
+      "description": "Canonical ids from taxonomy/features.json; absence means unknown, not false.",
       "items": {
         "enum": [
           "family_friendly",
@@ -567,14 +562,17 @@
           "rest_area",
           "playground"
         ]
-      }
+      },
+      "description": "Canonical ids from taxonomy/facilities.json."
     },
     "activities": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_-]*$"
       },
-      "uniqueItems": true
+      "description": "Canonical ids from taxonomy/activities.json."
     },
     "scores": {
       "type": "object",
@@ -688,9 +686,12 @@
       "properties": {
         "risks": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]*$"
+          },
+          "description": "Canonical ids from taxonomy/risks.json."
         },
         "mobileCoverage": {
           "enum": [
@@ -699,12 +700,6 @@
             "none",
             null
           ]
-        },
-        "emergencyNumbers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         },
         "notes": {
           "type": "string"
@@ -733,7 +728,11 @@
         "status": {
           "type": "string",
           "description": "وضعیت رسانه (خودکار از تعداد تصاویر متمایز نسبت به هدفِ نوع Entity استخراج می‌شود): complete = رسیدن به هدف (استان/شهرستان/شهر/مکان ۱۰، روستا ۳) | partial = بین ۱ تا هدف-۱ | unavailable = هیچ تصویر قابل‌انتسابی پیدا نشد (Entity بدون media ذخیره می‌شود).",
-          "enum": ["complete", "partial", "unavailable"]
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ]
         },
         "thumbnail": {
           "$ref": "#/$defs/mediaItem"

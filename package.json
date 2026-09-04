@@ -14,8 +14,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "test": "npm run build && node --test \"tests/*.test.mjs\"",
-    "test:only": "node --test \"tests/*.test.mjs\""
+    "verify": "node scripts/verify-project.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

@@ -347,7 +347,7 @@ export function getScopeState(provinceId: string): ScopeState {
   if (nodes.length === 0) blockingReasons.push("no administrative nodes discovered");
   // Scope-aware DoD: when a staged scope is active, only the nodes of that
   // scope's subtree count towards definition-of-done. Sibling counties / the
-  // province stay pending for their own separate runs (STAGED_WORKFLOW.md), so
+  // province stay pending for their own separate runs (prompt.txt / prompts/), so
   // they must not keep a finished scope stuck at complete:false forever.
   const doDNodes = scopeIds === null ? nodes : nodes.filter((n) => scopeIds.has(n.nodeId));
   for (const n of doDNodes) {
