@@ -28,7 +28,7 @@ If MCP is unavailable, report the MCP connection/setup problem and STOP.
 12. Transport nodes use coordinates when available; do not store derived `distanceKm` in transport objects.
 13. Costs must be source-backed and schema-compliant. Never guess prices or create null placeholders only to fill a field.
 14. Safety content must be specific to the current Node.
-15. Media is best-effort and must be attributable to the current Node.
+15. Media must be attributable to the current Node. Do not stop after finding 1–3 images. For Province/County/City/Place, actively search multiple queries and source pages to build a candidate pool (goal: 12 usable candidates), then finalize the best 10; Definition-of-Done requires at least 5 distinct images unless a documented media exception is recorded. Never use duplicate, generic, neighboring, map-only, logo, or unrelated images.
 16. Save only through MCP.
 17. Complete discovery tasks and run `check_definition_of_done` + validation for this Scope.
 18. Stop after this Scope. Do not automatically select another Scope.

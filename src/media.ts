@@ -10,7 +10,8 @@ import type { NodeType } from "./types.js";
  *   max       — hard cap of stored images (schema maxItems).
  *
  * FINAL CONTRACT (owner-approved 2026-08-28, round 2):
- *   target    = the preferred number of high-quality images — NOT a minimum.
+ *   target    = the preferred number of high-quality images.
+ *   minimumForCompletion = the minimum distinct attributable images needed for DoD completion.
  *               province/county/city/place: 10 | village/camping: 3
  *   selection = the best min(usableCount, target) distinct images, NEVER more
  *               than target (the thumbnail counts inside this budget).
@@ -26,21 +27,24 @@ import type { NodeType } from "./types.js";
  */
 export interface MediaPolicyEntry {
   target: number;
-  minUsable: number;
+  /** Minimum distinct images required before a scope can report Definition-of-Done. */
+  minimumForCompletion: number;
+  /** Recommended minimum candidate pool before finalization, when available. */
+  candidateSearchTarget: number;
   max: number;
 }
 
 export type MediaStatus = "complete" | "partial" | "unavailable";
 
 export const MEDIA_POLICY: Record<NodeType, MediaPolicyEntry> = {
-  province: { target: 10, minUsable: 1, max: 20 },
-  county: { target: 10, minUsable: 1, max: 20 },
-  city: { target: 10, minUsable: 1, max: 20 },
-  village: { target: 3, minUsable: 1, max: 20 },
-  place: { target: 10, minUsable: 1, max: 20 },
-  camping: { target: 3, minUsable: 1, max: 20 },
-  district: { target: 3, minUsable: 1, max: 20 },
-  ruralDistrict: { target: 3, minUsable: 1, max: 20 },
+  province: { target: 10, minimumForCompletion: 5, candidateSearchTarget: 12, max: 20 },
+  county: { target: 10, minimumForCompletion: 5, candidateSearchTarget: 12, max: 20 },
+  city: { target: 10, minimumForCompletion: 5, candidateSearchTarget: 12, max: 20 },
+  village: { target: 3, minimumForCompletion: 3, candidateSearchTarget: 5, max: 20 },
+  place: { target: 10, minimumForCompletion: 5, candidateSearchTarget: 12, max: 20 },
+  camping: { target: 3, minimumForCompletion: 3, candidateSearchTarget: 5, max: 20 },
+  district: { target: 3, minimumForCompletion: 2, candidateSearchTarget: 4, max: 20 },
+  ruralDistrict: { target: 3, minimumForCompletion: 2, candidateSearchTarget: 4, max: 20 },
 };
 
 export function mediaPolicyFor(nodeType: NodeType | null | undefined): MediaPolicyEntry {
@@ -58,4 +62,4 @@ export function mediaStatusFor(nodeType: NodeType | null | undefined, distinctIm
 
 /** Human-readable policy summary (used in tool output/messages). */
 export const MEDIA_POLICY_SUMMARY =
-  "best-effort, non-blocking: target 10 images for province/county/city/place, 3 for village/camping (target is a goal, NOT a minimum); save min(usable, target) best images — never more than target; 1..target-1 → partial; 0 images after full primary coverage → save WITHOUT media (unavailable); 20 is only the absolute validation cap";
+  "media is non-blocking for save but blocking for Definition-of-Done: target 10 images for province/county/city/place and 3 for village/camping; completion requires at least 5 distinct images for province/county/city/place (3 for village/camping); search for a broader candidate pool first; select the best min(usable,target); never exceed 20; 0 images may be saved only after full primary coverage as unavailable.";

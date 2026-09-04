@@ -31,7 +31,6 @@ Runner فقط این دو مقدار را بدهد:
 
 ```text
 province_id=<PROVINCE_ID>
-scope_id=<PROVINCE_ID>
 ```
 
 پرامپت مورد استفاده:

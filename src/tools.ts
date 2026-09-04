@@ -680,10 +680,10 @@ export function toolRecordMediaCandidate(args: {
   const policy = mediaPolicyFor(node.nodeType);
   const nodeCandidates = state.mediaCandidates.filter((m) => m.nodeId === args.nodeId).length;
   state.nextStep =
-    `Media candidate ${nodeCandidates} recorded for ${args.nodeId} (target ${policy.target}). ` +
+    `Media candidate ${nodeCandidates} recorded for ${args.nodeId} (target ${policy.target}, candidate goal ${policy.candidateSearchTarget}). ` +
     (nodeCandidates >= policy.target
       ? `Target reached — run finalize_media to pick the best set, then save.`
-      : `Keep searching the primary sources and web image search; run finalize_media when done (partial is OK).`);
+      : `Keep searching multiple image queries and approved media sources; do not stop after only 1–3 images. Run finalize_media after the candidate pool is exhausted or the target is reached.`);
   writeNotes(state);
 
   const coverage = sourceCoverageFor(state, node.nodeType, args.nodeId);
@@ -1285,12 +1285,14 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   const missingEvidence: string[] = [];
   for (const e of listEntities(args.provinceId)) {
     if (e.entity.status === "active") {
-      // Best-effort media policy: no minimum count — only structural problems
-      // (over-capacity, images without thumbnail) count as incomplete.
+      // Media remains save-tolerant, but DoD requires a minimum distinct image count for quality completion.
       const media = e.entity.media as any;
       const images = (media?.images as any[]) ?? [];
       const policy = mediaPolicyFor(entityNodeType(e.entity));
-      if (images.length > policy.max || (images.length > 0 && !media?.thumbnail)) incompleteMedia.push(e.id);
+      const distinctUrls = new Set<string>();
+      if (typeof media?.thumbnail?.url === "string") distinctUrls.add(media.thumbnail.url);
+      for (const im of images) if (typeof im?.url === "string") distinctUrls.add(im.url);
+      if (images.length > policy.max || (images.length > 0 && !media?.thumbnail) || distinctUrls.size < policy.minimumForCompletion) incompleteMedia.push(e.id);
       if (!e.entity.costs) incompleteCosts.push(e.id);
       if (!Array.isArray(e.entity.evidence) || e.entity.evidence.length === 0) missingEvidence.push(e.id);
     }

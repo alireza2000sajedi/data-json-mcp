@@ -135,6 +135,98 @@ function hasDedicatedEvidence(entity: PlaceEntity, fieldPath: string, text: stri
   return false;
 }
 
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const COST_MAX_AGE_DAYS = 180;
+
+function daysSince(dateText: string, now = new Date()): number | null {
+  if (!ISO_DATE.test(dateText)) return null;
+  const d = new Date(`${dateText}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return null;
+  return Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - d.getTime()) / 86400000);
+}
+
+function countDistinctMediaUrls(entity: PlaceEntity): number {
+  const media = entity.media as any;
+  const urls = new Set<string>();
+  if (typeof media?.thumbnail?.url === "string") urls.add(media.thumbnail.url);
+  for (const item of ((media?.images as any[]) ?? [])) if (typeof item?.url === "string") urls.add(item.url);
+  return urls.size;
+}
+
+function validateProvinceCompleteness(entity: PlaceEntity, errors: QualityError[], warnings: QualityError[]): void {
+  if (entity.type !== "other" || entity.subType !== "province") return;
+
+  const content = entity.content as any;
+  const nonEmpty = (v: unknown) => typeof v === "string" && v.trim().length >= 40;
+  for (const field of ["description", "history", "architecture", "culture", "whyVisit"] as const) {
+    const value = field === "description" ? content?.[field]?.fa : content?.[field];
+    if (!nonEmpty(value)) addError(errors, "PROVINCE_CONTENT_MISSING", `content.${field}`, `Province Entity requires substantive '${field}' content.`);
+  }
+
+  const arr = (key: string) => Array.isArray((entity as any)[key]) ? (entity as any)[key] : [];
+  const minArray = (key: string, min: number) => {
+    const value = arr(key);
+    if (value.length < min) addError(errors, "PROVINCE_SECTION_TOO_SHORT", key, `Province Entity requires at least ${min} item(s) in '${key}'.`);
+  };
+
+  minArray("faq", 4);
+  minArray("tips", 3);
+  if (((entity.safety as any)?.risks ?? []).length > 0) minArray("warnings", 1);
+  minArray("localFoods", 3);
+  minArray("souvenirs", 3);
+  minArray("activities", 3);
+  minArray("features", 2);
+
+  const seo = entity.seo as any;
+  if (!seo?.title || !seo?.description || !Array.isArray(seo?.keywords) || seo.keywords.length < 5) {
+    addError(errors, "PROVINCE_SEO_INCOMPLETE", "seo", "Province Entity requires seo.title, seo.description and at least 5 unique keywords.");
+  }
+
+  const visit = entity.visit as any;
+  if (!Array.isArray(visit?.bestSeasons) || visit.bestSeasons.length === 0 || !Array.isArray(visit?.bestMonths) || visit.bestMonths.length === 0) {
+    addError(errors, "PROVINCE_VISIT_INCOMPLETE", "visit", "Province Entity requires evidence-backed bestSeasons and bestMonths.");
+  }
+
+  const transportation = entity.transportation as any;
+  for (const key of ["nearestAirport", "nearestRailwayStation", "nearestBusTerminal"] as const) {
+    const node = transportation?.[key];
+    if (node && (typeof node.latitude !== "number" || typeof node.longitude !== "number")) {
+      addError(errors, "TRANSPORT_COORDINATES_REQUIRED", `transportation.${key}`, "Present transport nodes must have verified coordinates.");
+    }
+  }
+
+  const evidence = (entity.evidence as any[]) ?? [];
+  for (const field of [
+    "content.description",
+    "content.history",
+    "content.architecture",
+    "content.culture",
+    "content.whyVisit",
+    "visit.bestSeasons",
+    "transportation",
+    "costs.items",
+  ]) {
+    if (!hasDedicatedEvidence(entity, field, String(field))) {
+      addError(errors, "PROVINCE_EVIDENCE_COVERAGE", field, `Province-level claim area '${field}' must have dedicated evidence.`);
+    }
+  }
+  if (evidence.length < 8) addError(errors, "PROVINCE_EVIDENCE_TOO_LOW", "evidence", "Province Entity requires at least 8 evidence entries covering substantive claims.");
+
+  const costs = entity.costs as any;
+  if (costs?.priceAsOf) {
+    const age = daysSince(String(costs.priceAsOf));
+    if (age === null || age < 0) addError(errors, "COST_PRICE_DATE_INVALID", "costs.priceAsOf", "costs.priceAsOf must be a valid non-future date.");
+    else if (age > COST_MAX_AGE_DAYS) addError(errors, "COST_PRICE_STALE", "costs.priceAsOf", `Province cost data is ${age} days old; refresh it within ${COST_MAX_AGE_DAYS} days.`);
+  }
+
+  const mediaCount = countDistinctMediaUrls(entity);
+  const mediaPolicy = mediaPolicyFor("province");
+  if (mediaCount < mediaPolicy.minimumForCompletion) {
+    addWarning(warnings, "PROVINCE_MEDIA_BELOW_COMPLETION_MINIMUM", "media", `Province has ${mediaCount} distinct image(s); at least ${mediaPolicy.minimumForCompletion} are required for DoD and ${mediaPolicy.target} is the target.`);
+  }
+}
+
 export function validateEntity(entity: PlaceEntity, ctx: QualityContext): QualityResult {
   const errors: QualityError[] = [];
   const warnings: QualityError[] = [];
@@ -183,6 +275,8 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
       if (!taxonomyHas(domain, item)) addError(errors, "TAXONOMY_ITEM_UNKNOWN", `${field}[${i}]`, `Unknown canonical taxonomy id '${item}' in ${domain}.`);
     }
   }
+
+  validateProvinceCompleteness(entity, errors, warnings);
 
   // (c) status must be active only
   if (entity.status !== "active") {
@@ -500,6 +594,16 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
         addError(errors, "MEDIA_OWNERSHIP_REJECTED", `${p}.sourceUrl`, "Media source was recorded with ownershipStatus 'rejected'.");
       } else if (entries.some((m) => m.nodeId !== ctx.expectedNodeId && chainIds.has(m.nodeId) && m.ownershipStatus === "belongs_to_node")) {
         addError(errors, "MEDIA_OWNERSHIP_MISMATCH", `${p}.sourceUrl`, "Media source belongs to an ancestor node and cannot back this node's media.");
+      }
+
+      // Media provenance is tracked separately from FACT source coverage. A media
+      // candidate recorded for this exact node is sufficient provenance even when
+      // the hosting page is not one of the five fact sources.
+      const mediaCandidateMatch = (state.mediaCandidates ?? []).some(
+        (mc) => mc.nodeId === ctx.expectedNodeId && mc.pageUrl === msu && mc.imageUrl === item?.url,
+      );
+      if (!mediaCandidateMatch) {
+        addError(errors, "MEDIA_NOT_REGISTERED", `${p}.sourceUrl`, "Media must be registered via record_media_candidate for this exact node before it can be saved.");
       }
     }
   }
