@@ -1,90 +1,24 @@
 {
-  "version": "1.0.0",
-  "items": [
-    {
-      "id": "nature",
-      "label": "طبیعت",
-      "description": "محیط یا جاذبه با ماهیت طبیعی غالب"
-    },
-    {
-      "id": "water",
-      "label": "آب",
-      "description": "جاذبه‌هایی که عنصر آب در آن‌ها نقش اصلی دارد"
-    },
-    {
-      "id": "mountain",
-      "label": "کوهستان",
-      "description": "جاذبه یا محیط کوهستانی"
-    },
-    {
-      "id": "desert",
-      "label": "کویر و بیابان",
-      "description": "محیط‌های کویری و بیابانی"
-    },
-    {
-      "id": "forest",
-      "label": "جنگل",
-      "description": "جاذبه یا محیط جنگلی"
-    },
-    {
-      "id": "history",
-      "label": "تاریخ",
-      "description": "ارزش و روایت تاریخی"
-    },
-    {
-      "id": "archaeology",
-      "label": "باستان‌شناسی",
-      "description": "محوطه یا اثر مرتبط با دوره‌های باستانی"
-    },
-    {
-      "id": "architecture",
-      "label": "معماری",
-      "description": "ارزش معماری به‌عنوان محور تجربه بازدید"
-    },
-    {
-      "id": "religion",
-      "label": "مذهب",
-      "description": "مکان یا تجربه مذهبی"
-    },
-    {
-      "id": "museum_culture",
-      "label": "موزه و فرهنگ",
-      "description": "محتوای موزه‌ای و فرهنگی"
-    },
-    {
-      "id": "local_life",
-      "label": "زندگی محلی",
-      "description": "زیست و بافت زندگی محلی"
-    },
-    {
-      "id": "arts_crafts",
-      "label": "هنر و صنایع‌دستی",
-      "description": "هنرهای بومی و صنایع‌دستی"
-    },
-    {
-      "id": "food",
-      "label": "خوراک",
-      "description": "ارزش مقصد از نظر غذا و خوراک محلی"
-    },
-    {
-      "id": "shopping",
-      "label": "خرید",
-      "description": "بازار و تجربه خرید"
-    },
-    {
-      "id": "recreation",
-      "label": "تفریح",
-      "description": "تفریح و سرگرمی"
-    },
-    {
-      "id": "adventure",
-      "label": "ماجراجویی",
-      "description": "تجربه‌های پرتحرک و ماجراجویانه"
-    },
-    {
-      "id": "wellness",
-      "label": "سلامت و آرامش",
-      "description": "آرامش، آب‌درمانی یا تجربه‌های سلامت‌محور"
-    }
+  "version":"1.0.0",
+  "items":[
+    {"id":"nature","label":"طبیعت"},
+    {"id":"water","label":"آب"},
+    {"id":"mountain","label":"کوهستان"},
+    {"id":"desert","label":"کویر و بیابان"},
+    {"id":"forest","label":"جنگل"},
+    {"id":"history","label":"تاریخ"},
+    {"id":"archaeology","label":"باستان‌شناسی"},
+    {"id":"architecture","label":"معماری"},
+    {"id":"religion","label":"مذهب"},
+    {"id":"museum_culture","label":"موزه و فرهنگ"},
+    {"id":"local_life","label":"زندگی محلی"},
+    {"id":"arts_crafts","label":"هنر و صنایع‌دستی"},
+    {"id":"food","label":"خوراک"},
+    {"id":"shopping","label":"خرید"},
+    {"id":"recreation","label":"تفریح"},
+    {"id":"adventure","label":"ماجراجویی"},
+    {"id":"wellness","label":"سلامت و آرامش"},
+    {"id":"photography","label":"عکاسی"},
+    {"id":"stargazing","label":"رصد آسمان"}
   ]
 }

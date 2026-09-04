@@ -1,49 +1,22 @@
-# Planro Agent — Prompt 02: Run Exactly One Explicit Scope
+# PLANRO — RUN ONE SCOPE
 
-This prompt runs ONE user-selected Scope after the Province stage.
+از قرارداد `prompts/01-start-province.txt` به‌عنوان Master Contract پیروی کن. فقط Scope صریح زیر را اجرا کن؛ نام فارسی، Scope دیگر یا ID حدسی قبول نیست.
 
-## Input contract
-Required user input:
-- `province_id=<PROVINCE_ID>`
-- `scope_id=<SCOPE_ID>`
-
-Do not choose, infer, autocomplete, or ask the user to replace a supplied Scope with a different one.
-If `province_id` is numeric, normalize it internally to canonical `province-{n}`.
-Do not ask follow-up questions. The required variables are supplied in the RUN VARIABLES block at the end of this file.
-If a required variable is empty, STOP with `MISSING_INPUT: <variable>`.
-If MCP is unavailable, report the MCP connection/setup problem and STOP.
-
-## Workflow
-1. Verify MCP resources/tools are available.
-2. Read the Master rules, schema, source policy, brand voice and global taxonomy.
-3. Verify the supplied `province_id` exists.
-4. Verify the supplied `scope_id` exists and belongs to that province.
-5. Lock the active scope to exactly that Scope.
-6. Research ONLY that Scope and its permitted subtree.
-7. Do not deep-research siblings or unrelated provinces.
-8. For each Entity Node, complete and record the five mandatory Primary Source searches; failed/no-result attempts must also be recorded.
-9. Resolve duplicate candidates before creating new Entities.
-10. Use canonical taxonomy ids only. Missing reusable concepts become proposals, never production values.
-11. The Entity JSON must match `planro://schema/place` exactly. Never invent an alternative JSON shape.
-12. Transport nodes use coordinates when available; do not store derived `distanceKm` in transport objects.
-13. Costs must be source-backed and schema-compliant. Never guess prices or create null placeholders only to fill a field.
-14. Safety content must be specific to the current Node.
-15. Media must be attributable to the current Node. Do not stop after finding 1–3 images. For Province/County/City/Place, actively search multiple queries and source pages to build a candidate pool (goal: 12 usable candidates), then finalize the best 10; Definition-of-Done requires at least 5 distinct images unless a documented media exception is recorded. Never use duplicate, generic, neighboring, map-only, logo, or unrelated images.
-16. Save only through MCP.
-17. Complete discovery tasks and run `check_definition_of_done` + validation for this Scope.
-18. Stop after this Scope. Do not automatically select another Scope.
-
-
----
-
-## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
-
+### RUN VARIABLES
 ```text
 province_id=<PROVINCE_ID>
 scope_id=<SCOPE_ID>
 ```
 
-Rules:
-- These variables are the complete user input for Prompt 02.
-- Do not ask follow-up questions when they are present.
-- Never invent or infer a missing ID.
+- Verify MCP/resources before work.
+- Lock exactly this scope and permitted subtree.
+- Read `planro://rules/entity-fields` and apply the field matrix.
+- Visit fields are type-specific: openingHours/entryFee belong primarily to Place/Camping and Village only when the Village itself owns a real ticketed venue; Province/County/City do not get them.
+- Costs belong only to the current Entity; never copy child POI costs into parents.
+- FAQ is current-Entity-only. Parent FAQ cannot be a child FAQ.
+- Checklist is independent per Entity.
+- Media is independent per Entity: 5 images for Province/County/City/Place, 3 for Village/Camping; never reuse an image URL across Entities.
+- Record all five Primary Fact Sources; media never counts as source coverage.
+- Save only through MCP; run DoD + validation; stop after this Scope.
+
+Do not ask follow-up questions when variables are supplied. If missing, stop with `MISSING_INPUT: <variable>`.

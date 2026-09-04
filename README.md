@@ -15,10 +15,12 @@ Agent / LLM
 - ✅ بدون HTTP / UI / Docker / database / crawler / scraper / browser automation
 - ✅ فقط Toolهای domain-specific — بدون `run_shell` یا دسترسی آزاد filesystem
 - ✅ اعتبارسنجی JSON Schema Draft 2020-12 با Ajv + دروازهٔ کیفیت (Quality Gate)
+- ✅ تست با `node:test`
 
-کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود. Runner فقط `province_id` و `scope_id` می‌دهد؛ انتخاب با نام فارسی جزو قرارداد استاندارد نیست. هر Scope یک **id اختصاصی و
-پایدار** دارد (`province-{n}`، `county-{n}-{k}`، `city-{n}-{k}`، `village-{n}-v{k}`، `place-{n}-{k}`) و پیشرفت بین
-اجراها در `notes.state.json` ذخیره و Resume می‌شود. قوانین اجرایی در `prompts/01-start-province.txt` و فایل‌های `prompts/` قرار دارند.
+کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود
+(استان فقط برای Discovery → بعداً یک شهرستان/شهر/روستا/POI از سوی کاربر). هر Scope یک **id اختصاصی و
+پایدار** دارد (`province-30`، `county-30-5`، `city-30-12`، `village-30-v2`، `place-30-3`) و پیشرفت بین
+اجراها در `notes.state.json` ذخیره و Resume می‌شود. راهنمای کامل قرارداد اجرا: [`STAGED_WORKFLOW.md`](STAGED_WORKFLOW.md).
 
 ---
 
@@ -28,11 +30,11 @@ Agent / LLM
 data-json-mcp/
 ├── package.json
 ├── tsconfig.json
-├── prompts/01-start-province.txt                ← Master prompt
-├── prompts/                  ← promptهای Start / Scope / Resume / Repair / Final Audit
-├── taxonomy/                 ← taxonomy سراسری + صف proposalهای Agent
+├── prompt.txt                ← پرامپت واحد Agent تحقیق (تنها پرامپت مجاز)
+├── STAGED_WORKFLOW.md        ← قرارداد اجرای پلکانی + شناسه‌های اختصاصی Scope
 ├── mcp-client.mjs            ← کلاینت CLI برای فراخوانی Toolها از شل
 ├── dataset/                  ← Source of Truth (اسکیماها و قانون‌نامه، read-only)
+│   ├── README.md
 │   ├── brand_voice.md        ← هویت کلامی و لحن برند — نسخه ۱.۰ نهایی (+ پیوست نمونهٔ کاربردی)
 │   ├── source_policy.json     ← سیاست منابع: ۵ منبع Primary اجباری + fallbackها + coverage
 │   ├── iran-cpi.schema.json
@@ -44,7 +46,7 @@ data-json-mcp/
 │   ├── config.ts             ← مسیرها + مسدودسازی path traversal
 │   ├── types.ts
 │   ├── schemas.ts            ← بارگذاری/کامپایل Ajv + enumهای schema
-│   ├── media.ts              ← سیاست رسانهٔ Media: هدف ۱۰ (روستا/کمپینگ ۳)، حداقل DoD برابر ۵ (روستا/کمپینگ ۳)، سقف ۲۰، وضعیت‌های complete/partial/unavailable
+│   ├── media.ts              ← سیاست رسانهٔ Best-Effort: هدف ۱۰ (روستا ۳)، سقف ۲۰، وضعیت‌های complete/partial/unavailable
 │   ├── source-policy.ts      ← سیاست منابع: primary/fallback/other + قرارداد Coverage
 │   ├── notes.ts              ← notes.md ساخت‌یافته (اتمیک)
 │   ├── graph.ts              ← مدل Node، پیمایش عمقی، scope state (DoD Scope-محور)
@@ -53,12 +55,12 @@ data-json-mcp/
 │   ├── quality-gate.ts       ← دروازهٔ کیفیت پیش از ذخیره
 │   ├── resources.ts          ← Resourceها
 │   └── tools.ts              ← Toolها
-└── scripts/verify-project.mjs ← بررسی ساختار و قراردادهای اصلی پیش از اجرا
+└── tests/                    ← تستهای node:test
 ```
 
 ### دیتای ورودی `input/`
 
-پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `prompts/01-start-province.txt` و منابع داخل `dataset/`.)
+پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `dataset/README.md` بخش ۱-۱ و در `prompt.txt`.)
 
 مسیرها از طریق متغیر محیطی قابل تغییرند (پیش‌فرض: داخل خود پروژه):
 
@@ -67,7 +69,6 @@ data-json-mcp/
 | `PLANRO_DATASET_DIR` | `./dataset` | محل اسکیماها و README (فقط خواندنی) |
 | `PLANRO_OUTPUT_DIR` | `./output` | محل `output/{provinceId}/` (خواندنی/نوشتنی) |
 | `PLANRO_INPUT_DIR` | `./input` | محل چک‌لیست‌های اداری `1.json … 31.json` (فقط خواندنی) |
-| `PLANRO_TAXONOMY_DIR` | `./taxonomy` | Taxonomy سراسری و صف proposalها |
 
 ---
 
@@ -88,8 +89,10 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 ## تست
 
 ```bash
+npm test               # build + node --test tests/
 ```
 
+۶۴ تست، شامل همهٔ موارد اجباری (رد URL Markdown در `validateEntity`، نرمال‌سازی خودکار URL هنگام ذخیره، رد evidence خارج از sources، رد id/slug تکراری، رد Relation ناموجود، رد nearby به‌عنوان parent، رد Media/Thumbnail تکراری، **سیاست رسانهٔ Best-Effort** (قبول ۱-۲ تصویر به‌عنوان partial، رد ذخیرهٔ ۰-عکس بدون Coverage کامل با `MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE`، قبول آن پس از Coverage، رد ۲۱ تصویر، رد تکرار تامبنیل در چندتصویری، رد ناسازگاری media.status، رد تامبنیلِ بدون images)، رد تصویر استان برای شهرستان، رد min>max، رد CPI نامعتبر، رد Village بدون ruralDistrict، رد City بدون county، ساخت Candidate بدون JSON، ذخیرهٔ Active معتبر در مسیر canonical، پیمایش عمقی Node ناتمام، batch save، صف کار، ساختار پوشهٔ سلسله‌مراتبی، **پایپ‌لاین رسانه** (ثبت idempotent کاندیدها، finalize با dedupe/رتبه‌بندی/تامبنیل متمایز و انتخاب دقیقاً min(usable, target) — روستای ۱۸-عکسه فقط ۳ عکس ذخیره می‌کند، شمارش کاندیدهای دامنهٔ Primary در Coverage)، **سیاست منبع** (دسته‌بندی primary/fallback/other + یادآور برای other)، **resolve_scope_name** (نام استان، نام شهرستان، همنام مبهم، نام ناموجود)، **گیت مرحلهٔ استان** (awaitingScopeSelection، رد complete بدون انتخاب Scope، باز شدن قفل با set_active_scope)، مسیر شرعی §9: بسته‌شدن نود بدون داده با `mark_node_media_deficit` (رد در حضور کاندید usable، گیت‌های ممیزی/DFS)، پیشروی خودکار DFS، پاس شدن DoD با گزارش شفاف نودهای بدون فایل، **DoD Scope-محور** (پاس شدن Scope شهرستان کامل در حالی که شهرستان همسایه pending است)، **تولید کوئری‌های تصویر/رسانه برای همهٔ انواع نود**، ارتقای خودکار رکورد با ذخیرهٔ فعال بعدی، و **رجیستری Scope**: قطعی‌بودن و یکتایی idها، ایندکس ۳۱ استان، idempotence، قفل‌شدن DFS به Scope انتخابی و رد `mark_node_complete` خارج از Scope).
 
 ---
 
@@ -97,7 +100,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 
 | Tool | ورودی کلیدی | خروجی |
 |---|---|---|
-| `import_province_scopes` | `provinceId` | **مرحلهٔ استان**: ثبت ساختار کامل استان از `input/{n}.json` با idهای اختصاصیِ قطعی (`county-{p}-{n}`، `city-{p}-{n}`، `village-{p}-v{n}`) + تکمیل ترک‌های اداری بر مبنای Count — سپس Agent Entity خودِ استان (province.json + مکان‌های سطح استان) را تحقیق/ذخیره می‌کند و در پایان متوقف می‌شود و منتظر scope_id صریحِ کاربر می‌ماند |
+| `import_province_scopes` | `provinceId` | **مرحلهٔ استان**: ثبت ساختار کامل استان از `input/{n}.json` با idهای اختصاصیِ قطعی (`county-{p}-{n}`، `city-{p}-{n}`، `village-{p}-v{n}`) + تکمیل ترک‌های اداری بر مبنای Count — سپس Agent Entity خودِ استان (province.json + مکان‌های سطح استان) را تحقیق/ذخیره می‌کند و در پایان می‌پرسد «کدام شهرستان/شهر/روستا؟» |
 | `set_active_scope` | `provinceId`, `nodeId` (یا `null`) | **Scope B/C**: قفل DFS/next-node/completion روی زیردرخت همان Scope؛ بقیهٔ واحدها pending می‌مانند |
 | `get_scope_state` | `provinceId` | وضعیت کامل Scope (شامل `activeScopeId`)، Candidateها، Conflictها، DoD، Node بعدی |
 | `get_next_research_node` | `provinceId` | اولین Node ناتمام در پیمایش عمقی + Context اداری + taskهای اجباری؛ بعد از کامل‌شدن مرحلهٔ استان و بدون Scope فعال: `awaitingScopeSelection: true` + دستور پرسیدن «کدام شهرستان/شهر/روستا؟» |
@@ -107,8 +110,9 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 | `record_search_result` | `provinceId`, `nodeId`, `query`, `sourceUrl`, `sourceTitle`, `resultSummary`, `ownershipStatus` | ثبت Source Matrix با مالکیت Context + دسته‌بندی خودکار منبع (primary/fallback/other طبق `source_policy.json`) + شمارش Coverage منابع Primary |
 | `create_candidate` | `provinceId`, `nodeId`, `name`, … | فقط در notes.md (هیچ JSON ساخته نمی‌شود) |
 | `resolve_candidate` | `provinceId`, `candidateId`, `outcome` | بستن Candidate |
-| `record_media_candidate` | `provinceId`, `nodeId`, `imageUrl`, `pageUrl`, `license`, `credit?`, `alt?`, `score?` | ثبت لحظه‌ایِ هر تصویر کاندید (idempotent با nodeId+imageUrl؛ Audit Trail در notes) — Media provenance مستقل از Fact Source Coverage است؛ Coverage Facts فقط از record_search_result محاسبه می‌شود و هر تصویر باید با record_media_candidate برای همان Node ثبت شود |
+| `record_media_candidate` | `provinceId`, `nodeId`, `imageUrl`, `pageUrl`, `license`, `credit?`, `alt?`, `score?` | ثبت لحظه‌ایِ هر تصویر کاندید (idempotent با nodeId+imageUrl؛ Audit Trail در notes) — pageUrl روی دامنهٔ Primary در Coverage هم حساب می‌شود |
 | `finalize_media` | `provinceId`, `nodeId` | dedupe + رتبه‌بندی کاندیدها (score + لایسنس آزاد + منبع Primary) → ذخیرهٔ بهترین min(usable, target) تصویر — هرگز بیشتر از target (تامبنیل جزو بودجه) + `mediaStatus` + گزارش ممیزی |
+| `resolve_scope_name` | `provinceId?`, `name`, `expectedType?` | تبدیل نام فارسی به id اختصاصی (بدون پرسیدن id از کاربر)؛ فقط نام‌های همنامِ واقعاً مبهم → فهرست کاندیداها |
 | `get_source_coverage` | `provinceId`, `nodeId` | شمارش منابع Primary جستجو‌شده برای نود (۵ از ۵ برای هر نود Entity، شامل روستا) + ردیف‌های هر منبع |
 | `mark_node_media_deficit` | `provinceId`, `nodeId`, `reason`, `imagesFound` (عدد ممیزی ۰..۲۰)، `searchesPerformed[]` (≥۲) | فقط برای «نبودِ کل دادهٔ Entity» (نه کمبود عکس): بستن نود بدون فایل JSON با وضعیت `media_deficit`؛ اگر کاندید رسانهٔ usable وجود داشته باشد رد می‌شود (مسیر صحیح: `finalize_media` + ذخیرهٔ partial). نود در DFS/DoD کامل حساب می‌شود؛ ذخیرهٔ فعالِ بعدی همان نود، وضعیت را خودکار resolved می‌کند |
 | `save_active_entity` | `provinceId`, `entity`, `expectedNodeId` | دروازهٔ کیفیت کامل → ذخیره در مسیر canonical یا خطای ساخت‌یافته؛ تزریق خودکار `media.status`؛ ذخیرهٔ ۰-عکس فقط با Coverage کامل منابع Primary (وگرنه `MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE`) |
@@ -157,7 +161,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 
 ## تصمیم‌های مهم معماری
 
-1. **Active-only + سیاست رسانهٔ Best-Effort (§9)**: هیچ JSON ناقصی ذخیره نمی‌شود. `save_active_entity` ابتدا کل Quality Gate را اجرا می‌کند و فقط در صورت موفقیت کامل، فایل را (اتمیک) می‌نویسد؛ status ذخیره‌شده همیشه `active` است. رسانه Best-Effort و غیرمسدودکننده است: Target هدف است و minimumForCompletion حداقل کیفیت برای DoD است — ۱۰ برای استان/شهرستان/شهر/مکان (حداقل ۵ برای DoD) و ۳ برای روستا/کمپینگ. انتخاب نهایی دقیقاً بهترینِ min(تعداد usable, target) تصویر است؛ برای DoD، کمتر از minimumForCompletion کافی نیست و هرگز بیشتر از target ذخیره نمی‌شود (تامبنیل جزو همین بودجه؛ ۲۰ فقط سقف مطلق اعتبارسنجی است و عبور دستی از target هشدار trim می‌گیرد). هیچ Entity به‌خاطر کم‌بودن عکس discard نمی‌شود؛ ۱ تا target−۱ تصویر با `mediaStatus=partial` ذخیره می‌شوند و بعد از Coverage کامل منابع Primary، Entity بدون عکس هم با `mediaStatus=unavailable` معتبر است — ذخیرهٔ ۰-عکس پیش از Coverage کامل با `MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE` رد می‌شود تا «چیزی پیدا نشد» بعد از یک دو جستجو پذیرفته نشود (`media.status` سه‌حالته را خودکار `save_active_entity` تزریق می‌کند). تصاویر از کل وب پذیرفته می‌شوند (اولویت: منابع Primary سیاست منبع، سپس Commons/CC/Public-Domain؛ لایسنس آزاد شرط نیست، «قابل‌انتساب بودن به همان نود» شرط است). پایپ‌لاین رسانه: `record_media_candidate` (ثبت idempotent هر کاندید + Audit Trail در notes) → `finalize_media` (dedupe + رتبه‌بندی + انتخاب تامبنیل متمایز) → ذخیره. `mark_node_media_deficit` فقط برای «نبودِ کل دادهٔ Entity» است (اگر کاندید usable باشد رد می‌شود) و Quality Gate برای رسانه فقط خطای ساختاری می‌دهد (بیش از ۲۰ تصویر، images بدون تامبنیل، URL تکراری، ناسازگاری status). عکس جعلی، تکراری یا متعلق به همسایه/والد همچنان اکیداً ممنوع است.
+1. **Active-only + سیاست رسانهٔ Best-Effort (§9)**: هیچ JSON ناقصی ذخیره نمی‌شود. `save_active_entity` ابتدا کل Quality Gate را اجرا می‌کند و فقط در صورت موفقیت کامل، فایل را (اتمیک) می‌نویسد؛ status ذخیره‌شده همیشه `active` است. رسانه Best-Effort و غیرمسدودکننده است: Target هدف است نه حداقل — ۱۰ برای استان/شهرستان/شهر/مکان و ۳ برای روستا/کمپینگ. انتخاب نهایی دقیقاً بهترینِ min(تعداد usable, target) تصویر است و هرگز بیشتر از target ذخیره نمی‌شود (تامبنیل جزو همین بودجه؛ ۲۰ فقط سقف مطلق اعتبارسنجی است و عبور دستی از target هشدار trim می‌گیرد). هیچ Entity به‌خاطر کم‌بودن عکس discard نمی‌شود؛ ۱ تا target−۱ تصویر با `mediaStatus=partial` ذخیره می‌شوند و بعد از Coverage کامل منابع Primary، Entity بدون عکس هم با `mediaStatus=unavailable` معتبر است — ذخیرهٔ ۰-عکس پیش از Coverage کامل با `MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE` رد می‌شود تا «چیزی پیدا نشد» بعد از یک دو جستجو پذیرفته نشود (`media.status` سه‌حالته را خودکار `save_active_entity` تزریق می‌کند). تصاویر از کل وب پذیرفته می‌شوند (اولویت: منابع Primary سیاست منبع، سپس Commons/CC/Public-Domain؛ لایسنس آزاد شرط نیست، «قابل‌انتساب بودن به همان نود» شرط است). پایپ‌لاین رسانه: `record_media_candidate` (ثبت idempotent هر کاندید + Audit Trail در notes) → `finalize_media` (dedupe + رتبه‌بندی + انتخاب تامبنیل متمایز) → ذخیره. `mark_node_media_deficit` فقط برای «نبودِ کل دادهٔ Entity» است (اگر کاندید usable باشد رد می‌شود) و Quality Gate برای رسانه فقط خطای ساختاری می‌دهد (بیش از ۲۰ تصویر، images بدون تامبنیل، URL تکراری، ناسازگاری status). عکس جعلی، تکراری یا متعلق به همسایه/والد همچنان اکیداً ممنوع است.
 2. **Candidate فقط در notes.md**: `create_candidate` هیچ فایلی نمی‌سازد؛ خروجی آن صراحتاً `jsonCreated: false` است. کمبود رسانهٔ نودِ اداری اما Candidate نیست — با `mark_node_media_deficit` ثبت می‌شود (بند ۱) تا برخلاف Candidateِ باز، نود را باز نگه ندارد و چرخهٔ DFS متوقف نشود.
 
 3. **notes.md ساخت‌یافته و اتمیک**: notes.md شامل بلوک `<!-- planro:state -->` (JSON) + جدولهای قابل‌خواندن (ID Registry، Research coverage، …) است. همهٔ نوشتنها با temp+rename اتمیک انجام می‌شوند و هیچ Toolای «بازنویسی آزاد» ندارد.
@@ -171,12 +175,12 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
    ```
    output/{provinceId}/
    ├── province.json
-   ├── county-{n}-1/county.json
-   ├── county-{n}-1/city-{n}-1/city.json
-   ├── county-{n}-1/city-{n}-1/village-{n}-v1/village.json
-   ├── county-{n}-1/city-{n}-1/village-{n}-v1/place-{n}-{k}.json
-   ├── county-{n}-1/place-{n}-{k}.json          ← مکان مستقیم زیر شهرستان
-   └── place-{n}-{k}.json                       ← مکان مستقیم زیر استان
+   ├── county-30-1/county.json
+   ├── county-30-1/city-30-1/city.json
+   ├── county-30-1/city-30-1/village-30-v1/village.json
+   ├── county-30-1/city-30-1/village-30-v1/place-30-3.json
+   ├── county-30-1/place-30-1.json          ← مکان مستقیم زیر شهرستان
+   └── place-30-4.json                       ← مکان مستقیم زیر استان
    ```
 
 7. **ID/slug یکتا**: الگوی README (`province-{n}`, `county-{province}-{n}`, `city-…`, `village-…-v{n}`, `place-…`) رعایت می‌شود و قبل از تخصیص، Registry و همهٔ فایلهای JSON اسکن می‌شوند.
@@ -187,7 +191,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 
 10. **بدون Loop خودکار**: MCP فقط Tool/Resource می‌دهد؛ حلقهٔ «ادامه تا پایان Scope» وظیفهٔ Runner بیرونی است (همان‌طور که در پرامپت مشخص شده).
 
-11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `prompts/01-start-province.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
+11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `prompt.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
 
 12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` / `save_entities` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند.
 
@@ -213,4 +217,5 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 ```bash
 npm run dev            # اجرا با tsx بدون build
 npm run build          # build
+npm test               # build + test
 ```

@@ -1,6 +1,7 @@
 import { readNotes, findMediaDeficit } from "./notes.js";
 import { listEntities, ENTITY_NODE_TYPES } from "./dataset.js";
 import { sourceCoverageFor } from "./source-policy.js";
+import { mediaPolicyFor } from "./media.js";
 import type { NotesState, NodeType, NodeRecord, DiscoveryTask } from "./types.js";
 
 /** Fixed required-discovery mapping per node type. */
@@ -147,6 +148,18 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
   if (pendingDiscovery.length > 0) blockingReasons.push(`pending discovery: ${pendingDiscovery.join(", ")}`);
   if (openCandidates.length > 0) blockingReasons.push(`${openCandidates.length} open candidate(s)`);
   if (openConflicts.length > 0) blockingReasons.push(`${openConflicts.length} open conflict(s)`);
+
+  // Entity-owned media target is part of completion. Partial media may be saved,
+  // but the node is not complete until its own target is reached.
+  if (isEntityType && entityActive) {
+    const stored = listEntities(provinceId).find((e) => e.entity.id === node.nodeId)?.entity as any;
+    const media = stored?.media as any;
+    const urls = new Set<string>();
+    if (media?.thumbnail?.url) urls.add(String(media.thumbnail.url));
+    for (const im of ((media?.images as any[]) ?? [])) if (im?.url) urls.add(String(im.url));
+    const policy = mediaPolicyFor(node.nodeType);
+    if (urls.size < policy.target) blockingReasons.push(`media incomplete: ${urls.size}/${policy.target} unique images owned by this Entity`);
+  }
 
   // A completed discovery track with a declared count must actually have that
   // many child nodes registered. This is what prevents an agent from declaring
@@ -299,7 +312,7 @@ export function nextRequiredNode(provinceId: string): NodeRecord | null {
   const state = readNotes(provinceId);
   // Staged workflow: after the province stage is complete and no scope has
   // been selected, DFS pauses — the agent must ask the user for the next
-  // scope selection + set_active_scope instead of auto-diving
+  // scope (resolve_scope_name + set_active_scope) instead of auto-diving
   // into the first county.
   if (awaitingScopeSelection(state)) return null;
   const order = traverse(provinceId);
@@ -347,7 +360,7 @@ export function getScopeState(provinceId: string): ScopeState {
   if (nodes.length === 0) blockingReasons.push("no administrative nodes discovered");
   // Scope-aware DoD: when a staged scope is active, only the nodes of that
   // scope's subtree count towards definition-of-done. Sibling counties / the
-  // province stay pending for their own separate runs (prompts/01-start-province.txt / prompts/), so
+  // province stay pending for their own separate runs (STAGED_WORKFLOW.md), so
   // they must not keep a finished scope stuck at complete:false forever.
   const doDNodes = scopeIds === null ? nodes : nodes.filter((n) => scopeIds.has(n.nodeId));
   for (const n of doDNodes) {

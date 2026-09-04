@@ -1,36 +1,12 @@
-# Planro Agent — Prompt 03: Resume One Scope
+# PLANRO — RESUME ONE SCOPE
 
-Required user input:
-- `province_id=<PROVINCE_ID>`
-- `scope_id=<SCOPE_ID>`
+Use the Master Contract in `prompts/01-start-province.txt`. Continue only the supplied Scope.
 
-Normalize numeric province ids internally to canonical `province-{n}`. Do not request a derived Province Scope id.
-Do not ask follow-up questions. The required variables are supplied in the RUN VARIABLES block at the end of this file.
-If a required variable is empty, STOP with `MISSING_INPUT: <variable>`. If MCP is unavailable, report the connection/setup problem and STOP.
-
-Workflow:
-1. Verify the exact Scope exists and belongs to the Province.
-2. Read current Scope state, pending nodes, source coverage, candidates, conflicts, media deficits and saved Entities through MCP.
-3. Continue from the first genuinely incomplete item.
-4. Do not restart completed research unless evidence is invalid/outdated or validation requires correction.
-5. Preserve scope isolation: do not process siblings.
-6. Follow the same schema, taxonomy, source, safety, media, cost and save rules as Prompt 02.
-7. Finish with `check_definition_of_done` and validation.
-8. Stop after the supplied Scope is complete.
-
-
----
-
-## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
-
+### RUN VARIABLES
 ```text
 province_id=<PROVINCE_ID>
 scope_id=<SCOPE_ID>
 previous_id=<PREVIOUS_ID>
 ```
 
-Rules:
-- `scope_id` identifies the exact Scope to resume.
-- `previous_id` identifies the previous saved/processed node or continuation point when available.
-- Do not ask follow-up questions when these variables are present.
-- Never invent or infer a missing ID.
+Read state first. Resume from the first incomplete item after `previous_id`; do not regenerate completed work unnecessarily. Preserve all field normalization, cost/FAQ/checklist ownership, source coverage, evidence, taxonomy and Entity-owned media rules. Do not ask follow-up questions. Stop after Scope completion.

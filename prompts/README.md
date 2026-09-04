@@ -1,15 +1,13 @@
-# Planro Prompt Sequence
+# Planro Agent Prompts
 
-## Normal workflow
-1. `01-start-province.txt` — one-time start of a province Scope.
-2. `02-run-scope.txt` — one explicitly selected Scope per run.
-3. `03-resume.txt` — continue the same Scope after interruption.
-4. `04-repair-entity.txt` — repair one explicitly selected Entity.
-5. `05-final-audit-minify.txt` — global audit only after the full dataset is complete.
+`01-start-province.txt` is the initial prompt and contains the complete master contract plus MCP bootstrap.
 
-The The Master contract is `01-start-province.txt`; it is the only Prompt that contains the full bootstrap + province-stage contract.
+- `01-start-province.txt`: user provides only `province_id`; Agent clones/loads MCP and starts the Province Scope.
+- `02-run-scope.txt`: user provides `province_id` + exact `scope_id`.
+- `03-resume.txt`: user provides `province_id` + `scope_id` + `previous_id`.
+- `04-repair-entity.txt`: user provides `province_id` + `scope_id` + `entity_id` (+ optional `previous_id`).
+- `05-final-audit-minify.txt`: user provides `final_audit=true` after the full dataset is complete.
 
-## Input rule
-These files intentionally contain **no concrete province/county/city IDs**.
-The Agent must use only the IDs explicitly supplied by the user in the current command.
-Prompt 01 requires only `province_id`; derive the canonical Province Scope internally. Other prompts use the explicit scope/entity IDs supplied in their variable blocks and must not guess them.
+No real production IDs are embedded in these prompts.
+
+All prompts follow the global field normalization in `dataset/entity-field-policy.json`: Visit, Costs, FAQ, Checklist and Media are owned by the current Entity and must not leak child-specific operational data into parents.

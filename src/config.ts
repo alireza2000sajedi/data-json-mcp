@@ -10,7 +10,6 @@ export interface Config {
   outputDir: string;
   /** Directory holding the administrative checklist input/1.json … input/31.json. */
   inputDir: string;
-  /** Global controlled taxonomy; never province-specific. */
   taxonomyDir: string;
 }
 
@@ -57,20 +56,16 @@ export function assertSafeSegment(segment: string, label = "segment"): string {
   return segment;
 }
 
-/** A province id must match the project province-id pattern (and reject obvious junk). */
+/** A province id looks like `province-30`; allow it (and reject obvious junk). */
 export function assertProvinceId(provinceId: string): string {
   const raw = assertSafeSegment(provinceId, "provinceId").trim();
-  if (/^\d{1,2}$/.test(raw)) {
-    const n = Number(raw);
-    if (n < 1 || n > 31) throw new Error(`provinceId '${raw}' is out of range (1..31).`);
-    return `province-${n}`;
-  }
-  if (/^province-\d+$/.test(raw)) {
-    const n = Number(raw.slice("province-".length));
-    if (n < 1 || n > 31) throw new Error(`provinceId '${raw}' is out of range (1..31).`);
-    return `province-${n}`;
-  }
-  throw new Error(`Invalid provinceId '${raw}'. Use a numeric province id (1..31) or canonical province-{n}.`);
+  const numeric = /^\d{1,2}$/.test(raw) ? Number(raw) : null;
+  const canonical = numeric !== null ? `province-${numeric}` : raw;
+  const m = /^province-(\d+)$/.exec(canonical);
+  if (!m) throw new Error(`Invalid provinceId '${raw}'. Use a numeric province id (1..31) or province-{n}.`);
+  const n = Number(m[1]);
+  if (n < 1 || n > 31) throw new Error(`provinceId '${raw}' is out of range (1..31).`);
+  return canonical;
 }
 
 export function assertNodeId(nodeId: string): string {

@@ -272,7 +272,7 @@ function compactStateForStorage(state: NotesState): Record<string, unknown> {
   // completed nodes after a resume.
   const recentSources = state.sourceMatrix;
 
-  // Media candidates: keep all (they back finalize_media only; fact-source coverage uses sourceMatrix).
+  // Media candidates: keep all (they back finalize_media and source coverage).
   const mediaCandidates = state.mediaCandidates;
 
   // Media-deficit dispositions: recorded ones stay full (they document closed

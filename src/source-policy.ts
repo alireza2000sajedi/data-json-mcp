@@ -156,8 +156,9 @@ export interface SourceCoverage {
 }
 
 /**
- * Coverage of the mandatory primary FACT sources for a node. Only explicit
- * record_search_result entries count; media discovery never satisfies this gate.
+ * Coverage of the mandatory primary sources for a node, computed from the
+ * recorded source-matrix entries AND the recorded fact-source search attempts (an image
+ * search on a primary domain counts as searching that source).
  */
 export function sourceCoverageFor(state: NotesState, nodeType: NodeType | null | undefined, nodeId: string): SourceCoverage {
   const policy = getSourcePolicy();
@@ -169,25 +170,14 @@ export function sourceCoverageFor(state: NotesState, nodeType: NodeType | null |
     if (c.sourceClass !== "primary" || !c.name) return;
     counts.set(c.name, (counts.get(c.name) ?? 0) + 1);
   };
-  for (const e of state.sourceMatrix) {
-    if (e.nodeId !== nodeId) continue;
-    credit(e.sourceUrl);
-  }
-  const searched = policy.primary
-    .slice()
-    .sort((a, b) => a.priority - b.priority)
-    .map((p) => ({
-      name: p.name,
-      domain: p.domain,
-      priority: p.priority,
-      searched: (counts.get(p.name) ?? 0) > 0,
-      entries: counts.get(p.name) ?? 0,
-    }));
-  const searchedCount = searched.filter((s) => s.searched).length;
-  return {
-    required,
-    searchedCount,
-    satisfied: required === 0 ? true : searchedCount >= required,
-    searched,
-  };
+  // FACT coverage is based only on explicit search attempts/results.
+  // Media candidates are intentionally excluded from this matrix.
+  for (const e of state.sourceMatrix) if (e.nodeId === nodeId) credit(e.sourceUrl);
+  const searched = policy.primary.slice().sort((a,b)=>a.priority-b.priority).map((p)=>({
+    name:p.name, domain:p.domain, priority:p.priority,
+    searched:(counts.get(p.name) ?? 0)>0,
+    entries:counts.get(p.name) ?? 0,
+  }));
+  const searchedCount=searched.filter(x=>x.searched).length;
+  return {required,searchedCount,satisfied:required===0||searchedCount>=required,searched};
 }

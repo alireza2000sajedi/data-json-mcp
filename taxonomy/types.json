@@ -1,18 +1,18 @@
 {
-  "version": "1.0.0",
-  "items": [
-    {"id":"natural","label":"طبیعی","description":"مکان یا پدیده‌ای با ماهیت غالباً طبیعی"},
-    {"id":"historical","label":"تاریخی","description":"اثر، بنا یا محوطه با ارزش تاریخی"},
-    {"id":"religious","label":"مذهبی","description":"مکان دارای کارکرد یا اهمیت مذهبی"},
-    {"id":"museum","label":"موزه","description":"موزه یا مجموعه نمایشگاهی"},
-    {"id":"village","label":"روستا","description":"روستا به‌عنوان مقصد یا واحد سکونتی گردشگری"},
-    {"id":"city","label":"شهر","description":"شهر به‌عنوان مقصد یا واحد شهری"},
-    {"id":"park","label":"پارک","description":"پارک، بوستان یا فضای سبز مقصدی"},
-    {"id":"recreational","label":"تفریحی","description":"مکان یا مجموعه با کارکرد تفریحی غالب"},
-    {"id":"market","label":"بازار","description":"بازار، راسته یا فضای خرید محلی"},
-    {"id":"accommodation","label":"اقامتگاه","description":"محل اقامت گردشگران"},
-    {"id":"restaurant","label":"رستوران","description":"رستوران، سفره‌خانه یا محل تهیه غذا"},
-    {"id":"route","label":"مسیر","description":"مسیر یا کریدور گردشگری که خود موضوع بازدید است"},
-    {"id":"other","label":"سایر","description":"موردی که در انواع اصلی جای نمی‌گیرد؛ استفاده حداقلی"}
+  "version":"1.0.0",
+  "items":[
+    {"id":"natural","label":"طبیعی"},
+    {"id":"historical","label":"تاریخی"},
+    {"id":"religious","label":"مذهبی"},
+    {"id":"museum","label":"موزه"},
+    {"id":"village","label":"روستا"},
+    {"id":"city","label":"شهر"},
+    {"id":"park","label":"پارک"},
+    {"id":"recreational","label":"تفریحی"},
+    {"id":"market","label":"بازار"},
+    {"id":"accommodation","label":"اقامتگاه"},
+    {"id":"restaurant","label":"رستوران"},
+    {"id":"route","label":"مسیر"},
+    {"id":"other","label":"سایر"}
   ]
 }

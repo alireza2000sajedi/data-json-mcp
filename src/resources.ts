@@ -37,6 +37,8 @@ export function registerResources(server: McpServer): void {
     textResource(uri.href, readReadme(), "text/markdown"),
   );
 
+  server.registerResource("entity-field-policy", "planro://rules/entity-fields", { title:"Entity field policy", description:"Normalization matrix for field applicability by entity type.", mimeType:"application/json" }, async (uri) => textResource(uri.href, fs.readFileSync(path.join(config.datasetDir,"entity-field-policy.json"),"utf8"), "application/json"));
+
   server.registerResource("place-schema", "planro://schema/place", { title: "Place schema", mimeType: "application/json" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "place.schema.json"), "utf8");
     return textResource(uri.href, text, "application/json");
@@ -67,18 +69,10 @@ export function registerResources(server: McpServer): void {
     return textResource(uri.href, text, "text/markdown");
   });
 
-  // --- global taxonomy resources ---
-  server.registerResource("taxonomy", "planro://taxonomy", { title: "Global taxonomy", description: "Canonical taxonomy shared by every province.", mimeType: "application/json" }, async (uri) =>
-    jsonResource(uri.href, getTaxonomy()),
-  );
+  server.registerResource("taxonomy", "planro://taxonomy", { title:"Global Planro taxonomy", description:"Shared taxonomy for all entities and provinces.", mimeType:"application/json" }, async (uri) => jsonResource(uri.href, getTaxonomy()));
 
   const taxonomyTpl = new ResourceTemplate("planro://taxonomy/{domain}", { list: undefined });
-  server.registerResource("taxonomy-domain", taxonomyTpl, { title: "Taxonomy domain", description: "One canonical taxonomy domain.", mimeType: "application/json" }, async (uri) => {
-    const domain = uri.pathname.split("/")[2];
-    const taxonomy = getTaxonomy() as any;
-    if (!domain || !(domain in taxonomy)) throw new Error(`Unknown taxonomy domain '${domain}'.`);
-    return jsonResource(uri.href, taxonomy[domain]);
-  });
+  server.registerResource("taxonomy-domain", taxonomyTpl, { title:"Taxonomy domain", description:"One shared taxonomy catalog.", mimeType:"application/json" }, async (uri) => { const domain=uri.pathname.split("/")[2]; const t=getTaxonomy() as any; if(!domain || !(domain in t)) throw new Error(`Unknown taxonomy domain '${domain}'.`); return jsonResource(uri.href,t[domain]); });
 
   // --- scope registry resources (dedicated scope ids) ---
   server.registerResource("scopes-index", "planro://scopes", { title: "All province scope ids", description: "Index of the 31 provinces with their county scope ids and counts — the entry point of the staged workflow (Scope A).", mimeType: "application/json" }, async (uri) =>

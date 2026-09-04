@@ -13,7 +13,6 @@
     "name",
     "location",
     "content",
-    "visit",
     "evidence"
   ],
   "properties": {
@@ -60,8 +59,7 @@
       "items": {
         "type": "string",
         "pattern": "^[a-z][a-z0-9_-]*$"
-      },
-      "description": "Canonical ids from taxonomy/categories.json."
+      }
     },
     "name": {
       "type": "object",
@@ -509,61 +507,24 @@
           }
         }
       },
-      "minProperties": 1
+      "minProperties": 1,
+      "description": "Visit data is entity-type-specific. Province uses bestSeasons/bestMonths only; openingHours and entryFee belong to ticketed places/camping/village-owned facilities when applicable."
     },
     "features": {
       "type": "array",
       "uniqueItems": true,
-      "description": "Canonical ids from taxonomy/features.json; absence means unknown, not false.",
       "items": {
-        "enum": [
-          "family_friendly",
-          "kids_friendly",
-          "elderly_friendly",
-          "wheelchair_accessible",
-          "not_wheelchair_accessible",
-          "pet_friendly",
-          "not_pet_friendly",
-          "photography",
-          "photography_restricted",
-          "camping",
-          "hiking",
-          "cycling",
-          "swimming",
-          "romantic",
-          "adventure",
-          "eco_tourism",
-          "religious_site",
-          "sunrise_spot",
-          "sunset_spot",
-          "stargazing"
-        ]
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_-]*$"
       }
     },
     "facilities": {
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "enum": [
-          "parking",
-          "toilet",
-          "prayer_room",
-          "restaurant",
-          "cafe",
-          "buffet",
-          "souvenir_shop",
-          "accommodation_nearby",
-          "atm",
-          "first_aid",
-          "drinking_water",
-          "wifi",
-          "guide_service",
-          "ticket_office",
-          "rest_area",
-          "playground"
-        ]
-      },
-      "description": "Canonical ids from taxonomy/facilities.json."
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_-]*$"
+      }
     },
     "activities": {
       "type": "array",
@@ -571,8 +532,7 @@
       "items": {
         "type": "string",
         "pattern": "^[a-z][a-z0-9_-]*$"
-      },
-      "description": "Canonical ids from taxonomy/activities.json."
+      }
     },
     "scores": {
       "type": "object",
@@ -690,8 +650,7 @@
           "items": {
             "type": "string",
             "pattern": "^[a-z][a-z0-9_-]*$"
-          },
-          "description": "Canonical ids from taxonomy/risks.json."
+          }
         },
         "mobileCoverage": {
           "enum": [
@@ -742,7 +701,7 @@
           "items": {
             "$ref": "#/$defs/mediaItem"
           },
-          "description": "۰ تا حداکثر ۲۰ لینک مستقیم تصویر مرتبط و غیرتکراری. هدف: استان/شهرستان/شهر/مکان ۱۰ تصویر، روستا/کمپینگ ۳ تصویر؛ برای عبور Definition-of-Done حداقل ۵ تصویر متمایز برای استان/شهرستان/شهر/مکان و ۳ تصویر برای روستا/کمپینگ لازم است. ۰ تصویر فقط پس از Coverage کامل منابع Primary مجاز است و به‌صورت unavailable ثبت می‌شود. تصاویر وب (جستجوی تصویر گوگل/بینگ، سایت‌های گردشگری و خبری) با کردیت و sourceUrl معتبر و لایسنس all-rights-reserved پذیرفته می‌شود.",
+          "description": "تصاویر مستقل و متعلق به همین Entity؛ هدف ۵ تصویر برای استان/شهرستان/شهر/مکان و ۳ برای روستا/کمپینگ. همان URL نباید در Entity دیگری تکرار شود.",
           "minItems": 0,
           "maxItems": 20
         },
@@ -1198,7 +1157,7 @@
     },
     "travelChecklist": {
       "type": "object",
-      "description": "چک‌لیست سفر مرتبط با Entity. برای Province/County/City/Village/Natural/Route/Accommodation/Campground همهٔ شش حالت لازم است؛ برای POIهای دیگر فقط حالت‌های واقعاً مرتبط وارد می‌شوند.",
+      "description": "چک‌لیست مستقل همین Entity؛ فقط آیتم‌های کوتاه و ملموس. برای هر Entity، فقط modeهای واقعاً مرتبط را نگه دار.",
       "additionalProperties": false,
       "properties": {
         "tour": {
@@ -1574,8 +1533,7 @@
         "name",
         "latitude",
         "longitude"
-      ],
-      "description": "گره حمل‌ونقل نزدیک با مختصات معتبر؛ فاصله مشتق‌شده در Entity ذخیره نمی‌شود."
+      ]
     },
     "faText": {
       "type": "string",
@@ -2066,5 +2024,6 @@
         }
       }
     }
-  ]
+  ],
+  "x-planro-field-policy": "dataset/entity-field-policy.json"
 }

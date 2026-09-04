@@ -3,7 +3,9 @@ import { readNotes } from "./notes.js";
 import { listEntities, entityNodeType, ancestorChain } from "./dataset.js";
 import { mediaPolicyFor, mediaStatusFor } from "./media.js";
 import { getTaxonomy, getSubtype } from "./taxonomy.js";
-import type { NotesState, PlaceEntity, QualityError, QualityResult, NodeRecord } from "./types.js";
+import fs from "node:fs";
+import path from "node:path";
+import type { NotesState, PlaceEntity, QualityError, QualityResult, NodeRecord, NodeType } from "./types.js";
 
 export interface QualityContext {
   provinceId: string;
@@ -136,94 +138,101 @@ function hasDedicatedEvidence(entity: PlaceEntity, fieldPath: string, text: stri
 }
 
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const COST_MAX_AGE_DAYS = 180;
+;
 
-function daysSince(dateText: string, now = new Date()): number | null {
-  if (!ISO_DATE.test(dateText)) return null;
-  const d = new Date(`${dateText}T00:00:00Z`);
-  if (Number.isNaN(d.getTime())) return null;
-  return Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - d.getTime()) / 86400000);
-}
-
-function countDistinctMediaUrls(entity: PlaceEntity): number {
-  const media = entity.media as any;
-  const urls = new Set<string>();
-  if (typeof media?.thumbnail?.url === "string") urls.add(media.thumbnail.url);
-  for (const item of ((media?.images as any[]) ?? [])) if (typeof item?.url === "string") urls.add(item.url);
-  return urls.size;
-}
-
-function validateProvinceCompleteness(entity: PlaceEntity, errors: QualityError[], warnings: QualityError[]): void {
-  if (entity.type !== "other" || entity.subType !== "province") return;
-
-  const content = entity.content as any;
-  const nonEmpty = (v: unknown) => typeof v === "string" && v.trim().length >= 40;
-  for (const field of ["description", "history", "architecture", "culture", "whyVisit"] as const) {
-    const value = field === "description" ? content?.[field]?.fa : content?.[field];
-    if (!nonEmpty(value)) addError(errors, "PROVINCE_CONTENT_MISSING", `content.${field}`, `Province Entity requires substantive '${field}' content.`);
+const VISIT_ALLOWED: Record<string, string[]> = {
+  province: ["bestSeasons","bestMonths"],
+  county: ["bestSeasons","bestMonths"],
+  city: ["bestSeasons","bestMonths","crowdLevel"],
+  village: ["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],
+  place: ["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],
+  camping: ["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],
+};
+const CHECKLIST_ALLOWED: Record<string, string[]> = {
+  province: ["tour","personalCar","airplane","train","bus"],
+  county: ["tour","personalCar","airplane","train","bus"],
+  city: ["tour","personalCar","airplane","train","bus"],
+  village: ["tour","personalCar","bus","camping"],
+  place: ["tour","personalCar","bus","camping"],
+  camping: ["personalCar","bus","camping","tour"],
+};
+const COST_ALLOWED: Record<string, string[]> = {
+  province: ["food","beverage","snack","restaurant","cafe","transport_local","accommodation","toll","insurance","other"],
+  county: ["food","beverage","snack","restaurant","cafe","transport_local","accommodation","toll","insurance","other"],
+  city: ["food","beverage","snack","restaurant","cafe","transport_local","parking","accommodation","toll","insurance","other"],
+  village: ["food","beverage","snack","restaurant","cafe","transport_local","parking","accommodation","camping","guide","equipment_rental","shopping","other"],
+  place: ["entry","parking","guide","equipment_rental","restaurant","cafe","food","beverage","snack","other"],
+  camping: ["camping","parking","guide","equipment_rental","food","beverage","snack","restaurant","other"],
+};
+function pathDescendantNames(state: NotesState, nodeId: string): string[] {
+  const descendants: string[] = [];
+  for (const n of state.nodes) {
+    let cur = n.parentNodeId;
+    const seen = new Set<string>();
+    while (cur && !seen.has(cur)) {
+      seen.add(cur);
+      if (cur === nodeId) { if (n.canonicalName) descendants.push(String(n.canonicalName)); break; }
+      cur = state.nodes.find(x => x.nodeId === cur)?.parentNodeId ?? null;
+    }
   }
-
-  const arr = (key: string) => Array.isArray((entity as any)[key]) ? (entity as any)[key] : [];
-  const minArray = (key: string, min: number) => {
-    const value = arr(key);
-    if (value.length < min) addError(errors, "PROVINCE_SECTION_TOO_SHORT", key, `Province Entity requires at least ${min} item(s) in '${key}'.`);
-  };
-
-  minArray("faq", 4);
-  minArray("tips", 3);
-  if (((entity.safety as any)?.risks ?? []).length > 0) minArray("warnings", 1);
-  minArray("localFoods", 3);
-  minArray("souvenirs", 3);
-  minArray("activities", 3);
-  minArray("features", 2);
-
-  const seo = entity.seo as any;
-  if (!seo?.title || !seo?.description || !Array.isArray(seo?.keywords) || seo.keywords.length < 5) {
-    addError(errors, "PROVINCE_SEO_INCOMPLETE", "seo", "Province Entity requires seo.title, seo.description and at least 5 unique keywords.");
-  }
-
+  return descendants.filter(x => x.trim().length >= 3);
+}
+function containsChildName(text: unknown, childNames: string[]): string | undefined {
+  const t = typeof text === "string" ? text : "";
+  return childNames.find(n => t.includes(n));
+}
+function validateVisitByEntityType(entity: PlaceEntity, nodeType: NodeType, errors: QualityError[]): void {
   const visit = entity.visit as any;
-  if (!Array.isArray(visit?.bestSeasons) || visit.bestSeasons.length === 0 || !Array.isArray(visit?.bestMonths) || visit.bestMonths.length === 0) {
-    addError(errors, "PROVINCE_VISIT_INCOMPLETE", "visit", "Province Entity requires evidence-backed bestSeasons and bestMonths.");
+  if (!visit) { addError(errors,"VISIT_MISSING","visit","Every production Entity must have visit data; only the fields appropriate to its entity type are allowed."); return; }
+  const allowed = new Set(VISIT_ALLOWED[nodeType] ?? []);
+  for (const key of Object.keys(visit)) if (!allowed.has(key)) addError(errors,"VISIT_FIELD_NOT_ALLOWED",`visit.${key}`,`Field 'visit.${key}' is not applicable to entity type '${nodeType}'.`);
+  if ((nodeType === "province" || nodeType === "county" || nodeType === "city") && (!Array.isArray(visit.bestSeasons) || visit.bestSeasons.length === 0 || !Array.isArray(visit.bestMonths) || visit.bestMonths.length === 0)) {
+    addError(errors,"VISIT_DESTINATION_SEASON_MISSING","visit","Province/county/city requires evidence-backed bestSeasons and bestMonths; opening hours/entry fee are not destination fields.");
   }
-
-  const transportation = entity.transportation as any;
-  for (const key of ["nearestAirport", "nearestRailwayStation", "nearestBusTerminal"] as const) {
-    const node = transportation?.[key];
-    if (node && (typeof node.latitude !== "number" || typeof node.longitude !== "number")) {
-      addError(errors, "TRANSPORT_COORDINATES_REQUIRED", `transportation.${key}`, "Present transport nodes must have verified coordinates.");
-    }
+}
+function validateChecklistByEntityType(entity: PlaceEntity, nodeType: NodeType, errors: QualityError[]): void {
+  const tc = entity.travelChecklist as any;
+  if (!tc || typeof tc !== "object") { addError(errors,"CHECKLIST_MISSING","travelChecklist","Each Entity requires an independent travel checklist with only relevant modes."); return; }
+  const allowed = new Set(CHECKLIST_ALLOWED[nodeType] ?? []);
+  let total = 0;
+  for (const [key, value] of Object.entries(tc)) {
+    if (!allowed.has(key)) { addError(errors,"CHECKLIST_MODE_NOT_ALLOWED",`travelChecklist.${key}`,`Checklist mode '${key}' is not appropriate for entity type '${nodeType}'.`); continue; }
+    if (!Array.isArray(value)) { addError(errors,"CHECKLIST_MODE_INVALID",`travelChecklist.${key}`,"Checklist mode must be an array."); continue; }
+    total += value.length;
   }
-
-  const evidence = (entity.evidence as any[]) ?? [];
-  for (const field of [
-    "content.description",
-    "content.history",
-    "content.architecture",
-    "content.culture",
-    "content.whyVisit",
-    "visit.bestSeasons",
-    "transportation",
-    "costs.items",
-  ]) {
-    if (!hasDedicatedEvidence(entity, field, String(field))) {
-      addError(errors, "PROVINCE_EVIDENCE_COVERAGE", field, `Province-level claim area '${field}' must have dedicated evidence.`);
-    }
+  if (total === 0) addError(errors,"CHECKLIST_EMPTY","travelChecklist","Checklist cannot be empty.");
+}
+function validateFaqOwnership(entity: PlaceEntity, state: NotesState, nodeType: NodeType, errors: QualityError[]): void {
+  const childNames = pathDescendantNames(state, entity.id);
+  if (!childNames.length) return;
+  for (const [i, q] of (((entity.faq as any[]) ?? []).entries())) {
+    const hit = containsChildName(q?.question, childNames);
+    if (hit) addError(errors,"FAQ_CHILD_SCOPE",`faq[${i}].question`,`FAQ must focus on the current ${nodeType}; child-specific question mentions '${hit}'.`);
   }
-  if (evidence.length < 8) addError(errors, "PROVINCE_EVIDENCE_TOO_LOW", "evidence", "Province Entity requires at least 8 evidence entries covering substantive claims.");
-
+}
+function validateCostOwnership(entity: PlaceEntity, state: NotesState, nodeType: NodeType, errors: QualityError[]): void {
   const costs = entity.costs as any;
-  if (costs?.priceAsOf) {
-    const age = daysSince(String(costs.priceAsOf));
-    if (age === null || age < 0) addError(errors, "COST_PRICE_DATE_INVALID", "costs.priceAsOf", "costs.priceAsOf must be a valid non-future date.");
-    else if (age > COST_MAX_AGE_DAYS) addError(errors, "COST_PRICE_STALE", "costs.priceAsOf", `Province cost data is ${age} days old; refresh it within ${COST_MAX_AGE_DAYS} days.`);
+  if (!costs) { addError(errors,"COST_MISSING","costs","Every production Entity requires costs owned by that Entity."); return; }
+  const allowed = new Set(COST_ALLOWED[nodeType] ?? []);
+  const childNames = pathDescendantNames(state, entity.id);
+  const items = Array.isArray(costs.items) ? costs.items : [];
+  if (items.length === 0) addError(errors,"COST_ITEMS_EMPTY","costs.items","Cost items must describe costs owned by the current Entity; do not fabricate a child cost just to fill this field.");
+  for (const [i,item] of items.entries()) {
+    if (item?.category && !allowed.has(item.category)) addError(errors,"COST_CATEGORY_NOT_ALLOWED",`costs.items[${i}].category`,`Cost category '${item.category}' is not appropriate for entity type '${nodeType}'.`);
+    const hit=containsChildName(item?.name,childNames);
+    if(hit) addError(errors,"COST_CHILD_SCOPE",`costs.items[${i}].name`,`Child cost '${hit}' must live only on the child Entity.`);
   }
-
-  const mediaCount = countDistinctMediaUrls(entity);
-  const mediaPolicy = mediaPolicyFor("province");
-  if (mediaCount < mediaPolicy.minimumForCompletion) {
-    addWarning(warnings, "PROVINCE_MEDIA_BELOW_COMPLETION_MINIMUM", "media", `Province has ${mediaCount} distinct image(s); at least ${mediaPolicy.minimumForCompletion} are required for DoD and ${mediaPolicy.target} is the target.`);
+}
+function validateGlobalTaxonomy(entity: PlaceEntity, errors: QualityError[]): void {
+  const t=getTaxonomy();
+  const exists=(d:keyof typeof t,id:unknown)=>typeof id==='string' && (t[d] as TaxonomyItem[]).some(x=>x.id===id);
+  if(!exists('types',entity.type)) addError(errors,'TAXONOMY_TYPE_UNKNOWN','type',`Unknown canonical type '${entity.type}'.`);
+  const st=entity.subType ? getSubtype(String(entity.subType)) : undefined;
+  if(entity.subType && !st) addError(errors,'TAXONOMY_SUBTYPE_UNKNOWN','subType',`Unknown canonical subtype '${entity.subType}'.`);
+  else if(st && !st.appliesTo.includes(entity.type)) addError(errors,'TAXONOMY_SUBTYPE_MISMATCH','subType',`Subtype '${entity.subType}' is incompatible with type '${entity.type}'.`);
+  for (const [field,domain,value] of [['categories','categories',entity.categories],['activities','activities',entity.activities],['features','features',entity.features],['facilities','facilities',entity.facilities],['safety.risks','risks',(entity.safety as any)?.risks]] as Array<[string,keyof typeof t,unknown]>) {
+    if(!Array.isArray(value)) continue;
+    for(const [i,id] of value.entries()) if(!exists(domain,id)) addError(errors,'TAXONOMY_ITEM_UNKNOWN',`${field}[${i}]`,`Unknown canonical taxonomy id '${id}'.`);
   }
 }
 
@@ -245,40 +254,7 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     }
   }
 
-  // (b) global taxonomy membership. The schema enforces id shape; this gate enforces
-  // canonical membership and subtype/type compatibility. Proposals are never valid.
-  const taxonomy = getTaxonomy();
-  const taxonomyHas = (domain: keyof typeof taxonomy, id: unknown) =>
-    typeof id === "string" && (taxonomy[domain] as Array<{ id: string }>).some((x) => x.id === id);
-
-  if (!taxonomyHas("types", entity.type)) {
-    addError(errors, "TAXONOMY_TYPE_UNKNOWN", "type", `Unknown canonical type '${entity.type}'.`);
-  }
-  if (entity.subType !== undefined) {
-    const subtype = getSubtype(String(entity.subType));
-    if (!subtype) {
-      addError(errors, "TAXONOMY_SUBTYPE_UNKNOWN", "subType", `Unknown canonical subtype '${entity.subType}'.`);
-    } else if (!subtype.appliesTo.includes(entity.type)) {
-      addError(errors, "TAXONOMY_SUBTYPE_TYPE_MISMATCH", "subType", `Subtype '${entity.subType}' is not valid for type '${entity.type}'.`);
-    }
-  }
-  const taxonomyArrays: Array<[string, keyof typeof taxonomy, unknown]> = [
-    ["categories", "categories", entity.categories],
-    ["activities", "activities", entity.activities],
-    ["features", "features", entity.features],
-    ["facilities", "facilities", entity.facilities],
-    ["safety.risks", "risks", (entity.safety as any)?.risks],
-  ];
-  for (const [field, domain, value] of taxonomyArrays) {
-    if (!Array.isArray(value)) continue;
-    for (const [i, item] of value.entries()) {
-      if (!taxonomyHas(domain, item)) addError(errors, "TAXONOMY_ITEM_UNKNOWN", `${field}[${i}]`, `Unknown canonical taxonomy id '${item}' in ${domain}.`);
-    }
-  }
-
-  validateProvinceCompleteness(entity, errors, warnings);
-
-  // (c) status must be active only
+  // (b) status must be active only
   if (entity.status !== "active") {
     addError(errors, "STATUS_NOT_ACTIVE", "status", "Stored entities must have status 'active'.");
   }
@@ -381,6 +357,11 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
   const chain = ancestorChain(state, ctx.expectedNodeId);
   const chainIds = new Set(chain.map((n) => n.nodeId));
   const nodeType = entityNodeType(entity);
+  validateGlobalTaxonomy(entity, errors);
+  validateVisitByEntityType(entity, nodeType, errors);
+  validateChecklistByEntityType(entity, nodeType, errors);
+  validateFaqOwnership(entity, state, nodeType, errors);
+  validateCostOwnership(entity, state, nodeType, errors);
   for (const [i, ev] of evidence.entries()) {
     const su = ev?.sourceUrl as string | undefined;
     if (!su) continue;
@@ -409,23 +390,6 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
 
   if (entity.id !== ctx.expectedNodeId) {
     addError(errors, "NODE_ID_MISMATCH", "id", `Entity id '${entity.id}' does not match expectedNodeId '${ctx.expectedNodeId}'.`);
-  }
-
-  // Entity type must match the registered graph node. Administrative nodes use
-  // type=other with an administrative subtype; the public-facing place taxonomy
-  // cannot invent type values such as "province" or "county".
-  const expectedNode = state.nodes.find((n) => n.nodeId === ctx.expectedNodeId);
-  if (expectedNode) {
-    const matchesExpectedType =
-      (expectedNode.nodeType === "province" && entity.type === "other" && entity.subType === "province") ||
-      (expectedNode.nodeType === "county" && entity.type === "other" && entity.subType === "county") ||
-      (expectedNode.nodeType === "city" && entity.type === "city") ||
-      (expectedNode.nodeType === "village" && entity.type === "village") ||
-      (expectedNode.nodeType === "camping" && entity.type === "recreational" && entity.subType === "campground") ||
-      (expectedNode.nodeType === "place" && !((entity.type === "other") && ["province", "county"].includes(String(entity.subType ?? ""))));
-    if (!matchesExpectedType) {
-      addError(errors, "NODE_TYPE_MISMATCH", "type", `Entity type/subType does not match registered node type '${expectedNode.nodeType}'.`);
-    }
   }
 
   switch (nodeType) {
@@ -528,6 +492,16 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     for (const im of images) if (im?.url) distinctUrls.add(im.url);
     const derivedStatus = mediaStatusFor(nodeType, distinctUrls.size);
 
+    // Media belongs to exactly one Entity across the whole province.
+    for (const other of entities) {
+      if (other.id === entity.id) continue;
+      const om = other.entity.media as any;
+      const otherUrls = new Set<string>();
+      if (om?.thumbnail?.url) otherUrls.add(String(om.thumbnail.url));
+      for (const im of ((om?.images as any[]) ?? [])) if (im?.url) otherUrls.add(String(im.url));
+      for (const u of distinctUrls) if (otherUrls.has(u)) addError(errors,"MEDIA_GLOBAL_DUPLICATE", "media", `Image URL '${u}' is already used by Entity '${other.id}'. Media sets are independent per Entity.`);
+    }
+
     if (images.length > policy.max) {
       addError(errors, "MEDIA_TOO_MANY_IMAGES", "media.images", `Active entity allows at most ${policy.max} images (got ${images.length}).`);
     }
@@ -594,16 +568,6 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
         addError(errors, "MEDIA_OWNERSHIP_REJECTED", `${p}.sourceUrl`, "Media source was recorded with ownershipStatus 'rejected'.");
       } else if (entries.some((m) => m.nodeId !== ctx.expectedNodeId && chainIds.has(m.nodeId) && m.ownershipStatus === "belongs_to_node")) {
         addError(errors, "MEDIA_OWNERSHIP_MISMATCH", `${p}.sourceUrl`, "Media source belongs to an ancestor node and cannot back this node's media.");
-      }
-
-      // Media provenance is tracked separately from FACT source coverage. A media
-      // candidate recorded for this exact node is sufficient provenance even when
-      // the hosting page is not one of the five fact sources.
-      const mediaCandidateMatch = (state.mediaCandidates ?? []).some(
-        (mc) => mc.nodeId === ctx.expectedNodeId && mc.pageUrl === msu && mc.imageUrl === item?.url,
-      );
-      if (!mediaCandidateMatch) {
-        addError(errors, "MEDIA_NOT_REGISTERED", `${p}.sourceUrl`, "Media must be registered via record_media_candidate for this exact node before it can be saved.");
       }
     }
   }

@@ -1,21 +1,21 @@
 {
   "version":"1.0.0",
   "items":[
-    {"id":"parking","label":"پارکینگ","description":"پارکینگ در محل"},
-    {"id":"toilet","label":"سرویس بهداشتی","description":"سرویس بهداشتی در محل"},
-    {"id":"prayer_room","label":"نمازخانه","description":"نمازخانه در محل"},
-    {"id":"restaurant","label":"رستوران","description":"رستوران در محل"},
-    {"id":"cafe","label":"کافه","description":"کافه در محل"},
-    {"id":"buffet","label":"بوفه","description":"بوفه در محل"},
-    {"id":"souvenir_shop","label":"فروشگاه سوغات","description":"فروش سوغات در محل"},
-    {"id":"accommodation_nearby","label":"اقامتگاه نزدیک","description":"اقامتگاه در نزدیکی مقصد"},
-    {"id":"atm","label":"خودپرداز","description":"خودپرداز در محل یا مجموعه"},
-    {"id":"first_aid","label":"کمک‌های اولیه","description":"امکانات کمک‌های اولیه در محل"},
-    {"id":"drinking_water","label":"آب آشامیدنی","description":"آب آشامیدنی قابل اتکا"},
-    {"id":"wifi","label":"وای‌فای","description":"شبکه بی‌سیم در محل"},
-    {"id":"guide_service","label":"راهنمای محلی","description":"خدمات راهنمایی در محل"},
-    {"id":"ticket_office","label":"باجه فروش بلیت","description":"فروش یا کنترل بلیت"},
-    {"id":"rest_area","label":"فضای استراحت","description":"محل نشستن یا استراحت"},
-    {"id":"playground","label":"زمین بازی","description":"فضای بازی کودکان"}
+    {"id":"parking","label":"پارکینگ"},
+    {"id":"toilet","label":"سرویس بهداشتی"},
+    {"id":"prayer_room","label":"نمازخانه"},
+    {"id":"restaurant","label":"رستوران"},
+    {"id":"cafe","label":"کافه"},
+    {"id":"buffet","label":"بوفه"},
+    {"id":"souvenir_shop","label":"فروشگاه سوغات"},
+    {"id":"accommodation_nearby","label":"اقامتگاه نزدیک"},
+    {"id":"atm","label":"خودپرداز"},
+    {"id":"first_aid","label":"کمک‌های اولیه"},
+    {"id":"drinking_water","label":"آب آشامیدنی"},
+    {"id":"wifi","label":"وای‌فای"},
+    {"id":"guide_service","label":"راهنمای محلی"},
+    {"id":"ticket_office","label":"باجه فروش بلیت"},
+    {"id":"rest_area","label":"فضای استراحت"},
+    {"id":"playground","label":"زمین بازی"}
   ]
 }

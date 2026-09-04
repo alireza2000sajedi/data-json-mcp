@@ -1,31 +1,8 @@
-# Planro Agent — Prompt 04: Repair One Entity
+# PLANRO — REPAIR ONE ENTITY
 
-Required user input:
-- `province_id=<PROVINCE_ID>`
-- `scope_id=<SCOPE_ID>`
-- `entity_id=<ENTITY_ID>`
+Use the Master Contract in `prompts/01-start-province.txt`. Repair only the exact supplied Entity.
 
-Normalize numeric province ids internally to canonical `province-{n}`. Do not ask for a derived Province Scope id.
-Never invent or substitute an Entity id.
-Do not ask follow-up questions. The required variables are supplied in the RUN VARIABLES block at the end of this file.
-If a required variable is empty, STOP with `MISSING_INPUT: <variable>`.
-If MCP is unavailable, report the connection/setup problem and STOP.
-
-Workflow:
-1. Verify the exact Province, Scope and Entity exist and the Entity belongs to the selected Scope.
-2. Read the stored Entity and the current schema/taxonomy/source/brand rules.
-3. Identify every blocking defect: schema mismatch, taxonomy violation, hierarchy mismatch, unsupported claim, source/evidence gap, invalid media, cost problem, relation problem, safety problem, forbidden field or user-facing research leakage.
-4. Repair only the selected Entity and only what is justified by current evidence.
-5. Never invent missing facts.
-6. Save only through MCP.
-7. Re-run validation and Scope DoD.
-8. Stop after the selected Entity is valid.
-
-
----
-
-## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
-
+### RUN VARIABLES
 ```text
 province_id=<PROVINCE_ID>
 scope_id=<SCOPE_ID>
@@ -33,7 +10,4 @@ entity_id=<ENTITY_ID>
 previous_id=<PREVIOUS_ID>
 ```
 
-Rules:
-- `previous_id` is optional context for the repair run; `entity_id` is authoritative.
-- Do not ask follow-up questions when the required IDs are present.
-- Never invent or infer a missing ID.
+Verify entity ownership, schema, taxonomy, hierarchy, source/evidence, visit field applicability, cost ownership, FAQ ownership, independent checklist, media ownership/global uniqueness and brand voice. Save only through MCP and validate again. Never ask follow-up questions.

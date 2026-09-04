@@ -1,47 +1,10 @@
-# Planro Agent — Prompt 05: Final Global Audit and Minify
+# PLANRO — FINAL GLOBAL AUDIT + MINIFY
 
-Run this prompt ONLY after the full dataset for all required Provinces/Scopes has been collected.
+Use the Master Contract in `prompts/01-start-province.txt`.
 
-Required run variable:
-- `final_audit=true` only when the full planned dataset is ready for global audit.
-
-Do not choose missing Provinces or Scopes yourself. Do not invent data to fill gaps.
-Do not ask follow-up questions. If the variable is missing or not `true`, STOP with `MISSING_INPUT: final_audit=true`.
-If MCP is unavailable, report the connection/setup problem and STOP.
-
-Audit the entire dataset for:
-- exact schema conformity
-- canonical taxonomy membership and subtype compatibility
-- hierarchy and scope isolation
-- duplicate ids/slugs/entities
-- relation integrity
-- mandatory Primary Source coverage and evidence linkage
-- stale/unsupported claims
-- cost validity and dates
-- safety specificity
-- media attribution/license/source integrity
-- forbidden fields and research leakage
-- checklist quality
-- brand voice and Persian language quality
-- empty/null placeholder abuse
-- published-state eligibility
-
-Any blocking issue means the global audit FAILS. Repair it through the normal MCP workflow first.
-Only after every blocking condition passes:
-1. run the final global validation,
-2. mark eligible records for publication,
-3. minify JSON output files without changing semantic content,
-4. report the final audit result and counts.
-
-
----
-
-## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
-
+### RUN VARIABLES
 ```text
 final_audit=true
 ```
 
-Rules:
-- This variable is the complete user input for Prompt 05.
-- Do not ask follow-up questions when it is set to `true`.
+Audit every Entity against `planro://rules/entity-fields`: type-specific Visit, costs owned by current Entity, current-Entity FAQ, independent checklist, Entity-owned media, global media URL uniqueness, taxonomy, evidence/source coverage, hierarchy, language and publication eligibility. Repair all blocking issues. Do not fabricate data. Only after global validation passes, minify production JSON files.
