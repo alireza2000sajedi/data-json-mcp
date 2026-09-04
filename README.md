@@ -18,7 +18,7 @@ Agent / LLM
 
 کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود. Runner فقط `province_id` و `scope_id` می‌دهد؛ انتخاب با نام فارسی جزو قرارداد استاندارد نیست. هر Scope یک **id اختصاصی و
 پایدار** دارد (`province-{n}`، `county-{n}-{k}`، `city-{n}-{k}`، `village-{n}-v{k}`، `place-{n}-{k}`) و پیشرفت بین
-اجراها در `notes.state.json` ذخیره و Resume می‌شود. قوانین اجرایی در `prompt.txt` و فایل‌های `prompts/` قرار دارند.
+اجراها در `notes.state.json` ذخیره و Resume می‌شود. قوانین اجرایی در `prompts/01-start-province.txt` و فایل‌های `prompts/` قرار دارند.
 
 ---
 
@@ -28,7 +28,7 @@ Agent / LLM
 data-json-mcp/
 ├── package.json
 ├── tsconfig.json
-├── prompt.txt                ← Master prompt
+├── prompts/01-start-province.txt                ← Master prompt
 ├── prompts/                  ← promptهای Start / Scope / Resume / Repair / Final Audit
 ├── taxonomy/                 ← taxonomy سراسری + صف proposalهای Agent
 ├── mcp-client.mjs            ← کلاینت CLI برای فراخوانی Toolها از شل
@@ -58,7 +58,7 @@ data-json-mcp/
 
 ### دیتای ورودی `input/`
 
-پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `prompt.txt` و منابع داخل `dataset/`.)
+پوشهٔ `input/` شامل ۳۱ فایل JSON (`1.json` تا `31.json`) است که هر کدام ساختار اداری کامل یک استان را دارد: `id` (شناسهٔ استان)، `name` (نام استان) و `counties[]` (هر شهرستان با `name`، `cities[]` و `villages[]`). برای `province-{n}` فایل `input/{n}.json` معادل است. این فایل‌ها **چک‌لیست مرجع کشف اداری** و **مبنای `count`** در قرارداد تکمیل (`complete_discovery_task`) هستند، اما منبع Evidence، مختصات یا قیمت نیستند — این‌ها فقط از Sourceهای وب ثبت‌شده می‌آیند. (قواعد کامل در `prompts/01-start-province.txt` و منابع داخل `dataset/`.)
 
 مسیرها از طریق متغیر محیطی قابل تغییرند (پیش‌فرض: داخل خود پروژه):
 
@@ -187,7 +187,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 
 10. **بدون Loop خودکار**: MCP فقط Tool/Resource می‌دهد؛ حلقهٔ «ادامه تا پایان Scope» وظیفهٔ Runner بیرونی است (همان‌طور که در پرامپت مشخص شده).
 
-11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `prompt.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
+11. **Query-Generator، نه Search**: `discover_node` فقط رشته‌های Queryِ node-scoped را (مطابق قالب‌های `prompts/01-start-province.txt`) تولید می‌کند و به اینترنت وصل نمی‌شود. اجرای جستجو و ثبت نتیجه با `record_search_result` بر عهدهٔ Agent است. این هم ممنوعیت crawl/scrape را حفظ می‌کند و هم مانع آلودگی Parent→Child می‌شود (Query شهرستان همیشه نام کامل شهرستان را دارد، نه نام استان).
 
 12. **ذخیره فقط از مسیر MCP**: تنها راه مجاز برای نوشتن JSON، `save_active_entity` / `save_entities` است. هر نوشتن مستقیم فایل (bash/heredoc) دروازهٔ کیفیت را دور می‌زند.
 

@@ -1,29 +1,39 @@
-# Planro Agent — Explicit Input Contract
-
-**No real IDs are embedded in this prompt.**
-
-Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
-
-Rules:
-- Never infer, invent, autocomplete, or choose an ID.
-- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
-- If a required ID is missing, stop and ask the user for exactly that ID.
-- Do not use name-to-ID resolution in the normal workflow.
-- Do not write any file manually; all Entity persistence goes through MCP tools.
-- The actual Entity JSON MUST match `planro://schema/place` exactly.
-
-# Prompt 04 — Repair One Entity
+# Planro Agent — Prompt 04: Repair One Entity
 
 Required user input:
 - `province_id=<PROVINCE_ID>`
 - `scope_id=<SCOPE_ID>`
 - `entity_id=<ENTITY_ID>`
 
+Normalize numeric province ids internally to canonical `province-{n}`. Do not ask for a derived Province Scope id.
+Never invent or substitute an Entity id.
+Do not ask follow-up questions. The required variables are supplied in the RUN VARIABLES block at the end of this file.
+If a required variable is empty, STOP with `MISSING_INPUT: <variable>`.
+If MCP is unavailable, report the connection/setup problem and STOP.
+
 Workflow:
-1. Verify the Entity belongs to the selected Scope.
-2. Read its current JSON, schema, taxonomy, source policy and validation errors.
-3. Fix in this order: schema → node type/subtype → taxonomy → hierarchy → sources/evidence → factual content → costs → checklist → media → brand voice.
-4. Never invent facts, IDs, prices or taxonomy terms.
-5. Remove forbidden legacy fields if present.
-6. Save only through MCP and validate again.
-7. Do not modify unrelated Scope data.
+1. Verify the exact Province, Scope and Entity exist and the Entity belongs to the selected Scope.
+2. Read the stored Entity and the current schema/taxonomy/source/brand rules.
+3. Identify every blocking defect: schema mismatch, taxonomy violation, hierarchy mismatch, unsupported claim, source/evidence gap, invalid media, cost problem, relation problem, safety problem, forbidden field or user-facing research leakage.
+4. Repair only the selected Entity and only what is justified by current evidence.
+5. Never invent missing facts.
+6. Save only through MCP.
+7. Re-run validation and Scope DoD.
+8. Stop after the selected Entity is valid.
+
+
+---
+
+## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
+
+```text
+province_id=<PROVINCE_ID>
+scope_id=<SCOPE_ID>
+entity_id=<ENTITY_ID>
+previous_id=<PREVIOUS_ID>
+```
+
+Rules:
+- `previous_id` is optional context for the repair run; `entity_id` is authoritative.
+- Do not ask follow-up questions when the required IDs are present.
+- Never invent or infer a missing ID.

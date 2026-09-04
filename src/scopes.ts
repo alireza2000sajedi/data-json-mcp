@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { config } from "./config.js";
+import { config, assertProvinceId } from "./config.js";
 
 /**
  * Deterministic Scope Registry.
@@ -67,7 +67,8 @@ interface ProvinceInput {
 
 /** Extract the numeric part of a `province-{n}` id. */
 export function provinceNumber(provinceId: string): number {
-  const m = /^province-(\d+)$/.exec(provinceId ?? "");
+  const canonical = assertProvinceId(provinceId);
+  const m = /^province-(\d+)$/.exec(canonical ?? "");
   if (!m) throw new Error(`Invalid provinceId '${provinceId}'. Expected pattern province-{n}.`);
   const n = Number(m[1]);
   if (n < 1 || n > 31) throw new Error(`provinceId '${provinceId}' is out of range (1..31).`);

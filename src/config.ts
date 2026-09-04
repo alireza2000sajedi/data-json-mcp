@@ -59,7 +59,18 @@ export function assertSafeSegment(segment: string, label = "segment"): string {
 
 /** A province id must match the project province-id pattern (and reject obvious junk). */
 export function assertProvinceId(provinceId: string): string {
-  return assertSafeSegment(provinceId, "provinceId");
+  const raw = assertSafeSegment(provinceId, "provinceId").trim();
+  if (/^\d{1,2}$/.test(raw)) {
+    const n = Number(raw);
+    if (n < 1 || n > 31) throw new Error(`provinceId '${raw}' is out of range (1..31).`);
+    return `province-${n}`;
+  }
+  if (/^province-\d+$/.test(raw)) {
+    const n = Number(raw.slice("province-".length));
+    if (n < 1 || n > 31) throw new Error(`provinceId '${raw}' is out of range (1..31).`);
+    return `province-${n}`;
+  }
+  throw new Error(`Invalid provinceId '${raw}'. Use a numeric province id (1..31) or canonical province-{n}.`);
 }
 
 export function assertNodeId(nodeId: string): string {

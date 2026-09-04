@@ -1,34 +1,49 @@
-# Planro Agent — Explicit Input Contract
+# Planro Agent — Prompt 02: Run Exactly One Explicit Scope
 
-**No real IDs are embedded in this prompt.**
+This prompt runs ONE user-selected Scope after the Province stage.
 
-Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
-
-Rules:
-- Never infer, invent, autocomplete, or choose an ID.
-- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
-- If a required ID is missing, stop and ask the user for exactly that ID.
-- Do not use name-to-ID resolution in the normal workflow.
-- Do not write any file manually; all Entity persistence goes through MCP tools.
-- The actual Entity JSON MUST match `planro://schema/place` exactly.
-
-# Prompt 02 — Run Exactly One Scope
-
+## Input contract
 Required user input:
 - `province_id=<PROVINCE_ID>`
 - `scope_id=<SCOPE_ID>`
 
-Workflow:
-1. Verify both IDs exist and belong together.
-2. Lock the active scope to the exact supplied `scope_id`.
-3. Research ONLY that Scope and its permitted subtree.
-4. For every Entity Node, complete the five-primary-source coverage and record every attempt.
-5. Resolve duplicate candidates before creating new Entities.
-6. Use canonical taxonomy IDs only; missing concepts become proposals, never production values.
-7. Use the actual schema field names. Do not invent an alternate JSON structure.
-8. Transport nodes must use coordinates; do not store derived `distanceKm`.
-9. Costs must be source-backed and use the current CPI/budget schema; never invent prices or use null-placeholder structures from another schema.
-10. Safety must be Node-specific.
-11. Media is best-effort, not a minimum.
-12. Save through MCP only, complete discovery tasks, mark the Node complete, run DoD + validation.
-13. Stop after this Scope.
+Do not choose, infer, autocomplete, or ask the user to replace a supplied Scope with a different one.
+If `province_id` is numeric, normalize it internally to canonical `province-{n}`.
+Do not ask follow-up questions. The required variables are supplied in the RUN VARIABLES block at the end of this file.
+If a required variable is empty, STOP with `MISSING_INPUT: <variable>`.
+If MCP is unavailable, report the MCP connection/setup problem and STOP.
+
+## Workflow
+1. Verify MCP resources/tools are available.
+2. Read the Master rules, schema, source policy, brand voice and global taxonomy.
+3. Verify the supplied `province_id` exists.
+4. Verify the supplied `scope_id` exists and belongs to that province.
+5. Lock the active scope to exactly that Scope.
+6. Research ONLY that Scope and its permitted subtree.
+7. Do not deep-research siblings or unrelated provinces.
+8. For each Entity Node, complete and record the five mandatory Primary Source searches; failed/no-result attempts must also be recorded.
+9. Resolve duplicate candidates before creating new Entities.
+10. Use canonical taxonomy ids only. Missing reusable concepts become proposals, never production values.
+11. The Entity JSON must match `planro://schema/place` exactly. Never invent an alternative JSON shape.
+12. Transport nodes use coordinates when available; do not store derived `distanceKm` in transport objects.
+13. Costs must be source-backed and schema-compliant. Never guess prices or create null placeholders only to fill a field.
+14. Safety content must be specific to the current Node.
+15. Media is best-effort and must be attributable to the current Node.
+16. Save only through MCP.
+17. Complete discovery tasks and run `check_definition_of_done` + validation for this Scope.
+18. Stop after this Scope. Do not automatically select another Scope.
+
+
+---
+
+## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
+
+```text
+province_id=<PROVINCE_ID>
+scope_id=<SCOPE_ID>
+```
+
+Rules:
+- These variables are the complete user input for Prompt 02.
+- Do not ask follow-up questions when they are present.
+- Never invent or infer a missing ID.

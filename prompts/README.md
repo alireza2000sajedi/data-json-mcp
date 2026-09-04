@@ -7,7 +7,7 @@
 4. `04-repair-entity.txt` — repair one explicitly selected Entity.
 5. `05-final-audit-minify.txt` — global audit only after the full dataset is complete.
 
-The Master contract is `../prompt.txt`.
+The Master contract is `../prompts/01-start-province.txt`.
 
 ## Input rule
 These files intentionally contain **no concrete province/county/city IDs**.

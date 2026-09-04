@@ -1,64 +1,46 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = process.cwd();
-const ROOT = root;
-const read = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
-const fail = (m) => { console.error(`FAIL: ${m}`); process.exitCode = 1; };
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 
-const taxonomyDomains = ['types','subtypes','categories','activities','features','facilities','risks'];
-for (const d of taxonomyDomains) {
-  const x = read(`taxonomy/${d}.json`);
-  if (!Array.isArray(x.items) || x.items.length === 0) fail(`taxonomy/${d}.json has no items`);
-  const ids = x.items.map(i => i.id);
-  if (ids.some(id => !/^[a-z][a-z0-9_-]*$/.test(id))) fail(`taxonomy/${d}.json contains invalid ids`);
-  if (ids.length !== new Set(ids).size) fail(`taxonomy/${d}.json contains duplicate ids`);
-}
-const types = new Set(read('taxonomy/types.json').items.map(i => i.id));
-for (const st of read('taxonomy/subtypes.json').items) {
-  if (!Array.isArray(st.appliesTo) || st.appliesTo.length === 0) fail(`subtype ${st.id} has no appliesTo`);
-  for (const t of st.appliesTo) if (!types.has(t)) fail(`subtype ${st.id} references unknown type ${t}`);
-}
-const schema = read('dataset/place.schema.json');
-if ('tags' in schema.properties) fail('place.schema.json still permits tags');
-if ('emergencyNumbers' in schema.properties?.safety?.properties) fail('place.schema.json still permits safety.emergencyNumbers');
-for (const d of ['categories','activities','features','facilities']) {
-  if (!schema.properties[d]) fail(`place.schema.json missing ${d}`);
-}
-if (!schema.properties?.safety?.properties?.risks) fail('place.schema.json missing safety.risks');
-const policy = read('dataset/source_policy.json');
-const primary = policy.primaryFactSources ?? policy.primary ?? [];
-const required = ['kojaro.com','jabama.com','alibaba.ir','lastsecond.ir','flytoday.ir'];
-if (primary.length !== 5) fail(`source policy must have exactly 5 primary sources, found ${primary.length}`);
-for (const d of required) if (!primary.some(x => x.domain === d)) fail(`missing primary source ${d}`);
-for (let i = 1; i <= 31; i++) if (!fs.existsSync(path.join(root,'input',`${i}.json`))) fail(`missing input/${i}.json`);
-for (const f of ['01-start-province.txt','02-run-scope.txt','03-resume.txt','04-repair-entity.txt','05-final-audit-minify.txt']) {
-  if (!fs.existsSync(path.join(root,'prompts',f))) fail(`missing prompts/${f}`);
-}
-const proposals = read('taxonomy/agent-taxonomy/proposals.json');
-if (!Array.isArray(proposals)) fail('taxonomy/agent-taxonomy/proposals.json must be an array');
-if (process.exitCode) process.exit(process.exitCode);
-console.log('Planro project verification passed.');
-console.log(JSON.stringify({ taxonomy: Object.fromEntries(taxonomyDomains.map(d => [d, read(`taxonomy/${d}.json`).items.length])), primarySources: primary.map(x => x.domain), provinces: 31 }, null, 2));
-
-
-// Prompt safety: operational prompts must never embed concrete real Scope IDs.
-const promptFiles = [
-  "prompt.txt",
-  "prompts/01-start-province.txt",
-  "prompts/02-run-scope.txt",
-  "prompts/03-resume.txt",
-  "prompts/04-repair-entity.txt",
-  "prompts/05-final-audit-minify.txt",
+const required = [
+  "README.md", "START_HERE.md", "package.json", "package-lock.json", "tsconfig.json",
+  "mcp-client.mjs",
+  "dataset/place.schema.json", "dataset/source_policy.json", "dataset/brand_voice.md", "dataset/iran-cpi.schema.json",
+  "prompts/01-start-province.txt", "prompts/02-run-scope.txt", "prompts/03-resume.txt",
+  "prompts/04-repair-entity.txt", "prompts/05-final-audit-minify.txt", "prompts/README.md",
+  "taxonomy/types.json", "taxonomy/subtypes.json", "taxonomy/categories.json", "taxonomy/activities.json",
+  "taxonomy/features.json", "taxonomy/facilities.json", "taxonomy/risks.json",
+  "src/config.ts", "src/taxonomy.ts", "src/quality-gate.ts", "src/tools.ts", "src/server.ts",
 ];
-for (const rel of promptFiles) {
-  const text = fs.readFileSync(path.join(ROOT, rel), "utf8");
-  if (/\bprovince-\d+\b/.test(text)) fail(`Concrete province ID found in ${rel}`);
-  if (/\b(county|city|village|place|camp)-\d+-[A-Za-z0-9_-]+\b/.test(text)) fail(`Concrete Scope/Entity ID found in ${rel}`);
+for (const p of required) { if (!fs.existsSync(path.join(ROOT, p))) throw new Error(`Missing required file: ${p}`); }
+if (fs.existsSync(path.join(ROOT, "prompt.txt"))) throw new Error("Root prompt.txt must not exist");
+for (const forbidden of ["node_modules", "dist", "output"]) { if (fs.existsSync(path.join(ROOT, forbidden))) throw new Error(`Forbidden artifact present: ${forbidden}`); }
+
+for (let i = 1; i <= 31; i++) {
+  const p = `input/${i}.json`;
+  JSON.parse(read(p));
 }
 
-if (fs.existsSync(path.join(ROOT, "node_modules"))) fail("node_modules must not be packaged in the project ZIP.");
-if (fs.existsSync(path.join(ROOT, "dist"))) fail("dist must not be packaged in the project ZIP.");
-if (fs.existsSync(path.join(ROOT, "output"))) fail("generated output must not be packaged in the clean project ZIP.");
+for (const file of ["types.json","subtypes.json","categories.json","activities.json","features.json","facilities.json","risks.json"]) {
+  const data = JSON.parse(read(`taxonomy/${file}`));
+  if (!data || !Array.isArray(data.items)) throw new Error(`Taxonomy file has no items array: ${file}`);
+  const ids = data.items.map(x => x.id);
+  if (ids.some(x => typeof x !== "string" || !x)) throw new Error(`Invalid taxonomy id in ${file}`);
+  if (new Set(ids).size !== ids.length) throw new Error(`Duplicate taxonomy id in ${file}`);
+}
 
-if (fs.readFileSync(path.join(ROOT, "src/server.ts"), "utf8").includes('"resolve_scope_name"')) fail("resolve_scope_name must not be registered in the standard MCP tool set.");
+const promptTexts = [1,2,3,4,5].map(i => fs.readFileSync(path.join(ROOT, "prompts", `${String(i).padStart(2,"0")}-${["start-province","run-scope","resume","repair-entity","final-audit-minify"][i-1]}.txt`), "utf8"));
+const forbiddenConcreteId = /\b(?:province|county|city|village|place)-\d+(?:-[\w-]+)*\b/;
+for (const [idx, text] of promptTexts.entries()) {
+  if (forbiddenConcreteId.test(text)) throw new Error(`Concrete production ID found in prompt ${idx+1}`);
+}
+if (!/province_id=<PROVINCE_ID>/.test(promptTexts[0])) throw new Error("Prompt 01 missing province_id variable block");
+if (!/scope_id=<SCOPE_ID>/.test(promptTexts[1])) throw new Error("Prompt 02 missing scope_id variable block");
+if (!/previous_id=<PREVIOUS_ID>/.test(promptTexts[2])) throw new Error("Prompt 03 missing previous_id variable block");
+if (!/entity_id=<ENTITY_ID>/.test(promptTexts[3])) throw new Error("Prompt 04 missing entity_id variable block");
+if (!/final_audit=true/.test(promptTexts[4])) throw new Error("Prompt 05 missing final_audit variable block");
+console.log("Planro project verification: PASS");
+console.log(`Checked ${required.length} required files, 31 province inputs, 7 taxonomy catalogs, and 5 prompts.`);

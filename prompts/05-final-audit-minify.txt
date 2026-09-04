@@ -1,38 +1,47 @@
-# Planro Agent — Explicit Input Contract
+# Planro Agent — Prompt 05: Final Global Audit and Minify
 
-**No real IDs are embedded in this prompt.**
+Run this prompt ONLY after the full dataset for all required Provinces/Scopes has been collected.
 
-Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
+Required run variable:
+- `final_audit=true` only when the full planned dataset is ready for global audit.
+
+Do not choose missing Provinces or Scopes yourself. Do not invent data to fill gaps.
+Do not ask follow-up questions. If the variable is missing or not `true`, STOP with `MISSING_INPUT: final_audit=true`.
+If MCP is unavailable, report the connection/setup problem and STOP.
+
+Audit the entire dataset for:
+- exact schema conformity
+- canonical taxonomy membership and subtype compatibility
+- hierarchy and scope isolation
+- duplicate ids/slugs/entities
+- relation integrity
+- mandatory Primary Source coverage and evidence linkage
+- stale/unsupported claims
+- cost validity and dates
+- safety specificity
+- media attribution/license/source integrity
+- forbidden fields and research leakage
+- checklist quality
+- brand voice and Persian language quality
+- empty/null placeholder abuse
+- published-state eligibility
+
+Any blocking issue means the global audit FAILS. Repair it through the normal MCP workflow first.
+Only after every blocking condition passes:
+1. run the final global validation,
+2. mark eligible records for publication,
+3. minify JSON output files without changing semantic content,
+4. report the final audit result and counts.
+
+
+---
+
+## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
+
+```text
+final_audit=true
+```
 
 Rules:
-- Never infer, invent, autocomplete, or choose an ID.
-- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
-- If a required ID is missing, stop and ask the user for exactly that ID.
-- Do not use name-to-ID resolution in the normal workflow.
-- Do not write any file manually; all Entity persistence goes through MCP tools.
-- The actual Entity JSON MUST match `planro://schema/place` exactly.
-
-# Prompt 05 — Final Global Audit & Minify
-
-Run this only after ALL intended Scopes across ALL provinces are complete. No province/scope ID should be inferred from this prompt.
-
-Workflow:
-1. Audit every stored Entity against the live schema and global taxonomy.
-2. Reject/repair:
-   - invented type/subtype values
-   - unknown taxonomy IDs
-   - duplicate IDs/slugs
-   - hierarchy mismatches
-   - parent/child contamination
-   - missing or invalid evidence/source registration
-   - incomplete five-primary-source coverage
-   - fabricated or schema-incompatible costs
-   - derived transport distances
-   - invalid media provenance/status/caps
-   - forbidden fields such as `tags` / `safety.emergencyNumbers`
-   - research notes leaking into user-facing fields
-   - checklist, brand-voice or language-quality defects
-3. Repair each blocking issue and validate again.
-4. Do NOT create new facts merely to make an audit pass.
-5. Only after global validation is clean and final DoD passes, minify production JSON files.
-6. Do not alter taxonomy/rules/prompts during minification.
+- This variable is the complete user input for Prompt 05.
+- Do not ask follow-up questions when it is set to `true`.

@@ -1,29 +1,36 @@
-# Planro Agent — Explicit Input Contract
-
-**No real IDs are embedded in this prompt.**
-
-Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
-
-Rules:
-- Never infer, invent, autocomplete, or choose an ID.
-- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
-- If a required ID is missing, stop and ask the user for exactly that ID.
-- Do not use name-to-ID resolution in the normal workflow.
-- Do not write any file manually; all Entity persistence goes through MCP tools.
-- The actual Entity JSON MUST match `planro://schema/place` exactly.
-
-# Prompt 03 — Resume One Scope
+# Planro Agent — Prompt 03: Resume One Scope
 
 Required user input:
 - `province_id=<PROVINCE_ID>`
 - `scope_id=<SCOPE_ID>`
 
+Normalize numeric province ids internally to canonical `province-{n}`. Do not request a derived Province Scope id.
+Do not ask follow-up questions. The required variables are supplied in the RUN VARIABLES block at the end of this file.
+If a required variable is empty, STOP with `MISSING_INPUT: <variable>`. If MCP is unavailable, report the connection/setup problem and STOP.
+
 Workflow:
-1. Verify the exact supplied Scope exists.
-2. Read existing state first.
-3. Resume only the first incomplete Node/Track in that Scope.
-4. Reuse existing Entities, candidates, conflicts, source matrix and media candidates. Do not regenerate completed data unnecessarily.
-5. Repair only what is incomplete or invalid.
-6. Preserve taxonomy canonical IDs and Schema compliance.
-7. Finish coverage, save gates, DoD and validation.
-8. Stop when this Scope is complete.
+1. Verify the exact Scope exists and belongs to the Province.
+2. Read current Scope state, pending nodes, source coverage, candidates, conflicts, media deficits and saved Entities through MCP.
+3. Continue from the first genuinely incomplete item.
+4. Do not restart completed research unless evidence is invalid/outdated or validation requires correction.
+5. Preserve scope isolation: do not process siblings.
+6. Follow the same schema, taxonomy, source, safety, media, cost and save rules as Prompt 02.
+7. Finish with `check_definition_of_done` and validation.
+8. Stop after the supplied Scope is complete.
+
+
+---
+
+## REQUIRED RUN VARIABLES — FILL THESE BEFORE RUNNING
+
+```text
+province_id=<PROVINCE_ID>
+scope_id=<SCOPE_ID>
+previous_id=<PREVIOUS_ID>
+```
+
+Rules:
+- `scope_id` identifies the exact Scope to resume.
+- `previous_id` identifies the previous saved/processed node or continuation point when available.
+- Do not ask follow-up questions when these variables are present.
+- Never invent or infer a missing ID.

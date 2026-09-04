@@ -1,7 +1,7 @@
 import type { NodeType } from "./types.js";
 
 /**
- * Media policy (single source for code; mirrors prompt.txt §9 and
+ * Media policy (single source for code; mirrors prompts/01-start-province.txt §9 and
  * قانون رسانهٔ پروژه). BEST-EFFORT model:
  *
  *   target    — the number of distinct attributable images we AIM for.
