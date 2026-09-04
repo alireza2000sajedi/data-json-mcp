@@ -105,8 +105,11 @@ export function loadProvinceInput(provinceId: string): ProvinceInput {
 
 /** Build the deterministic scope registry (tree + flat index) for a province. */
 export function buildScopeRegistry(provinceId: string): ScopeRegistry {
-  const data = loadProvinceInput(provinceId);
-  const p = provinceNumber(provinceId);
+  // Accept both the raw numeric input (`30`, per the prompt contract) and the
+  // canonical id — every id produced below is always canonical.
+  const canonicalProvinceId = assertProvinceId(provinceId);
+  const data = loadProvinceInput(canonicalProvinceId);
+  const p = provinceNumber(canonicalProvinceId);
   const tree: ScopeTreeCounty[] = [];
   const index: Record<string, ScopeUnit> = {};
   const indexByName: Record<string, ScopeUnit[]> = {};
@@ -126,7 +129,7 @@ export function buildScopeRegistry(provinceId: string): ScopeRegistry {
       id: countyId,
       name: c.name,
       type: "county",
-      parentId: provinceId,
+      parentId: canonicalProvinceId,
       cities: [],
       villages: [],
     };
@@ -148,7 +151,7 @@ export function buildScopeRegistry(provinceId: string): ScopeRegistry {
   });
 
   return {
-    provinceId,
+    provinceId: canonicalProvinceId,
     provinceName: data.name,
     source: `input/${data.id}.json`,
     counts: { counties: tree.length, cities: cityN, villages: villageN },

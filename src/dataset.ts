@@ -84,8 +84,6 @@ export function entityNodeType(entity: PlaceEntity): NodeType {
 /** Node types that correspond to a real entity file. */
 export const ENTITY_NODE_TYPES: NodeType[] = ["province", "county", "city", "village", "place", "camping"];
 
-const NODE_ANCESTOR_PRIORITY: NodeType[] = ["village", "city", "county", "province"];
-
 /** Walk a node's ancestor chain via parentNodeId. */
 export function ancestorChain(state: NotesState, nodeId: string): NodeRecord[] {
   const chain: NodeRecord[] = [];

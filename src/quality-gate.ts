@@ -1,4 +1,4 @@
-import { getSchemas, requiresFullChecklist } from "./schemas.js";
+import { getSchemas } from "./schemas.js";
 import { config } from "./config.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -153,21 +153,197 @@ const COST_ALLOWED: Record<string,string[]> = {
   camping:["camping","parking","guide","equipment_rental","food","beverage","snack","restaurant","other"],
 };
 const CHECKLIST_MODES=["tour","personalCar","airplane","camping","train","bus"] as const;
-function descendantNames(state: NotesState,nodeId:string):string[]{const out:string[]=[];for(const n of state.nodes){let cur=n.parentNodeId;const seen=new Set<string>();while(cur&&!seen.has(cur)){seen.add(cur);if(cur===nodeId){if(n.canonicalName)out.push(String(n.canonicalName));break;}cur=state.nodes.find(x=>x.nodeId===cur)?.parentNodeId??null;}}return out.filter(x=>x.trim().length>=3);}
-function childHit(text:unknown,names:string[]):string|undefined{const t=typeof text==='string'?text:'';return names.find(n=>t.includes(n));}
-function validateNormalizedFields(entity:PlaceEntity,ctx:QualityContext,nodeType:string,errors:QualityError[]):void{
- const v=entity.visit as any; const allowed=new Set(VISIT_ALLOWED[nodeType]??[]);
- if(!v||typeof v!=='object') addError(errors,'VISIT_MISSING','visit','visit is required.');
- else for(const k of Object.keys(v)) if(!allowed.has(k)) addError(errors,'VISIT_FIELD_NOT_ALLOWED',`visit.${k}`,`visit.${k} is not applicable to ${nodeType}.`);
- if(["province","county","city"].includes(nodeType)&&v&&(!Array.isArray(v.bestSeasons)||!v.bestSeasons.length||!Array.isArray(v.bestMonths)||!v.bestMonths.length)) addError(errors,'VISIT_SEASON_REQUIRED','visit','bestSeasons and bestMonths are required at destination level.');
- const tc=entity.travelChecklist as any;
- if(!tc||typeof tc!=='object') addError(errors,'CHECKLIST_MISSING','travelChecklist','Every Entity requires an independent checklist.');
- else { let total=0; for(const k of Object.keys(tc)){if(!(CHECKLIST_MODES as readonly string[]).includes(k)) addError(errors,'CHECKLIST_MODE_UNKNOWN',`travelChecklist.${k}`,`Unknown checklist mode '${k}'.`); const a=tc[k];if(!Array.isArray(a)) addError(errors,'CHECKLIST_MODE_NOT_ARRAY',`travelChecklist.${k}`,'Checklist mode must be an array.');else total+=a.length;} if(total===0)addError(errors,'CHECKLIST_EMPTY','travelChecklist','Checklist must contain at least one relevant item.'); }
- const state=ctx.state??readNotes(ctx.provinceId); const children=descendantNames(state,ctx.expectedNodeId);
- for(const [i,q] of (((entity.faq as any[])??[]).entries())){const hit=childHit(q?.question,children);if(hit)addError(errors,'FAQ_CHILD_SCOPE',`faq[${i}].question`,`FAQ is about child Entity '${hit}', not the current Entity.`);}
- const costs=entity.costs as any; if(costs?.items){const allowedCosts=new Set(COST_ALLOWED[nodeType]??[]);for(const [i,it] of costs.items.entries()){if(it?.category&&!allowedCosts.has(it.category))addError(errors,'COST_CATEGORY_NOT_ALLOWED',`costs.items[${i}].category`,`Cost category '${it.category}' is not appropriate for '${nodeType}'.`);const hit=childHit(it?.name,children);if(hit)addError(errors,'COST_CHILD_SCOPE',`costs.items[${i}].name`,`Child cost '${hit}' must remain on the child Entity.`);}}
- if(tc) for(const [mode,items] of Object.entries(tc)){if(!Array.isArray(items))continue;for(const [i,it] of items.entries()){const text=String(it);if(text.length>60||/[.!؟?؛:]/.test(text)||/https?:\/\//i.test(text)||/(فاصله|کیلومتر|در حدود|بهتر است|هماهنگ|هزینه|بلیط|ورودی|قیمت)/.test(text))addError(errors,'CHECKLIST_ITEM_NOT_CONCRETE',`travelChecklist.${mode}[${i}]`,'Checklist item must be a short concrete item, not prose, route, price, or child data.');}}
+/** Normalize Persian text for name matching (ZWNJ, Arabic ی/ک variants, spacing). */
+function normalizeFaName(value: unknown): string {
+  return String(value ?? "")
+    .replace(/\u200c/g, " ")
+    .replace(/[ىي]/g, "ی")
+    .replace(/ك/g, "ک")
+    .replace(/\s+/g, " ")
+    .trim();
 }
+
+/**
+ * Names that legitimately belong to THIS entity: its own canonical name, the
+ * names of its administrative ancestors, and its alternative names.
+ *
+ * In Iran a province, its county and its capital city usually share one name
+ * (همدان). Without this filter a province could never mention its own name in
+ * an FAQ or a cost item, because a child node carries the same name.
+ */
+function selfNames(state: NotesState, entity: PlaceEntity, nodeId: string): Set<string> {
+  const names = new Set<string>();
+  for (const n of ancestorChain(state, nodeId)) {
+    if (n.canonicalName) names.add(normalizeFaName(n.canonicalName));
+  }
+  if (entity.name?.fa) names.add(normalizeFaName(entity.name.fa));
+  if (entity.name?.en) names.add(normalizeFaName(entity.name.en));
+  for (const alt of ((entity.alternativeNames as string[]) ?? [])) names.add(normalizeFaName(alt));
+  return names;
+}
+
+/** Canonical names of every descendant of `nodeId`, minus the entity's own names. */
+function descendantNames(state: NotesState, nodeId: string, exclude: Set<string>): string[] {
+  const out: string[] = [];
+  for (const n of state.nodes) {
+    if (n.nodeId === nodeId) continue;
+    let cur = n.parentNodeId;
+    const seen = new Set<string>();
+    while (cur && !seen.has(cur)) {
+      seen.add(cur);
+      if (cur === nodeId) {
+        const name = normalizeFaName(n.canonicalName);
+        if (name.length >= 3 && !exclude.has(name)) out.push(name);
+        break;
+      }
+      cur = state.nodes.find((x) => x.nodeId === cur)?.parentNodeId ?? null;
+    }
+  }
+  return [...new Set(out)];
+}
+
+/**
+ * Does `text` really mention the child name (whole word, not a substring of a
+ * longer word)? Returns the matched name.
+ */
+function childHit(text: unknown, names: string[]): string | undefined {
+  const t = normalizeFaName(text);
+  if (!t) return undefined;
+  const isWordChar = (ch: string) => /[\u0600-\u06FFa-zA-Z0-9]/.test(ch);
+  return names.find((name) => {
+    let from = 0;
+    for (;;) {
+      const idx = t.indexOf(name, from);
+      if (idx === -1) return false;
+      const before = idx === 0 ? "" : t[idx - 1];
+      const after = idx + name.length >= t.length ? "" : t[idx + name.length];
+      if (!isWordChar(before) && !isWordChar(after)) return true;
+      from = idx + 1;
+    }
+  });
+}
+
+/**
+ * Operational wording. Per the ownership contract a parent MAY mention a child
+ * in prose ("غار علیصدر از جاذبه‌های شاخص استان است") but must never carry the
+ * child's operational data (hours, tickets, prices, reservations, directions).
+ */
+const OPERATIONAL_MARKERS =
+  /(ساعت|ساعات|بلیت|بلیط|ورودی|قیمت|هزینه|نرخ|رزرو|تلفن|شماره تماس|آدرس|پارکینگ|چطور برسیم|چگونه برسیم|مسیر رسیدن|تعطیل|باز است|چند ساعت|تخفیف)/;
+
+function validateNormalizedFields(
+  entity: PlaceEntity,
+  ctx: QualityContext,
+  nodeType: string,
+  errors: QualityError[],
+  warnings: QualityError[],
+): void {
+  // --- visit field applicability (dataset/entity-field-policy.json) ---
+  const v = entity.visit as any;
+  const allowed = new Set(VISIT_ALLOWED[nodeType] ?? []);
+  if (!v || typeof v !== "object") {
+    addError(errors, "VISIT_MISSING", "visit", "visit is required.");
+  } else {
+    for (const k of Object.keys(v)) {
+      if (!allowed.has(k)) {
+        addError(errors, "VISIT_FIELD_NOT_ALLOWED", `visit.${k}`, `visit.${k} is not applicable to ${nodeType}.`);
+      }
+    }
+  }
+  if (
+    ["province", "county", "city"].includes(nodeType) &&
+    v &&
+    (!Array.isArray(v.bestSeasons) || !v.bestSeasons.length || !Array.isArray(v.bestMonths) || !v.bestMonths.length)
+  ) {
+    addError(errors, "VISIT_SEASON_REQUIRED", "visit", "bestSeasons and bestMonths are required at destination level.");
+  }
+
+  // --- independent travel checklist ---
+  const tc = entity.travelChecklist as any;
+  if (!tc || typeof tc !== "object") {
+    addError(errors, "CHECKLIST_MISSING", "travelChecklist", "Every Entity requires an independent checklist.");
+  } else {
+    let total = 0;
+    for (const k of Object.keys(tc)) {
+      if (!(CHECKLIST_MODES as readonly string[]).includes(k)) {
+        addError(errors, "CHECKLIST_MODE_UNKNOWN", `travelChecklist.${k}`, `Unknown checklist mode '${k}'.`);
+      }
+      const a = tc[k];
+      if (!Array.isArray(a)) addError(errors, "CHECKLIST_MODE_NOT_ARRAY", `travelChecklist.${k}`, "Checklist mode must be an array.");
+      else total += a.length;
+    }
+    if (total === 0) addError(errors, "CHECKLIST_EMPTY", "travelChecklist", "Checklist must contain at least one relevant item.");
+  }
+
+  // --- ownership: FAQ and costs must stay on the Entity that owns them ---
+  const state = ctx.state ?? readNotes(ctx.provinceId);
+  const own = selfNames(state, entity, ctx.expectedNodeId);
+  const children = descendantNames(state, ctx.expectedNodeId, own);
+
+  for (const [i, q] of ((entity.faq as any[]) ?? []).entries()) {
+    const hit = childHit(q?.question, children);
+    if (!hit) continue;
+    const operational = OPERATIONAL_MARKERS.test(normalizeFaName(q?.question)) || OPERATIONAL_MARKERS.test(normalizeFaName(q?.answer));
+    if (operational) {
+      addError(
+        errors,
+        "FAQ_CHILD_SCOPE",
+        `faq[${i}].question`,
+        `Operational FAQ about the child Entity '${hit}' belongs to that Entity, not to this one.`,
+      );
+    } else {
+      addWarning(
+        warnings,
+        "FAQ_CHILD_MENTION",
+        `faq[${i}].question`,
+        `FAQ mentions the child Entity '${hit}'. A prose mention is allowed; make sure no operational child data is duplicated here.`,
+      );
+    }
+  }
+
+  const costs = entity.costs as any;
+  if (costs?.items) {
+    const allowedCosts = new Set(COST_ALLOWED[nodeType] ?? []);
+    for (const [i, it] of costs.items.entries()) {
+      if (it?.category && !allowedCosts.has(it.category)) {
+        addError(
+          errors,
+          "COST_CATEGORY_NOT_ALLOWED",
+          `costs.items[${i}].category`,
+          `Cost category '${it.category}' is not appropriate for '${nodeType}'.`,
+        );
+      }
+      const hit = childHit(it?.name, children);
+      if (hit) {
+        addError(errors, "COST_CHILD_SCOPE", `costs.items[${i}].name`, `Child cost '${hit}' must remain on the child Entity.`);
+      }
+    }
+  }
+
+  // --- checklist items must be short, concrete nouns ---
+  if (tc) {
+    for (const [mode, items] of Object.entries(tc)) {
+      if (!Array.isArray(items)) continue;
+      for (const [i, it] of items.entries()) {
+        const text = String(it);
+        if (
+          text.length > 60 ||
+          /[.!؟?؛:]/.test(text) ||
+          /https?:\/\//i.test(text) ||
+          /(فاصله|کیلومتر|در حدود|بهتر است|هماهنگ|هزینه|بلیط|ورودی|قیمت)/.test(text)
+        ) {
+          addError(
+            errors,
+            "CHECKLIST_ITEM_NOT_CONCRETE",
+            `travelChecklist.${mode}[${i}]`,
+            "Checklist item must be a short concrete item, not prose, route, price, or child data.",
+          );
+        }
+      }
+    }
+  }
+}
+
 function validateGlobalTaxonomy(entity:PlaceEntity,errors:QualityError[]):void{
  const base=path.resolve(config.datasetDir, "..", "taxonomy"); const domains=['types','subtypes','categories','activities','features','facilities','risks'] as const;
  const maps:any={}; for(const d of domains){try{const x=JSON.parse(fs.readFileSync(path.join(base,`${d}.json`),'utf8'));maps[d]=new Set((x.items??[]).map((i:any)=>i.id));}catch{return;}}
@@ -222,7 +398,8 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
   for (const [i, img] of ((media?.videos as any[]) ?? []).entries()) mediaItems.push([img, `media.videos[${i}]`]);
   for (const [i, img] of ((media?.panoramas as any[]) ?? []).entries()) mediaItems.push([img, `media.panoramas[${i}]`]);
   for (const [i, img] of ((media?.audios as any[]) ?? []).entries()) mediaItems.push([img, `media.audios[${i}]`]);
-  // Media URLs are globally unique across this province dataset.
+  // Media URLs are globally unique across this province dataset: one image URL
+  // may only ever belong to ONE entity (no parent/child/sibling reuse).
   const mediaUrls = new Set<string>();
   if (media?.thumbnail?.url) mediaUrls.add(String(media.thumbnail.url));
   for (const img of ((media?.images as any[]) ?? [])) if (img?.url) mediaUrls.add(String(img.url));
@@ -232,17 +409,11 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     const existingUrls = new Set<string>();
     if (em?.thumbnail?.url) existingUrls.add(String(em.thumbnail.url));
     for (const img of ((em?.images as any[]) ?? [])) if (img?.url) existingUrls.add(String(img.url));
-    for (const u of mediaUrls) if (existingUrls.has(u)) addError(errors,"MEDIA_GLOBAL_DUPLICATE","media",`Image URL '${u}' is already used by Entity '${existing.id}'.`);
-  }
-  const currentMediaUrls = new Set<string>();
-  if (media?.thumbnail?.url) currentMediaUrls.add(String(media.thumbnail.url));
-  for (const img of ((media?.images as any[]) ?? [])) if (img?.url) currentMediaUrls.add(String(img.url));
-  for (const existing of entities) {
-    if (existing.id === entity.id) continue;
-    const em = existing.entity.media as any; const otherUrls = new Set<string>();
-    if (em?.thumbnail?.url) otherUrls.add(String(em.thumbnail.url));
-    for (const img of ((em?.images as any[]) ?? [])) if (img?.url) otherUrls.add(String(img.url));
-    for (const u of currentMediaUrls) if (otherUrls.has(u)) addError(errors,'MEDIA_GLOBAL_DUPLICATE','media',`Image URL '${u}' is already used by Entity '${existing.id}'.`);
+    for (const u of mediaUrls) {
+      if (existingUrls.has(u)) {
+        addError(errors, "MEDIA_GLOBAL_DUPLICATE", "media", `Image URL '${u}' is already used by Entity '${existing.id}'.`);
+      }
+    }
   }
   for (const [item, p] of mediaItems) {
     urlChecks.push([item?.url, `${p}.url`]);
@@ -320,7 +491,7 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
   const chain = ancestorChain(state, ctx.expectedNodeId);
   const chainIds = new Set(chain.map((n) => n.nodeId));
   const nodeType = entityNodeType(entity);
-  validateNormalizedFields(entity, ctx, nodeType, errors);
+  validateNormalizedFields(entity, ctx, nodeType, errors, warnings);
   validateGlobalTaxonomy(entity, errors);
   for (const [i, ev] of evidence.entries()) {
     const su = ev?.sourceUrl as string | undefined;

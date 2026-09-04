@@ -7,6 +7,7 @@
 province_id=<PROVINCE_ID>
 scope_id=<SCOPE_ID>
 ```
+اگر در Task جاری مقدار واقعی `scope_id` آمده باشد، همان authoritative است و placeholder بالا نادیده گرفته می‌شود؛ در نبود مقدار واقعی `MISSING_INPUT: scope_id` بده و متوقف شو.
 
 - MCP و Resourceها را بررسی کن.
 - Scope را دقیقاً lock کن و فقط subtree مجاز آن را اجرا کن.

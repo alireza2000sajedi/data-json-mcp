@@ -156,9 +156,11 @@ export interface SourceCoverage {
 }
 
 /**
- * Coverage of the mandatory primary sources for a node, computed from the
- * recorded source-matrix entries AND the recorded media candidates (an image
- * search on a primary domain counts as searching that source).
+ * Coverage of the mandatory primary FACT sources for a node.
+ *
+ * Computed ONLY from the recorded source-matrix entries (record_search_result).
+ * Media discovery is deliberately NOT credited here: finding an image on a
+ * primary domain does not mean that source was checked for facts.
  */
 export function sourceCoverageFor(state: NotesState, nodeType: NodeType | null | undefined, nodeId: string): SourceCoverage {
   const policy = getSourcePolicy();

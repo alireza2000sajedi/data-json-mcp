@@ -1,7 +1,7 @@
 {
   "name": "planro-mcp",
   "version": "0.2.0",
-  "description": "Planro MCP Server \u2014 structured, traceable, hierarchy-safe tooling for research agents building the Planro place dataset.",
+  "description": "Planro MCP Server — structured, traceable, hierarchy-safe tooling for research agents building the Planro place dataset.",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -14,7 +14,10 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "verify": "node scripts/verify-project.mjs"
+    "verify": "node scripts/verify-project.mjs",
+    "verify:package": "node scripts/verify-project.mjs --package",
+    "e2e": "npm run build && node scripts/e2e-province-smoke.mjs",
+    "test": "npm run verify && npm run e2e"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

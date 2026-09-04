@@ -9,6 +9,7 @@ scope_id=<SCOPE_ID>
 entity_id=<ENTITY_ID>
 previous_id=<PREVIOUS_ID>
 ```
+اگر در Task جاری مقدار واقعی `entity_id` آمده باشد، همان authoritative است و placeholder بالا نادیده گرفته می‌شود؛ در نبود مقدار واقعی `MISSING_INPUT: entity_id` بده و متوقف شو.
 
 فقط همین Entity را repair کن. schema/taxonomy/hierarchy/source/evidence و applicability فیلدهای Visit/Costs/FAQ/Checklist/Media را بررسی کن.
 Child-specific data را به Parent منتقل نکن و عکس Entity دیگری را reuse نکن.

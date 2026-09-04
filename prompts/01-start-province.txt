@@ -21,8 +21,11 @@
 ```text
 province_id=<PROVINCE_ID>
 ```
-`province_id` عددی مثل `1` را خودت به `province-{n}` تبدیل کن. `scope_id` استان را خودت deterministic بساز و از کاربر نخواه.
-اگر province_id خالی/نامعتبر بود: `MISSING_INPUT: province_id` و توقف؛ سؤال تعاملی نپرس.
+قرارداد ورودی Runtime (authoritative):
+- اگر در Task جاری یک مقدار واقعی برای `province_id` آمده باشد (مثلاً `province_id=30` یا حتی فقط عدد `30` در متن درخواست)، همان مقدار authoritative است و placeholderِ `<PROVINCE_ID>` داخل همین فایل را نادیده بگیر.
+- placeholder فقط زمانی معنا دارد که هیچ مقدار واقعی در Task نباشد؛ در آن حالت خروجی `MISSING_INPUT: province_id` بده و متوقف شو (سؤال تعاملی نپرس).
+- `province_id` عددی مثل `1` را خودت به `province-{n}` تبدیل کن؛ MCP هم همین Normalize را انجام می‌دهد، پس هر دو شکل قابل قبول است.
+- `scope_id` استان را خودت deterministic بساز و هرگز از کاربر نخواه.
 
 ## 3) منابع لازم
 بعد از bootstrap این موارد را بخوان:
@@ -137,7 +140,21 @@ Province فقط وقتی Complete است که schema، taxonomy، source coverag
 سپس `check_definition_of_done` و validation را اجرا کن.
 بعد از موفقیت متوقف شو و Scope بعدی را خودکار انتخاب نکن.
 
-## 15) RUN VARIABLES — پایین فایل را مستقیم پر کن
+## 15) قرارداد ترتیب فراخوانی MCP (Call Order)
+ترتیب زیر قرارداد است، نه پیشنهاد:
+1. `import_province_scopes(provinceId)` — یک بار؛ idempotent است و درخت County/City/Village را می‌سازد.
+2. `get_scope_state` / `get_next_research_node` — Node بعدی را فقط از MCP بگیر؛ ترتیب DFS را خودت حدس نزن.
+3. `get_node_context(nodeId)` — قبل از تحقیق، قواعد و وضعیت همان Node را بخوان.
+4. `record_search_result(...)` — برای هر پنج Primary Source، حتی وقتی نتیجه‌ای نبود (`resultCount=0` / unreachable).
+5. `get_source_coverage(nodeId)` — تا `satisfied=true` نشده سراغ نوشتن Entity نرو.
+6. `record_media_candidate(...)` برای هر عکس، سپس `finalize_media(nodeId)` تا به target برسی؛ اگر واقعاً عکس معتبر پیدا نشد `mark_node_media_deficit`.
+7. `save_active_entity({provinceId, entity, expectedNodeId})` — ذخیره فقط از این مسیر.
+8. `complete_discovery_task({nodeId, count})` — `count` عدد واقعی Nodeهای ثبت‌شده است؛ بدون آن رد می‌شود.
+9. `check_definition_of_done(provinceId)` سپس `validate_province(provinceId)`.
+10. وقتی `awaitingScopeSelection=true` شد، متوقف شو؛ Scope بعدی را از `planro://scopes/{provinceId}` به کاربر پیشنهاد بده و فقط با `set_active_scope` ادامه بده.
+`mark_node_complete` مستقیم وجود ندارد؛ فقط از طریق `update_notes` انجام می‌شود. ابزار `resolve_scope_name` هم حذف شده است: برای تبدیل نام به id از `planro://scopes/{provinceId}` و `indexByName` استفاده کن.
+
+## 16) RUN VARIABLES — پایین فایل را مستقیم پر کن
 ```text
 province_id=<PROVINCE_ID>
 ```
