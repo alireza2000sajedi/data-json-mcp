@@ -126,9 +126,9 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
   const state = readNotes(provinceId);
   const isEntityType = ENTITY_NODE_TYPES.includes(node.nodeType);
   const entityActive = isEntityType ? nodeHasEntity(state, node.nodeId) : true;
-  // §9 media-deficit disposition: an entity-bearing node that could not meet the
-  // 10-image bar after an exhaustive search is closed WITHOUT a JSON file. All
-  // other completion conditions (discovery, candidates, conflicts, counts)
+  // §9 disposition: an entity-bearing node for which NO valid entity data at
+  // all could be gathered is closed WITHOUT a JSON file. All other completion
+  // conditions (discovery, candidates, conflicts, counts, source coverage)
   // still apply — only the missing active entity is waived.
   const mediaDeficit = isEntityType && !entityActive && !!findMediaDeficit(state, node.nodeId);
 
@@ -241,6 +241,30 @@ export function isWithinActiveScope(state: NotesState, nodeId: string): boolean 
 }
 
 /**
+ * True when a node belongs to a county subtree (county itself or any
+ * descendant of a county). Everything else — the province node and the
+ * places/campsites registered directly under it — belongs to the PROVINCE
+ * STAGE (Scope A) of the staged workflow.
+ */
+function isInsideCounty(state: NotesState, node: NodeRecord): boolean {
+  if (node.nodeType === "county") return true;
+  const countyIds = new Set(state.nodes.filter((n) => n.nodeType === "county").map((n) => n.nodeId));
+  let cur: NodeRecord | undefined = node;
+  const seen = new Set<string>();
+  while (cur?.parentNodeId && !seen.has(cur.nodeId)) {
+    seen.add(cur.nodeId);
+    if (countyIds.has(cur.parentNodeId)) return true;
+    cur = state.nodes.find((x) => x.nodeId === cur!.parentNodeId);
+  }
+  return false;
+}
+
+/** Node ids that make up the province stage: the province node + everything directly under it. */
+export function provinceStageNodeIds(state: NotesState): Set<string> {
+  return new Set(state.nodes.filter((n) => !isInsideCounty(state, n)).map((n) => n.nodeId));
+}
+
+/**
  * True when the province stage is finished (province node complete) and the
  * staged workflow is waiting for the USER to pick the next scope
  * (county/city/village). In this state DFS pauses: completing or closing any
@@ -257,54 +281,89 @@ export function awaitingScopeSelection(state: NotesState): boolean {
 
   // The province stage also covers places/camping directly under the province:
   // while those are still open, DFS continues inside the province stage.
-  const countyIds = new Set(state.nodes.filter((n) => n.nodeType === "county").map((n) => n.nodeId));
-  const insideCounty = (n: NodeRecord): boolean => {
-    if (n.nodeType === "county") return true;
-    let cur: NodeRecord | undefined = n;
-    const seen = new Set<string>();
-    while (cur?.parentNodeId && !seen.has(cur.nodeId)) {
-      seen.add(cur.nodeId);
-      if (countyIds.has(cur.parentNodeId)) return true;
-      cur = state.nodes.find((x) => x.nodeId === cur!.parentNodeId);
-    }
-    return false;
-  };
-  if (pending.some((n) => !insideCounty(n))) return false;
+  if (pending.some((n) => !isInsideCounty(state, n))) return false;
   return true;
 }
 
 /**
- * Node ids that belong to the currently active scope's subtree, or null when
- * no scope is active (province-wide mode). Used by every DoD/complete check so
- * a finished county scope can report complete:true while sibling counties stay
- * pending for their own runs (staged workflow).
+ * The scope a run is currently evaluated against.
+ *
+ *  - `scope`          — the user selected one unit with set_active_scope; only
+ *                       that node + its descendants count (Scope B/C).
+ *  - `province-stage` — no scope selected yet: the run is in Scope A, so only
+ *                       the province node and the places/campsites registered
+ *                       directly under it count. Counties stay pending for
+ *                       their own runs, which is what lets the province stage
+ *                       reach complete:true and stop (STAGED workflow).
+ *  - `unscoped`       — nothing imported yet (no province node at all).
+ *
+ * Selecting the province node itself as the active scope switches to the
+ * classic continuous whole-province run (its subtree = every node).
+ */
+export type ScopeMode = "scope" | "province-stage" | "unscoped";
+
+export interface EffectiveScope {
+  mode: ScopeMode;
+  scopeId: string | null;
+  /** null = every node counts. */
+  nodeIds: Set<string> | null;
+  label: string;
+}
+
+export function effectiveScope(state: NotesState): EffectiveScope {
+  if (state.activeScopeId) {
+    const ids = new Set<string>([state.activeScopeId]);
+    for (const n of state.nodes) {
+      if (isSubtreeNode(state, n.nodeId, state.activeScopeId)) ids.add(n.nodeId);
+    }
+    const node = state.nodes.find((n) => n.nodeId === state.activeScopeId);
+    return {
+      mode: "scope",
+      scopeId: state.activeScopeId,
+      nodeIds: ids,
+      label: node ? `${node.canonicalName} (${state.activeScopeId})` : state.activeScopeId,
+    };
+  }
+  const province = state.nodes.find((n) => n.nodeType === "province");
+  if (province) {
+    return {
+      mode: "province-stage",
+      scopeId: province.nodeId,
+      nodeIds: provinceStageNodeIds(state),
+      label: `Province stage — ${province.canonicalName} (${province.nodeId})`,
+    };
+  }
+  return { mode: "unscoped", scopeId: null, nodeIds: null, label: "(nothing imported yet)" };
+}
+
+/**
+ * Node ids that belong to the current effective scope, or null when every node
+ * counts. Used by every DoD/complete check so a finished scope (or a finished
+ * province stage) can report complete:true while sibling scopes stay pending
+ * for their own runs (staged workflow).
  */
 export function scopedNodeIds(state: NotesState): Set<string> | null {
-  if (!state.activeScopeId) return null;
-  const ids = new Set<string>([state.activeScopeId]);
-  for (const n of state.nodes) {
-    if (isSubtreeNode(state, n.nodeId, state.activeScopeId)) ids.add(n.nodeId);
-  }
-  return ids;
+  return effectiveScope(state).nodeIds;
 }
 
 /**
  * First unfinished node in depth-first traversal, or null.
  *
- * When a staged scope is active (`activeScopeId` set), the traversal is
- * restricted to the scope's own subtree (the scope node + its descendants):
- * ancestors like the province no longer block DFS inside the selected scope.
+ * Traversal is restricted to the effective scope: inside a selected scope only
+ * that subtree is walked, and during the province stage only the province node
+ * and its direct places/campsites are — the agent must never auto-dive into a
+ * county without an explicit set_active_scope.
  */
 export function nextRequiredNode(provinceId: string): NodeRecord | null {
   const state = readNotes(provinceId);
   // Staged workflow: after the province stage is complete and no scope has
   // been selected, DFS pauses — the agent must ask the user for the next
-  // scope (resolve_scope_name + set_active_scope) instead of auto-diving
-  // into the first county.
+  // scope (planro://scopes/{provinceId} + set_active_scope) instead of
+  // auto-diving into the first county.
   if (awaitingScopeSelection(state)) return null;
   const order = traverse(provinceId);
-  const active = state.activeScopeId ? state.nodes.find((n) => n.nodeId === state.activeScopeId) : null;
-  const scoped = active ? order.filter((n) => isSubtreeNode(state, n.nodeId, active.nodeId)) : order;
+  const ids = scopedNodeIds(state);
+  const scoped = ids === null ? order : order.filter((n) => ids.has(n.nodeId));
   for (const node of scoped) {
     if (!nodeStatus(provinceId, node).complete) return node;
   }
@@ -313,11 +372,16 @@ export function nextRequiredNode(provinceId: string): NodeRecord | null {
 
 export interface ScopeState {
   provinceId: string;
-  /** Currently selected staged scope nodeId (null = province-wide). */
+  /** Currently selected staged scope nodeId (null = province stage / not selected). */
   activeScopeId: string | null;
+  /** How the DoD is evaluated right now: selected scope, province stage, or unscoped. */
+  scopeMode: ScopeMode;
+  scopeLabel: string;
   /** True when the province stage is done and the user must pick the next scope. */
   awaitingScopeSelection: boolean;
   discoveredNodes: number;
+  /** Nodes counted for this scope's Definition of Done. */
+  scopeNodes: number;
   activeEntities: number;
   /** Nodes closed via the §9 media-deficit disposition (recorded, unresolved). */
   mediaDeficitNodes: unknown[];
@@ -334,7 +398,8 @@ export function getScopeState(provinceId: string): ScopeState {
   const nodes = state.nodes;
   const activeEntities = listEntities(provinceId).filter((e) => e.entity.status === "active").length;
   const mediaDeficitNodes = state.mediaDeficits.filter((d) => d.state === "recorded");
-  const scopeIds = scopedNodeIds(state);
+  const scope = effectiveScope(state);
+  const scopeIds = scope.nodeIds;
   const openCandidates = state.candidates.filter(
     (c) => c.state === "open" && (scopeIds === null || scopeIds.has(c.nodeId)),
   );
@@ -345,10 +410,11 @@ export function getScopeState(provinceId: string): ScopeState {
   const next = nextRequiredNode(provinceId);
   const blockingReasons: string[] = [];
   if (nodes.length === 0) blockingReasons.push("no administrative nodes discovered");
-  // Scope-aware DoD: when a staged scope is active, only the nodes of that
-  // scope's subtree count towards definition-of-done. Sibling counties / the
-  // province stay pending for their own separate runs (STAGED_WORKFLOW.md), so
-  // they must not keep a finished scope stuck at complete:false forever.
+  // Scope-aware DoD: only the nodes of the effective scope count. During the
+  // province stage that is the province node + its direct places; inside a
+  // selected scope it is that subtree. Everything else stays pending for its
+  // own run (staged workflow) and must not keep a finished scope at
+  // complete:false forever.
   const doDNodes = scopeIds === null ? nodes : nodes.filter((n) => scopeIds.has(n.nodeId));
   for (const n of doDNodes) {
     blockingReasons.push(...nodeStatus(provinceId, n).blockingReasons.map((r) => `${n.nodeId}: ${r}`));
@@ -361,8 +427,11 @@ export function getScopeState(provinceId: string): ScopeState {
   return {
     provinceId,
     activeScopeId: state.activeScopeId,
+    scopeMode: scope.mode,
+    scopeLabel: scope.label,
     awaitingScopeSelection: awaitingScopeSelection(state),
     discoveredNodes: nodes.length,
+    scopeNodes: doDNodes.length,
     activeEntities,
     mediaDeficitNodes,
     openCandidates,

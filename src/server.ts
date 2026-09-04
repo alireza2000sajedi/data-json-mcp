@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { registerResources } from "./resources.js";
+import { assertProvinceId } from "./config.js";
 import {
   toolImportProvinceScopes,
   toolSetActiveScope,
@@ -28,14 +29,20 @@ import {
 } from "./tools.js";
 
 export function createServer(): McpServer {
-  const server = new McpServer({ name: "planro-mcp", version: "0.1.0" });
+  const server = new McpServer({ name: "planro-mcp", version: "0.2.0" });
 
   registerResources(server);
 
   const register = (name: string, description: string, inputSchema: z.ZodRawShape, handler: (args: any) => unknown) => {
     server.registerTool(name, { title: name, description, inputSchema }, async (args) => {
       try {
-        const result = handler(args);
+        // Prompt contract: the agent may pass the raw numeric province id
+        // (`30`); every tool works on the canonical `province-30`.
+        const normalized =
+          args && typeof (args as any).provinceId === "string"
+            ? { ...args, provinceId: assertProvinceId((args as any).provinceId) }
+            : args;
+        const result = handler(normalized);
         return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
       } catch (e) {
         return {
@@ -62,14 +69,14 @@ export function createServer(): McpServer {
 
   register(
     "get_scope_state",
-    "Return the full scope state for a province: active scope, open candidates, open conflicts, definition of done, and next node.",
+    "Return the full scope state for a province: effective scope (selected scope or province stage), open candidates, open conflicts, definition of done, and next node.",
     { provinceId: z.string().min(1) },
     toolGetScopeState,
   );
 
   register(
     "get_next_research_node",
-    "Return the first unfinished node in depth-first administrative traversal. When awaitingScopeSelection:true the province stage is complete: STOP and wait for an explicit scope_id, then call set_active_scope. When done:true, run the DoD checks before the final report.",
+    "Return the first unfinished node in depth-first administrative traversal. When awaitingScopeSelection:true the province stage is complete: STOP and wait for an explicit scope choice (map the Persian name to its id via planro://scopes/{provinceId}), then call set_active_scope. When done:true, run the DoD checks before the final report.",
     { provinceId: z.string().min(1) },
     toolGetNextResearchNode,
   );
@@ -181,7 +188,7 @@ export function createServer(): McpServer {
 
   register(
     "get_source_coverage",
-    "Audit the mandatory primary-fact-source searches (dataset/source_policy.json): per-node detail (nodeId) or the list of nodes whose required primary-source coverage is still unsatisfied. All five primaries (Kojaro, Jabama, Alibaba, Lastsecond, Flytoday) are required for EVERY entity node; a recorded no-result/unreachable attempt counts. A node cannot be completed — and an entity cannot be saved with zero images — until its coverage is satisfied.",
+    "Audit the mandatory primary-fact-source searches (dataset/source_policy.json): per-node detail (nodeId) or the list of nodes whose required primary-source coverage is still unsatisfied. All five primaries (Kojaro, Jabama, Alibaba, Lastsecond, Flytoday) are required for EVERY entity node; a recorded no-result/unreachable attempt counts, but media discovery never does. A node cannot be completed — and an entity cannot be saved with zero images — until its coverage is satisfied.",
     { provinceId: z.string().min(1), nodeId: z.string().min(1).optional() },
     toolGetSourceCoverage,
   );
@@ -216,7 +223,7 @@ export function createServer(): McpServer {
 
   register(
     "check_definition_of_done",
-    "Check whether the scope meets its Definition of Done. Scope-aware: when a scope is active (set_active_scope), only that scope's subtree counts — a finished county/village/POI scope reports complete:true while other scopes stay pending for their own runs. Result is persisted to notes.md DoD section. MUST be run (returning complete:true) together with validate_province (returning invalid:0) before producing the final report of the current scope.",
+    "Check whether the current scope meets its Definition of Done. Scope-aware: with an active scope only that subtree counts; with no scope selected the PROVINCE STAGE counts (province node + its direct places), so the province stage can pass and stop while counties stay pending for their own runs. Result is persisted to notes.md DoD section. MUST be run (returning complete:true) together with validate_province (returning invalid:0) before producing the final report of the current scope.",
     { provinceId: z.string().min(1) },
     toolCheckDefinitionOfDone,
   );

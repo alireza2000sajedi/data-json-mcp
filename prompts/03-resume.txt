@@ -8,6 +8,7 @@ province_id=<PROVINCE_ID>
 scope_id=<SCOPE_ID>
 previous_id=<PREVIOUS_ID>
 ```
+اگر در Task جاری مقدار واقعی `previous_id` آمده باشد، همان authoritative است و placeholder بالا نادیده گرفته می‌شود؛ در نبود مقدار واقعی `MISSING_INPUT: previous_id` بده و متوقف شو.
 
 State فعلی را از MCP بخوان و از اولین مورد ناقص بعد از previous_id ادامه بده. کار کامل را بی‌دلیل تکرار نکن.
 همه قواعد Normalize فیلدها، ownership هزینه/FAQ/Checklist، taxonomy، sources/evidence و media مستقل را حفظ کن.

@@ -54,7 +54,10 @@ function emptyState(provinceId: string): NotesState {
 }
 
 /** Parse notes state from the separate JSON file, falling back to embedded state in notes.md. */
-export function readNotes(provinceId: string): NotesState {
+export function readNotes(rawProvinceId: string): NotesState {
+  // Accept the raw numeric input (`30`) as well as the canonical id; state is
+  // always keyed by the canonical `province-{n}`.
+  const provinceId = assertProvinceId(rawProvinceId);
   // Primary: read from separate state file (new format)
   const sFile = statePath(provinceId);
   if (fs.existsSync(sFile)) {
