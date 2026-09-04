@@ -1,19 +1,29 @@
+# Planro Agent — Explicit Input Contract
+
+**No real IDs are embedded in this prompt.**
+
+Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
+
+Rules:
+- Never infer, invent, autocomplete, or choose an ID.
+- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
+- If a required ID is missing, stop and ask the user for exactly that ID.
+- Do not use name-to-ID resolution in the normal workflow.
+- Do not write any file manually; all Entity persistence goes through MCP tools.
+- The actual Entity JSON MUST match `planro://schema/place` exactly.
+
 # Prompt 04 — Repair One Entity
 
-ورودی Runner:
-- province_id
-- scope_id
-- entity_id
+Required user input:
+- `province_id=<PROVINCE_ID>`
+- `scope_id=<SCOPE_ID>`
+- `entity_id=<ENTITY_ID>`
 
-هدف: فقط Entity مشخص‌شده را اصلاح کن.
-
-1. Entity، node context، schema، taxonomy، source-policy و quality errors فعلی را بخوان.
-2. خطاها را بر اساس اولویت اصلاح کن: schema → taxonomy → hierarchy → sources/evidence → content → media → costs/checklist → brand voice.
-3. Factی که منبع معتبر ندارد حدس نزن؛ در صورت نیاز دوباره research کن.
-4. `tags` و `safety.emergencyNumbers` را هرگز نگه ندار.
-5. taxonomy فقط canonical ID باشد؛ proposal برای تولید مجاز نیست.
-6. لینک‌ها raw HTTPS باشند.
-7. بعد از repair با `save_active_entity` ذخیره کن.
-8. سپس `validate_province` را اجرا کن و مطمئن شو خطای همان Entity صفر شده است.
-
-Repair نباید داده سایر Scopeها را تغییر دهد مگر Relation دوطرفه‌ای که قانون پروژه آن را الزام می‌کند.
+Workflow:
+1. Verify the Entity belongs to the selected Scope.
+2. Read its current JSON, schema, taxonomy, source policy and validation errors.
+3. Fix in this order: schema → node type/subtype → taxonomy → hierarchy → sources/evidence → factual content → costs → checklist → media → brand voice.
+4. Never invent facts, IDs, prices or taxonomy terms.
+5. Remove forbidden legacy fields if present.
+6. Save only through MCP and validate again.
+7. Do not modify unrelated Scope data.

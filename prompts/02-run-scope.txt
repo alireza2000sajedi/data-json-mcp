@@ -1,22 +1,34 @@
-# Prompt 02 — Run One Scope
+# Planro Agent — Explicit Input Contract
 
-ورودی Runner فقط:
-- province_id
-- scope_id
+**No real IDs are embedded in this prompt.**
 
-`scope_id` ممکن است county/city/village/place/camping باشد.
+Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
 
-1. `get_scope_state`، `get_next_research_node`، `get_node_context` و Resourceهای rules/schema/source-policy/brand-voice/taxonomy را بخوان.
-2. با `set_active_scope(provinceId=province_id, nodeId=scope_id)` اجرا را روی همان Scope قفل کن.
-3. فقط همان Scope و زیردرخت آن را تحقیق کن.
-4. برای هر Entity Node، پنج Primary Source را به ترتیب بررسی و با `record_search_result` ثبت کن؛ no-result/unreachable نیز باید صریح ثبت شود.
-5. fallbackها را فقط برای cross-check و تکمیل استفاده کن.
-6. هر POI را duplicate-check کن؛ مورد اثبات‌نشده را Candidate و مورد خارج از Scope را Notes کن.
-7. taxonomy را فقط از catalogهای سراسری بخوان. اگر مفهوم جدیدی واقعاً لازم شد، proposal ثبت کن؛ proposal را در Entity استفاده نکن.
-8. media را با `record_media_candidate` و `finalize_media` جمع کن. Target تصویر minimum نیست.
-9. Entity را با schema + Quality Gate ذخیره کن.
-10. discovery trackهای Node را کامل کن و سپس `mark_node_complete`.
-11. در پایان `check_definition_of_done` و `validate_province` را اجرا کن.
-12. وقتی `complete:true` و `invalid:0` شد، همین Scope را تمام‌شده بدان و متوقف شو.
+Rules:
+- Never infer, invent, autocomplete, or choose an ID.
+- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
+- If a required ID is missing, stop and ask the user for exactly that ID.
+- Do not use name-to-ID resolution in the normal workflow.
+- Do not write any file manually; all Entity persistence goes through MCP tools.
+- The actual Entity JSON MUST match `planro://schema/place` exactly.
 
-هرگز Scope همسایه یا Scope دیگری را خودکار شروع نکن.
+# Prompt 02 — Run Exactly One Scope
+
+Required user input:
+- `province_id=<PROVINCE_ID>`
+- `scope_id=<SCOPE_ID>`
+
+Workflow:
+1. Verify both IDs exist and belong together.
+2. Lock the active scope to the exact supplied `scope_id`.
+3. Research ONLY that Scope and its permitted subtree.
+4. For every Entity Node, complete the five-primary-source coverage and record every attempt.
+5. Resolve duplicate candidates before creating new Entities.
+6. Use canonical taxonomy IDs only; missing concepts become proposals, never production values.
+7. Use the actual schema field names. Do not invent an alternate JSON structure.
+8. Transport nodes must use coordinates; do not store derived `distanceKm`.
+9. Costs must be source-backed and use the current CPI/budget schema; never invent prices or use null-placeholder structures from another schema.
+10. Safety must be Node-specific.
+11. Media is best-effort, not a minimum.
+12. Save through MCP only, complete discovery tasks, mark the Node complete, run DoD + validation.
+13. Stop after this Scope.

@@ -317,6 +317,23 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     addError(errors, "NODE_ID_MISMATCH", "id", `Entity id '${entity.id}' does not match expectedNodeId '${ctx.expectedNodeId}'.`);
   }
 
+  // Entity type must match the registered graph node. Administrative nodes use
+  // type=other with an administrative subtype; the public-facing place taxonomy
+  // cannot invent type values such as "province" or "county".
+  const expectedNode = state.nodes.find((n) => n.nodeId === ctx.expectedNodeId);
+  if (expectedNode) {
+    const matchesExpectedType =
+      (expectedNode.nodeType === "province" && entity.type === "other" && entity.subType === "province") ||
+      (expectedNode.nodeType === "county" && entity.type === "other" && entity.subType === "county") ||
+      (expectedNode.nodeType === "city" && entity.type === "city") ||
+      (expectedNode.nodeType === "village" && entity.type === "village") ||
+      (expectedNode.nodeType === "camping" && entity.type === "recreational" && entity.subType === "campground") ||
+      (expectedNode.nodeType === "place" && !((entity.type === "other") && ["province", "county"].includes(String(entity.subType ?? ""))));
+    if (!matchesExpectedType) {
+      addError(errors, "NODE_TYPE_MISMATCH", "type", `Entity type/subType does not match registered node type '${expectedNode.nodeType}'.`);
+    }
+  }
+
   switch (nodeType) {
     case "province":
       if (!locName("province")) addError(errors, "HIERARCHY_PROVINCE", "location.province", "Province entity requires location.province.");

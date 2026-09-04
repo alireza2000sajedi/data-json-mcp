@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const ROOT = root;
 const read = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
 const fail = (m) => { console.error(`FAIL: ${m}`); process.exitCode = 1; };
 
@@ -39,3 +40,25 @@ if (!Array.isArray(proposals)) fail('taxonomy/agent-taxonomy/proposals.json must
 if (process.exitCode) process.exit(process.exitCode);
 console.log('Planro project verification passed.');
 console.log(JSON.stringify({ taxonomy: Object.fromEntries(taxonomyDomains.map(d => [d, read(`taxonomy/${d}.json`).items.length])), primarySources: primary.map(x => x.domain), provinces: 31 }, null, 2));
+
+
+// Prompt safety: operational prompts must never embed concrete real Scope IDs.
+const promptFiles = [
+  "prompt.txt",
+  "prompts/01-start-province.txt",
+  "prompts/02-run-scope.txt",
+  "prompts/03-resume.txt",
+  "prompts/04-repair-entity.txt",
+  "prompts/05-final-audit-minify.txt",
+];
+for (const rel of promptFiles) {
+  const text = fs.readFileSync(path.join(ROOT, rel), "utf8");
+  if (/\bprovince-\d+\b/.test(text)) fail(`Concrete province ID found in ${rel}`);
+  if (/\b(county|city|village|place|camp)-\d+-[A-Za-z0-9_-]+\b/.test(text)) fail(`Concrete Scope/Entity ID found in ${rel}`);
+}
+
+if (fs.existsSync(path.join(ROOT, "node_modules"))) fail("node_modules must not be packaged in the project ZIP.");
+if (fs.existsSync(path.join(ROOT, "dist"))) fail("dist must not be packaged in the project ZIP.");
+if (fs.existsSync(path.join(ROOT, "output"))) fail("generated output must not be packaged in the clean project ZIP.");
+
+if (fs.readFileSync(path.join(ROOT, "src/server.ts"), "utf8").includes('"resolve_scope_name"')) fail("resolve_scope_name must not be registered in the standard MCP tool set.");

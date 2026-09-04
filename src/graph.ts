@@ -299,7 +299,7 @@ export function nextRequiredNode(provinceId: string): NodeRecord | null {
   const state = readNotes(provinceId);
   // Staged workflow: after the province stage is complete and no scope has
   // been selected, DFS pauses — the agent must ask the user for the next
-  // scope (resolve_scope_name + set_active_scope) instead of auto-diving
+  // scope selection + set_active_scope instead of auto-diving
   // into the first county.
   if (awaitingScopeSelection(state)) return null;
   const order = traverse(provinceId);

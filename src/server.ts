@@ -15,7 +15,6 @@ import {
   toolMarkNodeMediaDeficit,
   toolRecordMediaCandidate,
   toolFinalizeMedia,
-  toolResolveScopeName,
   toolGetSourceCoverage,
   toolSaveActiveEntity,
   toolLinkEntities,
@@ -65,7 +64,7 @@ export function createServer(): McpServer {
 
   register(
     "import_province_scopes",
-    "Province Stage, step 1: derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city/village with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}, village-{p}-v{n}). Structure + ids only here — then CONTINUE with the PROVINCE STAGE: full deep research of the province node itself (entity + province-level places + camping + best-effort media from the 5 primary sources), mark it complete, and then STOP for the next scope_id command.",
+    "Province Stage, step 1: derive the full administrative scope list from the reference input checklist and register deterministic IDs for every county/city/village. Structure + IDs only here — then continue with full research of the province node, mark it complete, and STOP for the next explicit scope_id command.",
     { provinceId: z.string().min(1) },
     toolImportProvinceScopes,
   );
@@ -173,7 +172,7 @@ export function createServer(): McpServer {
 
   register(
     "record_media_candidate",
-    "Best-effort media pipeline step 1 (§9): record EVERY attributable image you find for a node — nothing is discarded for being below target. imageUrl = direct raw HTTPS file URL; pageUrl = the page hosting/licensing it; license from the schema enum (all-rights-reserved is fine for credited web images); optional score 0..1. Image searches on the 5 primary sources also count toward source coverage.",
+    "Best-effort media pipeline step 1 (§9): record EVERY attributable image you find for a node — nothing is discarded for being below target. imageUrl = direct raw HTTPS file URL; pageUrl = the page hosting/licensing it; license from the schema enum (all-rights-reserved is fine for credited web images); optional score 0..1. Media candidates never count toward primary FACT source coverage; only record_search_result attempts do.",
     {
       provinceId: z.string().min(1),
       nodeId: z.string().min(1),
@@ -194,17 +193,6 @@ export function createServer(): McpServer {
     "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and store the BEST min(usable, target) images — never more than target (target: 10 for province/county/city/place, 3 for village/camping; the thumbnail counts inside this budget; 20 is only the absolute validation cap). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
     { provinceId: z.string().min(1), nodeId: z.string().min(1) },
     toolFinalizeMedia,
-  );
-
-  register(
-    "resolve_scope_name",
-    "Legacy compatibility tool: resolve a Persian name to a registered scope id. The standard Planro workflow supplies scope_id directly and should not need this tool.",
-    {
-      provinceId: z.string().min(1).optional(),
-      name: z.string().min(1),
-      expectedType: z.enum(["county", "city", "village"]).optional(),
-    },
-    toolResolveScopeName,
   );
 
   register(

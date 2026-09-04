@@ -17,7 +17,7 @@ Agent / LLM
 - ✅ اعتبارسنجی JSON Schema Draft 2020-12 با Ajv + دروازهٔ کیفیت (Quality Gate)
 
 کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود. Runner فقط `province_id` و `scope_id` می‌دهد؛ انتخاب با نام فارسی جزو قرارداد استاندارد نیست. هر Scope یک **id اختصاصی و
-پایدار** دارد (`province-30`، `county-30-5`، `city-30-12`، `village-30-v2`، `place-30-3`) و پیشرفت بین
+پایدار** دارد (`province-{n}`، `county-{n}-{k}`، `city-{n}-{k}`، `village-{n}-v{k}`، `place-{n}-{k}`) و پیشرفت بین
 اجراها در `notes.state.json` ذخیره و Resume می‌شود. قوانین اجرایی در `prompt.txt` و فایل‌های `prompts/` قرار دارند.
 
 ---
@@ -97,7 +97,7 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 
 | Tool | ورودی کلیدی | خروجی |
 |---|---|---|
-| `import_province_scopes` | `provinceId` | **مرحلهٔ استان**: ثبت ساختار کامل استان از `input/{n}.json` با idهای اختصاصیِ قطعی (`county-{p}-{n}`، `city-{p}-{n}`، `village-{p}-v{n}`) + تکمیل ترک‌های اداری بر مبنای Count — سپس Agent Entity خودِ استان (province.json + مکان‌های سطح استان) را تحقیق/ذخیره می‌کند و در پایان می‌پرسد «کدام شهرستان/شهر/روستا؟» |
+| `import_province_scopes` | `provinceId` | **مرحلهٔ استان**: ثبت ساختار کامل استان از `input/{n}.json` با idهای اختصاصیِ قطعی (`county-{p}-{n}`، `city-{p}-{n}`، `village-{p}-v{n}`) + تکمیل ترک‌های اداری بر مبنای Count — سپس Agent Entity خودِ استان (province.json + مکان‌های سطح استان) را تحقیق/ذخیره می‌کند و در پایان متوقف می‌شود و منتظر scope_id صریحِ کاربر می‌ماند |
 | `set_active_scope` | `provinceId`, `nodeId` (یا `null`) | **Scope B/C**: قفل DFS/next-node/completion روی زیردرخت همان Scope؛ بقیهٔ واحدها pending می‌مانند |
 | `get_scope_state` | `provinceId` | وضعیت کامل Scope (شامل `activeScopeId`)، Candidateها، Conflictها، DoD، Node بعدی |
 | `get_next_research_node` | `provinceId` | اولین Node ناتمام در پیمایش عمقی + Context اداری + taskهای اجباری؛ بعد از کامل‌شدن مرحلهٔ استان و بدون Scope فعال: `awaitingScopeSelection: true` + دستور پرسیدن «کدام شهرستان/شهر/روستا؟» |
@@ -107,9 +107,8 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
 | `record_search_result` | `provinceId`, `nodeId`, `query`, `sourceUrl`, `sourceTitle`, `resultSummary`, `ownershipStatus` | ثبت Source Matrix با مالکیت Context + دسته‌بندی خودکار منبع (primary/fallback/other طبق `source_policy.json`) + شمارش Coverage منابع Primary |
 | `create_candidate` | `provinceId`, `nodeId`, `name`, … | فقط در notes.md (هیچ JSON ساخته نمی‌شود) |
 | `resolve_candidate` | `provinceId`, `candidateId`, `outcome` | بستن Candidate |
-| `record_media_candidate` | `provinceId`, `nodeId`, `imageUrl`, `pageUrl`, `license`, `credit?`, `alt?`, `score?` | ثبت لحظه‌ایِ هر تصویر کاندید (idempotent با nodeId+imageUrl؛ Audit Trail در notes) — pageUrl روی دامنهٔ Primary در Coverage هم حساب می‌شود |
+| `record_media_candidate` | `provinceId`, `nodeId`, `imageUrl`, `pageUrl`, `license`, `credit?`, `alt?`, `score?` | ثبت لحظه‌ایِ هر تصویر کاندید (idempotent با nodeId+imageUrl؛ Audit Trail در notes) — pageUrl رسانه هرگز جای Coverage منابع Fact را نمی‌گیرد؛ Coverage فقط از record_search_result محاسبه می‌شود |
 | `finalize_media` | `provinceId`, `nodeId` | dedupe + رتبه‌بندی کاندیدها (score + لایسنس آزاد + منبع Primary) → ذخیرهٔ بهترین min(usable, target) تصویر — هرگز بیشتر از target (تامبنیل جزو بودجه) + `mediaStatus` + گزارش ممیزی |
-| `resolve_scope_name` | `provinceId?`, `name`, `expectedType?` | تبدیل نام فارسی به id اختصاصی (بدون پرسیدن id از کاربر)؛ فقط نام‌های همنامِ واقعاً مبهم → فهرست کاندیداها |
 | `get_source_coverage` | `provinceId`, `nodeId` | شمارش منابع Primary جستجو‌شده برای نود (۵ از ۵ برای هر نود Entity، شامل روستا) + ردیف‌های هر منبع |
 | `mark_node_media_deficit` | `provinceId`, `nodeId`, `reason`, `imagesFound` (عدد ممیزی ۰..۲۰)، `searchesPerformed[]` (≥۲) | فقط برای «نبودِ کل دادهٔ Entity» (نه کمبود عکس): بستن نود بدون فایل JSON با وضعیت `media_deficit`؛ اگر کاندید رسانهٔ usable وجود داشته باشد رد می‌شود (مسیر صحیح: `finalize_media` + ذخیرهٔ partial). نود در DFS/DoD کامل حساب می‌شود؛ ذخیرهٔ فعالِ بعدی همان نود، وضعیت را خودکار resolved می‌کند |
 | `save_active_entity` | `provinceId`, `entity`, `expectedNodeId` | دروازهٔ کیفیت کامل → ذخیره در مسیر canonical یا خطای ساخت‌یافته؛ تزریق خودکار `media.status`؛ ذخیرهٔ ۰-عکس فقط با Coverage کامل منابع Primary (وگرنه `MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE`) |
@@ -172,12 +171,12 @@ Server روی stdin/stdout صحبت می‌کند و از همان ابتدا ب
    ```
    output/{provinceId}/
    ├── province.json
-   ├── county-30-1/county.json
-   ├── county-30-1/city-30-1/city.json
-   ├── county-30-1/city-30-1/village-30-v1/village.json
-   ├── county-30-1/city-30-1/village-30-v1/place-30-3.json
-   ├── county-30-1/place-30-1.json          ← مکان مستقیم زیر شهرستان
-   └── place-30-4.json                       ← مکان مستقیم زیر استان
+   ├── county-{n}-1/county.json
+   ├── county-{n}-1/city-{n}-1/city.json
+   ├── county-{n}-1/city-{n}-1/village-{n}-v1/village.json
+   ├── county-{n}-1/city-{n}-1/village-{n}-v1/place-{n}-{k}.json
+   ├── county-{n}-1/place-{n}-{k}.json          ← مکان مستقیم زیر شهرستان
+   └── place-{n}-{k}.json                       ← مکان مستقیم زیر استان
    ```
 
 7. **ID/slug یکتا**: الگوی README (`province-{n}`, `county-{province}-{n}`, `city-…`, `village-…-v{n}`, `place-…`) رعایت می‌شود و قبل از تخصیص، Registry و همهٔ فایلهای JSON اسکن می‌شوند.

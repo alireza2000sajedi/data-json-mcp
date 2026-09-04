@@ -1551,12 +1551,6 @@
           "type": "string",
           "minLength": 1
         },
-        "distanceKm": {
-          "type": [
-            "number",
-            "null"
-          ]
-        },
         "travelTimeMinutes": {
           "type": [
             "integer",
@@ -1580,7 +1574,8 @@
         "name",
         "latitude",
         "longitude"
-      ]
+      ],
+      "description": "گره حمل‌ونقل نزدیک با مختصات معتبر؛ فاصله مشتق‌شده در Entity ذخیره نمی‌شود."
     },
     "faText": {
       "type": "string",

@@ -18,7 +18,7 @@ import { config } from "./config.js";
  * therefore fully deterministic — the same province always yields the same ids.
  * This is exactly the "Scope A (Province Discovery)" output of the staged
  * workflow: a list of dedicated scope ids the user can select by name or id
- * (e.g. `همدان → فامنین` == `province-30 → county-30-5`).
+ * (for example: province scope → county scope).
  */
 
 export interface ScopeUnit {
@@ -68,7 +68,7 @@ interface ProvinceInput {
 /** Extract the numeric part of a `province-{n}` id. */
 export function provinceNumber(provinceId: string): number {
   const m = /^province-(\d+)$/.exec(provinceId ?? "");
-  if (!m) throw new Error(`Invalid provinceId '${provinceId}'. Expected pattern province-{n} (e.g. province-30).`);
+  if (!m) throw new Error(`Invalid provinceId '${provinceId}'. Expected pattern province-{n}.`);
   const n = Number(m[1]);
   if (n < 1 || n > 31) throw new Error(`provinceId '${provinceId}' is out of range (1..31).`);
   return n;

@@ -112,12 +112,12 @@ export interface CanonicalPathResult {
  * named by its own id, nested under the folders of its entity ancestors:
  *
  *   province.json
- *   county-30-1/county.json
- *   county-30-1/city-30-1/city.json
- *   county-30-1/city-30-1/village-30-v1/village.json
- *   county-30-1/city-30-1/village-30-v1/place-30-1.json
- *   county-30-1/place-30-2.json          (place directly under a county)
- *   place-30-3.json                       (place directly under the province)
+ *   county-{n}-1/county.json
+ *   county-{n}-1/city-{n}-1/city.json
+ *   county-{n}-1/city-{n}-1/village-{n}-v1/village.json
+ *   county-{n}-1/city-{n}-1/village-{n}-v1/place-{n}-1.json
+ *   county-{n}-1/place-{n}-2.json          (place directly under a county)
+ *   place-{n}-3.json                       (place directly under the province)
  *
  * Villages and places may live at any level (province / county / city / village),
  * matching where the node was actually registered in the graph.

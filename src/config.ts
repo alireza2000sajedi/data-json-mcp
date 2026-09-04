@@ -57,7 +57,7 @@ export function assertSafeSegment(segment: string, label = "segment"): string {
   return segment;
 }
 
-/** A province id looks like `province-30`; allow it (and reject obvious junk). */
+/** A province id must match the project province-id pattern (and reject obvious junk). */
 export function assertProvinceId(provinceId: string): string {
   return assertSafeSegment(provinceId, "provinceId");
 }

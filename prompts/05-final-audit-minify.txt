@@ -1,25 +1,38 @@
+# Planro Agent — Explicit Input Contract
+
+**No real IDs are embedded in this prompt.**
+
+Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
+
+Rules:
+- Never infer, invent, autocomplete, or choose an ID.
+- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
+- If a required ID is missing, stop and ask the user for exactly that ID.
+- Do not use name-to-ID resolution in the normal workflow.
+- Do not write any file manually; all Entity persistence goes through MCP tools.
+- The actual Entity JSON MUST match `planro://schema/place` exactly.
+
 # Prompt 05 — Final Global Audit & Minify
 
-این Prompt فقط بعد از پایان تمام استان‌ها اجرا می‌شود.
+Run this only after ALL intended Scopes across ALL provinces are complete. No province/scope ID should be inferred from this prompt.
 
-1. تمام outputها را audit کن.
-2. برای همه Entityها بررسی کن:
-   - Schema
-   - canonical taxonomy
-   - subtype/type compatibility
-   - duplicate ID/slug
-   - hierarchy/ownership
-   - relations
-   - evidence/source consistency
-   - five-primary-source coverage
-   - costs/CPI
-   - checklist
-   - media provenance/limits/status
-   - brand voice
-   - forbidden fields (`tags`, `safety.emergencyNumbers`, research notes in user-facing text)
-3. هر خطا را repair کن، سپس دوباره validate کن.
-4. Entityهای ناقص و غیرقابل‌اثبات را بدون حدس‌سازی تعیین تکلیف کن.
-5. فقط وقتی کل dataset `invalid:0` و DoD نهایی کامل است، JSONهای تولیدی را minify کن.
-6. ترتیب کلیدها یا مقدار Factها را فقط برای minification تغییر نده.
-7. taxonomy و prompt/rules را تغییر نده مگر تصمیم maintainer وجود داشته باشد.
-8. در گزارش نهایی فقط وضعیت audit، شمارش خطا/repair و نتیجه minify را اعلام کن.
+Workflow:
+1. Audit every stored Entity against the live schema and global taxonomy.
+2. Reject/repair:
+   - invented type/subtype values
+   - unknown taxonomy IDs
+   - duplicate IDs/slugs
+   - hierarchy mismatches
+   - parent/child contamination
+   - missing or invalid evidence/source registration
+   - incomplete five-primary-source coverage
+   - fabricated or schema-incompatible costs
+   - derived transport distances
+   - invalid media provenance/status/caps
+   - forbidden fields such as `tags` / `safety.emergencyNumbers`
+   - research notes leaking into user-facing fields
+   - checklist, brand-voice or language-quality defects
+3. Repair each blocking issue and validate again.
+4. Do NOT create new facts merely to make an audit pass.
+5. Only after global validation is clean and final DoD passes, minify production JSON files.
+6. Do not alter taxonomy/rules/prompts during minification.

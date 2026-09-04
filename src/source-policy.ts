@@ -156,9 +156,8 @@ export interface SourceCoverage {
 }
 
 /**
- * Coverage of the mandatory primary sources for a node, computed from the
- * recorded source-matrix entries AND the recorded media candidates (an image
- * search on a primary domain counts as searching that source).
+ * Coverage of the mandatory primary FACT sources for a node. Only explicit
+ * record_search_result entries count; media discovery never satisfies this gate.
  */
 export function sourceCoverageFor(state: NotesState, nodeType: NodeType | null | undefined, nodeId: string): SourceCoverage {
   const policy = getSourcePolicy();
@@ -173,10 +172,6 @@ export function sourceCoverageFor(state: NotesState, nodeType: NodeType | null |
   for (const e of state.sourceMatrix) {
     if (e.nodeId !== nodeId) continue;
     credit(e.sourceUrl);
-  }
-  for (const m of state.mediaCandidates ?? []) {
-    if (m.nodeId !== nodeId) continue;
-    credit(m.pageUrl);
   }
   const searched = policy.primary
     .slice()

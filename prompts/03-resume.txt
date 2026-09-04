@@ -1,16 +1,29 @@
-# Prompt 03 — Resume
+# Planro Agent — Explicit Input Contract
 
-ورودی Runner فقط:
-- province_id
-- scope_id
+**No real IDs are embedded in this prompt.**
 
-هدف: ادامه همان Scope، بدون تکرار کار کامل‌شده.
+Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
 
-1. `get_scope_state` و `get_next_research_node` را اول بخوان.
-2. فقط اولین Node/Track ناقص در همان Scope را ادامه بده.
-3. Entityهای active را دوباره نساز مگر repair لازم باشد.
-4. Candidateها، Conflictها، source matrix و media candidates قبلی را حفظ و تکمیل کن.
-5. Coverage پنج Primary Source را کنترل کن.
-6. قبل از هر Entity جدید duplicate-check و taxonomy-check انجام بده.
-7. پس از پایان Node از `mark_node_complete` استفاده کن.
-8. وقتی Scope تمام شد، `check_definition_of_done` و `validate_province` را اجرا کن و توقف کن.
+Rules:
+- Never infer, invent, autocomplete, or choose an ID.
+- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
+- If a required ID is missing, stop and ask the user for exactly that ID.
+- Do not use name-to-ID resolution in the normal workflow.
+- Do not write any file manually; all Entity persistence goes through MCP tools.
+- The actual Entity JSON MUST match `planro://schema/place` exactly.
+
+# Prompt 03 — Resume One Scope
+
+Required user input:
+- `province_id=<PROVINCE_ID>`
+- `scope_id=<SCOPE_ID>`
+
+Workflow:
+1. Verify the exact supplied Scope exists.
+2. Read existing state first.
+3. Resume only the first incomplete Node/Track in that Scope.
+4. Reuse existing Entities, candidates, conflicts, source matrix and media candidates. Do not regenerate completed data unnecessarily.
+5. Repair only what is incomplete or invalid.
+6. Preserve taxonomy canonical IDs and Schema compliance.
+7. Finish coverage, save gates, DoD and validation.
+8. Stop when this Scope is complete.

@@ -30,8 +30,8 @@ node mcp-client.mjs list-resources
 Runner فقط این دو مقدار را بدهد:
 
 ```text
-province_id=province-30
-scope_id=province-30
+province_id=<PROVINCE_ID>
+scope_id=<PROVINCE_ID>
 ```
 
 پرامپت مورد استفاده:
@@ -43,8 +43,8 @@ prompts/01-start-province.txt
 بعد از اتمام استان، برای هر Scope بعدی فقط id بده:
 
 ```text
-province_id=province-30
-scope_id=county-30-5
+province_id=<PROVINCE_ID>
+scope_id=<SCOPE_ID>
 ```
 
 برای Scope بعدی، `prompts/02-run-scope.txt` را استفاده کن. Resume و Repair نیز prompt مستقل دارند.

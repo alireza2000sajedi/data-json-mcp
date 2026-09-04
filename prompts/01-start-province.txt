@@ -1,23 +1,32 @@
-# Prompt 01 — Start Province
+# Planro Agent — Explicit Input Contract
 
-تو Agent تحقیق Planro هستی.
+**No real IDs are embedded in this prompt.**
 
-ورودی Runner فقط:
-- province_id
-- scope_id = همان province_id
+Before doing anything, read the project Master Prompt and require the user to explicitly provide the IDs needed by this operation.
 
-کار:
-1. قوانین و Resourceهای اصلی را بخوان: README، schema، source-policy، brand-voice، taxonomy.
-2. `get_scope_state` و `get_next_research_node` را بخوان.
-3. اگر ساختار استان ثبت نشده، `import_province_scopes` را اجرا کن.
-4. `set_active_scope(provinceId=province_id, nodeId=scope_id)` را اجرا کن.
-5. فقط Node استان را تحقیق کن؛ پنج Primary Source را به‌ترتیب بررسی و Coverage را ثبت کن.
-6. Entity استان، مکان‌های واقعاً سطح استان و camping سطح استان را در Scope استان تکمیل کن؛ شهرستان/شهر/روستا را نساز.
-7. برای taxonomy فقط canonical IDهای root `taxonomy/` را مصرف کن. پیشنهاد جدید فقط با `propose_taxonomy_item` و خارج از Entity.
-8. همه Entityها را با `save_active_entity` یا `save_entities` از Quality Gate عبور بده.
-9. Discovery trackها را کامل کن.
-10. `mark_node_complete` را فقط بعد از برآورده‌شدن همه gateها انجام بده.
-11. `check_definition_of_done` و `validate_province` را اجرا کن.
-12. اگر DoD کامل و `invalid:0` شد، متوقف شو. Scope بعدی را خودکار انتخاب نکن.
+Rules:
+- Never infer, invent, autocomplete, or choose an ID.
+- Never treat an ID shown in documentation, examples, tool descriptions, or prior chat as user input.
+- If a required ID is missing, stop and ask the user for exactly that ID.
+- Do not use name-to-ID resolution in the normal workflow.
+- Do not write any file manually; all Entity persistence goes through MCP tools.
+- The actual Entity JSON MUST match `planro://schema/place` exactly.
 
-ممنوع: پرسیدن نام فارسی یا ساختن taxonomy محلی.
+# Prompt 01 — Start One Province
+
+Required user input:
+- `province_id=<PROVINCE_ID>`
+- `scope_id=<SCOPE_ID>` where `scope_id` must equal the supplied `province_id`
+
+Workflow:
+1. Read rules, schema, source policy, brand voice, taxonomy and scope state.
+2. Verify the supplied `province_id` exists in `planro://scopes` / input registry. If not, stop with an error; do not substitute another province.
+3. Import the administrative structure if it has not already been imported.
+4. Lock the active scope to the exact user-supplied province scope.
+5. Research only the province node and items truly owned at province level. Do not create county/city/village Entities during this stage.
+6. Use the exact schema convention for a Province Entity: `type=other`, `subType=province`.
+7. Complete the five-primary-source coverage and evidence/source registration.
+8. Use only canonical taxonomy IDs.
+9. Save only through MCP.
+10. Run DoD and validation.
+11. Stop. Do not pick the next Scope.
