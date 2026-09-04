@@ -28,16 +28,49 @@
 - اگر یک ID واقعاً لازم است و کاربر آن را نداده، فقط همان ID را بخواه.
 - اگر MCP Resources/Tools در دسترس نیستند، مشکل اتصال/تنظیم MCP را گزارش کن و متوقف شو؛ برای جبرانِ نبود MCP از کاربر ID اضافی نخواه.
 
-## 1) MCP منبع اجرای قرارداد است
-قبل از تحقیق باید منابع و ابزارهای Planro MCP در دسترس باشند. حداقل منابع مورد استفاده:
-- `planro://rules/readme`
-- `planro://schema/place`
-- `planro://rules/source-policy`
-- `planro://rules/brand-voice-guide`
-- `planro://taxonomy`
-- `planro://scopes`
+## 1) راه‌اندازی اجباری MCP — قبل از هر تحقیق
+این Prompt فرض نمی‌کند که MCP از قبل در محیط Agent نصب یا متصل است. قبل از هر تحقیق باید خودت مخزن رسمی MCP را در workspace پیدا یا Clone و آماده کنی. این مرحله را از کاربر سؤال نکن و از او نخواه انجام دهد.
 
-اگر این منابع/ابزارها در Chat Agent در دسترس نیستند، این یک مشکل محیط اجرای MCP است و نباید با حدس یا درخواست Scope اضافی حل شود.
+### 1.1 پیدا کردن یا Clone کردن مخزن
+1. با ابزار Terminal/Shell workspace فعلی را بررسی کن.
+2. اگر پوشهٔ `data-json-mcp` یا یک clone معتبر از همین مخزن وجود دارد، همان را استفاده کن.
+3. اگر وجود ندارد، دقیقاً این مخزن را Clone کن:
+   `git clone https://github.com/alireza2000sajedi/data-json-mcp.git`
+4. وارد پوشهٔ مخزن شو و وجود این موارد را بررسی کن:
+   - `package.json`
+   - `mcp-client.mjs`
+   - `src/`
+   - `dataset/`
+   - `input/1.json` تا `input/31.json`
+   - `prompts/`
+   - `taxonomy/`
+
+### 1.2 آماده‌سازی MCP
+اگر dependencyها نصب نیستند، داخل همان clone اجرا کن:
+`npm install`
+
+سپس:
+`npm run build`
+
+بعد ابزارها و Resourceهای MCP را با کلاینت رسمی بررسی کن:
+`node mcp-client.mjs list-tools`
+`node mcp-client.mjs list-resources`
+
+سپس MCP Server همین clone را برای ادامهٔ کار اجرا/وصل کن و از Tool/Resourceهای رسمی آن استفاده کن.
+
+### 1.3 منبع داخلی پس از Clone
+بعد از آماده‌سازی، این فایل‌ها و Resourceها مرجع اجرای تو هستند و باید واقعاً از همان clone خوانده شوند:
+- `dataset/README.md` ↔ `planro://rules/readme`
+- `dataset/place.schema.json` ↔ `planro://schema/place`
+- `dataset/source_policy.json` ↔ `planro://rules/source-policy`
+- `dataset/brand_voice.md` ↔ `planro://rules/brand-voice-guide`
+- `taxonomy/` ↔ `planro://taxonomy`
+- `input/1.json` تا `input/31.json` ↔ `planro://scopes` و `planro://scopes/{provinceId}`
+
+### 1.4 قانون خطا
+اگر Clone، install، build یا راه‌اندازی/اتصال MCP شکست خورد، اول علت فنی را بررسی و یک بار با مسیر درست همان clone اصلاح کن. فقط اگر واقعاً غیرقابل‌اجرا بود، با `MCP_UNAVAILABLE` متوقف شو.
+
+**هرگز به‌خاطر نبود MCP از کاربر `scope_id`، نام فایل، مسیر فایل یا اطلاعاتی که از خود مخزن قابل کشف است سؤال نکن.**
 
 ## 2) Schema قانون نهایی است
 خروجی Entity باید دقیقاً مطابق `planro://schema/place` باشد.
@@ -147,13 +180,13 @@ Rules:
 - Entity JSON MUST match `planro://schema/place` exactly.
 
 ## Workflow
-1. Read:
-   - `planro://rules/readme`
-   - `planro://schema/place`
-   - `planro://rules/source-policy`
-   - `planro://rules/brand-voice-guide`
-   - `planro://taxonomy`
-   - `planro://scopes`
+1. After MCP bootstrap, read both the local cloned files and their MCP Resource equivalents:
+   - `dataset/README.md` / `planro://rules/readme`
+   - `dataset/place.schema.json` / `planro://schema/place`
+   - `dataset/source_policy.json` / `planro://rules/source-policy`
+   - `dataset/brand_voice.md` / `planro://rules/brand-voice-guide`
+   - `taxonomy/` / `planro://taxonomy`
+   - `input/` / `planro://scopes`
 2. Canonicalize the supplied province id and verify it exists in the MCP scope registry.
 3. Import the province administrative structure with `import_province_scopes` if it is not already imported.
 4. Set the active scope to the canonical province scope derived from the supplied province id.
