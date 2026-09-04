@@ -1,18 +1,1 @@
-{
-  "version":"1.0.0",
-  "items":[
-    {"id":"natural","label":"طبیعی"},
-    {"id":"historical","label":"تاریخی"},
-    {"id":"religious","label":"مذهبی"},
-    {"id":"museum","label":"موزه"},
-    {"id":"village","label":"روستا"},
-    {"id":"city","label":"شهر"},
-    {"id":"park","label":"پارک"},
-    {"id":"recreational","label":"تفریحی"},
-    {"id":"market","label":"بازار"},
-    {"id":"accommodation","label":"اقامتگاه"},
-    {"id":"restaurant","label":"رستوران"},
-    {"id":"route","label":"مسیر"},
-    {"id":"other","label":"سایر"}
-  ]
-}
+{"version":"1.0.0","items":[{"id":"natural","label":"طبیعی"},{"id":"historical","label":"تاریخی"},{"id":"religious","label":"مذهبی"},{"id":"museum","label":"موزه"},{"id":"city","label":"شهر"},{"id":"village","label":"روستا"},{"id":"park","label":"پارک"},{"id":"recreational","label":"تفریحی"},{"id":"market","label":"بازار"},{"id":"accommodation","label":"اقامتگاه"},{"id":"restaurant","label":"رستوران"},{"id":"route","label":"مسیر"},{"id":"other","label":"سایر"}]}

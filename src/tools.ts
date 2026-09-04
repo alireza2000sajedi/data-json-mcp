@@ -46,7 +46,6 @@ import {
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
-import { getTaxonomy, getTaxonomyDomain, proposeTaxonomyItem } from "./taxonomy.js";
 import { mediaPolicyFor, mediaStatusFor } from "./media.js";
 import { getSourcePolicy, classifySource, sourceCoverageFor } from "./source-policy.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
@@ -67,10 +66,10 @@ const OWNERSHIP_STATUSES: OwnershipStatus[] = [
 function globallyUsedMediaUrls(provinceId: string, exceptNodeId?: string): Set<string> {
   const used = new Set<string>();
   for (const row of listEntities(provinceId)) {
-    if (exceptNodeId && row.entity.id === exceptNodeId) continue;
-    const media = row.entity.media as any;
-    if (media?.thumbnail?.url) used.add(String(media.thumbnail.url));
-    for (const im of ((media?.images as any[]) ?? [])) if (im?.url) used.add(String(im.url));
+    if (exceptNodeId && row.id === exceptNodeId) continue;
+    const m = row.entity.media as any;
+    if (m?.thumbnail?.url) used.add(String(m.thumbnail.url));
+    for (const img of ((m?.images as any[]) ?? [])) if (img?.url) used.add(String(img.url));
   }
   return used;
 }
@@ -97,12 +96,6 @@ function ensureNode(state: NotesState, nodeId: string, extra?: { nodeType?: Node
     });
   }
 }
-
-// ============================================================================
-// 0. taxonomy
-// ============================================================================
-export function toolGetTaxonomy(args: { domain?: string }) { return args.domain ? getTaxonomyDomain(args.domain) : getTaxonomy(); }
-export function toolProposeTaxonomyItem(args: { domain:any; id:string; label:string; description:string; rationale:string; appliesTo?:string[]; aliases?:string[]; examples?:string[]; proposedBy?:string }) { return { acceptedForProduction:false, proposal:proposeTaxonomyItem({ ...args, proposedBy:args.proposedBy??"agent" }) }; }
 
 // ============================================================================
 // 1. get_scope_state
@@ -535,7 +528,7 @@ export function toolMarkNodeMediaDeficit(args: {
   if (usableCandidates.length > 0) {
     throw new Error(
       `Node '${args.nodeId}' HAS ${usableCandidates.length} usable media candidate(s) — run finalize_media and save the entity ` +
-        `(media is best-effort: even 1 image is saved as "partial"; media alone is never a reason to close a node without a file).`,
+        `(media is best-effort: even 1 image is saved as "partial"; media target is required for DoD completion).`,
     );
   }
   const reason = String(args.reason ?? "").trim();
@@ -569,7 +562,7 @@ export function toolMarkNodeMediaDeficit(args: {
   if (!current && awaitingScopeSelection(state)) {
     throw new Error(
       `AWAITING SCOPE SELECTION: the province stage is complete. Ask the user for the next scope, ` +
-        `resolve it with resolve_scope_name and call set_active_scope before working on '${args.nodeId}'.`,
+        `call set_active_scope for the explicit scope_id before working on '${args.nodeId}'.`,
     );
   }
 
@@ -649,11 +642,9 @@ export function toolRecordMediaCandidate(args: {
     if (!Number.isFinite(score) || score < 0 || score > 1) throw new Error("score must be a number between 0 and 1.");
   }
 
-  const usedByOtherEntity = globallyUsedMediaUrls(args.provinceId, args.nodeId);
+  const globallyUsed = globallyUsedMediaUrls(args.provinceId, args.nodeId);
   const candidateOwner = state.mediaCandidates.find((m) => m.imageUrl === args.imageUrl && m.nodeId !== args.nodeId);
-  if (usedByOtherEntity.has(args.imageUrl) || candidateOwner) {
-    throw new Error(`MEDIA_GLOBAL_DUPLICATE: image URL is already assigned to another Entity in province '${args.provinceId}'. Each Entity must own a unique photo set.`);
-  }
+  if (globallyUsed.has(args.imageUrl) || candidateOwner) throw new Error(`MEDIA_GLOBAL_DUPLICATE: image URL is already assigned to another Entity. Each Entity must have an independent photo set.`);
 
   // Idempotent by (nodeId, imageUrl).
   const dup = state.mediaCandidates.find((m) => m.nodeId === args.nodeId && m.imageUrl === args.imageUrl);
@@ -687,7 +678,7 @@ export function toolRecordMediaCandidate(args: {
     `Media candidate ${nodeCandidates} recorded for ${args.nodeId} (target ${policy.target}). ` +
     (nodeCandidates >= policy.target
       ? `Target reached — run finalize_media to pick the best set, then save.`
-      : `Keep searching multiple image queries and approved media sources until the entity target is reached; run finalize_media before save.`);
+      : `Keep searching the primary sources and web image search; run finalize_media when done (partial is OK).`);
   writeNotes(state);
 
   const coverage = sourceCoverageFor(state, node.nodeType, args.nodeId);
@@ -984,7 +975,7 @@ export function toolSaveActiveEntity(args: { provinceId: string; entity: PlaceEn
   if (!current && awaitingScopeSelection(state)) {
     dfsWarning =
       `AWAITING SCOPE SELECTION: the province stage is complete. You may save this entity, but to COMPLETE or close ` +
-      `'${args.expectedNodeId}' you must first ask the user for the scope, resolve it with resolve_scope_name and call set_active_scope.`;
+      `'${args.expectedNodeId}' you must first wait for the explicit scope_id and call set_active_scope.`;
   } else if (current && current.nodeId !== args.expectedNodeId) {
     const branch = getCurrentBranch(args.provinceId);
     const branchPath = branch.map((n) => `${n.nodeId}(${n.nodeType})`).join(" → ");
@@ -1080,7 +1071,6 @@ export function toolLinkEntities(args: {
   fromId: string;
   toId: string;
   relationType: string;
-  distanceKm?: number;
   travelTimeMinutes?: number;
   note?: string;
 }) {
@@ -1125,7 +1115,6 @@ export function toolLinkEntities(args: {
     slug: to.entity.slug,
     name: to.entity.name?.fa,
     relationType: args.relationType,
-    ...(args.distanceKm !== undefined ? { distanceKm: args.distanceKm } : {}),
     ...(args.travelTimeMinutes !== undefined ? { travelTimeMinutes: args.travelTimeMinutes } : {}),
     ...(args.note !== undefined ? { note: args.note } : {}),
   };
@@ -1369,7 +1358,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   const missingEvidence: string[] = [];
   for (const e of listEntities(args.provinceId)) {
     if (e.entity.status === "active") {
-      // Media may be partial during research; DoD later requires the target.
+      // Best-effort media policy: no minimum count — only structural problems
       // (over-capacity, images without thumbnail) count as incomplete.
       const media = e.entity.media as any;
       const images = (media?.images as any[]) ?? [];

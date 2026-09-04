@@ -1,33 +1,17 @@
 {
-  "version": "1.0.0",
-  "policy": {
-    "universal": ["id","slug","type","status","name","location","content","evidence","sources","media","relations","seo"],
-    "visit": {
-      "province": {"allowed":["bestSeasons","bestMonths"],"forbidden":["durationMinutes","bestTimeOfDay","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"]},
-      "county": {"allowed":["bestSeasons","bestMonths"],"forbidden":["durationMinutes","bestTimeOfDay","openingHours","entryFee","difficulty","requiresReservation","requiresGuide"]},
-      "city": {"allowed":["bestSeasons","bestMonths","crowdLevel"],"forbidden":["durationMinutes","bestTimeOfDay","openingHours","entryFee","difficulty","requiresReservation","requiresGuide"]},
-      "village": {"allowed":["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],"forbidden":["openingHours"]},
-      "place": {"allowed":["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],"forbidden":[]},
-      "camping": {"allowed":["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],"forbidden":[]}
-    },
-    "scopeFields": {
-      "province": {"recommended":["bestSeasons","bestMonths","climate","transportation","localFoods","souvenirs","faq","tips","warnings","travelChecklist"],"forbidden":["openingHours","entryFee"]},
-      "county": {"recommended":["bestSeasons","bestMonths","climate","transportation","faq","tips","warnings","travelChecklist"],"forbidden":["openingHours","entryFee"]},
-      "city": {"recommended":["bestSeasons","bestMonths","transportation","faq","tips","warnings","travelChecklist"],"forbidden":["openingHours","entryFee"]},
-      "village": {"recommended":["visit","transportation","faq","tips","warnings","travelChecklist"],"forbidden":[]},
-      "place": {"recommended":["visit","transportation","faq","tips","warnings","travelChecklist"],"forbidden":[]},
-      "camping": {"recommended":["visit","transportation","faq","tips","warnings","travelChecklist"],"forbidden":[]}
-    },
-    "costOwnership": {
-      "province":"destination-level costs only: travel-to-destination, lodging, food, local transport; never child POI tickets or child-specific prices",
-      "county":"county-level travel/lodging/food/local transport costs; never child POI costs",
-      "city":"city-level travel/lodging/food/local transport costs; never child POI costs",
-      "village":"village-owned costs and actual village entry/onsite services only",
-      "place":"costs that occur at this exact place: entry, parking, guide, equipment, onsite services",
-      "camping":"camping-site fees and onsite services/equipment"
-    },
-    "faqOwnership":"FAQ questions must be about the current entity. A parent may not use child-specific ticket, opening-hours, facility, or direction questions.",
-    "checklist":"travelChecklist is independent per entity. Use only concrete short packing/checking items relevant to that entity and selected travel mode; never store prose, advice, distances or child information. Common items may repeat, but the checklist must not be copied wholesale from a parent.",
-    "media":"Each entity owns 5 images for province/county/city/place and 3 for village/camping. The same image URL may not be used by two entities. Parent/child/sibling-only images are forbidden. Thumbnail counts toward the target."
+  "version":"1.0.0",
+  "entityTypes": {
+    "province":{"visit":{"allowed":["bestSeasons","bestMonths"],"forbidden":["durationMinutes","bestTimeOfDay","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"]},"costs":"destination-local/stay costs only; never child POI costs","faq":"province-only","checklist":"independent province travel checklist","media":{"target":5,"owner":"province"}},
+    "county":{"visit":{"allowed":["bestSeasons","bestMonths"],"forbidden":["durationMinutes","bestTimeOfDay","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"]},"costs":"county-owned costs only; never child POI costs","faq":"county-only","checklist":"independent county checklist","media":{"target":5,"owner":"county"}},
+    "city":{"visit":{"allowed":["bestSeasons","bestMonths","crowdLevel"],"forbidden":["durationMinutes","bestTimeOfDay","openingHours","entryFee","difficulty","requiresReservation","requiresGuide"]},"costs":"city-owned costs only; never child POI costs","faq":"city-only","checklist":"independent city checklist","media":{"target":5,"owner":"city"}},
+    "village":{"visit":{"allowed":["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],"forbidden":["openingHours"]},"costs":"village-owned costs only","faq":"village-only","checklist":"independent village checklist","media":{"target":3,"owner":"village"}},
+    "place":{"visit":{"allowed":["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],"forbidden":[]},"costs":"costs occurring at this exact place","faq":"place-only","checklist":"independent place checklist","media":{"target":5,"owner":"place"}},
+    "camping":{"visit":{"allowed":["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],"forbidden":[]},"costs":"camping-site fees and onsite services only","faq":"camping-only","checklist":"independent camping checklist","media":{"target":3,"owner":"camping"}}
+  },
+  "globalRules": {
+    "costs":"Parent entities must never duplicate child costs. Aggregation is an application-level calculation.",
+    "faq":"Parent FAQ may reference children in prose only; operational child questions belong on the child Entity.",
+    "checklist":"Every Entity has an independent checklist. Only short concrete items; no prose, prices, routes, distances or child-specific facts.",
+    "media":"Each Entity has an independent photo set. Same image URL cannot be used by two Entities. Parent/child/sibling-only images are forbidden. Thumbnail counts toward target."
   }
 }

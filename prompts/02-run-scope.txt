@@ -1,6 +1,6 @@
 # PLANRO — RUN ONE SCOPE
 
-از قرارداد `prompts/01-start-province.txt` به‌عنوان Master Contract پیروی کن. فقط Scope صریح زیر را اجرا کن؛ نام فارسی، Scope دیگر یا ID حدسی قبول نیست.
+قرارداد اصلی در `01-start-province.txt` است. فقط همین Scope را اجرا کن.
 
 ### RUN VARIABLES
 ```text
@@ -8,15 +8,16 @@ province_id=<PROVINCE_ID>
 scope_id=<SCOPE_ID>
 ```
 
-- Verify MCP/resources before work.
-- Lock exactly this scope and permitted subtree.
-- Read `planro://rules/entity-fields` and apply the field matrix.
-- Visit fields are type-specific: openingHours/entryFee belong primarily to Place/Camping and Village only when the Village itself owns a real ticketed venue; Province/County/City do not get them.
-- Costs belong only to the current Entity; never copy child POI costs into parents.
-- FAQ is current-Entity-only. Parent FAQ cannot be a child FAQ.
-- Checklist is independent per Entity.
-- Media is independent per Entity: 5 images for Province/County/City/Place, 3 for Village/Camping; never reuse an image URL across Entities.
-- Record all five Primary Fact Sources; media never counts as source coverage.
-- Save only through MCP; run DoD + validation; stop after this Scope.
+- MCP و Resourceها را بررسی کن.
+- Scope را دقیقاً lock کن و فقط subtree مجاز آن را اجرا کن.
+- Field policy را از `planro://rules/entity-fields` بخوان.
+- Visit/Costs/FAQ/Checklist/Media باید متعلق به همان Entity باشند.
+- برای Province/County/City openingHours و child-specific entryFee ذخیره نکن.
+- برای Parent هزینه Child یا FAQ Child ذخیره نکن.
+- هر Entity checklist مستقل خودش را داشته باشد.
+- Media: Province/County/City/Place = 5؛ Village/Camping = 3؛ بدون URL تکراری بین Entityها.
+- پنج Primary Source را واقعاً جست‌وجو و با `record_search_result` ثبت کن؛ Media جای Source Coverage نیست.
+- فقط canonical taxonomy IDs را استفاده کن.
+- Save فقط با MCP؛ سپس DoD + validation و توقف.
 
-Do not ask follow-up questions when variables are supplied. If missing, stop with `MISSING_INPUT: <variable>`.
+اگر متغیر ناقص است `MISSING_INPUT: <variable>` بده؛ سؤال نپرس.

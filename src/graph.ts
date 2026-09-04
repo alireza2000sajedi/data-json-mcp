@@ -1,7 +1,6 @@
 import { readNotes, findMediaDeficit } from "./notes.js";
 import { listEntities, ENTITY_NODE_TYPES } from "./dataset.js";
 import { sourceCoverageFor } from "./source-policy.js";
-import { mediaPolicyFor } from "./media.js";
 import type { NotesState, NodeType, NodeRecord, DiscoveryTask } from "./types.js";
 
 /** Fixed required-discovery mapping per node type. */
@@ -148,18 +147,6 @@ export function nodeStatus(provinceId: string, node: NodeRecord): NodeStatus {
   if (pendingDiscovery.length > 0) blockingReasons.push(`pending discovery: ${pendingDiscovery.join(", ")}`);
   if (openCandidates.length > 0) blockingReasons.push(`${openCandidates.length} open candidate(s)`);
   if (openConflicts.length > 0) blockingReasons.push(`${openConflicts.length} open conflict(s)`);
-
-  // Entity-owned media target is part of completion. Partial media may be saved,
-  // but the node is not complete until its own target is reached.
-  if (isEntityType && entityActive) {
-    const stored = listEntities(provinceId).find((e) => e.entity.id === node.nodeId)?.entity as any;
-    const media = stored?.media as any;
-    const urls = new Set<string>();
-    if (media?.thumbnail?.url) urls.add(String(media.thumbnail.url));
-    for (const im of ((media?.images as any[]) ?? [])) if (im?.url) urls.add(String(im.url));
-    const policy = mediaPolicyFor(node.nodeType);
-    if (urls.size < policy.target) blockingReasons.push(`media incomplete: ${urls.size}/${policy.target} unique images owned by this Entity`);
-  }
 
   // A completed discovery track with a declared count must actually have that
   // many child nodes registered. This is what prevents an agent from declaring

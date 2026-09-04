@@ -590,7 +590,3 @@ Discovery تخت ممنوع است. هر Node جغرافیایی هویت، Cont
 در دادهٔ فعلی، `travelChecklist` هر Entity یک چک‌لیست مستقل Type-aware است و برای Province/County/City/Village/Natural/Route/Accommodation/Campground شش دسته لازم دارد. این Schema هنوز فیلد `inheritsFrom` یا مدل delta-only ندارد؛ بنابراین Itemهای Parent را به Child کپی نکن، اما تا زمان طراحی صریح مدل inheritance، آیتم‌های لازم و واقعاً مرتبط همان Child را مطابق Schema ثبت کن.
 
 لایهٔ نمایش می‌تواند Itemهای Parent و Child را با نرمال‌سازی عبارت و semantic deduplication ترکیب کند؛ اما این رفتار نمایش نباید با جعل یا کپی دادهٔ Child پیاده شود. برای تبدیل ذخیره‌سازی به مدل «فقط delta + inheritance» باید Schema، renderer و migration جداگانه طراحی و تصویب شود.
-
-
-## Entity Field Normalization
-See `entity-field-policy.json` for the authoritative applicability matrix by Entity type. The Quality Gate enforces this policy.

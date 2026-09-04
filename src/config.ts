@@ -10,7 +10,6 @@ export interface Config {
   outputDir: string;
   /** Directory holding the administrative checklist input/1.json … input/31.json. */
   inputDir: string;
-  taxonomyDir: string;
 }
 
 function resolveFromEnv(): Config {
@@ -20,7 +19,6 @@ function resolveFromEnv(): Config {
     datasetDir: path.resolve(process.env.PLANRO_DATASET_DIR ?? path.join(repoRoot, "dataset")),
     outputDir: path.resolve(process.env.PLANRO_OUTPUT_DIR ?? path.join(repoRoot, "output")),
     inputDir: path.resolve(process.env.PLANRO_INPUT_DIR ?? path.join(repoRoot, "input")),
-    taxonomyDir: path.resolve(process.env.PLANRO_TAXONOMY_DIR ?? path.join(repoRoot, "taxonomy")),
   };
 }
 
@@ -59,10 +57,9 @@ export function assertSafeSegment(segment: string, label = "segment"): string {
 /** A province id looks like `province-30`; allow it (and reject obvious junk). */
 export function assertProvinceId(provinceId: string): string {
   const raw = assertSafeSegment(provinceId, "provinceId").trim();
-  const numeric = /^\d{1,2}$/.test(raw) ? Number(raw) : null;
-  const canonical = numeric !== null ? `province-${numeric}` : raw;
+  const canonical = /^\d{1,2}$/.test(raw) ? `province-${Number(raw)}` : raw;
   const m = /^province-(\d+)$/.exec(canonical);
-  if (!m) throw new Error(`Invalid provinceId '${raw}'. Use a numeric province id (1..31) or province-{n}.`);
+  if (!m) throw new Error(`Invalid provinceId '${raw}'. Use a numeric province id (1..31) or canonical province-{n}.`);
   const n = Number(m[1]);
   if (n < 1 || n > 31) throw new Error(`provinceId '${raw}' is out of range (1..31).`);
   return canonical;

@@ -1,7 +1,7 @@
 {
   "name": "planro-mcp",
   "version": "0.2.0",
-  "description": "Planro MCP Server — structured, traceable, hierarchy-safe tooling for research agents building the Planro place dataset.",
+  "description": "Planro MCP Server \u2014 structured, traceable, hierarchy-safe tooling for research agents building the Planro place dataset.",
   "type": "module",
   "license": "MIT",
   "engines": {

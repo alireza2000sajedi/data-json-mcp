@@ -1,25 +1,31 @@
-# PLANRO — INITIAL AGENT PROMPT / START_PROVINCE
+# PLANRO — INITIAL AGENT PROMPT / START PROVINCE
 
-تو Agent اصلی جمع‌آوری دیتای Planro هستی. این Prompt تنها Prompt اولیه است و Master Contract پروژه را در خود دارد.
+این فایل Prompt مادرِ شروع پروژه است. بعد از دریافت آن، Agent باید خودش MCP را آماده کند و سپس Province انتخاب‌شده را جمع‌آوری کند.
 
-## 1) MCP bootstrap — mandatory
-قبل از هر تحقیق، خودت workspace را بررسی کن. اگر clone معتبر `data-json-mcp` موجود نیست، این مخزن را clone کن:
+## 1) MCP bootstrap — اجباری
+قبل از هر تحقیق، workspace را بررسی کن. اگر clone معتبر پروژه موجود نیست، خودت اجرا کن:
 `git clone https://github.com/alireza2000sajedi/data-json-mcp.git`
 
-سپس داخل clone: `npm install`، `npm run build` و `npm run verify` را اجرا کن و با `node mcp-client.mjs list-tools` و `node mcp-client.mjs list-resources` اتصال MCP را بررسی کن. بعد Resources و Tools واقعی همان clone را استفاده کن. در نبود MCP، اول bootstrap را اصلاح کن؛ از کاربر فایل یا scope اضافی نخواه.
+سپس داخل clone:
+`npm install`
+`npm run build`
+`npm run verify`
+و برای بررسی اتصال:
+`node mcp-client.mjs list-tools`
+`node mcp-client.mjs list-resources`
 
-## 2) INPUT
-در این Prompt فقط `province_id` از کاربر گرفته می‌شود. اگر عددی بود به `province-{n}` normalize کن. `scope_id` استان را خودت deterministic بساز؛ از کاربر نخواه. هیچ ID را از مثال، نام فارسی، input file یا Context حدس نزن.
+فایل‌ها و Resourceهای واقعی را از همان clone بخوان؛ اگر MCP هنوز متصل نیست، مشکل فنی bootstrap را بررسی کن و فقط در صورت غیرقابل‌اجرا بودن با `MCP_UNAVAILABLE` متوقف شو. نبود فایل/Resource را قبل از تلاش برای clone گزارش نکن و از کاربر فایل نخواه.
 
-### RUN VARIABLES
+## 2) ورودی
+فقط یک ورودی از کاربر لازم است:
 ```text
 province_id=<PROVINCE_ID>
 ```
+`province_id` عددی مثل `1` را خودت به `province-{n}` تبدیل کن. `scope_id` استان را خودت deterministic بساز و از کاربر نخواه.
+اگر province_id خالی/نامعتبر بود: `MISSING_INPUT: province_id` و توقف؛ سؤال تعاملی نپرس.
 
-اگر province_id خالی/نامعتبر بود فقط با `MISSING_INPUT: province_id` متوقف شو؛ سؤال تعاملی نپرس.
-
-## 3) RULES / RESOURCES
-بعد از bootstrap این‌ها را واقعاً بخوان:
+## 3) منابع لازم
+بعد از bootstrap این موارد را بخوان:
 - `planro://rules/readme`
 - `planro://schema/place`
 - `planro://rules/entity-fields`
@@ -28,53 +34,111 @@ province_id=<PROVINCE_ID>
 - `planro://taxonomy`
 - `planro://scopes`
 
-## 4) NORMALIZATION MATRIX
-هر Field باید بر اساس entity type مصرف شود، نه یکسان برای همه:
+## 4) تعریف نوع Entity و کاربرد فیلدها
+ماتریس قطعی در `planro://rules/entity-fields` است.
 
 ### Province
-- Visit: فقط `bestSeasons`, `bestMonths`. `openingHours`, `entryFee`, `durationMinutes`, `bestTimeOfDay`, `difficulty`, `requiresReservation`, `requiresGuide` و crowd جزو Province نیستند.
-- Costs: فقط هزینه‌های سفر به/ماندن در مقصد: accommodation, food/restaurant, local transport, toll/insurance در صورت اثبات. هیچ هزینهٔ بلیت/پارکینگ/راهنما/فعالیت یک Child در Province ذخیره نشود.
-- FAQ: فقط خود استان/سفر به استان. سؤال درباره Childها ممنوع.
-- Checklist: مستقل برای سفر به استان و فقط modeهای مرتبط.
-- Transportation: دسترسی به استان و گره‌های واقعی با مختصات؛ فاصله را ذخیره نکن.
-- Media: 5 تصویر مستقل که استان را به‌عنوان مقصد نشان می‌دهند؛ عکس اختصاصی Child را قرض نگیر.
+Visit فقط: `bestSeasons`, `bestMonths`.
+Opening hours، entry fee، difficulty، guide، reservation، duration و bestTimeOfDay برای خود Province ممنوع است.
+Costs فقط هزینه‌های متعلق به خود مقصد در سطح استان است؛ هزینه بلیت یا خدمت یک Place/Child ممنوع است.
+FAQ، Checklist، Media، Safety و Transportation فقط در سطح خود استان هستند.
 
 ### County
-- Visit: `bestSeasons`, `bestMonths`؛ سایر Visitهای عملیاتی فقط در صورت مدل‌سازی صریح برای همان County و نه Child.
-- Costs: هزینه‌های متعلق به County، نه Child POI.
-- FAQ/Checklist/Media/Transportation: فقط County.
+Visit فقط bestSeasons/bestMonths.
+Costs/FAQ/Checklist/Media/Transportation متعلق به خود County؛ child-specific ممنوع.
 
 ### City
-- Visit: `bestSeasons`, `bestMonths`, optionally crowdLevel. ساعت بازشدن و entry fee برای خود City ممنوع.
-- Costs: هزینه‌های داخل City (اقامت، غذا، حمل‌ونقل و مشابه)؛ Child POI ticket ممنوع.
-- FAQ/Checklist/Media/Transportation: فقط City.
+Visit: bestSeasons/bestMonths و در صورت evidence crowdLevel.
+Opening hours و entry fee و مشخصات عملیاتی Placeهای داخل شهر ممنوع.
 
 ### Village
-- Visit: duration, bestTimeOfDay, bestSeasons, bestMonths و در صورت واقعی بودن entryFee/reservation/guide/difficulty/crowd. openingHours فقط برای یک facility/ticketed venue نیست؛ برای خود Village ممنوع.
-- Costs/FAQ/Checklist/Media: فقط خود Village.
+Visit می‌تواند مدت، زمان روز، فصل، ماه، سختی، reservation، guide، crowd و entryFee داشته باشد فقط وقتی خود Village/خدمت متعلق به Village موضوع است؛ openingHours برای خود Village ممنوع.
 
 ### Place
-- Visit کامل‌ترین مدل: duration, bestTimeOfDay, bestSeasons, bestMonths, openingHours, entryFee, difficulty, reservation, guide, crowd.
-- Costs: فقط هزینه‌ای که در خود Place رخ می‌دهد.
-- FAQ/Checklist/Media: فقط همان Place.
+Visit کامل: duration، bestTimeOfDay، bestSeasons، bestMonths، openingHours، entryFee، difficulty، reservation، guide، crowd.
+Costs فقط هزینه‌هایی که در خود همین Place رخ می‌دهد.
+FAQ/Checklist/Media فقط برای همین Place.
 
 ### Camping
-- Visit کامل، مخصوص اقامت/شب‌مانی و شرایط سایت. Costs برای camping fee و onsite services/equipment. Checklist کاملاً اختصاصی کمپ. FAQ فقط خود کمپ. Media فقط خود کمپ.
+Visit و Costs و Checklist و FAQ و Media مخصوص همان محل کمپینگ.
 
-## 5) OWNERSHIP RULE
-Parent می‌تواند در content به Childها اشارهٔ سطح‌بالا داشته باشد، اما دادهٔ عملیاتی Child را duplicate نمی‌کند: ticket, opening hours, child-specific facilities, child-specific directions, child-specific FAQ, child-specific checklist و child costs باید فقط روی Child باشند.
+## 5) Ownership
+Parent می‌تواند در content به Childها در سطح معرفی اشاره کند، اما نباید operational data را duplicate کند:
+- child ticket
+- child opening hours
+- child facilities
+- child directions
+- child FAQ
+- child checklist
+- child costs
 
-## 6) TAXONOMY
-تنها canonical ID از Global Taxonomy. taxonomy محلی ممنوع. مفهوم جدید فقط proposal و خارج از Entity production.
+این اطلاعات فقط در Child Entity نگهداری می‌شوند و اپ بعداً می‌تواند هزینه‌ها را aggregate کند.
 
-## 7) SOURCES / EVIDENCE
-برای هر Entity پنج Primary Source را به‌صورت FACT research جستجو و با `record_search_result` ثبت کن. Media discovery هرگز جای coverage را نمی‌گیرد. Evidence باید به source ثبت‌شده متصل باشد.
+## 6) Cost model
+هر Entity مالک هزینه خودش است.
+Province/County/City = هزینه‌های سطح مقصد/اقامت/غذا/حمل‌ونقل محلی و مشابه، نه هزینه Placeهای فرزند.
+Place = entry/parking/guide/equipment/onsite service خود Place.
+Camping = camping fee و onsite service.
+قیمت حدس نزن. هزینه‌ای که source معتبر ندارد وارد نکن.
 
-## 8) MEDIA
-برای Province/County/City/Place پنج عکس مستقل و واقعی هدف است؛ برای Village/Camping سه عکس. یک URL نباید در دو Entity استفاده شود. thumbnail جزو همین تعداد است. چند query و منبع رسانه‌ای را بررسی کن و فقط تصاویر متعلق به همان Entity را نگه دار.
+## 7) FAQ model
+FAQ مستقل است.
+Province FAQ درباره سفر و خود استان.
+County FAQ درباره خود County.
+City FAQ درباره خود City.
+Village FAQ درباره خود Village.
+Place FAQ درباره خود Place.
+Camping FAQ درباره خود Camping.
+سؤال‌های child-specific در Parent ممنوع.
 
-## 9) CHECKLIST
-`travelChecklist` برای هر Entity مستقل است. فقط آیتم کوتاه و ملموس باشد، نه جمله، توصیه، فاصله، اطلاعات Child یا متن تحقیق. modeهای نامرتبط حذف شوند. کپی کامل checklist از Parent ممنوع.
+## 8) Checklist model
+`travelChecklist` برای هر Entity مستقل است.
+فقط آیتم‌های کوتاه و ملموس مثل «کارت ملی»، «شارژر»، «زنجیر چرخ».
+جمله، توصیه، فاصله، قیمت، مسیر، نام Child یا توضیح تحقیقاتی Checklist نیست.
+کپی کامل Checklist از Parent/Child ممنوع؛ فقط آیتم مشترکی که واقعاً مرتبط است مجاز است.
 
-## 10) COMPLETION
-بعد از Save، `check_definition_of_done` و `validate_province` را اجرا کن. Scope فقط وقتی کامل است که Validation بدون خطای blocking باشد، source coverage کامل باشد، هزینهٔ همان Entity وجود داشته باشد و media target همان Entity رسیده باشد. بعد متوقف شو و Scope بعدی را انتخاب نکن.
+## 9) Media model
+هر Entity مجموعه عکس مستقل دارد:
+- Province: 5 عکس
+- County: 5 عکس
+- City: 5 عکس
+- Place: 5 عکس
+- Village: 3 عکس
+- Camping: 3 عکس
+Thumbnail جزو همین تعداد است.
+یک image URL نباید بین دو Entity تکرار شود.
+عکس Child/Parent/Sibling برای Entity دیگر قابل استفاده نیست.
+برای Province عکس باید واقعاً نماینده خود استان باشد، نه صرفاً یک Place معروف داخل آن.
+چند جستجوی مستقل انجام بده و از اولین ۱–۲ عکس متوقف نشو.
+
+## 10) Sources / Evidence
+پنج Primary Source تعریف‌شده در Source Policy را برای هر Node واقعاً بررسی کن و با `record_search_result` ثبت کن؛ no-result/unreachable نیز باید ثبت شود.
+Media discovery هرگز جای Fact Source Coverage نیست.
+هر Evidence باید به Source ثبت‌شده متصل باشد.
+متن کاربر نباید شامل query، search engine، یادداشت تحقیق، تناقض منبع یا فرآیند جمع‌آوری باشد.
+
+## 11) Taxonomy
+همه type/subType/category/activity/feature/facility/risk فقط از Global Taxonomy.
+اگر مفهوم reusable پیدا نشد، فقط proposal در Agent Taxonomy ثبت کن و وارد production Entity نکن.
+Taxonomy داخل Province/Scope کپی نشود.
+
+## 12) کیفیت متن
+فارسی طبیعی، دقیق و evidence-driven بنویس. متن نباید شبیه گزارش تحقیق یا متن ماشینی باشد. ادعای مطلق/مقایسه‌ای بدون evidence اختصاصی ممنوع.
+
+## 13) Location / Transport
+بهترین مختصات قابل اتکا را بگیر و در صورت وجود bounding box را ثبت کن.
+Distance مشتق‌شده را در Entity ذخیره نکن؛ مختصات برای محاسبه در اپ کافی است.
+Transport فقط node/route مرتبط با همان Scope باشد.
+
+## 14) Completion
+ابتدا `import_province_scopes` را اجرا کن.
+سپس فقط Province root را تحقیق کن؛ County/City/Village/Place فرزندان را در این مرحله deep-research نکن.
+Province فقط وقتی Complete است که schema، taxonomy، source coverage، evidence، normalized fields، FAQ، independent checklist، cost ownership و media target را پاس کند.
+سپس `check_definition_of_done` و validation را اجرا کن.
+بعد از موفقیت متوقف شو و Scope بعدی را خودکار انتخاب نکن.
+
+## 15) RUN VARIABLES — پایین فایل را مستقیم پر کن
+```text
+province_id=<PROVINCE_ID>
+```
+هرگز برای Province از کاربر `scope_id`، نام استان یا مسیر فایل درخواست نکن.

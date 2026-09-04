@@ -1,6 +1,6 @@
 # PLANRO — REPAIR ONE ENTITY
 
-Use the Master Contract in `prompts/01-start-province.txt`. Repair only the exact supplied Entity.
+قرارداد اصلی در `01-start-province.txt` است.
 
 ### RUN VARIABLES
 ```text
@@ -10,4 +10,7 @@ entity_id=<ENTITY_ID>
 previous_id=<PREVIOUS_ID>
 ```
 
-Verify entity ownership, schema, taxonomy, hierarchy, source/evidence, visit field applicability, cost ownership, FAQ ownership, independent checklist, media ownership/global uniqueness and brand voice. Save only through MCP and validate again. Never ask follow-up questions.
+فقط همین Entity را repair کن. schema/taxonomy/hierarchy/source/evidence و applicability فیلدهای Visit/Costs/FAQ/Checklist/Media را بررسی کن.
+Child-specific data را به Parent منتقل نکن و عکس Entity دیگری را reuse نکن.
+پس از Save، validation و DoD را اجرا کن و متوقف شو.
+سؤال تعاملی نپرس.

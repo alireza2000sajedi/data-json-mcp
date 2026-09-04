@@ -1,6 +1,6 @@
 # PLANRO — RESUME ONE SCOPE
 
-Use the Master Contract in `prompts/01-start-province.txt`. Continue only the supplied Scope.
+قرارداد اصلی در `01-start-province.txt` است.
 
 ### RUN VARIABLES
 ```text
@@ -9,4 +9,6 @@ scope_id=<SCOPE_ID>
 previous_id=<PREVIOUS_ID>
 ```
 
-Read state first. Resume from the first incomplete item after `previous_id`; do not regenerate completed work unnecessarily. Preserve all field normalization, cost/FAQ/checklist ownership, source coverage, evidence, taxonomy and Entity-owned media rules. Do not ask follow-up questions. Stop after Scope completion.
+State فعلی را از MCP بخوان و از اولین مورد ناقص بعد از previous_id ادامه بده. کار کامل را بی‌دلیل تکرار نکن.
+همه قواعد Normalize فیلدها، ownership هزینه/FAQ/Checklist، taxonomy، sources/evidence و media مستقل را حفظ کن.
+سؤال تعاملی نپرس. بعد از تکمیل همان Scope متوقف شو.

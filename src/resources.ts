@@ -9,7 +9,6 @@ import { getScopeState, nextRequiredNode, traverse, administrativePath, nodeStat
 import { listEntities } from "./dataset.js";
 import { readReadme } from "./schemas.js";
 import { buildScopeRegistry, listProvinceScopesIndex } from "./scopes.js";
-import { getTaxonomy } from "./taxonomy.js";
 
 function jsonResource(uri: string, data: unknown): ReadResourceResult {
   return { contents: [{ uri, mimeType: "application/json", text: JSON.stringify(data, null, 2) }] };
@@ -37,7 +36,16 @@ export function registerResources(server: McpServer): void {
     textResource(uri.href, readReadme(), "text/markdown"),
   );
 
-  server.registerResource("entity-field-policy", "planro://rules/entity-fields", { title:"Entity field policy", description:"Normalization matrix for field applicability by entity type.", mimeType:"application/json" }, async (uri) => textResource(uri.href, fs.readFileSync(path.join(config.datasetDir,"entity-field-policy.json"),"utf8"), "application/json"));
+  server.registerResource("entity-fields", "planro://rules/entity-fields", { title:"Entity field applicability", description:"Normalized field policy by entity type.", mimeType:"application/json" }, async (uri) => {
+    const text = fs.readFileSync(path.join(config.datasetDir, "entity-field-policy.json"), "utf8");
+    return textResource(uri.href, text, "application/json");
+  });
+
+  server.registerResource("taxonomy", "planro://taxonomy", { title:"Global Planro taxonomy", description:"Shared canonical taxonomy catalogs.", mimeType:"application/json" }, async (uri) => {
+    const names = ["types","subtypes","categories","activities","features","facilities","risks"];
+    const data = Object.fromEntries(names.map((n) => [n, JSON.parse(fs.readFileSync(path.join(path.resolve(config.datasetDir, ".."), "taxonomy", `${n}.json`), "utf8"))]));
+    return jsonResource(uri.href, data);
+  });
 
   server.registerResource("place-schema", "planro://schema/place", { title: "Place schema", mimeType: "application/json" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "place.schema.json"), "utf8");
@@ -68,11 +76,6 @@ export function registerResources(server: McpServer): void {
     const text = fs.readFileSync(path.join(config.datasetDir, "brand_voice.md"), "utf8");
     return textResource(uri.href, text, "text/markdown");
   });
-
-  server.registerResource("taxonomy", "planro://taxonomy", { title:"Global Planro taxonomy", description:"Shared taxonomy for all entities and provinces.", mimeType:"application/json" }, async (uri) => jsonResource(uri.href, getTaxonomy()));
-
-  const taxonomyTpl = new ResourceTemplate("planro://taxonomy/{domain}", { list: undefined });
-  server.registerResource("taxonomy-domain", taxonomyTpl, { title:"Taxonomy domain", description:"One shared taxonomy catalog.", mimeType:"application/json" }, async (uri) => { const domain=uri.pathname.split("/")[2]; const t=getTaxonomy() as any; if(!domain || !(domain in t)) throw new Error(`Unknown taxonomy domain '${domain}'.`); return jsonResource(uri.href,t[domain]); });
 
   // --- scope registry resources (dedicated scope ids) ---
   server.registerResource("scopes-index", "planro://scopes", { title: "All province scope ids", description: "Index of the 31 provinces with their county scope ids and counts — the entry point of the staged workflow (Scope A).", mimeType: "application/json" }, async (uri) =>

@@ -1,13 +1,11 @@
-# Planro Agent Prompts
+# Prompt Sequence
 
-`01-start-province.txt` is the initial prompt and contains the complete master contract plus MCP bootstrap.
+1. `01-start-province.txt` — Prompt مادر + Bootstrap MCP + شروع Province. فقط `province_id` می‌گیرد.
+2. `02-run-scope.txt` — اجرای یک Scope مشخص.
+3. `03-resume.txt` — ادامه یک Scope با `previous_id`.
+4. `04-repair-entity.txt` — تعمیر یک Entity مشخص.
+5. `05-final-audit-minify.txt` — Audit نهایی.
 
-- `01-start-province.txt`: user provides only `province_id`; Agent clones/loads MCP and starts the Province Scope.
-- `02-run-scope.txt`: user provides `province_id` + exact `scope_id`.
-- `03-resume.txt`: user provides `province_id` + `scope_id` + `previous_id`.
-- `04-repair-entity.txt`: user provides `province_id` + `scope_id` + `entity_id` (+ optional `previous_id`).
-- `05-final-audit-minify.txt`: user provides `final_audit=true` after the full dataset is complete.
+هر Entity Visit/Costs/FAQ/Checklist/Media مستقل دارد. Parent نباید operational data مربوط به Child را duplicate کند.
 
-No real production IDs are embedded in these prompts.
-
-All prompts follow the global field normalization in `dataset/entity-field-policy.json`: Visit, Costs, FAQ, Checklist and Media are owned by the current Entity and must not leak child-specific operational data into parents.
+Media target: Province/County/City/Place = 5 unique images؛ Village/Camping = 3 unique images. هیچ image URL بین Entityها reuse نمی‌شود.

@@ -1,10 +1,26 @@
 # PLANRO — FINAL GLOBAL AUDIT + MINIFY
 
-Use the Master Contract in `prompts/01-start-province.txt`.
+قرارداد اصلی در `01-start-province.txt` است.
 
 ### RUN VARIABLES
 ```text
 final_audit=true
 ```
 
-Audit every Entity against `planro://rules/entity-fields`: type-specific Visit, costs owned by current Entity, current-Entity FAQ, independent checklist, Entity-owned media, global media URL uniqueness, taxonomy, evidence/source coverage, hierarchy, language and publication eligibility. Repair all blocking issues. Do not fabricate data. Only after global validation passes, minify production JSON files.
+کل Dataset را Audit کن:
+- schema و type/subType
+- Global Taxonomy
+- hierarchy و duplicate IDs/slugs
+- source coverage و evidence
+- Visit field applicability
+- Cost ownership: parent نباید child cost داشته باشد
+- FAQ ownership: parent نباید child FAQ داشته باشد
+- independent Checklist
+- Media ownership و uniqueness و target
+- safety/transport correctness
+- brand voice و فارسی طبیعی
+- forbidden fields
+
+تا رفع تمام blocking issueها minify یا publish نکن. داده را برای رد شدن Audit جعل نکن.
+پس از global validation موفق، JSONهای production را بدون تغییر معنای داده minify کن.
+سؤال تعاملی نپرس.

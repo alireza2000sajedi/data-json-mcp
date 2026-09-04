@@ -13,7 +13,10 @@
     "name",
     "location",
     "content",
-    "evidence"
+    "visit",
+    "evidence",
+    "travelChecklist",
+    "faq"
   ],
   "properties": {
     "id": {
@@ -55,11 +58,10 @@
     },
     "categories": {
       "type": "array",
-      "uniqueItems": true,
       "items": {
-        "type": "string",
-        "pattern": "^[a-z][a-z0-9_-]*$"
-      }
+        "type": "string"
+      },
+      "uniqueItems": true
     },
     "name": {
       "type": "object",
@@ -507,32 +509,67 @@
           }
         }
       },
-      "minProperties": 1,
-      "description": "Visit data is entity-type-specific. Province uses bestSeasons/bestMonths only; openingHours and entryFee belong to ticketed places/camping/village-owned facilities when applicable."
+      "minProperties": 1
     },
     "features": {
       "type": "array",
       "uniqueItems": true,
+      "description": "به‌جای بولین‌های بسته. نبودن آیتم = نامشخص؛ منفی صریح با پیشوند not_",
       "items": {
-        "type": "string",
-        "pattern": "^[a-z][a-z0-9_-]*$"
+        "enum": [
+          "family_friendly",
+          "kids_friendly",
+          "elderly_friendly",
+          "wheelchair_accessible",
+          "not_wheelchair_accessible",
+          "pet_friendly",
+          "not_pet_friendly",
+          "photography",
+          "photography_restricted",
+          "camping",
+          "hiking",
+          "cycling",
+          "swimming",
+          "romantic",
+          "adventure",
+          "eco_tourism",
+          "religious_site",
+          "sunrise_spot",
+          "sunset_spot",
+          "stargazing"
+        ]
       }
     },
     "facilities": {
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "type": "string",
-        "pattern": "^[a-z][a-z0-9_-]*$"
+        "enum": [
+          "parking",
+          "toilet",
+          "prayer_room",
+          "restaurant",
+          "cafe",
+          "buffet",
+          "souvenir_shop",
+          "accommodation_nearby",
+          "atm",
+          "first_aid",
+          "drinking_water",
+          "wifi",
+          "guide_service",
+          "ticket_office",
+          "rest_area",
+          "playground"
+        ]
       }
     },
     "activities": {
       "type": "array",
-      "uniqueItems": true,
       "items": {
-        "type": "string",
-        "pattern": "^[a-z][a-z0-9_-]*$"
-      }
+        "type": "string"
+      },
+      "uniqueItems": true
     },
     "scores": {
       "type": "object",
@@ -646,10 +683,8 @@
       "properties": {
         "risks": {
           "type": "array",
-          "uniqueItems": true,
           "items": {
-            "type": "string",
-            "pattern": "^[a-z][a-z0-9_-]*$"
+            "type": "string"
           }
         },
         "mobileCoverage": {
@@ -701,7 +736,7 @@
           "items": {
             "$ref": "#/$defs/mediaItem"
           },
-          "description": "تصاویر مستقل و متعلق به همین Entity؛ هدف ۵ تصویر برای استان/شهرستان/شهر/مکان و ۳ برای روستا/کمپینگ. همان URL نباید در Entity دیگری تکرار شود.",
+          "description": "۰ تا حداکثر ۲۰ لینک مستقیم تصویر مرتبط و غیرتکراری (سیاست Best-Effort §9). هدف (target): استان/شهرستان/شهر/مکان/کمپینگ ۱۰ تصویر، روستا ۳ تصویر؛ هر تعداد پیدا شده (حتی ۱ تصویر) ذخیره می‌شود (status=partial) و نباید دور انداخته شود؛ ۰ تصویر = ذخیره بدون media با status=unavailable. تصاویر وب (جستجوی تصویر گوگل/بینگ، سایت‌های گردشگری و خبری) با کردیت و sourceUrl معتبر و لایسنس all-rights-reserved پذیرفته می‌شود.",
           "minItems": 0,
           "maxItems": 20
         },
@@ -723,7 +758,8 @@
             "$ref": "#/$defs/mediaItem"
           }
         }
-      }
+      },
+      "description": "Entity-owned media. Never reuse an image URL across Entities. Target 5 images for province/county/city/place and 3 for village/camping; thumbnail counts toward target."
     },
     "relations": {
       "type": "array",
@@ -755,12 +791,6 @@
               "same_route",
               "alternative",
               "gateway_city"
-            ]
-          },
-          "distanceKm": {
-            "type": [
-              "number",
-              "null"
             ]
           },
           "travelTimeMinutes": {
@@ -832,7 +862,8 @@
             "minLength": 1
           }
         }
-      }
+      },
+      "description": "Entity-local FAQ. Parent FAQs must not ask child-specific operational questions."
     },
     "tips": {
       "type": "array",
@@ -1157,7 +1188,7 @@
     },
     "travelChecklist": {
       "type": "object",
-      "description": "چک‌لیست مستقل همین Entity؛ فقط آیتم‌های کوتاه و ملموس. برای هر Entity، فقط modeهای واقعاً مرتبط را نگه دار.",
+      "description": "Independent Entity-local checklist. Include only short, concrete items relevant to the current Entity and selected travel mode; do not copy a parent/child checklist wholesale.",
       "additionalProperties": false,
       "properties": {
         "tour": {
@@ -1372,7 +1403,8 @@
         "calculationNotes": {
           "type": "string"
         }
-      }
+      },
+      "description": "Costs belong to the current Entity only. Child costs are stored on child Entities and may be aggregated by the application later. estimatedVisitTotal must cover only costs owned by the current Entity."
     }
   },
   "$defs": {
@@ -1629,130 +1661,6 @@
               },
               "images": {
                 "maxItems": 20
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "anyOf": [
-          {
-            "properties": {
-              "type": {
-                "const": "city"
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          {
-            "properties": {
-              "type": {
-                "const": "village"
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          {
-            "properties": {
-              "type": {
-                "const": "natural"
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          {
-            "properties": {
-              "type": {
-                "const": "route"
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          {
-            "properties": {
-              "type": {
-                "const": "accommodation"
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          {
-            "properties": {
-              "type": {
-                "const": "other"
-              },
-              "subType": {
-                "enum": [
-                  "province",
-                  "county"
-                ]
-              }
-            },
-            "required": [
-              "type",
-              "subType"
-            ]
-          },
-          {
-            "properties": {
-              "type": {
-                "const": "recreational"
-              },
-              "subType": {
-                "const": "campground"
-              }
-            },
-            "required": [
-              "type",
-              "subType"
-            ]
-          }
-        ]
-      },
-      "then": {
-        "required": [
-          "travelChecklist"
-        ],
-        "properties": {
-          "travelChecklist": {
-            "required": [
-              "tour",
-              "personalCar",
-              "airplane",
-              "camping",
-              "train",
-              "bus"
-            ],
-            "properties": {
-              "tour": {
-                "minItems": 1
-              },
-              "personalCar": {
-                "minItems": 1
-              },
-              "airplane": {
-                "minItems": 1
-              },
-              "camping": {
-                "minItems": 1
-              },
-              "train": {
-                "minItems": 1
-              },
-              "bus": {
-                "minItems": 1
               }
             }
           }
@@ -2023,7 +1931,223 @@
           }
         }
       }
+    },
+    {
+      "if": {
+        "required": [
+          "type",
+          "subType"
+        ],
+        "properties": {
+          "type": {
+            "const": "other"
+          },
+          "subType": {
+            "const": "province"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "visit": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "durationMinutes"
+                  ]
+                },
+                {
+                  "required": [
+                    "bestTimeOfDay"
+                  ]
+                },
+                {
+                  "required": [
+                    "openingHours"
+                  ]
+                },
+                {
+                  "required": [
+                    "entryFee"
+                  ]
+                },
+                {
+                  "required": [
+                    "difficulty"
+                  ]
+                },
+                {
+                  "required": [
+                    "requiresReservation"
+                  ]
+                },
+                {
+                  "required": [
+                    "requiresGuide"
+                  ]
+                },
+                {
+                  "required": [
+                    "crowdLevel"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type",
+          "subType"
+        ],
+        "properties": {
+          "type": {
+            "const": "other"
+          },
+          "subType": {
+            "const": "county"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "visit": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "durationMinutes"
+                  ]
+                },
+                {
+                  "required": [
+                    "bestTimeOfDay"
+                  ]
+                },
+                {
+                  "required": [
+                    "openingHours"
+                  ]
+                },
+                {
+                  "required": [
+                    "entryFee"
+                  ]
+                },
+                {
+                  "required": [
+                    "difficulty"
+                  ]
+                },
+                {
+                  "required": [
+                    "requiresReservation"
+                  ]
+                },
+                {
+                  "required": [
+                    "requiresGuide"
+                  ]
+                },
+                {
+                  "required": [
+                    "crowdLevel"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "city"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "visit": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "durationMinutes"
+                  ]
+                },
+                {
+                  "required": [
+                    "bestTimeOfDay"
+                  ]
+                },
+                {
+                  "required": [
+                    "openingHours"
+                  ]
+                },
+                {
+                  "required": [
+                    "entryFee"
+                  ]
+                },
+                {
+                  "required": [
+                    "difficulty"
+                  ]
+                },
+                {
+                  "required": [
+                    "requiresReservation"
+                  ]
+                },
+                {
+                  "required": [
+                    "requiresGuide"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "village"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "visit": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "openingHours"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   ],
-  "x-planro-field-policy": "dataset/entity-field-policy.json"
+  "x-planro-field-policy": "entity-field-policy.json"
 }
