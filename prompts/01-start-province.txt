@@ -35,7 +35,28 @@ province_id=<PROVINCE_ID>
 - `planro://rules/source-policy`
 - `planro://rules/brand-voice-guide`
 - `planro://taxonomy`
+- `planro://taxonomy/agent`
 - `planro://scopes`
+
+## 3-b) SPEED MODE — سرعت بدون خراب‌کردن داده
+هدف: سریع‌تر تمام کن، نه ساده‌تر.
+
+اجازه داری:
+- جستجوهای یک Entity را موازی کن (۵ Primary + مختصات/نقشه + media wave)
+- از `discover_subtree` برای صف Queryها استفاده کن
+- Queryهای فارسی/انگلیسی/نام جایگزین را هم‌زمان بزن
+- Source Matrix را بخوان تا دوباره‌کاری نکنی
+- متن را کوتاه و Factمحور بنویس؛ بازنویسی‌های اضافه نکن
+- `costs` و `evidence` حذف شده‌اند — دنبالشان نرو
+
+اجازه نداری (داده را خراب می‌کند):
+- حذف/رد Village، Place، Source، تصویر، یا Cross-check برای «زودتر تمام شدن»
+- کم‌کردن Coverage پنج Primary یا media target
+- save موازی / چند `save_active_entity` هم‌زمان روی Nodeهای مختلف
+- رد شدن از DoD یا commit وقتی `complete:false` / `invalid>0`
+- id جعلی taxonomy داخل Entity؛ staging فقط در `taxonomy/agent-taxonomy/`
+
+ترتیب امن: تحقیق موازی → یک save خطی از MCP → DoD/validate → تحویل git.
 
 ## 4) تعریف نوع Entity و کاربرد فیلدها
 ماتریس قطعی در `planro://rules/entity-fields` است.

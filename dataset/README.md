@@ -254,20 +254,20 @@ localFoods.name/description, souvenirs.name/description
 ## 5-1. سرعت بدون کاهش کیفیت
 
 برای افزایش سرعت، تحقیق باید موازی باشد ولی ذخیره‌سازی و Git خطی بماند.
+`costs` و `evidence` از قرارداد حذف شده‌اند و نباید دوباره تحقیق شوند.
 
 ```text
 برای هر Entity جاری، هم‌زمان:
 A. ساختار اداری، نام‌ها و جمعیت
 B. مختصات، نشانی و نقشه
 C. Placeها، Villageها و Camping
-D. Sourceها
+D. Sourceها (۵ Primary)
 E. Media (Commons + جستجوی تصویر وب)
-F. Costها و قیمت‌ها
 ```
 
 - ابتدا فقط فهرست کامل Candidateهای همان سطح را کشف و در notes/صف تحقیق ثبت کن؛ سپس همان County/City/Village را تا پایان چرخه کامل کن. تا تکمیل آن سطح به County بعدی نرو.
 - Queryهای فارسی، انگلیسی و نام‌های جایگزین یک Entity را تا حد ممکن هم‌زمان اجرا کن.
-- Searchهای مستقل Nominatim، OSM، Google Maps، Commons و پنج منبع تصادفی گردشگری برای همان Entity موازی‌اند.
+- Searchهای مستقل Nominatim، OSM، Google Maps، Commons و پنج منبع Primary برای همان Entity موازی‌اند.
 - از Source Matrix فشرده در notes استفاده کن تا Query یا Source بررسی‌شده دوباره‌کاری نشود.
 - داده‌های واقعاً مشترک و Sourceدار، مانند نودهای حمل‌ونقل، مرز اداری و Sourceهای رسمی، در Reference مرکزی نگه‌داری و به Entityها ارجاع شوند؛ Fact اختصاصی هر Entity همچنان جدا تحقیق می‌شود.
 - Media را به‌صورت یک Wave جدا برای همان Entity جمع کن؛ ابتدا Category و نام انگلیسی/فارسی Entity در Commons، سپس جستجوی تصویر وب عمومی (گوگل/بینگ، سایت‌های فارسی گردشگری و خبری) تا رسیدن به حداقلِ تصویرِ نوع همان Entity (§12).

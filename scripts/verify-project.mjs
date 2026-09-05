@@ -238,11 +238,21 @@ ok(
   "prompts/02: must state that one Scope means the whole subtree (county + cities/villages/places).",
 );
 ok(
+  /SPEED MODE/.test(prompts[0]) && /موازی/.test(prompts[0]) && /خطی/.test(prompts[0]),
+  "prompts/01: SPEED MODE (parallel research, linear save) is missing.",
+);
+ok(
+  /حذف/.test(prompts[0]) && /Primary|media target|Source/.test(prompts[0]),
+  "prompts/01: SPEED MODE must still forbid cutting Source/media/quality for speed.",
+);
+ok(/SPEED MODE/.test(prompts[1]), "prompts/02: SPEED MODE reference missing.");
+ok(/SPEED MODE/.test(prompts[2]), "prompts/03: SPEED MODE reference missing.");
+ok(
   /planro:\/\/taxonomy\/agent|agent-taxonomy\//.test(prompts[0]) && /taxonomy\/agent-taxonomy\//.test(prompts[0]),
   "prompts/01: missing-concept → create item in taxonomy/agent-taxonomy/ (parallel catalogs) is missing.",
 );
 ok(
-  /agent-taxonomy/.test(prompts[0]) && /(نبود|اضافه)/.test(prompts[0]),
+  /agent-taxonomy/.test(prompts[0]) && /(نبود|اضافه|ساختم)/.test(prompts[0]),
   "prompts/01: end-of-province report for missing taxonomy items is missing.",
 );
 // Delivery stage: DoD+validate → git status/add output → commit/push; no commit if DoD fails

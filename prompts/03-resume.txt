@@ -11,6 +11,7 @@ previous_id=<PREVIOUS_ID>
 اگر در Task جاری مقدار واقعی `previous_id` آمده باشد، همان authoritative است و placeholder بالا نادیده گرفته می‌شود؛ در نبود مقدار واقعی `MISSING_INPUT: previous_id` بده و متوقف شو.
 
 State فعلی را از MCP بخوان و از اولین مورد ناقص بعد از previous_id ادامه بده. کار کامل را بی‌دلیل تکرار نکن.
+SPEED MODE: تحقیق موازی OK؛ save/DoD/git خطی؛ بدون حذف Source/media/subtree.
 همه قواعد Normalize فیلدها، ownership FAQ/Checklist، taxonomy، sources و media مستقل را حفظ کن.
 سؤال تعاملی نپرس. بعد از تکمیل همان Scope متوقف شو.
 
