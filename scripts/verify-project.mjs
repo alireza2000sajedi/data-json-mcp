@@ -188,6 +188,27 @@ ok(
   /authoritative/i.test(prompts[0]),
   "prompts/01: the runtime-input contract (a real province_id in the current task is authoritative) is missing.",
 );
+ok(
+  /زیردرخت|subtree/i.test(prompts[1]),
+  "prompts/02: must state that one Scope means the whole subtree (county + cities/villages/places).",
+);
+// Delivery stage: DoD+validate → git status/add output → commit/push; no commit if DoD fails
+prompts.forEach((t, i) => {
+  const file = `prompts/${PROMPT_FILES[i]}`;
+  ok(/check_definition_of_done/.test(t), `${file}: delivery stage missing check_definition_of_done.`);
+  ok(/validate_province/.test(t), `${file}: delivery stage missing validate_province.`);
+  ok(/git status --short output\//.test(t), `${file}: delivery stage missing 'git status --short output/'.`);
+  ok(/git add output\//.test(t), `${file}: delivery stage missing 'git add output/'.`);
+  ok(/commit ممنوع/.test(t), `${file}: delivery stage must forbid commit when DoD fails ('commit ممنوع').`);
+});
+
+// --- 7b. output/ must stay trackable by git ---------------------------------
+const gitignore = exists(".gitignore") ? read(".gitignore") : "";
+const ignoreLines = gitignore.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+ok(
+  !ignoreLines.some((l) => l === "output" || l === "output/" || l === "/output" || l === "/output/"),
+  ".gitignore must NOT ignore output/ — dataset files produced by the pipeline must be commit-able.",
+);
 
 // --- 8. removed tooling stays removed ---------------------------------------
 const srcFiles = fs.readdirSync(path.join(ROOT, "src")).filter((f) => f.endsWith(".ts"));

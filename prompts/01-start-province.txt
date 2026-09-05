@@ -154,7 +154,17 @@ Province فقط وقتی Complete است که schema، taxonomy، source coverag
 10. وقتی `awaitingScopeSelection=true` شد، متوقف شو؛ Scope بعدی را از `planro://scopes/{provinceId}` به کاربر پیشنهاد بده و فقط با `set_active_scope` ادامه بده.
 `mark_node_complete` مستقیم وجود ندارد؛ فقط از طریق `update_notes` انجام می‌شود. ابزار `resolve_scope_name` هم حذف شده است: برای تبدیل نام به id از `planro://scopes/{provinceId}` و `indexByName` استفاده کن.
 
-## 16) RUN VARIABLES — پایین فایل را مستقیم پر کن
+## 16) تحویل (Delivery) — بعد از DoD موفق اجباری است
+1. `check_definition_of_done` باید `complete:true` باشد و `validate_province` باید `invalid:0` باشد.
+2. اگر DoD یا validation پاس نشد، **commit ممنوع** است؛ فقط تعمیر کن و دوباره همان دو ابزار را بزن.
+3. پس از پاس شدن هر دو، خروجی را به git بسپار:
+   - `git status --short output/`
+   - `git add output/`
+   - commit با پیام واضح برای همین Scope
+   - `git push` (شکست push مانع commit محلی نیست، ولی تلاش اجباری است)
+هرگز `output/` را به `.gitignore` برنگردان.
+
+## 17) RUN VARIABLES — پایین فایل را مستقیم پر کن
 ```text
 province_id=<PROVINCE_ID>
 ```

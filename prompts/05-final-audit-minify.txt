@@ -24,3 +24,8 @@ final_audit=true
 تا رفع تمام blocking issueها minify یا publish نکن. داده را برای رد شدن Audit جعل نکن.
 پس از global validation موفق، JSONهای production را بدون تغییر معنای داده minify کن.
 سؤال تعاملی نپرس.
+
+## تحویل (Delivery)
+1. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
+2. اگر DoD پاس نشد، **commit ممنوع**.
+3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.

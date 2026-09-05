@@ -15,3 +15,8 @@ previous_id=<PREVIOUS_ID>
 Child-specific data را به Parent منتقل نکن و عکس Entity دیگری را reuse نکن.
 پس از Save، validation و DoD را اجرا کن و متوقف شو.
 سؤال تعاملی نپرس.
+
+## تحویل (Delivery)
+1. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
+2. اگر DoD پاس نشد، **commit ممنوع**.
+3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.

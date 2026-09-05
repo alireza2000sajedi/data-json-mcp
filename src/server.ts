@@ -62,8 +62,14 @@ export function createServer(): McpServer {
 
   register(
     "set_active_scope",
-    "Stage 2 (User Selection): lock the run to ONE scope subtree by its dedicated id (or null to reset to province-wide). DFS order, next-node and completion are then restricted to that scope only; everything else stays pending for separate runs.",
-    { provinceId: z.string().min(1), nodeId: z.string().min(1).nullable() },
+    "Stage 2 (User Selection): lock the run to ONE scope subtree. Accepts a dedicated id (county-30-6), a bare county index (1 → county-{p}-1), a shorthand (county-6), or a Persian name (ambiguous cross-branch names are rejected; same-branch duplicates pick the broader unit). Optional expectedType disambiguates (e.g. ملایر + city). Pass null to reset to province-wide. DFS / next-node / completion then stay inside that subtree.",
+    {
+      provinceId: z.string().min(1),
+      nodeId: z.string().min(1).nullable(),
+      expectedType: z
+        .enum(["province", "county", "city", "village", "place", "camping", "district", "ruralDistrict"])
+        .optional(),
+    },
     toolSetActiveScope,
   );
 
@@ -277,8 +283,8 @@ export function createServer(): McpServer {
 
   register(
     "list_pending_nodes",
-    "Return the full work queue: every incomplete node in depth-first order. When pending:0, returns a reminder to run DoD checks before final report.",
-    { provinceId: z.string().min(1) },
+    "Return the work queue for the effective scope (selected subtree, or province-stage nodes) in DFS order. Pass allScopes:true to list every unfinished node in the province. When pending:0, returns a reminder to run DoD checks before the final report.",
+    { provinceId: z.string().min(1), allScopes: z.boolean().optional() },
     toolListPendingNodes,
   );
 

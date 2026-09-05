@@ -24,7 +24,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "planro-e2e-"));
@@ -35,7 +35,7 @@ if (!fs.existsSync(path.join(ROOT, "dist", "tools.js"))) {
   process.exit(1);
 }
 
-const tools = await import(path.join(ROOT, "dist", "tools.js"));
+const tools = await import(pathToFileURL(path.join(ROOT, "dist", "tools.js")).href);
 
 // --- tiny assertion harness -------------------------------------------------
 let passed = 0;
@@ -443,6 +443,53 @@ check("state survives a fresh read (resume)", (() => {
   const state = JSON.parse(fs.readFileSync(path.join(outDir, PROVINCE, "notes.state.json"), "utf8"));
   return state.activeScopeId === "county-30-5" && state.registry.some((r) => r.id === PROVINCE && r.status === "active");
 })());
+tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: null });
+
+// ===========================================================================
+section("9) Scope resolution — flexible set_active_scope inputs");
+// ===========================================================================
+check("bare county index '1' → county-30-1",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "1" }).activeScopeId === "county-30-1");
+check("shorthand 'county-6' → county-30-6",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "county-6" }).activeScopeId === "county-30-6");
+check("Persian name لالجین → city-30-6",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "لالجین" }).activeScopeId === "city-30-6");
+check("ملایر (county+city same name) picks the broader county-30-6",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر" }).activeScopeId === "county-30-6");
+check("ملایر + expectedType:'city' → city-30-20",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر", expectedType: "city" }).activeScopeId === "city-30-20");
+check("اسدآباد (cross-branch ambiguity) is rejected with candidates", (() => {
+  const msg = expectThrow(() => tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد" }));
+  return !!msg && msg.includes("INVALID_INPUT") && msg.includes("candidates=");
+})());
+check("out-of-range county index '999' is rejected", (() => {
+  const msg = expectThrow(() => tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "999" }));
+  return !!msg && msg.includes("INVALID_INPUT");
+})());
+check("unknown Persian name is rejected", (() => {
+  const msg = expectThrow(() => tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "نام‌ناموجود-e2e" }));
+  return !!msg && msg.includes("INVALID_INPUT");
+})());
+
+// ===========================================================================
+section("10) Scope-aware work queue — list_pending_nodes");
+// ===========================================================================
+tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد", expectedType: "county" });
+const pendingScoped = tools.toolListPendingNodes({ provinceId: PROVINCE });
+check("اسدآباد scope pending = 99 (1 county + 3 cities + 95 villages)",
+  pendingScoped.pending === 99 &&
+    pendingScoped.pendingByType?.county === 1 &&
+    pendingScoped.pendingByType?.city === 3 &&
+    pendingScoped.pendingByType?.village === 95,
+  JSON.stringify(pendingScoped.pendingByType));
+check("scoped queue stays inside the active subtree",
+  pendingScoped.activeScopeId === "county-30-1" &&
+    pendingScoped.nodes.every((n) => n.nodeId === "county-30-1" || n.parentNodeId === "county-30-1"));
+const pendingAll = tools.toolListPendingNodes({ provinceId: PROVINCE, allScopes: true });
+check("allScopes:true exposes the full-province unfinished queue",
+  pendingAll.allScopes === true && pendingAll.pending > pendingScoped.pending,
+  `scoped=${pendingScoped.pending} all=${pendingAll.pending}`);
+
 tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: null });
 
 // ===========================================================================

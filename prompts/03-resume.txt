@@ -13,3 +13,8 @@ previous_id=<PREVIOUS_ID>
 State فعلی را از MCP بخوان و از اولین مورد ناقص بعد از previous_id ادامه بده. کار کامل را بی‌دلیل تکرار نکن.
 همه قواعد Normalize فیلدها، ownership هزینه/FAQ/Checklist، taxonomy، sources/evidence و media مستقل را حفظ کن.
 سؤال تعاملی نپرس. بعد از تکمیل همان Scope متوقف شو.
+
+## تحویل (Delivery)
+1. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
+2. اگر DoD پاس نشد، **commit ممنوع**.
+3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.

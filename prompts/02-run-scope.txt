@@ -1,6 +1,7 @@
 # PLANRO — RUN ONE SCOPE
 
 قرارداد اصلی در `01-start-province.txt` است. فقط همین Scope را اجرا کن.
+یک Scope یعنی کل زیردرخت آن واحد (خود واحد + شهرها/روستاها/مکان‌هایش)، نه فقط ریشه.
 
 ### RUN VARIABLES
 ```text
@@ -10,7 +11,7 @@ scope_id=<SCOPE_ID>
 اگر در Task جاری مقدار واقعی `scope_id` آمده باشد، همان authoritative است و placeholder بالا نادیده گرفته می‌شود؛ در نبود مقدار واقعی `MISSING_INPUT: scope_id` بده و متوقف شو.
 
 - MCP و Resourceها را بررسی کن.
-- Scope را دقیقاً lock کن و فقط subtree مجاز آن را اجرا کن.
+- Scope را دقیقاً lock کن (`set_active_scope`) و فقط subtree مجاز آن را اجرا کن؛ صف کار را با `list_pending_nodes` ببین (پیش‌فرض همان Scope؛ `allScopes:true` برای کل استان).
 - Field policy را از `planro://rules/entity-fields` بخوان.
 - Visit/Costs/FAQ/Checklist/Media باید متعلق به همان Entity باشند.
 - برای Province/County/City openingHours و child-specific entryFee ذخیره نکن.
@@ -20,5 +21,10 @@ scope_id=<SCOPE_ID>
 - پنج Primary Source را واقعاً جست‌وجو و با `record_search_result` ثبت کن؛ Media جای Source Coverage نیست.
 - فقط canonical taxonomy IDs را استفاده کن.
 - Save فقط با MCP؛ سپس DoD + validation و توقف.
+
+## تحویل (Delivery)
+1. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
+2. اگر DoD پاس نشد، **commit ممنوع**.
+3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.
 
 اگر متغیر ناقص است `MISSING_INPUT: <variable>` بده؛ سؤال نپرس.

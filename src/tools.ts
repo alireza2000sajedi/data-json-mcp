@@ -43,13 +43,15 @@ import {
   isWithinActiveScope,
   awaitingScopeSelection,
   effectiveScope,
+  isSubtreeNode,
 } from "./graph.js";
 import { validateEntity, isRawHttpsUrl, normalizeEntityUrls } from "./quality-gate.js";
 import { getSchemas } from "./schemas.js";
 import { mediaPolicyFor, mediaStatusFor } from "./media.js";
 import { getSourcePolicy, classifySource, sourceCoverageFor } from "./source-policy.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
-import { buildScopeRegistry } from "./scopes.js";
+import { buildScopeRegistry, provinceNumber } from "./scopes.js";
+import { assertProvinceId } from "./config.js";
 import type { NotesState, NodeType, OwnershipStatus, PlaceEntity, MediaDeficitRecord, MediaCandidate } from "./types.js";
 
 // --- shared helpers ---
@@ -186,23 +188,151 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
 // ============================================================================
 // 1-b. set_active_scope (user picks ONE scope for deep research)
 // ============================================================================
+
+const SCOPE_TYPE_RANK: Record<string, number> = {
+  province: 0,
+  county: 1,
+  district: 2,
+  ruralDistrict: 3,
+  city: 4,
+  village: 5,
+  place: 6,
+  camping: 7,
+};
+
+/**
+ * Resolve a flexible scope reference into a registered node id.
+ *
+ * Accepted forms:
+ *   - full id: `county-30-6`
+ *   - bare county index: `1` → `county-{p}-1`
+ *   - shorthand id: `county-6` → `county-{p}-6`
+ *   - Persian name: unique match, or the broadest ancestor when all hits nest;
+ *     ambiguous cross-branch names are rejected with candidates
+ *   - `expectedType` narrows name/id matches (e.g. ملایر + city → city id)
+ */
+export function resolveActiveScopeRef(
+  state: NotesState,
+  provinceId: string,
+  ref: string,
+  expectedType?: string,
+): string {
+  const trimmed = ref.trim();
+  if (!trimmed) {
+    throw new Error(`INVALID_INPUT: empty scope reference. Pass a node id, county index, shorthand, or Persian name.`);
+  }
+
+  const p = provinceNumber(provinceId);
+  const typeOk = (nodeType: string) => !expectedType || nodeType === expectedType;
+
+  const accept = (nodeId: string): string | null => {
+    const node = findNode(state, nodeId);
+    if (!node) return null;
+    if (!typeOk(node.nodeType)) {
+      throw new Error(
+        `INVALID_INPUT: '${ref}' resolves to ${nodeId} (${node.nodeType}) but expectedType='${expectedType}'.`,
+      );
+    }
+    return nodeId;
+  };
+
+  // Exact registered id.
+  const exact = accept(trimmed);
+  if (exact) return exact;
+
+  // Bare integer → nth county in the province checklist.
+  if (/^\d+$/.test(trimmed)) {
+    const id = `county-${p}-${trimmed}`;
+    const hit = accept(id);
+    if (hit) return hit;
+    throw new Error(
+      `INVALID_INPUT: county index '${trimmed}' is out of range for '${assertProvinceId(provinceId)}' ` +
+        `(no node '${id}'). Read planro://scopes/${assertProvinceId(provinceId)}.`,
+    );
+  }
+
+  // Full dedicated id that simply is not registered yet.
+  if (
+    /^(province-\d+|county-\d+-\d+|city-\d+-\d+|village-\d+-v\d+|place-[\w-]+|camping-[\w-]+|district-[\w-]+|ruralDistrict-[\w-]+)$/.test(
+      trimmed,
+    )
+  ) {
+    throw new Error(
+      `INVALID_INPUT: node '${trimmed}' is not registered for '${assertProvinceId(provinceId)}'. ` +
+        `Run import_province_scopes first, or read planro://scopes/${assertProvinceId(provinceId)}.`,
+    );
+  }
+
+  // Shorthand without province number: county-6 / city-20 / village-v12.
+  const short = /^(province|county|city|village|place|camping|district|ruralDistrict)-([A-Za-z0-9]+)$/.exec(trimmed);
+  if (short) {
+    const [, kind, rest] = short;
+    let id: string;
+    if (kind === "province") {
+      id = `province-${rest}`;
+    } else if (kind === "village") {
+      id = rest.startsWith("v") ? `village-${p}-${rest}` : `village-${p}-v${rest}`;
+    } else {
+      id = `${kind}-${p}-${rest}`;
+    }
+    const hit = accept(id);
+    if (hit) return hit;
+  }
+
+  // Persian (or any) canonical name — may be ambiguous.
+  let matches = state.nodes.filter((n) => n.canonicalName === trimmed);
+  if (expectedType) matches = matches.filter((n) => n.nodeType === expectedType);
+  if (matches.length === 0) {
+    throw new Error(
+      `INVALID_INPUT: no registered scope matches '${trimmed}'` +
+        (expectedType ? ` with type '${expectedType}'` : "") +
+        `. Read planro://scopes/${assertProvinceId(provinceId)} (indexByName).`,
+    );
+  }
+  if (matches.length === 1) return matches[0]!.nodeId;
+
+  // Prefer a single broadest unit that contains every other match.
+  const covering = matches.filter((c) =>
+    matches.every((o) => o.nodeId === c.nodeId || isSubtreeNode(state, o.nodeId, c.nodeId)),
+  );
+  if (covering.length >= 1) {
+    covering.sort(
+      (a, b) => (SCOPE_TYPE_RANK[a.nodeType] ?? 99) - (SCOPE_TYPE_RANK[b.nodeType] ?? 99),
+    );
+    return covering[0]!.nodeId;
+  }
+
+  const candidates = matches
+    .map((n) => ({
+      nodeId: n.nodeId,
+      nodeType: n.nodeType,
+      canonicalName: n.canonicalName,
+      parentNodeId: n.parentNodeId,
+      path: administrativePath(state, n.nodeId),
+    }))
+    .sort((a, b) => a.nodeId.localeCompare(b.nodeId));
+  throw new Error(
+    `INVALID_INPUT: ambiguous scope name '${trimmed}' matches ${candidates.length} units in different branches. ` +
+      `Pass a dedicated id or expectedType. candidates=${JSON.stringify(candidates)}`,
+  );
+}
+
 /**
  * Stage 2 of the staged workflow: the user selected a scope (by id or name).
  * Lock DFS / next-node / completion to that scope's own subtree so this run
  * deep-researches ONLY that unit (plus its needed sub-units) and nothing else.
  * Pass nodeId: null to return to province-wide mode.
  */
-export function toolSetActiveScope(args: { provinceId: string; nodeId: string | null }) {
+export function toolSetActiveScope(args: {
+  provinceId: string;
+  nodeId: string | null;
+  expectedType?: string;
+}) {
   const state = readNotes(args.provinceId);
+  let active: string | null = null;
   if (args.nodeId !== null && args.nodeId !== undefined) {
-    if (!findNode(state, args.nodeId)) {
-      throw new Error(
-        `Node '${args.nodeId}' is not registered for '${args.provinceId}'. ` +
-          `Run import_province_scopes first, or read planro://scopes/${args.provinceId} for the valid scope ids.`,
-      );
-    }
+    active = resolveActiveScopeRef(state, args.provinceId, args.nodeId, args.expectedType);
   }
-  const active = args.nodeId ?? null;
   state.activeScopeId = active;
   const label = active ? `${findNode(state, active)!.canonicalName} (${active})` : "کل استان (whole province)";
   state.nextStep = `Active scope set to ${label}. Deep-research ONLY this scope, save its files, checkpoint (complete), then STOP and await the next command.`;
@@ -212,6 +342,8 @@ export function toolSetActiveScope(args: { provinceId: string; nodeId: string | 
   return {
     activeScopeId: state.activeScopeId,
     activeScopeLabel: label,
+    resolvedFrom: args.nodeId,
+    expectedType: args.expectedType ?? null,
     nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
     note: active
       ? `Scope locked to ${label}. Everything else stays pending for separate runs.`
@@ -1485,10 +1617,18 @@ export function toolDiscoverSubtree(args: { provinceId: string; nodeId?: string 
 }
 
 // ============================================================================
-// 16. list_pending_nodes — full work queue (all incomplete nodes in DFS order)
+// 16. list_pending_nodes — work queue for the effective scope (or whole province)
 // ============================================================================
-export function toolListPendingNodes(args: { provinceId: string }) {
-  const nodes = traverse(args.provinceId).map((n) => {
+export function toolListPendingNodes(args: { provinceId: string; allScopes?: boolean }) {
+  const state = readNotes(args.provinceId);
+  const scope = effectiveScope(state);
+  const allScopes = args.allScopes === true;
+  // Default: only the effective scope subtree (selected scope, or province-stage
+  // nodes). Pass allScopes:true to see every unfinished admin unit in the province.
+  const ids = allScopes ? null : scope.nodeIds;
+  const order = traverse(args.provinceId);
+  const scopedOrder = ids === null ? order : order.filter((n) => ids.has(n.nodeId));
+  const nodes = scopedOrder.map((n) => {
     const st = nodeStatus(args.provinceId, n);
     return {
       nodeId: n.nodeId,
@@ -1504,12 +1644,18 @@ export function toolListPendingNodes(args: { provinceId: string }) {
     };
   });
   const pending = nodes.filter((n) => !n.complete);
-  const state = readNotes(args.provinceId);
+  const byType: Record<string, number> = {};
+  for (const n of pending) byType[n.nodeType] = (byType[n.nodeType] ?? 0) + 1;
   return {
     provinceId: args.provinceId,
+    activeScopeId: state.activeScopeId,
+    scopeMode: scope.mode,
+    scopeLabel: scope.label,
+    allScopes,
     total: nodes.length,
     complete: nodes.length - pending.length,
     pending: pending.length,
+    pendingByType: byType,
     nodes: pending,
     reminder: pending.length === 0
       ? "All nodes complete! You MUST now run check_definition_of_done and validate_province. Only when both pass (complete:true AND invalid:0) can you produce the final report."
