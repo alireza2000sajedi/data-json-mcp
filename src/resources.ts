@@ -42,10 +42,30 @@ export function registerResources(server: McpServer): void {
   });
 
   server.registerResource("taxonomy", "planro://taxonomy", { title:"Global Planro taxonomy", description:"Shared canonical taxonomy catalogs.", mimeType:"application/json" }, async (uri) => {
-    const names = ["types","subtypes","categories","activities","features","facilities","risks"];
-    const data = Object.fromEntries(names.map((n) => [n, JSON.parse(fs.readFileSync(path.join(path.resolve(config.datasetDir, ".."), "taxonomy", `${n}.json`), "utf8"))]));
+    const names = ["types","subtypes","categories","activities","features","facilities","risks","checklist-items"];
+    const root = path.resolve(config.datasetDir, "..", "taxonomy");
+    const data = Object.fromEntries(names.map((n) => [n, JSON.parse(fs.readFileSync(path.join(root, `${n}.json`), "utf8"))]));
     return jsonResource(uri.href, data);
   });
+
+  server.registerResource(
+    "agent-taxonomy",
+    "planro://taxonomy/agent",
+    {
+      title: "Agent Taxonomy (staging)",
+      description:
+        "Parallel taxonomy catalogs under taxonomy/agent-taxonomy/. Same item shape as Global Taxonomy; staging only until manually promoted. Never valid in production Entity fields.",
+      mimeType: "application/json",
+    },
+    async (uri) => {
+      const names = ["types", "subtypes", "categories", "activities", "features", "facilities", "risks", "checklist-items"];
+      const root = path.resolve(config.datasetDir, "..", "taxonomy", "agent-taxonomy");
+      const data = Object.fromEntries(
+        names.map((n) => [n, JSON.parse(fs.readFileSync(path.join(root, `${n}.json`), "utf8"))]),
+      );
+      return jsonResource(uri.href, data);
+    },
+  );
 
   server.registerResource("place-schema", "planro://schema/place", { title: "Place schema", mimeType: "application/json" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "place.schema.json"), "utf8");
@@ -66,11 +86,6 @@ export function registerResources(server: McpServer): void {
       return textResource(uri.href, text, "application/json");
     },
   );
-
-  server.registerResource("iran-cpi-schema", "planro://schema/iran-cpi", { title: "Iran CPI schema", mimeType: "application/json" }, async (uri) => {
-    const text = fs.readFileSync(path.join(config.datasetDir, "iran-cpi.schema.json"), "utf8");
-    return textResource(uri.href, text, "application/json");
-  });
 
   server.registerResource("brand-voice-guide", "planro://rules/brand-voice-guide", { title: "Planro brand voice (v1.0)", description: "Verbal identity & brand tone v1.0 (single source): language modes, vocabulary system & blacklist, CTA rules, AI voice, 100 before/after examples, quality test, plus the applied dataset-content example (Masuleh appendix).", mimeType: "text/markdown" }, async (uri) => {
     const text = fs.readFileSync(path.join(config.datasetDir, "brand_voice.md"), "utf8");

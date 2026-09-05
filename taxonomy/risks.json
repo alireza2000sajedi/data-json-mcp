@@ -1,1 +1,157 @@
-{"version":"1.0.0","items":[{"id":"extreme_cold","label":"سرمای شدید"},{"id":"extreme_heat","label":"گرمای شدید"},{"id":"snow","label":"برف"},{"id":"avalanche","label":"بهمن"},{"id":"ice","label":"یخ‌زدگی"},{"id":"slippery_path","label":"مسیر لغزنده"},{"id":"poor_road","label":"جاده نامناسب"},{"id":"offroad","label":"مسیر خارج‌جاده"},{"id":"steep_slope","label":"شیب تند"},{"id":"cliff","label":"پرتگاه"},{"id":"rockfall","label":"ریزش سنگ"},{"id":"flash_flood","label":"سیلاب"},{"id":"strong_current","label":"جریان شدید آب"},{"id":"unsafe_swimming_water","label":"آب نامناسب برای شنا"},{"id":"river_crossing","label":"عبور از رودخانه"},{"id":"remote_area","label":"منطقه دورافتاده"},{"id":"limited_mobile_coverage","label":"پوشش محدود موبایل"},{"id":"wildlife","label":"حیات‌وحش"},{"id":"fire","label":"آتش‌سوزی"},{"id":"dust","label":"گردوغبار"},{"id":"seasonal_closure","label":"بسته‌شدن فصلی"},{"id":"unstable_structure","label":"سازه ناپایدار"}]}
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "altitude_sickness",
+      "label": "ارتفاع‌زدگی"
+    },
+    {
+      "id": "avalanche",
+      "label": "بهمن"
+    },
+    {
+      "id": "border_zone",
+      "label": "منطقه مرزی"
+    },
+    {
+      "id": "cliff",
+      "label": "پرتگاه"
+    },
+    {
+      "id": "crowd_crush",
+      "label": "ازدحام خطرناک"
+    },
+    {
+      "id": "cultural_sensitivity",
+      "label": "حساسیت فرهنگی"
+    },
+    {
+      "id": "deep_water",
+      "label": "آب عمیق"
+    },
+    {
+      "id": "dehydration",
+      "label": "کم‌آبی بدن"
+    },
+    {
+      "id": "dust",
+      "label": "گردوغبار"
+    },
+    {
+      "id": "electrical_hazard",
+      "label": "خطر برق"
+    },
+    {
+      "id": "extreme_cold",
+      "label": "سرمای شدید"
+    },
+    {
+      "id": "extreme_heat",
+      "label": "گرمای شدید"
+    },
+    {
+      "id": "fire",
+      "label": "آتش‌سوزی"
+    },
+    {
+      "id": "flash_flood",
+      "label": "سیلاب"
+    },
+    {
+      "id": "fog",
+      "label": "مه"
+    },
+    {
+      "id": "ice",
+      "label": "یخ‌زدگی"
+    },
+    {
+      "id": "insect_bites",
+      "label": "نیش حشرات"
+    },
+    {
+      "id": "landslide",
+      "label": "رانش زمین"
+    },
+    {
+      "id": "limited_mobile_coverage",
+      "label": "پوشش محدود موبایل"
+    },
+    {
+      "id": "no_lifeguard",
+      "label": "بدون نجات‌غریق"
+    },
+    {
+      "id": "offroad",
+      "label": "مسیر خارج‌جاده"
+    },
+    {
+      "id": "poor_road",
+      "label": "جاده نامناسب"
+    },
+    {
+      "id": "remote_area",
+      "label": "منطقه دورافتاده"
+    },
+    {
+      "id": "river_crossing",
+      "label": "عبور از رودخانه"
+    },
+    {
+      "id": "rockfall",
+      "label": "ریزش سنگ"
+    },
+    {
+      "id": "seasonal_closure",
+      "label": "بسته‌شدن فصلی"
+    },
+    {
+      "id": "slippery_path",
+      "label": "مسیر لغزنده"
+    },
+    {
+      "id": "snow",
+      "label": "برف"
+    },
+    {
+      "id": "steep_slope",
+      "label": "شیب تند"
+    },
+    {
+      "id": "strong_current",
+      "label": "جریان شدید آب"
+    },
+    {
+      "id": "strong_wind",
+      "label": "باد شدید"
+    },
+    {
+      "id": "sunburn",
+      "label": "آفتاب‌سوختگی"
+    },
+    {
+      "id": "theft",
+      "label": "سرقت"
+    },
+    {
+      "id": "thin_ice",
+      "label": "یخ نازک"
+    },
+    {
+      "id": "unsafe_swimming_water",
+      "label": "آب نامناسب برای شنا"
+    },
+    {
+      "id": "unstable_structure",
+      "label": "سازه ناپایدار"
+    },
+    {
+      "id": "venomous_animals",
+      "label": "جانوران سمی"
+    },
+    {
+      "id": "wildlife",
+      "label": "حیات‌وحش"
+    }
+  ]
+}

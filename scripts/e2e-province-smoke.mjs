@@ -14,8 +14,8 @@
  *   → set_active_scope (next scope is locked and starts pending)
  *
  * It also asserts the NEGATIVE gates (each rule of the contract must actually
- * reject a violating entity): field applicability, cost/FAQ ownership,
- * checklist normalization, taxonomy, evidence↔source binding, media ownership
+ * reject a violating entity): field applicability, FAQ ownership,
+ * checklist normalization, taxonomy, source registration, media ownership
  * and uniqueness, brand voice, and the zero-image/coverage rule.
  *
  * The fixture below is TEST DATA (a realistic shape), never a research result:
@@ -114,42 +114,13 @@ function baseEntity(overrides = {}) {
     visit: { bestSeasons: ["spring", "summer", "autumn"], bestMonths: [4, 5, 6, 7, 8, 9] },
     safety: { risks: ["extreme_cold", "snow"], mobileCoverage: "full" },
     travelChecklist: {
-      personalCar: ["مدارک خودرو", "زنجیر چرخ", "کیت ابزار"],
-      train: ["کارت ملی", "بلیت رزروشده"],
+      personalCar: ["car_documents", "snow_chains", "tool_kit"],
+      train: ["id_card", "ticket_reserved"],
     },
     faq: [
-      { question: "بهترین زمان سفر به استان همدان چه زمانی است؟", answer: "بهار تا اوایل پاییز هوای معتدل‌تری دارد و برای سفر استانی مناسب‌تر است." },
+      { question: "زمان مناسب سفر به استان همدان چه فصلی است؟", answer: "بهار تا اوایل پاییز هوای معتدل‌تری دارد و برای سفر استانی مناسب‌تر است." },
     ],
-    costs: {
-      currency: "IRT",
-      priceAsOf: TODAY,
-      forTravelers: 1,
-      items: [
-        {
-          category: "accommodation",
-          name: "اقامت شبانه در سطح استان",
-          required: true,
-          unit: "per_night",
-          budget: {
-            economy: { min: 800000, max: 1500000 },
-            standard: { min: 1500000, max: 3000000 },
-            comfortable: { min: 3000000, max: 6000000 },
-          },
-          inflationCategory: "restaurants_and_hotels",
-          sourceUrl: PRIMARY_SOURCES[1].url,
-        },
-      ],
-      estimatedVisitTotal: {
-        economy: { min: 1200000, max: 2200000 },
-        standard: { min: 2200000, max: 4000000 },
-        comfortable: { min: 4000000, max: 8000000 },
-      },
-    },
     sources: PRIMARY_SOURCES.map((s) => ({ title: s.title, url: s.url, type: "other", accessedAt: TODAY })),
-    evidence: [
-      { field: "content.description.fa", claim: "مرکز استان همدان شهر همدان است.", sourceUrl: PRIMARY_SOURCES[0].url },
-      { field: "costs.items[0].budget", claim: "بازه قیمت اقامت شبانه در سطح استان.", sourceUrl: PRIMARY_SOURCES[1].url },
-    ],
   };
   return { ...structuredClone(entity), ...overrides };
 }
@@ -236,22 +207,6 @@ check("province visit with openingHours → VISIT_FIELD_NOT_ALLOWED",
     visit: { bestSeasons: ["spring"], bestMonths: [4], openingHours: { alwaysOpen: true } },
   }))).includes("VISIT_FIELD_NOT_ALLOWED"));
 
-check("child ticket cost on the province → COST_CATEGORY_NOT_ALLOWED", (() => {
-  const e = baseEntity({ media: finalized.media });
-  e.costs.items.push({
-    category: "entry", name: "ورودی غار علیصدر", required: true, unit: "per_person",
-    budget: { economy: { min: 1, max: 2 }, standard: { min: 2, max: 3 }, comfortable: { min: 3, max: 4 } },
-    inflationCategory: "recreation_and_culture", sourceUrl: PRIMARY_SOURCES[0].url,
-  });
-  return codesOf(save(e)).includes("COST_CATEGORY_NOT_ALLOWED");
-})());
-
-check("cost min > max → COST_MIN_GT_MAX", (() => {
-  const e = baseEntity({ media: finalized.media });
-  e.costs.items[0].budget.economy = { min: 900, max: 100 };
-  return codesOf(save(e)).includes("COST_MIN_GT_MAX");
-})());
-
 check("child-specific FAQ on the parent → FAQ_CHILD_SCOPE", (() => {
   // register a child node so the ownership check has a real descendant
   tools.toolUpdateNotes({
@@ -263,30 +218,24 @@ check("child-specific FAQ on the parent → FAQ_CHILD_SCOPE", (() => {
   return codesOf(save(e)).includes("FAQ_CHILD_SCOPE");
 })());
 
-check("prose/route/price inside a checklist → CHECKLIST_ITEM_NOT_CONCRETE", (() => {
+check("non-canonical checklist item → SCHEMA_VIOLATION or TAXONOMY_UNKNOWN", (() => {
   const e = baseEntity({ media: finalized.media });
   e.travelChecklist.personalCar = ["از تهران حدود ۲۰۰ کیلومتر رانندگی کنید و هزینه بلیط را حساب کنید"];
-  return codesOf(save(e)).includes("CHECKLIST_ITEM_NOT_CONCRETE");
+  const codes = codesOf(save(e));
+  return codes.includes("SCHEMA_VIOLATION") || codes.includes("TAXONOMY_UNKNOWN");
 })());
 
 check("free-text taxonomy value → TAXONOMY_UNKNOWN",
   codesOf(save(baseEntity({ media: finalized.media, activities: ["visit", "آب‌درمانی سنتی"] }))).includes("TAXONOMY_UNKNOWN"));
 
-check("evidence pointing outside sources[] → EVIDENCE_SOURCE_NOT_IN_SOURCES", (() => {
-  const e = baseEntity({ media: finalized.media });
-  e.evidence[0].sourceUrl = "https://www.kojaro.com/some-other-page/";
-  return codesOf(save(e)).includes("EVIDENCE_SOURCE_NOT_IN_SOURCES");
-})());
-
 check("unregistered source (never searched) → SOURCE_NOT_REGISTERED", (() => {
   const e = baseEntity({ media: finalized.media });
   const ghost = "https://www.kojaro.com/never-searched/";
   e.sources.push({ title: "ghost", url: ghost, type: "other", accessedAt: TODAY });
-  e.evidence.push({ field: "content.history", claim: "fixture", sourceUrl: ghost });
   return codesOf(save(e)).includes("SOURCE_NOT_REGISTERED");
 })());
 
-check("promotional superlative without dedicated evidence → BRAND_VOICE_SUPERLATIVE", (() => {
+check("promotional superlative → BRAND_VOICE_SUPERLATIVE", (() => {
   const e = baseEntity({ media: finalized.media });
   e.content.summary.fa = "زیباترین و بی‌نظیرترین مقصد ایده‌آل ایران با طبیعتی رؤیایی.";
   return codesOf(save(e)).includes("BRAND_VOICE_SUPERLATIVE");
@@ -317,7 +266,6 @@ section("5) Positive path — save the province entity");
 // it instead of rejecting the entity, and store the raw link.
 const entityToSave = baseEntity({ media: finalized.media });
 entityToSave.sources[0].url = `[${PRIMARY_SOURCES[0].url}](${PRIMARY_SOURCES[0].url})`;
-entityToSave.evidence[0].sourceUrl = `[${PRIMARY_SOURCES[0].url}](${PRIMARY_SOURCES[0].url})`;
 
 const saved = tools.toolSaveActiveEntity({
   provinceId: PROVINCE,
@@ -327,7 +275,7 @@ const saved = tools.toolSaveActiveEntity({
 check("save_active_entity accepted", saved.accepted === true, JSON.stringify(saved.errors ?? []));
 check("markdown-wrapped URLs are auto-normalized, not rejected", (() => {
   const stored = JSON.parse(fs.readFileSync(path.join(outDir, PROVINCE, "province.json"), "utf8"));
-  return stored.sources[0].url === PRIMARY_SOURCES[0].url && stored.evidence[0].sourceUrl === PRIMARY_SOURCES[0].url;
+  return stored.sources[0].url === PRIMARY_SOURCES[0].url;
 })());
 check("stored at the canonical path province.json", saved.path === "province.json", saved.path);
 check("file really exists on disk", fs.existsSync(path.join(outDir, PROVINCE, "province.json")));
@@ -415,8 +363,8 @@ section("7) Definition of Done + validation for the province stage");
 // ===========================================================================
 const dod = tools.toolCheckDefinitionOfDone({ provinceId: PROVINCE });
 check("check_definition_of_done → complete:true", dod.complete === true, JSON.stringify({
-  scope: dod.scopeMode, media: dod.incompleteMedia, costs: dod.incompleteCosts,
-  evidence: dod.missingEvidence, coverage: dod.missingSourceCoverage, admin: dod.missingAdministrativeNodes,
+  scope: dod.scopeMode, media: dod.incompleteMedia,
+  coverage: dod.missingSourceCoverage, admin: dod.missingAdministrativeNodes,
 }));
 check("DoD is evaluated against the province stage", dod.scopeMode === "province-stage", dod.scopeMode);
 

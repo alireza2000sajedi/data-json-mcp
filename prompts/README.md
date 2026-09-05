@@ -6,6 +6,7 @@
 4. `04-repair-entity.txt` — تعمیر یک Entity مشخص.
 5. `05-final-audit-minify.txt` — Audit نهایی.
 
-هر Entity Visit/Costs/FAQ/Checklist/Media مستقل دارد. Parent نباید operational data مربوط به Child را duplicate کند.
+هر Entity Visit/FAQ/Checklist/Media مستقل دارد. Parent نباید operational data مربوط به Child را duplicate کند.
+فیلد `costs` از قرارداد حذف شده است.
 
 Media target: Province/County/City/Place = 5 unique images؛ Village/Camping = 3 unique images. هیچ image URL بین Entityها reuse نمی‌شود.

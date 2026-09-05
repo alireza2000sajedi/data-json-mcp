@@ -196,11 +196,9 @@ export type PlaceEntity = Record<string, unknown> & {
   status: string;
   name: { fa: string; en?: string };
   location: Record<string, unknown>;
-  evidence: unknown[];
   sources?: unknown[];
   media?: { thumbnail?: Record<string, unknown>; images?: unknown[] };
   relations?: unknown[];
-  costs?: Record<string, unknown>;
   travelChecklist?: Record<string, unknown>;
   alternativeNames?: string[];
 };

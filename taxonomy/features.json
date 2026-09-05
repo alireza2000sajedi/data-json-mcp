@@ -1,1 +1,145 @@
-{"version":"1.0.0","items":[{"id":"family_friendly","label":"مناسب خانواده"},{"id":"kids_friendly","label":"مناسب کودکان"},{"id":"elderly_friendly","label":"مناسب سالمندان"},{"id":"wheelchair_accessible","label":"دسترسی ویلچر"},{"id":"not_wheelchair_accessible","label":"نامناسب برای ویلچر"},{"id":"pet_friendly","label":"پذیرش حیوان خانگی"},{"id":"photography_friendly","label":"مناسب عکاسی"},{"id":"photography_restricted","label":"محدودیت عکاسی"},{"id":"camping_allowed","label":"کمپینگ مجاز"},{"id":"vehicle_accessible","label":"قابل دسترسی با خودرو"},{"id":"remote","label":"دورافتاده"},{"id":"seasonal","label":"فصلی"},{"id":"quiet","label":"آرام"},{"id":"shaded","label":"سایه‌دار"},{"id":"all_season","label":"چهارفصل"},{"id":"sunrise_spot","label":"مناسب طلوع"},{"id":"sunset_spot","label":"مناسب غروب"},{"id":"stargazing_spot","label":"مناسب رصد آسمان"},{"id":"free_entry","label":"ورود رایگان"}]}
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "all_season",
+      "label": "چهارفصل"
+    },
+    {
+      "id": "camping_allowed",
+      "label": "کمپینگ مجاز"
+    },
+    {
+      "id": "crowded_peak_season",
+      "label": "شلوغ در فصل اوج"
+    },
+    {
+      "id": "day_trip",
+      "label": "یک‌روزه"
+    },
+    {
+      "id": "elderly_friendly",
+      "label": "مناسب سالمندان"
+    },
+    {
+      "id": "family_friendly",
+      "label": "مناسب خانواده"
+    },
+    {
+      "id": "free_entry",
+      "label": "ورود رایگان"
+    },
+    {
+      "id": "free_parking",
+      "label": "پارکینگ رایگان"
+    },
+    {
+      "id": "guide_recommended",
+      "label": "راهنما توصیه‌شده"
+    },
+    {
+      "id": "indoor",
+      "label": "سرپوشیده"
+    },
+    {
+      "id": "kids_friendly",
+      "label": "مناسب کودکان"
+    },
+    {
+      "id": "multi_day",
+      "label": "چندروزه"
+    },
+    {
+      "id": "national_heritage",
+      "label": "میراث ملی"
+    },
+    {
+      "id": "night_visit_possible",
+      "label": "بازدید شبانه ممکن"
+    },
+    {
+      "id": "not_wheelchair_accessible",
+      "label": "نامناسب برای ویلچر"
+    },
+    {
+      "id": "off_the_beaten_path",
+      "label": "کم‌تردیده‌شده"
+    },
+    {
+      "id": "outdoor",
+      "label": "روباز"
+    },
+    {
+      "id": "paid_parking",
+      "label": "پارکینگ پولی"
+    },
+    {
+      "id": "pet_friendly",
+      "label": "پذیرش حیوان خانگی"
+    },
+    {
+      "id": "photography_friendly",
+      "label": "مناسب عکاسی"
+    },
+    {
+      "id": "photography_restricted",
+      "label": "محدودیت عکاسی"
+    },
+    {
+      "id": "quiet",
+      "label": "آرام"
+    },
+    {
+      "id": "remote",
+      "label": "دورافتاده"
+    },
+    {
+      "id": "requires_ticket",
+      "label": "نیاز به بلیت"
+    },
+    {
+      "id": "reservation_required",
+      "label": "نیاز به رزرو"
+    },
+    {
+      "id": "scenic_view",
+      "label": "چشم‌انداز شاخص"
+    },
+    {
+      "id": "seasonal",
+      "label": "فصلی"
+    },
+    {
+      "id": "shaded",
+      "label": "سایه‌دار"
+    },
+    {
+      "id": "stargazing_spot",
+      "label": "مناسب رصد آسمان"
+    },
+    {
+      "id": "sunrise_spot",
+      "label": "مناسب طلوع"
+    },
+    {
+      "id": "sunset_spot",
+      "label": "مناسب غروب"
+    },
+    {
+      "id": "unesco_related",
+      "label": "مرتبط با یونسکو"
+    },
+    {
+      "id": "vehicle_accessible",
+      "label": "قابل دسترسی با خودرو"
+    },
+    {
+      "id": "water_nearby",
+      "label": "نزدیک به آب"
+    },
+    {
+      "id": "wheelchair_accessible",
+      "label": "دسترسی ویلچر"
+    }
+  ]
+}

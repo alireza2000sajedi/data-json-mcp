@@ -13,13 +13,14 @@ scope_id=<SCOPE_ID>
 - MCP و Resourceها را بررسی کن.
 - Scope را دقیقاً lock کن (`set_active_scope`) و فقط subtree مجاز آن را اجرا کن؛ صف کار را با `list_pending_nodes` ببین (پیش‌فرض همان Scope؛ `allScopes:true` برای کل استان).
 - Field policy را از `planro://rules/entity-fields` بخوان.
-- Visit/Costs/FAQ/Checklist/Media باید متعلق به همان Entity باشند.
+- Visit/FAQ/Checklist/Media باید متعلق به همان Entity باشند.
 - برای Province/County/City openingHours و child-specific entryFee ذخیره نکن.
 - برای Parent هزینه Child یا FAQ Child ذخیره نکن.
 - هر Entity checklist مستقل خودش را داشته باشد.
 - Media: Province/County/City/Place = 5؛ Village/Camping = 3؛ بدون URL تکراری بین Entityها.
 - پنج Primary Source را واقعاً جست‌وجو و با `record_search_result` ثبت کن؛ Media جای Source Coverage نیست.
-- فقط canonical taxonomy IDs را استفاده کن.
+- فقط canonical taxonomy IDs از Global Taxonomy را در Entity استفاده کن.
+- اگر id لازم در Global نبود → مثل Taxonomy آیتم بساز داخل `taxonomy/agent-taxonomy/{catalog}.json` (با `source` و دادهٔ واقعی)؛ وارد Entity نکن. در گزارش پایان Scope بگو چه نبود و چه ساخته شد.
 - Save فقط با MCP؛ سپس DoD + validation و توقف.
 
 ## تحویل (Delivery)

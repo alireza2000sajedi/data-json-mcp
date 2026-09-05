@@ -11,15 +11,15 @@ final_audit=true
 - schema و type/subType
 - Global Taxonomy
 - hierarchy و duplicate IDs/slugs
-- source coverage و evidence
+- source coverage
 - Visit field applicability
-- Cost ownership: parent نباید child cost داشته باشد
 - FAQ ownership: parent نباید child FAQ داشته باشد
-- independent Checklist
+- independent Checklist با canonical ids از taxonomy
 - Media ownership و uniqueness و target
 - safety/transport correctness
 - brand voice و فارسی طبیعی
 - forbidden fields
+- Taxonomy staging: اگر چیزی در Global نبود و در `taxonomy/agent-taxonomy/` ساخته شد، در گزارش نهایی فهرست کن
 
 تا رفع تمام blocking issueها minify یا publish نکن. داده را برای رد شدن Audit جعل نکن.
 پس از global validation موفق، JSONهای production را بدون تغییر معنای داده minify کن.

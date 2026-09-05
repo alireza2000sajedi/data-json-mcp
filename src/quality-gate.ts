@@ -59,7 +59,6 @@ export function normalizeEntityUrls(entity: PlaceEntity): PlaceEntity {
   };
 
   for (const s of ((out.sources as any[]) ?? [])) if (s) set(s, "url");
-  for (const ev of ((out.evidence as any[]) ?? [])) if (ev) set(ev, "sourceUrl");
 
   const media = out.media as any;
   const mediaItems: any[] = [];
@@ -83,8 +82,6 @@ export function normalizeEntityUrls(entity: PlaceEntity): PlaceEntity {
     set(external, "googleMapsUrl");
     set(external, "osmUrl");
   }
-  const costs = out.costs as any;
-  for (const item of ((costs?.items as any[]) ?? [])) if (item) set(item, "sourceUrl");
 
   return out;
 }
@@ -98,59 +95,15 @@ function addWarning(warnings: QualityError[], code: string, path: string, messag
 }
 
 /**
- * Does this entity carry a *dedicated* evidence entry for the given text field?
- *
- * A flagged promotional/tech/cliché claim is only acceptable (→ warning instead
- * of a blocking error) when the agent documented a source for that exact field
- * or the claim text shares tokens with an evidence `claim`. This mirrors the
- * README rule: «ادعاهای … فقط با Evidence اختصاصی وارد می‌شوند».
+ * Brand-voice claim checks no longer consult an evidence array (removed from
+ * the Place contract). Promotional/tech/cliché wording is always a hard error.
  */
-function hasDedicatedEvidence(entity: PlaceEntity, fieldPath: string, text: string): boolean {
-  const evidence = (entity.evidence as any[]) ?? [];
-  const normPath = (p: string) =>
-    String(p ?? "")
-      .replace(/\.(fa|en)$/, "")
-      .replace(/\[\d+\]/g, ".")
-      .replace(/\.+/g, ".")
-      .toLowerCase();
-  const tokenize = (s: string): string[] => {
-    const toks = String(s)
-      .replace(/\u200c/g, " ")
-      .split(/[^آ-یa-z0-9]+/i)
-      .map((w) => w.trim().toLowerCase())
-      .filter((w) => w.length >= 3);
-    return toks;
-  };
-  const base = normPath(fieldPath);
-  const textTokens = tokenize(text);
-
-  for (const ev of evidence) {
-    const f = normPath(ev?.field);
-    if (f && (f === base || f.startsWith(base + ".") || base.startsWith(f + "."))) {
-      return true;
-    }
-    const claimTokens = tokenize(ev?.claim);
-    let shared = 0;
-    for (const t of textTokens) if (claimTokens.includes(t)) shared++;
-    if (shared >= 2) return true;
-  }
-  return false;
-}
-
 
 const VISIT_ALLOWED: Record<string, string[]> = {
   province:["bestSeasons","bestMonths"], county:["bestSeasons","bestMonths"], city:["bestSeasons","bestMonths","crowdLevel"],
   village:["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],
   place:["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],
   camping:["durationMinutes","bestTimeOfDay","bestSeasons","bestMonths","openingHours","entryFee","difficulty","requiresReservation","requiresGuide","crowdLevel"],
-};
-const COST_ALLOWED: Record<string,string[]> = {
-  province:["food","beverage","snack","restaurant","cafe","transport_local","accommodation","toll","insurance","other"],
-  county:["food","beverage","snack","restaurant","cafe","transport_local","accommodation","toll","insurance","other"],
-  city:["food","beverage","snack","restaurant","cafe","transport_local","accommodation","toll","insurance","other"],
-  village:["food","beverage","snack","restaurant","cafe","transport_local","parking","accommodation","camping","guide","equipment_rental","shopping","other"],
-  place:["entry","parking","guide","equipment_rental","restaurant","cafe","food","beverage","snack","other"],
-  camping:["camping","parking","guide","equipment_rental","food","beverage","snack","restaurant","other"],
 };
 const CHECKLIST_MODES=["tour","personalCar","airplane","camping","train","bus"] as const;
 /** Normalize Persian text for name matching (ZWNJ, Arabic ی/ک variants, spacing). */
@@ -169,7 +122,7 @@ function normalizeFaName(value: unknown): string {
  *
  * In Iran a province, its county and its capital city usually share one name
  * (همدان). Without this filter a province could never mention its own name in
- * an FAQ or a cost item, because a child node carries the same name.
+ * an FAQ, because a child node carries the same name.
  */
 function selfNames(state: NotesState, entity: PlaceEntity, nodeId: string): Set<string> {
   const names = new Set<string>();
@@ -258,7 +211,7 @@ function validateNormalizedFields(
     addError(errors, "VISIT_SEASON_REQUIRED", "visit", "bestSeasons and bestMonths are required at destination level.");
   }
 
-  // --- independent travel checklist ---
+  // --- independent travel checklist (canonical taxonomy ids) ---
   const tc = entity.travelChecklist as any;
   if (!tc || typeof tc !== "object") {
     addError(errors, "CHECKLIST_MISSING", "travelChecklist", "Every Entity requires an independent checklist.");
@@ -275,7 +228,7 @@ function validateNormalizedFields(
     if (total === 0) addError(errors, "CHECKLIST_EMPTY", "travelChecklist", "Checklist must contain at least one relevant item.");
   }
 
-  // --- ownership: FAQ and costs must stay on the Entity that owns them ---
+  // --- ownership: FAQ must stay on the Entity that owns them ---
   const state = ctx.state ?? readNotes(ctx.provinceId);
   const own = selfNames(state, entity, ctx.expectedNodeId);
   const children = descendantNames(state, ctx.expectedNodeId, own);
@@ -301,56 +254,43 @@ function validateNormalizedFields(
     }
   }
 
-  const costs = entity.costs as any;
-  if (costs?.items) {
-    const allowedCosts = new Set(COST_ALLOWED[nodeType] ?? []);
-    for (const [i, it] of costs.items.entries()) {
-      if (it?.category && !allowedCosts.has(it.category)) {
-        addError(
-          errors,
-          "COST_CATEGORY_NOT_ALLOWED",
-          `costs.items[${i}].category`,
-          `Cost category '${it.category}' is not appropriate for '${nodeType}'.`,
-        );
-      }
-      const hit = childHit(it?.name, children);
-      if (hit) {
-        addError(errors, "COST_CHILD_SCOPE", `costs.items[${i}].name`, `Child cost '${hit}' must remain on the child Entity.`);
-      }
-    }
-  }
-
-  // --- checklist items must be short, concrete nouns ---
-  if (tc) {
-    for (const [mode, items] of Object.entries(tc)) {
-      if (!Array.isArray(items)) continue;
-      for (const [i, it] of items.entries()) {
-        const text = String(it);
-        if (
-          text.length > 60 ||
-          /[.!؟?؛:]/.test(text) ||
-          /https?:\/\//i.test(text) ||
-          /(فاصله|کیلومتر|در حدود|بهتر است|هماهنگ|هزینه|بلیط|ورودی|قیمت)/.test(text)
-        ) {
-          addError(
-            errors,
-            "CHECKLIST_ITEM_NOT_CONCRETE",
-            `travelChecklist.${mode}[${i}]`,
-            "Checklist item must be a short concrete item, not prose, route, price, or child data.",
-          );
-        }
-      }
-    }
-  }
+  // Checklist item canonical ids are enforced by schema enum + validateGlobalTaxonomy.
 }
 
-function validateGlobalTaxonomy(entity:PlaceEntity,errors:QualityError[]):void{
- const base=path.resolve(config.datasetDir, "..", "taxonomy"); const domains=['types','subtypes','categories','activities','features','facilities','risks'] as const;
- const maps:any={}; for(const d of domains){try{const x=JSON.parse(fs.readFileSync(path.join(base,`${d}.json`),'utf8'));maps[d]=new Set((x.items??[]).map((i:any)=>i.id));}catch{return;}}
- const check=(d:keyof typeof maps,v:any,p:string)=>{for(const [i,id] of (Array.isArray(v)?v:[]).entries())if(!maps[d]?.has(id))addError(errors,'TAXONOMY_UNKNOWN',`${p}[${i}]`,`Unknown canonical taxonomy id '${id}'.`);};
- if(!maps.types?.has(entity.type))addError(errors,'TYPE_UNKNOWN','type',`Unknown canonical type '${entity.type}'.`);
- if(entity.subType&&!maps.subtypes?.has(entity.subType))addError(errors,'SUBTYPE_UNKNOWN','subType',`Unknown canonical subtype '${entity.subType}'.`);
- check('categories',entity.categories,'categories');check('activities',entity.activities,'activities');check('features',entity.features,'features');check('facilities',entity.facilities,'facilities');check('risks',(entity.safety as any)?.risks,'safety.risks');
+function validateGlobalTaxonomy(entity: PlaceEntity, errors: QualityError[]): void {
+  const base = path.resolve(config.datasetDir, "..", "taxonomy");
+  const domains = ["types", "subtypes", "categories", "activities", "features", "facilities", "risks", "checklist-items"] as const;
+  const maps: Record<string, Set<string>> = {};
+  for (const d of domains) {
+    try {
+      const x = JSON.parse(fs.readFileSync(path.join(base, `${d}.json`), "utf8"));
+      maps[d] = new Set((x.items ?? []).map((i: any) => i.id));
+    } catch {
+      return;
+    }
+  }
+  const check = (d: string, v: unknown, p: string) => {
+    for (const [i, id] of (Array.isArray(v) ? v : []).entries()) {
+      if (!maps[d]?.has(id as string)) {
+        addError(errors, "TAXONOMY_UNKNOWN", `${p}[${i}]`, `Unknown canonical taxonomy id '${id}'.`);
+      }
+    }
+  };
+  if (!maps.types?.has(entity.type)) addError(errors, "TYPE_UNKNOWN", "type", `Unknown canonical type '${entity.type}'.`);
+  if (entity.subType && !maps.subtypes?.has(String(entity.subType))) {
+    addError(errors, "SUBTYPE_UNKNOWN", "subType", `Unknown canonical subtype '${entity.subType}'.`);
+  }
+  check("categories", entity.categories, "categories");
+  check("activities", entity.activities, "activities");
+  check("features", entity.features, "features");
+  check("facilities", entity.facilities, "facilities");
+  check("risks", (entity.safety as any)?.risks, "safety.risks");
+  const tc = entity.travelChecklist as Record<string, unknown> | undefined;
+  if (tc && typeof tc === "object") {
+    for (const [mode, items] of Object.entries(tc)) {
+      check("checklist-items", items, `travelChecklist.${mode}`);
+    }
+  }
 }
 
 export function validateEntity(entity: PlaceEntity, ctx: QualityContext): QualityResult {
@@ -388,9 +328,6 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
   for (const [i, s] of ((entity.sources as any[]) ?? []).entries()) {
     urlChecks.push([s?.url, `sources[${i}].url`]);
   }
-  for (const [i, ev] of ((entity.evidence as any[]) ?? []).entries()) {
-    urlChecks.push([ev?.sourceUrl, `evidence[${i}].sourceUrl`]);
-  }
   const media = entity.media as any;
   const mediaItems: Array<[any, string]> = [];
   if (media?.thumbnail) mediaItems.push([media.thumbnail, "media.thumbnail"]);
@@ -425,10 +362,6 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
   const external = entity.external as any;
   if (external?.googleMapsUrl) urlChecks.push([external.googleMapsUrl, "external.googleMapsUrl"]);
   if (external?.osmUrl) urlChecks.push([external.osmUrl, "external.osmUrl"]);
-  const costs = entity.costs as any;
-  for (const [i, item] of ((costs?.items as any[]) ?? []).entries()) {
-    urlChecks.push([item?.sourceUrl, `costs.items[${i}].sourceUrl`]);
-  }
   for (const [url, p] of urlChecks) {
     if (url !== undefined && url !== null && !isRawHttpsUrl(url)) {
       addError(errors, "URL_NOT_RAW_HTTPS", p, "URL must be a raw HTTPS URL (no markdown, &amp;, or whitespace).");
@@ -457,15 +390,9 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     }
   }
 
-  // ---- B. Evidence & source ----
+  // ---- B. Sources (evidence field removed from the Place contract) ----
 
   const sources = (entity.sources as any[]) ?? [];
-  const sourceUrls = new Set(sources.map((s) => s?.url as string).filter(Boolean));
-  const evidence = (entity.evidence as any[]) ?? [];
-
-  if (evidence.length === 0) {
-    addError(errors, "EVIDENCE_EMPTY", "evidence", "evidence must not be empty.");
-  }
 
   for (const [i, s] of sources.entries()) {
     if (!s?.title || String(s.title).trim().length === 0) {
@@ -476,41 +403,31 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     }
   }
 
-  for (const [i, ev] of evidence.entries()) {
-    const su = ev?.sourceUrl as string | undefined;
-    if (!su) {
-      addError(errors, "EVIDENCE_SOURCE_MISSING", `evidence[${i}].sourceUrl`, "evidence sourceUrl is required.");
-      continue;
-    }
-    if (!sourceUrls.has(su)) {
-      addError(errors, "EVIDENCE_SOURCE_NOT_IN_SOURCES", `evidence[${i}].sourceUrl`, "evidence.sourceUrl must exactly match one of sources[].url.");
-    }
-  }
-
-  // Source registration / ownership (source matrix)
+  // Source registration / ownership (source matrix) — every sources[].url must
+  // have been recorded via record_search_result for this node (or an allowed ownership).
   const chain = ancestorChain(state, ctx.expectedNodeId);
   const chainIds = new Set(chain.map((n) => n.nodeId));
   const nodeType = entityNodeType(entity);
   validateNormalizedFields(entity, ctx, nodeType, errors, warnings);
   validateGlobalTaxonomy(entity, errors);
-  for (const [i, ev] of evidence.entries()) {
-    const su = ev?.sourceUrl as string | undefined;
+  for (const [i, s] of sources.entries()) {
+    const su = s?.url as string | undefined;
     if (!su) continue;
     const entries = state.sourceMatrix.filter((m) => m.sourceUrl === su);
     if (entries.length === 0) {
-      addError(errors, "SOURCE_NOT_REGISTERED", `evidence[${i}].sourceUrl`, "Source must be recorded via record_search_result for this node before use.");
+      addError(errors, "SOURCE_NOT_REGISTERED", `sources[${i}].url`, "Source must be recorded via record_search_result for this node before use.");
       continue;
     }
     const ownNode = entries.some((m) => m.nodeId === ctx.expectedNodeId);
     const childOfAncestor = entries.some((m) => chainIds.has(m.nodeId) && m.ownershipStatus === "belongs_to_child");
     const rejected = entries.some((m) => m.ownershipStatus === "rejected");
     if (rejected) {
-      addError(errors, "SOURCE_REJECTED", `evidence[${i}].sourceUrl`, "Source was recorded with ownershipStatus 'rejected'.");
+      addError(errors, "SOURCE_REJECTED", `sources[${i}].url`, "Source was recorded with ownershipStatus 'rejected'.");
       continue;
     }
     const parentOnly = entries.some((m) => m.nodeId !== ctx.expectedNodeId && chainIds.has(m.nodeId) && m.ownershipStatus === "belongs_to_node");
     if (parentOnly && !ownNode && !childOfAncestor && nodeType !== "province") {
-      addError(errors, "SOURCE_OWNERSHIP_MISMATCH", `evidence[${i}].sourceUrl`, "Source registered against a parent node cannot back a child-specific fact.");
+      addError(errors, "SOURCE_OWNERSHIP_MISMATCH", `sources[${i}].url`, "Source registered against a parent node cannot back a child-specific fact.");
     }
   }
 
@@ -698,75 +615,12 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
     }
   }
 
-  // ---- F. Cost & CPI ----
-
-  if (costs) {
-    if (costs.currency !== "IRT") {
-      addError(errors, "COST_CURRENCY_NOT_IRT", "costs.currency", "costs.currency must be IRT.");
-    }
-    if (costs.forTravelers !== 1) {
-      addError(errors, "COST_FOR_TRAVELERS", "costs.forTravelers", "costs.forTravelers must be 1.");
-    }
-    const priceAsOf = costs.priceAsOf as string | undefined;
-    if (!priceAsOf || !/^\d{4}-\d{2}-\d{2}$/.test(priceAsOf)) {
-      addError(errors, "COST_PRICE_AS_OF_INVALID", "costs.priceAsOf", "costs.priceAsOf must be a real YYYY-MM-DD date (not accessedAt).");
-    }
-
-    const tiers = ["economy", "standard", "comfortable"];
-    const budgetOf = (obj: any, pathPrefix: string) => {
-      if (!obj) return;
-      for (const t of tiers) {
-        const range = obj[t];
-        if (!range) {
-          addError(errors, "COST_TIER_MISSING", `${pathPrefix}.${t}`, `Cost tier '${t}' is required.`);
-          continue;
-        }
-        const min = range.min;
-        const max = range.max;
-        if (typeof min === "number" && typeof max === "number" && min > max) {
-          addError(errors, "COST_MIN_GT_MAX", `${pathPrefix}.${t}`, `min (${min}) must not exceed max (${max}).`);
-        }
-      }
-    };
-
-    const items = (costs.items as any[]) ?? [];
-    for (const [i, item] of items.entries()) {
-      budgetOf(item?.budget, `costs.items[${i}].budget`);
-      const ic = item?.inflationCategory as string | undefined;
-      if (ic && !schemas.inflationCategories.includes(ic)) {
-        addError(errors, "COST_CPI_NOT_COVERED", `costs.items[${i}].inflationCategory`, `inflationCategory '${ic}' is not covered by the CPI schema.`);
-      }
-      if (item?.sourceUrl && !sourceUrls.has(item.sourceUrl)) {
-        addError(errors, "COST_SOURCE_NOT_ENTITY", `costs.items[${i}].sourceUrl`, "Cost sourceUrl must be one of the entity's own sources[].url.");
-      }
-    }
-    budgetOf(costs.estimatedVisitTotal, "costs.estimatedVisitTotal");
-  } else if (entity.status === "active") {
-    addError(errors, "COST_MISSING", "costs", "Active entity requires complete costs.");
-  }
+  // ---- F. Costs / evidence removed from the contract ----
+  // The Place schema no longer accepts `costs` or `evidence` (additionalProperties:false).
 
   // ---- G. Checklist & text ----
 
-  // Checklist normalization is enforced by validateNormalizedFields above; no entity must fill every transport mode.
-
-  // Checklist item quality (short, concrete, no sentence punctuation)
-  const checklistItems: Array<[string, string]> = [];
-  const tc = entity.travelChecklist as any;
-  if (tc) {
-    for (const cat of schemas.checklistCategories) {
-      for (const [i, item] of ((tc[cat] as any[]) ?? []).entries()) {
-        checklistItems.push([String(item), `travelChecklist.${cat}[${i}]`]);
-      }
-    }
-  }
-  for (const [item, p] of checklistItems) {
-    if (/[.!؟?؛:]/.test(item)) {
-      addError(errors, "CHECKLIST_ITEM_SENTENCE", p, `Checklist item '${item}' must be a short concrete noun phrase (no sentence punctuation).`);
-    }
-    if (item.length > 60) {
-      addWarning(warnings, "CHECKLIST_ITEM_TOO_LONG", p, `Checklist item '${item}' is longer than 60 characters.`);
-    }
-  }
+  // Checklist ids are schema-enforced; prose/sentence heuristics no longer apply.
 
   // Promotional / brand-voice text heuristics (warnings; provenance-dependent).
   // Word lists follow dataset/brand_voice.md (هویت کلامی و لحن برند — نسخه ۱.۰ نهایی):
@@ -808,34 +662,26 @@ export function validateEntity(entity: PlaceEntity, ctx: QualityContext): Qualit
   textFields.push(...mediaTexts);
 
   const seen = new Set<string>();
-  const flag = (key: string, code: string, p: string, text: string, errorMsg: string, warnMsg: string) => {
+  const flag = (key: string, code: string, p: string, errorMsg: string) => {
     if (seen.has(key)) return;
     seen.add(key);
-    if (hasDedicatedEvidence(entity, p, text)) {
-      // Dedicated evidence present → downgrade to a warning for human review.
-      addWarning(warnings, code, p, warnMsg);
-    } else {
-      addError(errors, code, p, errorMsg);
-    }
+    addError(errors, code, p, errorMsg);
   };
 
   for (const [text, p] of textFields) {
     if (typeof text !== "string" || text.length === 0) continue;
     const t = normalize(text);
     if (SUPERLATIVES.test(t)) {
-      flag(`superlative:${p}`, "BRAND_VOICE_SUPERLATIVE", p, text,
-        "Superlative/promotional wording without dedicated evidence is rejected — remove it or add an evidence entry for this field.",
-        "Superlative wording is backed by dedicated evidence; keep under human review.");
+      flag(`superlative:${p}`, "BRAND_VOICE_SUPERLATIVE", p,
+        "Superlative/promotional wording is rejected — rewrite as a concrete, factual description.");
     }
     if (TECH_NOISE.test(t)) {
-      flag(`tech:${p}`, "BRAND_VOICE_TECH_NOISE", p, text,
-        "Technology/AI wording without dedicated evidence is rejected — remove it or add evidence for a real on-site service.",
-        "Technology wording has dedicated evidence; keep under human review.");
+      flag(`tech:${p}`, "BRAND_VOICE_TECH_NOISE", p,
+        "Technology/AI wording is rejected — rewrite without promotional tech noise.");
     }
     if (CLICHES.test(t)) {
-      flag(`cliche:${p}`, "BRAND_VOICE_CLICHE", p, text,
-        "Robotic travel-industry cliché is rejected — rewrite as a concrete, evidence-based description.",
-        "Robotic cliché is backed by dedicated evidence; keep under human review.");
+      flag(`cliche:${p}`, "BRAND_VOICE_CLICHE", p,
+        "Robotic travel-industry cliché is rejected — rewrite as a concrete, factual description.");
     }
   }
   return { accepted: errors.length === 0, errors, warnings };

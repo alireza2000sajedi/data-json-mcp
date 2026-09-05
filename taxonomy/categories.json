@@ -1,1 +1,121 @@
-{"version":"1.0.0","items":[{"id":"nature","label":"طبیعت"},{"id":"water","label":"آب"},{"id":"mountain","label":"کوهستان"},{"id":"desert","label":"کویر و بیابان"},{"id":"forest","label":"جنگل"},{"id":"history","label":"تاریخ"},{"id":"archaeology","label":"باستان‌شناسی"},{"id":"architecture","label":"معماری"},{"id":"religion","label":"مذهب"},{"id":"museum_culture","label":"موزه و فرهنگ"},{"id":"local_life","label":"زندگی محلی"},{"id":"arts_crafts","label":"هنر و صنایع‌دستی"},{"id":"food","label":"خوراک"},{"id":"shopping","label":"خرید"},{"id":"recreation","label":"تفریح"},{"id":"adventure","label":"ماجراجویی"},{"id":"wellness","label":"سلامت و آرامش"}]}
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "adventure",
+      "label": "ماجراجویی"
+    },
+    {
+      "id": "archaeology",
+      "label": "باستان‌شناسی"
+    },
+    {
+      "id": "architecture",
+      "label": "معماری"
+    },
+    {
+      "id": "arts_crafts",
+      "label": "هنر و صنایع‌دستی"
+    },
+    {
+      "id": "coastal",
+      "label": "ساحلی"
+    },
+    {
+      "id": "desert",
+      "label": "کویر و بیابان"
+    },
+    {
+      "id": "education",
+      "label": "آموزشی"
+    },
+    {
+      "id": "family",
+      "label": "خانوادگی"
+    },
+    {
+      "id": "food",
+      "label": "خوراک"
+    },
+    {
+      "id": "forest",
+      "label": "جنگل"
+    },
+    {
+      "id": "geoheritage",
+      "label": "میراث زمین‌شناسی"
+    },
+    {
+      "id": "history",
+      "label": "تاریخ"
+    },
+    {
+      "id": "industrial_heritage",
+      "label": "میراث صنعتی"
+    },
+    {
+      "id": "local_life",
+      "label": "زندگی محلی"
+    },
+    {
+      "id": "mountain",
+      "label": "کوهستان"
+    },
+    {
+      "id": "museum_culture",
+      "label": "موزه و فرهنگ"
+    },
+    {
+      "id": "nature",
+      "label": "طبیعت"
+    },
+    {
+      "id": "nightlife",
+      "label": "شب‌گردی"
+    },
+    {
+      "id": "photography",
+      "label": "عکاسی"
+    },
+    {
+      "id": "pilgrimage",
+      "label": "زیارت"
+    },
+    {
+      "id": "recreation",
+      "label": "تفریح"
+    },
+    {
+      "id": "religion",
+      "label": "مذهب"
+    },
+    {
+      "id": "rural",
+      "label": "روستایی"
+    },
+    {
+      "id": "shopping",
+      "label": "خرید"
+    },
+    {
+      "id": "sports",
+      "label": "ورزشی"
+    },
+    {
+      "id": "urban",
+      "label": "شهری"
+    },
+    {
+      "id": "water",
+      "label": "آب"
+    },
+    {
+      "id": "wellness",
+      "label": "سلامت و آرامش"
+    },
+    {
+      "id": "winter_sports",
+      "label": "ورزش‌های زمستانی"
+    }
+  ]
+}

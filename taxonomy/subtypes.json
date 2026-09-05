@@ -1,1 +1,513 @@
-{"version":"1.0.0","items":[{"id":"province","label":"استان","appliesTo":["other"]},{"id":"county","label":"شهرستان","appliesTo":["other"]},{"id":"waterfall","label":"آبشار","appliesTo":["natural"]},{"id":"spring","label":"چشمه","appliesTo":["natural"]},{"id":"hot_spring","label":"آبگرم","appliesTo":["natural"]},{"id":"cave","label":"غار","appliesTo":["natural"]},{"id":"canyon","label":"دره / تنگه","appliesTo":["natural"]},{"id":"lake","label":"دریاچه","appliesTo":["natural"]},{"id":"river","label":"رودخانه","appliesTo":["natural"]},{"id":"mountain","label":"کوه","appliesTo":["natural"]},{"id":"forest","label":"جنگل","appliesTo":["natural"]},{"id":"desert","label":"کویر","appliesTo":["natural"]},{"id":"wetland","label":"تالاب","appliesTo":["natural"]},{"id":"rock_formation","label":"پدیده سنگی","appliesTo":["natural"]},{"id":"historical_house","label":"خانه تاریخی","appliesTo":["historical"]},{"id":"castle","label":"قلعه","appliesTo":["historical"]},{"id":"caravanserai","label":"کاروانسرا","appliesTo":["historical"]},{"id":"bridge","label":"پل تاریخی","appliesTo":["historical"]},{"id":"bathhouse","label":"حمام تاریخی","appliesTo":["historical"]},{"id":"palace","label":"کاخ","appliesTo":["historical"]},{"id":"archaeological_site","label":"محوطه باستانی","appliesTo":["historical"]},{"id":"mosque","label":"مسجد","appliesTo":["religious"]},{"id":"shrine","label":"امامزاده / زیارتگاه","appliesTo":["religious"]},{"id":"church","label":"کلیسا","appliesTo":["religious"]},{"id":"temple","label":"نیایشگاه","appliesTo":["religious"]},{"id":"art_museum","label":"موزه هنر","appliesTo":["museum"]},{"id":"history_museum","label":"موزه تاریخ","appliesTo":["museum"]},{"id":"ethnography_museum","label":"موزه مردم‌شناسی","appliesTo":["museum"]},{"id":"urban_park","label":"بوستان شهری","appliesTo":["park"]},{"id":"theme_park","label":"پارک موضوعی","appliesTo":["recreational"]},{"id":"water_park","label":"پارک آبی","appliesTo":["recreational"]},{"id":"amusement_park","label":"شهربازی","appliesTo":["recreational"]},{"id":"campground","label":"کمپینگ","appliesTo":["recreational"]},{"id":"traditional_market","label":"بازار سنتی","appliesTo":["market"]},{"id":"bazaar","label":"بازار","appliesTo":["market"]},{"id":"hotel","label":"هتل","appliesTo":["accommodation"]},{"id":"ecolodge","label":"اقامتگاه بوم‌گردی","appliesTo":["accommodation"]},{"id":"guesthouse","label":"مهمان‌پذیر / مهمانخانه","appliesTo":["accommodation"]},{"id":"traditional_restaurant","label":"رستوران سنتی","appliesTo":["restaurant"]},{"id":"road_route","label":"مسیر جاده‌ای","appliesTo":["route"]},{"id":"hiking_route","label":"مسیر پیاده‌روی","appliesTo":["route"]}]}
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "amusement_park",
+      "label": "شهربازی",
+      "appliesTo": [
+        "recreational"
+      ]
+    },
+    {
+      "id": "aquarium",
+      "label": "آکواریوم",
+      "appliesTo": [
+        "recreational"
+      ]
+    },
+    {
+      "id": "archaeological_site",
+      "label": "محوطه باستانی",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "art_museum",
+      "label": "موزه هنر",
+      "appliesTo": [
+        "museum"
+      ]
+    },
+    {
+      "id": "bathhouse",
+      "label": "حمام تاریخی",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "bazaar",
+      "label": "بازار",
+      "appliesTo": [
+        "market"
+      ]
+    },
+    {
+      "id": "beach",
+      "label": "ساحل",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "botanical_garden",
+      "label": "باغ گیاه‌شناسی",
+      "appliesTo": [
+        "park"
+      ]
+    },
+    {
+      "id": "bridge",
+      "label": "پل تاریخی",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "cable_car_station",
+      "label": "ایستگاه تله‌کابین",
+      "appliesTo": [
+        "recreational",
+        "route"
+      ]
+    },
+    {
+      "id": "campground",
+      "label": "کمپینگ",
+      "appliesTo": [
+        "recreational"
+      ]
+    },
+    {
+      "id": "canyon",
+      "label": "دره / تنگه",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "caravanserai",
+      "label": "کاروانسرا",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "castle",
+      "label": "قلعه",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "cave",
+      "label": "غار",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "church",
+      "label": "کلیسا",
+      "appliesTo": [
+        "religious"
+      ]
+    },
+    {
+      "id": "cistern",
+      "label": "آب‌انبار",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "county",
+      "label": "شهرستان",
+      "appliesTo": [
+        "other"
+      ]
+    },
+    {
+      "id": "cycling_route",
+      "label": "مسیر دوچرخه",
+      "appliesTo": [
+        "route"
+      ]
+    },
+    {
+      "id": "dam",
+      "label": "سد",
+      "appliesTo": [
+        "natural",
+        "recreational"
+      ]
+    },
+    {
+      "id": "desert",
+      "label": "کویر",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "ecolodge",
+      "label": "اقامتگاه بوم‌گردی",
+      "appliesTo": [
+        "accommodation"
+      ]
+    },
+    {
+      "id": "ethnography_museum",
+      "label": "موزه مردم‌شناسی",
+      "appliesTo": [
+        "museum"
+      ]
+    },
+    {
+      "id": "fire_temple",
+      "label": "آتشکده",
+      "appliesTo": [
+        "religious",
+        "historical"
+      ]
+    },
+    {
+      "id": "forest",
+      "label": "جنگل",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "garden",
+      "label": "باغ",
+      "appliesTo": [
+        "park",
+        "historical"
+      ]
+    },
+    {
+      "id": "glacier",
+      "label": "یخچال",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "guesthouse",
+      "label": "مهمان‌پذیر / مهمانخانه",
+      "appliesTo": [
+        "accommodation"
+      ]
+    },
+    {
+      "id": "handicraft_workshop",
+      "label": "کارگاه صنایع‌دستی",
+      "appliesTo": [
+        "market",
+        "other"
+      ]
+    },
+    {
+      "id": "hiking_route",
+      "label": "مسیر پیاده‌روی",
+      "appliesTo": [
+        "route"
+      ]
+    },
+    {
+      "id": "historical_house",
+      "label": "خانه تاریخی",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "history_museum",
+      "label": "موزه تاریخ",
+      "appliesTo": [
+        "museum"
+      ]
+    },
+    {
+      "id": "hostel",
+      "label": "هاستل",
+      "appliesTo": [
+        "accommodation"
+      ]
+    },
+    {
+      "id": "hot_spring",
+      "label": "آبگرم",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "hotel",
+      "label": "هتل",
+      "appliesTo": [
+        "accommodation"
+      ]
+    },
+    {
+      "id": "island",
+      "label": "جزیره",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "lake",
+      "label": "دریاچه",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "mosque",
+      "label": "مسجد",
+      "appliesTo": [
+        "religious"
+      ]
+    },
+    {
+      "id": "motel",
+      "label": "متل",
+      "appliesTo": [
+        "accommodation"
+      ]
+    },
+    {
+      "id": "mountain",
+      "label": "کوه",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "natural_history_museum",
+      "label": "موزه تاریخ طبیعی",
+      "appliesTo": [
+        "museum"
+      ]
+    },
+    {
+      "id": "palace",
+      "label": "کاخ",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "pilgrimage_route",
+      "label": "مسیر زیارتی",
+      "appliesTo": [
+        "route",
+        "religious"
+      ]
+    },
+    {
+      "id": "plateau",
+      "label": "فلات / دشت مرتفع",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "province",
+      "label": "استان",
+      "appliesTo": [
+        "other"
+      ]
+    },
+    {
+      "id": "qanat",
+      "label": "قنات",
+      "appliesTo": [
+        "historical",
+        "natural"
+      ]
+    },
+    {
+      "id": "river",
+      "label": "رودخانه",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "road_route",
+      "label": "مسیر جاده‌ای",
+      "appliesTo": [
+        "route"
+      ]
+    },
+    {
+      "id": "rock_formation",
+      "label": "پدیده سنگی",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "science_museum",
+      "label": "موزه علوم",
+      "appliesTo": [
+        "museum"
+      ]
+    },
+    {
+      "id": "shrine",
+      "label": "امامزاده / زیارتگاه",
+      "appliesTo": [
+        "religious"
+      ]
+    },
+    {
+      "id": "ski_resort",
+      "label": "پیست اسکی",
+      "appliesTo": [
+        "recreational"
+      ]
+    },
+    {
+      "id": "spring",
+      "label": "چشمه",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "street_food",
+      "label": "خوراک خیابانی",
+      "appliesTo": [
+        "restaurant",
+        "market"
+      ]
+    },
+    {
+      "id": "synagogue",
+      "label": "کنیسه",
+      "appliesTo": [
+        "religious"
+      ]
+    },
+    {
+      "id": "tea_house",
+      "label": "چایخانه / قهوه‌خانه",
+      "appliesTo": [
+        "restaurant"
+      ]
+    },
+    {
+      "id": "temple",
+      "label": "نیایشگاه",
+      "appliesTo": [
+        "religious"
+      ]
+    },
+    {
+      "id": "theme_park",
+      "label": "پارک موضوعی",
+      "appliesTo": [
+        "recreational"
+      ]
+    },
+    {
+      "id": "tomb",
+      "label": "آرامگاه",
+      "appliesTo": [
+        "historical",
+        "religious"
+      ]
+    },
+    {
+      "id": "tower",
+      "label": "برج تاریخی",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "traditional_market",
+      "label": "بازار سنتی",
+      "appliesTo": [
+        "market"
+      ]
+    },
+    {
+      "id": "traditional_restaurant",
+      "label": "رستوران سنتی",
+      "appliesTo": [
+        "restaurant"
+      ]
+    },
+    {
+      "id": "urban_park",
+      "label": "بوستان شهری",
+      "appliesTo": [
+        "park"
+      ]
+    },
+    {
+      "id": "valley",
+      "label": "دره مسکونی / گردشگری",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "viewpoint",
+      "label": "دیدگاه",
+      "appliesTo": [
+        "natural",
+        "recreational",
+        "route"
+      ]
+    },
+    {
+      "id": "villa",
+      "label": "ویلا",
+      "appliesTo": [
+        "accommodation"
+      ]
+    },
+    {
+      "id": "water_park",
+      "label": "پارک آبی",
+      "appliesTo": [
+        "recreational"
+      ]
+    },
+    {
+      "id": "waterfall",
+      "label": "آبشار",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "wetland",
+      "label": "تالاب",
+      "appliesTo": [
+        "natural"
+      ]
+    },
+    {
+      "id": "windcatcher",
+      "label": "بادگیر",
+      "appliesTo": [
+        "historical"
+      ]
+    },
+    {
+      "id": "zoo",
+      "label": "باغ‌وحش",
+      "appliesTo": [
+        "recreational"
+      ]
+    }
+  ]
+}

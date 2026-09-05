@@ -43,15 +43,15 @@ province_id=<PROVINCE_ID>
 ### Province
 Visit فقط: `bestSeasons`, `bestMonths`.
 Opening hours، entry fee، difficulty، guide، reservation، duration و bestTimeOfDay برای خود Province ممنوع است.
-Costs فقط هزینه‌های متعلق به خود مقصد در سطح استان است؛ هزینه بلیت یا خدمت یک Place/Child ممنوع است.
 FAQ، Checklist، Media، Safety و Transportation فقط در سطح خود استان هستند.
+فیلد `costs` حذف شده است؛ قیمت/هزینه را در Entity ذخیره نکن.
 
 ### County
 Visit فقط bestSeasons/bestMonths.
-Costs/FAQ/Checklist/Media/Transportation متعلق به خود County؛ child-specific ممنوع.
+FAQ/Checklist/Media/Transportation متعلق به خود County؛ child-specific ممنوع.
 
 ### City
-Visit: bestSeasons/bestMonths و در صورت evidence crowdLevel.
+Visit: bestSeasons/bestMonths و در صورت منبع معتبر crowdLevel.
 Opening hours و entry fee و مشخصات عملیاتی Placeهای داخل شهر ممنوع.
 
 ### Village
@@ -59,11 +59,10 @@ Visit می‌تواند مدت، زمان روز، فصل، ماه، سختی، 
 
 ### Place
 Visit کامل: duration، bestTimeOfDay، bestSeasons، bestMonths، openingHours، entryFee، difficulty، reservation، guide، crowd.
-Costs فقط هزینه‌هایی که در خود همین Place رخ می‌دهد.
 FAQ/Checklist/Media فقط برای همین Place.
 
 ### Camping
-Visit و Costs و Checklist و FAQ و Media مخصوص همان محل کمپینگ.
+Visit و Checklist و FAQ و Media مخصوص همان محل کمپینگ.
 
 ## 5) Ownership
 Parent می‌تواند در content به Childها در سطح معرفی اشاره کند، اما نباید operational data را duplicate کند:
@@ -73,16 +72,11 @@ Parent می‌تواند در content به Childها در سطح معرفی اش
 - child directions
 - child FAQ
 - child checklist
-- child costs
 
-این اطلاعات فقط در Child Entity نگهداری می‌شوند و اپ بعداً می‌تواند هزینه‌ها را aggregate کند.
+این اطلاعات فقط در Child Entity نگهداری می‌شوند.
 
-## 6) Cost model
-هر Entity مالک هزینه خودش است.
-Province/County/City = هزینه‌های سطح مقصد/اقامت/غذا/حمل‌ونقل محلی و مشابه، نه هزینه Placeهای فرزند.
-Place = entry/parking/guide/equipment/onsite service خود Place.
-Camping = camping fee و onsite service.
-قیمت حدس نزن. هزینه‌ای که source معتبر ندارد وارد نکن.
+## 6) Costs — حذف‌شده
+فیلد `costs` و مدل CPI از قرارداد حذف شده‌اند. قیمت حدس نزن و وارد Entity نکن؛ اپ بعداً می‌تواند هزینه را جداگانه مدیریت کند.
 
 ## 7) FAQ model
 FAQ مستقل است.
@@ -95,10 +89,10 @@ Camping FAQ درباره خود Camping.
 سؤال‌های child-specific در Parent ممنوع.
 
 ## 8) Checklist model
-`travelChecklist` برای هر Entity مستقل است.
-فقط آیتم‌های کوتاه و ملموس مثل «کارت ملی»، «شارژر»، «زنجیر چرخ».
-جمله، توصیه، فاصله، قیمت، مسیر، نام Child یا توضیح تحقیقاتی Checklist نیست.
-کپی کامل Checklist از Parent/Child ممنوع؛ فقط آیتم مشترکی که واقعاً مرتبط است مجاز است.
+`travelChecklist` برای هر Entity مستقل است و بر اساس حالت سفر (`tour` / `personalCar` / `airplane` / `camping` / `train` / `bus`) پر می‌شود.
+آیتم‌ها فقط canonical id از `taxonomy/checklist-items.json` (و Resource `planro://taxonomy`) هستند — مثل `tent`، `sunscreen`، `snow_chains`.
+متن آزاد فارسی، جمله، مسیر، قیمت یا توصیه در checklist ممنوع است.
+کپی کامل Checklist از Parent/Child ممنوع؛ فقط آیتم‌های واقعاً مرتبط با همان Entity.
 
 ## 9) Media model
 هر Entity مجموعه عکس مستقل دارد:
@@ -114,19 +108,24 @@ Thumbnail جزو همین تعداد است.
 برای Province عکس باید واقعاً نماینده خود استان باشد، نه صرفاً یک Place معروف داخل آن.
 چند جستجوی مستقل انجام بده و از اولین ۱–۲ عکس متوقف نشو.
 
-## 10) Sources / Evidence
+## 10) Sources
 پنج Primary Source تعریف‌شده در Source Policy را برای هر Node واقعاً بررسی کن و با `record_search_result` ثبت کن؛ no-result/unreachable نیز باید ثبت شود.
 Media discovery هرگز جای Fact Source Coverage نیست.
-هر Evidence باید به Source ثبت‌شده متصل باشد.
+فیلد `evidence` حذف شده است؛ Factها را در `sources[]` و متن Entity نگه دار، نه در آرایهٔ evidence.
 متن کاربر نباید شامل query، search engine، یادداشت تحقیق، تناقض منبع یا فرآیند جمع‌آوری باشد.
 
 ## 11) Taxonomy
-همه type/subType/category/activity/feature/facility/risk فقط از Global Taxonomy.
-اگر مفهوم reusable پیدا نشد، فقط proposal در Agent Taxonomy ثبت کن و وارد production Entity نکن.
+همه type/subType/category/activity/feature/facility/risk و آیتم‌های checklist در Entity تولیدی فقط از Global Taxonomy (`planro://taxonomy`).
+اگر مفهوم reusable در Global نبود:
+1. مثل خود Taxonomy رفتار کن: تحقیق کن، دادهٔ واقعی بگیر، و یک آیتم کامل taxonomy بساز.
+2. آیتم را در کاتالوگ متناظر زیر `taxonomy/agent-taxonomy/` بنویس (همان فایل‌ها: types/subtypes/categories/activities/features/facilities/risks/checklist-items) با همان شکل `id` + `label` (+ `appliesTo`/`group` اگر لازم) و فیلد `source` (provinceId، nodeId، reason، proposedAt، urls).
+3. آن id را هنوز وارد Entity تولیدی نکن؛ تا promote انسانی فقط staging است (`planro://taxonomy/agent`).
+در پایان مرحلهٔ استان (و اگر در Scope بعدی آیتم تازه‌ای ساختی) صریحاً بگو:
+«این مفاهیم در Global Taxonomy نبودند و من در agent-taxonomy ساختم» + فهرست idها و فایل کاتالوگ.
 Taxonomy داخل Province/Scope کپی نشود.
 
 ## 12) کیفیت متن
-فارسی طبیعی، دقیق و evidence-driven بنویس. متن نباید شبیه گزارش تحقیق یا متن ماشینی باشد. ادعای مطلق/مقایسه‌ای بدون evidence اختصاصی ممنوع.
+فارسی طبیعی، دقیق و واقعی بنویس. متن نباید شبیه گزارش تحقیق یا متن ماشینی باشد. ادعای مطلق/مقایسه‌ای و لحن تبلیغاتی ممنوع است.
 
 ## 13) Location / Transport
 بهترین مختصات قابل اتکا را بگیر و در صورت وجود bounding box را ثبت کن.
@@ -136,7 +135,7 @@ Transport فقط node/route مرتبط با همان Scope باشد.
 ## 14) Completion
 ابتدا `import_province_scopes` را اجرا کن.
 سپس فقط Province root را تحقیق کن؛ County/City/Village/Place فرزندان را در این مرحله deep-research نکن.
-Province فقط وقتی Complete است که schema، taxonomy، source coverage، evidence، normalized fields، FAQ، independent checklist، cost ownership و media target را پاس کند.
+Province فقط وقتی Complete است که schema، taxonomy، source coverage، normalized fields، FAQ، independent checklist و media target را پاس کند.
 سپس `check_definition_of_done` و validation را اجرا کن.
 بعد از موفقیت متوقف شو و Scope بعدی را خودکار انتخاب نکن.
 

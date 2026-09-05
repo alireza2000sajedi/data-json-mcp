@@ -1401,8 +1401,6 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   }
 
   const incompleteMedia: string[] = [];
-  const incompleteCosts: string[] = [];
-  const missingEvidence: string[] = [];
   for (const e of listEntities(args.provinceId)) {
     if (!inScope(e.id)) continue;
     if (e.entity.status === "active") {
@@ -1416,8 +1414,6 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
       if (media?.thumbnail?.url) mediaUrls.add(String(media.thumbnail.url));
       for (const im of images) if (im?.url) mediaUrls.add(String(im.url));
       if (images.length > policy.max || (images.length > 0 && !media?.thumbnail) || mediaUrls.size < policy.target) incompleteMedia.push(e.id);
-      if (!e.entity.costs) incompleteCosts.push(e.id);
-      if (!Array.isArray(e.entity.evidence) || e.entity.evidence.length === 0) missingEvidence.push(e.id);
     }
   }
 
@@ -1434,8 +1430,6 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     scope.definitionOfDone &&
     invalidRelations.length === 0 &&
     incompleteMedia.length === 0 &&
-    incompleteCosts.length === 0 &&
-    missingEvidence.length === 0 &&
     openCandidates.length === 0 &&
     unresolvedConflicts.length === 0 &&
     missingAdministrativeNodes.length === 0;
@@ -1447,8 +1441,6 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   if (unresolvedConflicts.length > 0) issues.push(`unresolved conflicts: ${unresolvedConflicts.length}`);
   if (invalidRelations.length > 0) issues.push(`invalid relations: ${invalidRelations.length}`);
   if (incompleteMedia.length > 0) issues.push(`incomplete media: ${incompleteMedia.length}`);
-  if (incompleteCosts.length > 0) issues.push(`incomplete costs: ${incompleteCosts.length}`);
-  if (missingEvidence.length > 0) issues.push(`missing evidence: ${missingEvidence.length}`);
   if (coverageRows.length > 0) issues.push(`missing source coverage: ${coverageRows.length} node(s)`);
 
   // Update DoD status in notes
@@ -1468,8 +1460,6 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     unresolvedConflicts: unresolvedConflicts.map((c) => c.id),
     invalidRelations,
     incompleteMedia,
-    incompleteCosts,
-    missingEvidence,
     missingSourceCoverage: coverageRows.slice(0, 50),
     nextAction: complete ? null : scope.nextRequiredNode?.nodeId ?? "discover province administrative structure",
     reminder: complete

@@ -60,7 +60,7 @@ state در `output/{provinceId}/notes.state.json` نگه داشته می‌شو�
 امکانات، مسیر رسیدن، FAQ عملیاتی، چک‌لیست، هزینه و ایمنی فرزند فقط روی خودِ فرزند ذخیره می‌شود.
 
 پیاده‌سازی: `FAQ_CHILD_SCOPE` (فقط برای پرسش‌های عملیاتی؛ نام‌بردن ساده Warning است)،
-`COST_CHILD_SCOPE`, `COST_CATEGORY_NOT_ALLOWED`, `VISIT_FIELD_NOT_ALLOWED`, `CHECKLIST_ITEM_NOT_CONCRETE`.
+`COST_CHILD_SCOPE` حذف شد (فیلد costs دیگر وجود ندارد)، `VISIT_FIELD_NOT_ALLOWED`، `CHECKLIST_ITEM_NOT_CONCRETE`.
 تطبیق نام با مرز واژه و نرمال‌سازی فارسی (نیم‌فاصله، ی/ک عربی) انجام می‌شود و **نام‌های خودِ Entity و اجدادش
 استثنا هستند** — وگرنه استانی مثل همدان که شهرستان و شهر هم‌نام دارد، هرگز نمی‌توانست نام خود را بنویسد.
 
@@ -106,16 +106,17 @@ camping → هزینهٔ کمپ. قیمت هرگز حدس زده نمی‌شود
 
 - «نتیجه‌ای نبود» ≠ «جستجو نشد»: نتیجهٔ خالی یا منبع در دسترس نبودن هم باید با `record_search_result` ثبت شود.
 - **کشف تصویر هرگز به‌عنوان Fact Source Coverage حساب نمی‌شود** (Coverage فقط از `sourceMatrix` می‌آید).
-- هر `evidence.sourceUrl` باید دقیقاً یکی از `sources[].url` و ثبت‌شده برای همان Node باشد
-  (`EVIDENCE_SOURCE_NOT_IN_SOURCES`, `SOURCE_NOT_REGISTERED`).
+- هر `sources[].url` باید برای همان Node در Source Matrix ثبت شده باشد (`SOURCE_NOT_REGISTERED`).
+  فیلد `evidence` از قرارداد حذف شده است.
 - URL باید خام `https://` باشد؛ رندر Markdown (`[url](url)`) در زمان ذخیره خودکار تعمیر می‌شود و در زمان
   ثبت منبع رد می‌شود.
 
 ## ۱۰) Taxonomy
 
 تنها مرجع، Taxonomy سراسری در `taxonomy/` است (types, subtypes, categories, activities, features, facilities, risks).
-Taxonomy داخل استان/Scope کپی نمی‌شود. مفهوم جدید فقط به‌صورت proposal در
-`taxonomy/agent-taxonomy/proposals.json` ثبت می‌شود و **هرگز** وارد Entity تولیدی نمی‌شود
+Taxonomy داخل استان/Scope کپی نمی‌شود. مفهوم جدید مثل خود Taxonomy ساخته می‌شود، اما فقط داخل
+`taxonomy/agent-taxonomy/{catalog}.json` (staging؛ `planro://taxonomy/agent`) و **هرگز** تا promote انسانی
+وارد Entity تولیدی نمی‌شود.
 (`TAXONOMY_UNKNOWN`, `TYPE_UNKNOWN`, `SUBTYPE_UNKNOWN`).
 
 قرارداد: idها یکتا و snake_case هستند و enumهای `place.schema.json` (`type`, `features`, `facilities`)
@@ -171,8 +172,8 @@ Scope بعدی. لحن برند سه دستهٔ `BRAND_VOICE_SUPERLATIVE` / `BRA
 - [x] `record_search_result` برای هر ۵ منبع Primary → Coverage از ۰/۵ به **۵/۵ satisfied**
 - [x] منبع خارج از سیاست به‌عنوان `other` دسته‌بندی و هشدار داده می‌شود؛ URL مارک‌داون در زمان ثبت رد می‌شود
 - [x] `record_media_candidate` (idempotent) + `finalize_media` → دقیقاً **۵ تصویر متمایز**، تامبنیل داخل بودجه، `status=complete`
-- [x] همهٔ گیت‌های منفی واقعاً رد می‌کنند: VISIT_FIELD_NOT_ALLOWED، COST_CATEGORY_NOT_ALLOWED، COST_MIN_GT_MAX،
-      FAQ_CHILD_SCOPE، CHECKLIST_ITEM_NOT_CONCRETE، TAXONOMY_UNKNOWN، EVIDENCE_SOURCE_NOT_IN_SOURCES،
+- [x] همهٔ گیت‌های منفی واقعاً رد می‌کنند: VISIT_FIELD_NOT_ALLOWED،
+      FAQ_CHILD_SCOPE، CHECKLIST_ITEM_NOT_CONCRETE، TAXONOMY_UNKNOWN، SOURCE_NOT_REGISTERED،
       SOURCE_NOT_REGISTERED، BRAND_VOICE_SUPERLATIVE، MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE،
       MEDIA_THUMBNAIL_DUPLICATED، MEDIA_GLOBAL_DUPLICATE، DUPLICATE_ID
 - [x] `save_active_entity` → ذخیره در مسیر canonical `output/province-30/province.json` + تعمیر خودکار URL مارک‌داون

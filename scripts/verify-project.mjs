@@ -47,7 +47,6 @@ const REQUIRED = [
   "dataset/entity-field-policy.json",
   "dataset/source_policy.json",
   "dataset/brand_voice.md",
-  "dataset/iran-cpi.schema.json",
   "prompts/01-start-province.txt",
   "prompts/02-run-scope.txt",
   "prompts/03-resume.txt",
@@ -61,8 +60,17 @@ const REQUIRED = [
   "taxonomy/features.json",
   "taxonomy/facilities.json",
   "taxonomy/risks.json",
+  "taxonomy/checklist-items.json",
   "taxonomy/README.md",
-  "taxonomy/agent-taxonomy/proposals.json",
+  "taxonomy/agent-taxonomy/README.md",
+  "taxonomy/agent-taxonomy/types.json",
+  "taxonomy/agent-taxonomy/subtypes.json",
+  "taxonomy/agent-taxonomy/categories.json",
+  "taxonomy/agent-taxonomy/activities.json",
+  "taxonomy/agent-taxonomy/features.json",
+  "taxonomy/agent-taxonomy/facilities.json",
+  "taxonomy/agent-taxonomy/risks.json",
+  "taxonomy/agent-taxonomy/checklist-items.json",
   "src/index.ts",
   "src/server.ts",
   "src/tools.ts",
@@ -99,7 +107,7 @@ for (let i = 1; i <= 31; i++) {
 }
 
 // --- 3. global taxonomy -----------------------------------------------------
-const TAXONOMY_DOMAINS = ["types", "subtypes", "categories", "activities", "features", "facilities", "risks"];
+const TAXONOMY_DOMAINS = ["types", "subtypes", "categories", "activities", "features", "facilities", "risks", "checklist-items"];
 const taxonomy = {};
 for (const d of TAXONOMY_DOMAINS) {
   const x = readJson(`taxonomy/${d}.json`);
@@ -112,7 +120,31 @@ for (const d of TAXONOMY_DOMAINS) {
   );
   taxonomy[d] = new Set(ids);
 }
-ok(Array.isArray(readJson("taxonomy/agent-taxonomy/proposals.json")), "agent-taxonomy/proposals.json must be an array.");
+// Agent Taxonomy = parallel catalogs (same shape); staging only
+ok(!exists("taxonomy/agent-taxonomy/proposals.json"), "Legacy agent-taxonomy/proposals.json must not exist (use mirror catalogs).");
+for (const d of TAXONOMY_DOMAINS) {
+  const x = readJson(`taxonomy/agent-taxonomy/${d}.json`);
+  ok(Array.isArray(x.items), `taxonomy/agent-taxonomy/${d}.json: items[] missing.`);
+  const ids = (x.items ?? []).map((i) => i.id);
+  ok(new Set(ids).size === ids.length, `taxonomy/agent-taxonomy/${d}.json: duplicate ids.`);
+  ok(
+    ids.every((id) => typeof id === "string" && /^[a-z0-9_]+$/.test(id)),
+    `taxonomy/agent-taxonomy/${d}.json: ids must be lowercase snake_case.`,
+  );
+  const overlap = ids.filter((id) => taxonomy[d].has(id));
+  ok(
+    overlap.length === 0,
+    `taxonomy/agent-taxonomy/${d}.json overlaps Global Taxonomy ids: ${overlap.join(", ") || "-"}.`,
+  );
+  for (const [i, it] of (x.items ?? []).entries()) {
+    ok(typeof it.label === "string" && it.label.length > 0, `taxonomy/agent-taxonomy/${d}.json items[${i}]: label required.`);
+    ok(it.source && typeof it.source === "object", `taxonomy/agent-taxonomy/${d}.json items[${i}]: source provenance object required.`);
+    if (it.source && typeof it.source === "object") {
+      ok(typeof it.source.reason === "string" && it.source.reason.length > 0, `taxonomy/agent-taxonomy/${d}.json items[${i}].source.reason required.`);
+      ok(typeof it.source.provinceId === "string" && it.source.provinceId.length > 0, `taxonomy/agent-taxonomy/${d}.json items[${i}].source.provinceId required.`);
+    }
+  }
+}
 
 // --- 4. place schema --------------------------------------------------------
 const schema = readJson("dataset/place.schema.json");
@@ -139,6 +171,19 @@ for (const [prop, domain] of [
     extra.length === 0 && missing.length === 0,
     `place.schema.json: properties.${prop}.enum drifted from taxonomy/${domain}.json (extra: ${extra.join(", ") || "-"}; missing: ${missing.join(", ") || "-"}).`,
   );
+}
+// travelChecklist mode arrays must use checklist-items taxonomy ids
+{
+  const modeEnums = Object.values(schema.properties.travelChecklist?.properties ?? {}).map((p) => new Set(p?.items?.enum ?? []));
+  ok(modeEnums.length >= 6, "place.schema.json: travelChecklist must define the six travel modes.");
+  for (const enumValues of modeEnums) {
+    const extra = [...enumValues].filter((v) => !taxonomy["checklist-items"].has(v));
+    const missing = [...taxonomy["checklist-items"]].filter((v) => !enumValues.has(v));
+    ok(
+      extra.length === 0 && missing.length === 0,
+      `place.schema.json: travelChecklist item enums drifted from taxonomy/checklist-items.json (extra: ${extra.join(", ") || "-"}; missing: ${missing.join(", ") || "-"}).`,
+    );
+  }
 }
 
 // --- 5. media policy: one target contract everywhere ------------------------
@@ -191,6 +236,14 @@ ok(
 ok(
   /زیردرخت|subtree/i.test(prompts[1]),
   "prompts/02: must state that one Scope means the whole subtree (county + cities/villages/places).",
+);
+ok(
+  /planro:\/\/taxonomy\/agent|agent-taxonomy\//.test(prompts[0]) && /taxonomy\/agent-taxonomy\//.test(prompts[0]),
+  "prompts/01: missing-concept → create item in taxonomy/agent-taxonomy/ (parallel catalogs) is missing.",
+);
+ok(
+  /agent-taxonomy/.test(prompts[0]) && /(نبود|اضافه)/.test(prompts[0]),
+  "prompts/01: end-of-province report for missing taxonomy items is missing.",
 );
 // Delivery stage: DoD+validate → git status/add output → commit/push; no commit if DoD fails
 prompts.forEach((t, i) => {

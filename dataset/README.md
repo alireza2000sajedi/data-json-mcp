@@ -7,7 +7,7 @@
 
 1. `README.md`: Scope، رفتار Agent، کیفیت تحقیق، ساختار فایل و Definition of Done.
 2. `place.schema.json`: نام کلیدها، نوع داده، `required`، enum، الگوها و اعتبارسنجی JSON.
-3. `input/`: ساختار اداری کامل ۳۱ استان (`1.json` تا `31.json`) — چک‌لیست مرجع کشف اداری و مبنای `count` قرارداد تکمیل؛ اما منبع Evidence، Fact، مختصات یا قیمت نیست (تفصیل در بخش ۱-۱).
+3. `input/`: ساختار اداری کامل ۳۱ استان (`1.json` تا `31.json`) — چک‌لیست مرجع کشف اداری و مبنای `count` قرارداد تکمیل؛ اما منبع Fact، مختصات یا قیمت نیست (تفصیل در بخش ۱-۱).
 
 - README و Prompt نباید فهرست موازی Required بسازند؛ Requiredها فقط از Schema خوانده می‌شوند.
 - در تعارض اجرایی، README مقدم است؛ در تعارض ساختار JSON، Schema مقدم است.
@@ -44,7 +44,7 @@
 1. **چک‌لیست مرجع کشف اداری**: در گام Discovery هر Node، فایل input مبنای شروع است. همهٔ شهرستان‌ها، شهرها و روستاهای فایل باید پوشش داده شوند: هر مورد یا Node/Entity واقعی می‌شود یا دلیل مستند (Conflict یا تصمیم Deduplication) در notes می‌گیرد. غافل‌گذاشتن موارد فایل، نقض کامل‌بودن کشف است.
 2. **مبنای `count` قرارداد تکمیل**: هنگام `complete_discovery_task`، `count` باید با این فایل سازگار باشد (مثلاً همدان در `input/30.json` دارای ۹ شهرستان است → `count: 9`؛ تعداد شهرها و روستاهای هر شهرستان نیز از همین فایل خوانده می‌شود). `count` غیرواقعی، DoD را به‌اشتباه complete می‌کند و تخلف است.
 3. **نام‌ها initial هستند**: نام Canonical، نام‌های جایگزین، مالکیت والد و تعلق جغرافیایی با تحقیق زندهٔ وب تعیین و Cross-check می‌شود؛ نه کورکورانه از input.
-4. **input منبع Evidence نیست**: Fact، مختصات، قیمت، ساعت کاری، تصویر و هر دادهٔ محتوایی فقط از Sourceهای وب ثبت‌شده در Source Matrix می‌آید (مختصات input ممنوع است — بخش ۸).
+4. **input منبع Fact نیست**: Fact، مختصات، قیمت، ساعت کاری، تصویر و هر دادهٔ محتوایی فقط از Sourceهای وب ثبت‌شده در Source Matrix می‌آید (مختصات input ممنوع است — بخش ۸).
 5. **تضاد با واقعیت** (تقسیمات جدید، تغییر نام، انحلال): در notes به‌عنوان Conflict ثبت و تصمیم بر اساس تحقیق و منابع رسمی گرفته می‌شود.
 
 ## 2. نقش Agent
@@ -126,7 +126,7 @@ Agent خودش باید دربارهٔ پایین‌ترین سطح اداری �
 ## 3-0. Active-Only و ترتیب تکمیل عمقی
 
 - رکورد ناقص برای خروجی Dataset وجود ندارند و نباید در JSON ذخیره شوند.
-- هر JSON ذخیره‌شده باید `status: "active"` داشته باشد؛ یعنی تمام Requiredهای Schema، Quality Gate، Evidence، Costs، تصاویر، URL خام، Relations و Validation آن کامل شده‌اند.
+- هر JSON ذخیره‌شده باید `status: "active"` داشته باشد؛ یعنی تمام Requiredهای Schema، Quality Gate، تصاویر، URL خام، Relations و Validation آن کامل شده‌اند.
 - دادهٔ ناقص فقط در `notes.md` به‌صورت Candidate/Task ثبت می‌شود؛ فایل JSON ناقص، County Shell، City Shell یا Place Shell ساخته و Commit نمی‌شود.
 
 ### ترتیب اجباری تکمیل
@@ -141,7 +141,7 @@ Agent خودش باید دربارهٔ پایین‌ترین سطح اداری �
 7. سپس City بعدی و بعد County بعدی
 ```
 
-- Agent حق ندارد City، Village، POI یا County جدیدی را Active کند، وقتی City/County قبلی طبق این ترتیب هنوز Place، Village، Evidence، Media، Costs یا Relation ناتمام دارد.
+- Agent حق ندارد City، Village، POI یا County جدیدی را Active کند، وقتی City/County قبلی طبق این ترتیب هنوز Place، Village، Media یا Relation ناتمام دارد.
 - Province فقط زمانی واقعاً کامل تلقی می‌شود که تمام Countyهایش همین چرخه را گذرانده باشند؛ تکمیل Province Entity در مرحلهٔ ۱ به‌معنای پایان Scope استان نیست.
 
 ## 3-1. County Traversal Gate — ممنوعیت County Shell
@@ -260,7 +260,7 @@ localFoods.name/description, souvenirs.name/description
 A. ساختار اداری، نام‌ها و جمعیت
 B. مختصات، نشانی و نقشه
 C. Placeها، Villageها و Camping
-D. Sourceها و Evidence
+D. Sourceها
 E. Media (Commons + جستجوی تصویر وب)
 F. Costها و قیمت‌ها
 ```
@@ -269,10 +269,10 @@ F. Costها و قیمت‌ها
 - Queryهای فارسی، انگلیسی و نام‌های جایگزین یک Entity را تا حد ممکن هم‌زمان اجرا کن.
 - Searchهای مستقل Nominatim، OSM، Google Maps، Commons و پنج منبع تصادفی گردشگری برای همان Entity موازی‌اند.
 - از Source Matrix فشرده در notes استفاده کن تا Query یا Source بررسی‌شده دوباره‌کاری نشود.
-- داده‌های واقعاً مشترک و Sourceدار، مانند CPI، نودهای حمل‌ونقل، مرز اداری و Sourceهای رسمی، در Reference مرکزی نگه‌داری و به Entityها ارجاع شوند؛ Fact اختصاصی هر Entity همچنان جدا تحقیق می‌شود.
+- داده‌های واقعاً مشترک و Sourceدار، مانند نودهای حمل‌ونقل، مرز اداری و Sourceهای رسمی، در Reference مرکزی نگه‌داری و به Entityها ارجاع شوند؛ Fact اختصاصی هر Entity همچنان جدا تحقیق می‌شود.
 - Media را به‌صورت یک Wave جدا برای همان Entity جمع کن؛ ابتدا Category و نام انگلیسی/فارسی Entity در Commons، سپس جستجوی تصویر وب عمومی (گوگل/بینگ، سایت‌های فارسی گردشگری و خبری) تا رسیدن به حداقلِ تصویرِ نوع همان Entity (§12).
 - نوشتن JSON، Validation، به‌روزرسانی notes، Commit و Push فقط خطی و تک‌نخی انجام می‌شود تا Conflict و دوباره‌کاری ایجاد نشود.
-- سرعت نباید با حذف Village، POI، Source، Evidence، Cost، تصویر یا Cross-check بالا برود.
+- سرعت نباید با حذف Village، POI، Source، تصویر یا Cross-check بالا برود.
 
 ## 5-2. تازگی داده و زمان مرجع
 
@@ -280,7 +280,7 @@ F. Costها و قیمت‌ها
 - برای داده‌های متغیر، Queryهای ۱۴۰۵ و 2026 اولویت اول‌اند.
 - قیمت، Cost، منو، ساعت کاری، ورودی، امکانات، حمل‌ونقل، Camping، تماس، وضعیت باز/بسته، وضعیت خدمات و تقسیمات جاری فقط با دادهٔ ۱۴۰۵/۲۰۲۶ به‌عنوان وضعیت فعلی ثبت می‌شوند.
 - دادهٔ ۱۴۰۳ / 2024 برای وضعیت جاری کافی نیست. اگر فقط منبع قدیمی موجود بود، Agent آن را در notes به‌عنوان دادهٔ تاریخی ثبت و Search را ادامه می‌دهد؛ نباید آن را Current Fact در JSON معرفی کند.
-- Factهای ثابت یا تاریخی مانند سال ساخت، ثبت ملی/جهانی، سرشماری رسمی یا جمعیت دوره‌ای می‌توانند منبع قدیمی‌تر داشته باشند، ولی سال و دوره باید صریحاً در متن و evidence بیاید.
+- Factهای ثابت یا تاریخی مانند سال ساخت، ثبت ملی/جهانی، سرشماری رسمی یا جمعیت دوره‌ای می‌توانند منبع قدیمی‌تر داشته باشند، ولی سال و دوره باید صریحاً در متن بیاید.
 - `accessedAt` تاریخ واقعی روز دسترسی است؛ نه تاریخ انتشار منبع.
 
 ## 6. Maximum Research Effort و Missing Data
@@ -293,7 +293,7 @@ F. Costها و قیمت‌ها
 - Requiredهای Schema باید پیش از ذخیره با دادهٔ واقعی و Schema-valid کامل شوند.
 - اگر Entity دادهٔ Required، به‌ویژه مختصات واقعی، ندارد: JSON ساخته نمی‌شود؛ Candidate با نام، سطح اداری، Queryها، URLهای بررسی‌شده و دلیل در notes ثبت می‌شود و پیش از پایان Scope دوباره پیگیری می‌شود.
 
-## 7. منابع و Evidence
+## 7. منابع (فیلد evidence حذف شده)
 
 سیاست منبع (`dataset/source_policy.json`) — پنج منبع Primary اجباری به ترتیب اولویت:
 
@@ -317,7 +317,7 @@ Wikidata، Wikimedia Commons، Wikipedia، UNESCO، Eghamat24، Safarmarket، Ki
 - ترتیب جستجوی هر Entity: ابتدا ۵ منبع Primary به ترتیب اولویت (Kojaro → Jabama → Alibaba → Lastsecond → Flytoday) و سپس منابع مکمل؛ نتیجهٔ هر Primary (حتی not-found) با record_search_result ثبت می‌شود و در شمارش Coverage همان Entity حساب می‌شود.
 - برای جلوگیری از حجیم‌شدن notes، برای هر Entity فقط یک ردیف فشرده ثبت شود: `entity ID | 5 sites | query codes | found/not-found/not-relevant`. URL و جزئیات فقط برای Sourceهای واقعی/متناقض ثبت می‌شوند.
 - برای Scope دست‌کم ۱۰ منبع متنوع بررسی می‌شود. برای هر Entity همهٔ Sourceهای واقعی و مرتبط ثبت می‌شوند؛ POI کوچک ممکن است یک Source معتبر داشته باشد، اما Fact حساس Cross-check می‌خواهد.
-- هر Fact مهم باید در `evidence` به Source واقعی خودش وصل شود. `evidence[].sourceUrl` باید دقیقاً یکی از `sources[].url` باشد.
+- فیلد `evidence` از قرارداد حذف شده است. `sources[]` همان منابع ثبت‌شده در Source Matrix هستند؛ Factها در متن Entity می‌آیند.
 - URLها فقط URL خام HTTPS هستند؛ Markdown، `&amp;`، space و متن اضافی ممنوع است.
 - اگر Source در گفت‌وگو یا ورودی به شکل Markdown رندر/ارسال شده است، مقصد لینک را استخراج و پیش از ذخیره به URL خام HTTPS تبدیل کن؛ ظاهر Markdown در پیام کاربر دلیل ردکردن خود Source نیست، اما همان رشته هرگز در JSON ذخیره نمی‌شود.
 
@@ -372,7 +372,7 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 - ماه‌های خارج از این دو آرایه «بهترین» یا «ممنوع» نیستند.
 - `travelChecklist` Type-aware است.
 - برای Province، County، City، Village، Natural Area، Route، Accommodation و Campground هر شش دستهٔ `tour`، `personalCar`، `airplane`، `camping`، `train` و `bus` Required هستند.
-- هر آیتم Checklist فقط یک مورد کوتاه، ملموس و قابل‌برداشتن/همراه‌داشتن است؛ جمله، فعل، توصیه، توضیح مسیر و علامت پایان جمله ممنوع است.
+- مقادیر هر حالت فقط canonical id از `taxonomy/checklist-items.json` هستند (نه متن آزاد فارسی).
 - برای تعداد آیتم‌های هر دسته هیچ سقف مصنوعی وجود ندارد؛ هرچه چک‌لیست کامل‌تر و واقعاً مفیدتر باشد بهتر است.
 - Agent باید مسیر کامل سفر را از پیش از حرکت تا بازگشت تصور کند و همهٔ نیازهای واقعیِ مرتبط را بررسی کند: مدارک، رزرو/بلیت، پرداخت، ارتباط و برق، مسیریابی، خودرو، لباس، ایمنی، سلامت، غذا و آب، خواب و کمپ، بهداشت، کودک/خانواده و شرایط فصل/مقصد. فقط آیتم‌های واقعاً مرتبط با همان نوع سفر و مقصد ثبت می‌شوند.
 
@@ -405,7 +405,7 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 - `content.whyVisit` باید تجربه‌های واقعی همان مکان را نام ببرد؛ نه صفت‌های کلی مانند «بی‌نظیر»، «جادویی»، «شگفت‌انگیز»، «بهترین» یا «فراموش‌نشدنی».
 - `history` فقط Fact تاریخ‌دار و Sourceدار دارد. `faq` دقیق و پاسخ‌گوست؛ `tips` کوتاه، مشخص و قابل‌عمل است؛ `warnings` دسته‌بندی‌شده، متناسب با خطر واقعی و بدون قطعیت‌نمایی است.
 - فناوری، هوش مصنوعی، «سیستم هوشمند»، مدیریت پلتفرم و زبان محصول در متن مکان نمی‌آید، مگر این‌که خدمتِ واقعیِ قابل‌استفاده در همان مکان باشد و Evidence اختصاصی داشته باشد.
-- ادعاهای رتبه‌بندی، برتری، یکتایی، «اولین»، «قدیمی‌ترین»، «بهترین زمان» و اعداد فقط با Evidence اختصاصی وارد می‌شوند. در غیر این صورت به بیان خنثی و Factمحور بازنویسی یا حذف می‌شوند.
+- ادعاهای رتبه‌بندی، برتری، یکتایی، «اولین»، «قدیمی‌ترین»، «بهترین زمان» و اعداد تبلیغاتی ممنوع‌اند و باید به بیان خنثی و Factمحور بازنویسی یا حذف شوند.
 - از کلیشه‌های صنعت سفر و ساختارهای رباتی مانند «تجربه‌ای ... فراهم می‌کند»، «مقصدی ایده‌آل»، «مکان جادویی» و خطاب تبلیغاتی پرهیز کن. متن طبیعی و مشخص بنویس.
 - نام‌بردن از مکان، غذا، اقامتگاه یا فعالیت دیگر فقط وقتی مجاز است که برای آن Entity مستقل یا Candidate مستند در notes وجود داشته باشد.
 
@@ -427,65 +427,15 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 - Map می‌تواند Media کمکی باشد، اما Thumbnail باید تا حد ممکن یک تصویر واقعی و نمایندهٔ تجربهٔ مکان باشد.
 - `mark_node_media_deficit` فقط برای «نبودِ کل دادهٔ Entity» است؛ اگر حتی ۱ کاندید رسانهٔ usable ثبت شده باشد، ابزار رد می‌کند و مسیر صحیح `finalize_media` + ذخیرهٔ partial است.
 
-## 13. هزینه‌های سفر و تورم
+## 13. هزینه‌های سفر — حذف‌شده
 
-### دادهٔ هزینهٔ هر Place
-
-- `costs` هزینهٔ بازدید یک Place برای **یک مسافر** و با واحد `IRT` (تومان) است.
-- هر Place با `status: active` باید `costs` کامل داشته باشد. تا تکمیل تحقیق هزینه، Entity فقط Candidate در notes است و JSON Active ذخیره نمی‌شود.
-- هر Cost Item باید Source واقعی، تاریخ قیمت و نوع تورم داشته باشد؛ قیمت، منو، ورودی، پارکینگ، تاکسی، اقامت یا تجهیزات حدس زده نمی‌شود.
-- همهٔ هزینه‌های واقعیِ مرتبط از شروع رسیدن به Place تا پایان بازدید بررسی می‌شوند؛ مانند ورودی، غذا، ساندویچ، نوشیدنی، رستوران، تاکسی محلی، پارکینگ، راهنما، تجهیزات، اقامت، کمپ و خرید ضروری.
-- هر Cost Item سه بازه دارد: `economy`، `standard` و `comfortable`؛ هر بازه `{min,max}` به تومان است.
-- هزینهٔ مشترک با `unit` مشخص می‌شود: `per_person`، `per_vehicle`، `per_room`، `per_night`، `per_visit` یا `per_item`.
-
-نمونه:
-
-```json
-"costs": {
-  "currency": "IRT",
-  "priceAsOf": "2026-08-23",
-  "forTravelers": 1,
-  "items": [
-    {
-      "category": "snack",
-      "name": "ساندویچ",
-      "required": false,
-      "unit": "per_person",
-      "quantity": 1,
-      "budget": {
-        "economy": {"min": 180000, "max": 280000},
-        "standard": {"min": 280000, "max": 450000},
-        "comfortable": {"min": 450000, "max": 750000}
-      },
-      "inflationCategory": "food_and_beverages",
-      "sourceUrl": "https://..."
-    }
-  ],
-  "estimatedVisitTotal": {
-    "economy": {"min": 180000, "max": 280000},
-    "standard": {"min": 280000, "max": 450000},
-    "comfortable": {"min": 450000, "max": 750000}
-  }
-}
-```
-
-### تورم و تعدیل آینده
-
-- CPI داخل هر Place تکرار نمی‌شود. مرجع مرکزی، مطابق `iran-cpi.schema.json`، باید ماهانه با دادهٔ واقعی مرکز آمار ایران به‌روزرسانی شود.
-- هر Price Item فقط `priceAsOf` و `inflationCategory` نگه می‌دارد.
-- دسته‌های تورم: `food_and_beverages`، `restaurants_and_hotels`، `transport`، `recreation_and_culture`، `clothing_and_footwear`، `health`، `miscellaneous_goods` و `all_items`.
-- قیمت آینده با شاخص رسمی محاسبه می‌شود:
-
-```text
-adjustedCost = baseCost × CPI[targetMonth][inflationCategory] ÷ CPI[priceAsOfMonth][inflationCategory]
-```
-
-- اگر CPI ماه هدف هنوز منتشر نشده، فقط یک Forecast جداگانه و صریح می‌تواند استفاده شود؛ Forecast نباید جای CPI واقعی یا قیمت Sourceدار ثبت شود.
-- هزینهٔ کامل سفر تهران تا شیراز یا هر مبدأ/مقصد، بعداً از جمع Costهای Place انتخاب‌شده + مسیر بین‌شهری + اقامت + تعداد شب + تعداد نفرات محاسبه می‌شود؛ `costs` هر Place فقط جزء قابل‌جمعِ آن محاسبه است.
+فیلد `costs` و مدل CPI (`iran-cpi.schema.json`) از قرارداد حذف شده‌اند.
+Entity فعال دیگر `costs` ندارد و Agent نباید قیمت/هزینه را تحقیق یا ذخیره کند.
+`place.schema.json` با `additionalProperties: false` هر `costs` باقی‌مانده را رد می‌کند.
 
 ## 14. Validation و Quality Gate
 
-پیش از ذخیره، Agent باید هم تطابق ساختاری با JSON Schema و هم Quality Gate پژوهشی/بین‌فیلدی را بررسی کند. Schema به‌تنهایی فقط ساختار را کنترل می‌کند؛ تطابق Evidence با Source، اعتبار و مالکیت Source، وجود و معنای Relation، یکتایی Dataset، منطق سلسله‌مراتب، `min ≤ max`، تازگی قیمت، عدم تکرار Media و کامل‌بودن Factهای مهم کنترل‌های انسانیِ اجباری پیش از ذخیره‌اند.
+پیش از ذخیره، Agent باید هم تطابق ساختاری با JSON Schema و هم Quality Gate پژوهشی/بین‌فیلدی را بررسی کند. Schema به‌تنهایی فقط ساختار را کنترل می‌کند؛ اعتبار و مالکیت Source، وجود و معنای Relation، یکتایی Dataset، منطق سلسله‌مراتب و عدم تکرار Media کنترل‌های اجباری پیش از ذخیره‌اند.
 
 رد فوری:
 
@@ -495,7 +445,7 @@ adjustedCost = baseCost × CPI[targetMonth][inflationCategory] ÷ CPI[priceAsOfM
 - Object خالی یا رشتهٔ خالی
 - Required ناقص یا visit خالی
 - Transport Node بدون مختصات واقعی
-- Fact مهم بدون evidence، evidence خالی یا Source نامرتبط
+- Source نامرتبط یا ثبت‌نشده در Source Matrix
 - Relation به Entity/فایل واقعی وجودنداشته
 - Source title نامطابق با صفحه یا URL جعلی
 ```
@@ -565,7 +515,7 @@ Scope فقط وقتی کامل است که:
 - [ ] Deduplication، Relations و Canonical storage انجام شده؛
 - [ ] همهٔ Requiredهای Schema و Quality Gate پاس شده‌اند؛
 - [ ] URLها خام HTTPS و تصاویر غیرتکراری، دارای کردیت/منبع معتبر، حداکثر به اندازهٔ target (۱۰ برای استان/شهرستان/شهر/مکان، ۳ برای روستا/کمپینگ) و با media.status سازگار با تعداد واقعی‌اند؛
-- [ ] Evidence برای Factهای مهم وجود دارد؛
+- [ ] منابع Primary در Source Matrix ثبت شده‌اند؛
 - [ ] Coverage منابع Primary (§7) برای همهٔ نودهای Entity داخل Scope محقق شده (۵ از ۵ برای هر نود Entity، شامل روستا) و در notes مسجل است؛
 - [ ] `notes.md`، ID Registry و Git checkpoint به‌روزند؛
 - [ ] هیچ Candidate قابل‌پیگیری، Conflict قابل‌حل یا کار قابل‌انجامی باقی نمانده است.

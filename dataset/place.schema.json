@@ -14,7 +14,6 @@
     "location",
     "content",
     "visit",
-    "evidence",
     "travelChecklist",
     "faq"
   ],
@@ -517,25 +516,41 @@
       "description": "به‌جای بولین‌های بسته. مقادیر مجاز دقیقاً همان شناسه‌های Global Taxonomy (taxonomy/features.json) هستند؛ نبودن آیتم = نامشخص و منفی صریح با پیشوند not_.",
       "items": {
         "enum": [
-          "family_friendly",
-          "kids_friendly",
+          "all_season",
+          "camping_allowed",
+          "crowded_peak_season",
+          "day_trip",
           "elderly_friendly",
-          "wheelchair_accessible",
+          "family_friendly",
+          "free_entry",
+          "free_parking",
+          "guide_recommended",
+          "indoor",
+          "kids_friendly",
+          "multi_day",
+          "national_heritage",
+          "night_visit_possible",
           "not_wheelchair_accessible",
+          "off_the_beaten_path",
+          "outdoor",
+          "paid_parking",
           "pet_friendly",
           "photography_friendly",
           "photography_restricted",
-          "camping_allowed",
-          "vehicle_accessible",
-          "remote",
-          "seasonal",
           "quiet",
+          "remote",
+          "requires_ticket",
+          "reservation_required",
+          "scenic_view",
+          "seasonal",
           "shaded",
-          "all_season",
+          "stargazing_spot",
           "sunrise_spot",
           "sunset_spot",
-          "stargazing_spot",
-          "free_entry"
+          "unesco_related",
+          "vehicle_accessible",
+          "water_nearby",
+          "wheelchair_accessible"
         ]
       }
     },
@@ -544,22 +559,45 @@
       "uniqueItems": true,
       "items": {
         "enum": [
-          "parking",
-          "toilet",
-          "prayer_room",
-          "restaurant",
-          "cafe",
-          "buffet",
-          "souvenir_shop",
           "accommodation_nearby",
           "atm",
-          "first_aid",
+          "baby_changing",
+          "bbq_area",
+          "bike_rental",
+          "boat_rental",
+          "buffet",
+          "bus_stop",
+          "cafe",
+          "camping_area",
+          "camping_toilet",
+          "charging_station",
+          "cloakroom",
           "drinking_water",
-          "wifi",
+          "elevator",
+          "first_aid",
           "guide_service",
-          "ticket_office",
+          "information_desk",
+          "laundry",
+          "locker",
+          "medical_post",
+          "parking",
+          "pharmacy_nearby",
+          "picnic_table",
+          "playground",
+          "prayer_room",
           "rest_area",
-          "playground"
+          "restaurant",
+          "shade_shelter",
+          "shower",
+          "souvenir_shop",
+          "taxi_stand",
+          "ticket_office",
+          "toilet",
+          "trash_bin",
+          "viewpoint_platform",
+          "visitor_center",
+          "wheelchair_ramp",
+          "wifi"
         ]
       }
     },
@@ -1187,223 +1225,557 @@
     },
     "travelChecklist": {
       "type": "object",
-      "description": "Independent Entity-local checklist. Include only short, concrete items relevant to the current Entity and selected travel mode; do not copy a parent/child checklist wholesale.",
+      "description": "Independent Entity-local checklist by travel mode. Values must be canonical ids from taxonomy/checklist-items.json (not free-form Persian text).",
       "additionalProperties": false,
       "properties": {
         "tour": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 60,
-            "pattern": "^[^.!؟?؛:\\n]+$",
-            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+            "enum": [
+              "backpack",
+              "board_games",
+              "boarding_pass",
+              "book_ereader",
+              "camera",
+              "camp_shower",
+              "camping_stove",
+              "car_charger",
+              "car_documents",
+              "card_games",
+              "cash",
+              "charger",
+              "condom",
+              "cooking_oil",
+              "dish_soap_sponge",
+              "earplugs",
+              "first_aid_kit",
+              "fishing_gear",
+              "flashlight",
+              "food_supplies",
+              "frisbee",
+              "hammock",
+              "hat_buff",
+              "headlamp",
+              "headlamp_battery",
+              "headphones",
+              "id_card",
+              "insect_repellent",
+              "jumper_cables",
+              "lantern",
+              "lighter",
+              "lip_balm",
+              "map_or_offline_maps",
+              "mobile_phone",
+              "multitool_knife",
+              "neck_pillow",
+              "painkillers",
+              "passport",
+              "pen_paper",
+              "personal_medicine",
+              "pillow",
+              "pot_kettle",
+              "power_bank",
+              "raincoat_poncho",
+              "road_snacks",
+              "salt_spices",
+              "sandals_slippers",
+              "shampoo",
+              "shoes",
+              "sleeping_bag",
+              "sleeping_pad",
+              "snow_chains",
+              "soap",
+              "socks",
+              "spare_tire",
+              "speaker",
+              "sunglasses",
+              "sunscreen",
+              "sweatpants",
+              "swimwear",
+              "tea",
+              "tent",
+              "thermos",
+              "ticket_reserved",
+              "tissues",
+              "tool_kit",
+              "toothbrush",
+              "toothpaste",
+              "towel",
+              "trash_bags",
+              "travel_insurance",
+              "tshirt",
+              "underwear",
+              "utensils_set",
+              "vehicle_insurance",
+              "visa",
+              "warm_clothes",
+              "water_bottle_filter",
+              "water_gun",
+              "waterproof_bag",
+              "wet_wipes"
+            ],
+            "description": "Canonical checklist item id from taxonomy/checklist-items.json"
           }
         },
         "personalCar": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 60,
-            "pattern": "^[^.!؟?؛:\\n]+$",
-            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+            "enum": [
+              "backpack",
+              "board_games",
+              "boarding_pass",
+              "book_ereader",
+              "camera",
+              "camp_shower",
+              "camping_stove",
+              "car_charger",
+              "car_documents",
+              "card_games",
+              "cash",
+              "charger",
+              "condom",
+              "cooking_oil",
+              "dish_soap_sponge",
+              "earplugs",
+              "first_aid_kit",
+              "fishing_gear",
+              "flashlight",
+              "food_supplies",
+              "frisbee",
+              "hammock",
+              "hat_buff",
+              "headlamp",
+              "headlamp_battery",
+              "headphones",
+              "id_card",
+              "insect_repellent",
+              "jumper_cables",
+              "lantern",
+              "lighter",
+              "lip_balm",
+              "map_or_offline_maps",
+              "mobile_phone",
+              "multitool_knife",
+              "neck_pillow",
+              "painkillers",
+              "passport",
+              "pen_paper",
+              "personal_medicine",
+              "pillow",
+              "pot_kettle",
+              "power_bank",
+              "raincoat_poncho",
+              "road_snacks",
+              "salt_spices",
+              "sandals_slippers",
+              "shampoo",
+              "shoes",
+              "sleeping_bag",
+              "sleeping_pad",
+              "snow_chains",
+              "soap",
+              "socks",
+              "spare_tire",
+              "speaker",
+              "sunglasses",
+              "sunscreen",
+              "sweatpants",
+              "swimwear",
+              "tea",
+              "tent",
+              "thermos",
+              "ticket_reserved",
+              "tissues",
+              "tool_kit",
+              "toothbrush",
+              "toothpaste",
+              "towel",
+              "trash_bags",
+              "travel_insurance",
+              "tshirt",
+              "underwear",
+              "utensils_set",
+              "vehicle_insurance",
+              "visa",
+              "warm_clothes",
+              "water_bottle_filter",
+              "water_gun",
+              "waterproof_bag",
+              "wet_wipes"
+            ],
+            "description": "Canonical checklist item id from taxonomy/checklist-items.json"
           }
         },
         "airplane": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 60,
-            "pattern": "^[^.!؟?؛:\\n]+$",
-            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+            "enum": [
+              "backpack",
+              "board_games",
+              "boarding_pass",
+              "book_ereader",
+              "camera",
+              "camp_shower",
+              "camping_stove",
+              "car_charger",
+              "car_documents",
+              "card_games",
+              "cash",
+              "charger",
+              "condom",
+              "cooking_oil",
+              "dish_soap_sponge",
+              "earplugs",
+              "first_aid_kit",
+              "fishing_gear",
+              "flashlight",
+              "food_supplies",
+              "frisbee",
+              "hammock",
+              "hat_buff",
+              "headlamp",
+              "headlamp_battery",
+              "headphones",
+              "id_card",
+              "insect_repellent",
+              "jumper_cables",
+              "lantern",
+              "lighter",
+              "lip_balm",
+              "map_or_offline_maps",
+              "mobile_phone",
+              "multitool_knife",
+              "neck_pillow",
+              "painkillers",
+              "passport",
+              "pen_paper",
+              "personal_medicine",
+              "pillow",
+              "pot_kettle",
+              "power_bank",
+              "raincoat_poncho",
+              "road_snacks",
+              "salt_spices",
+              "sandals_slippers",
+              "shampoo",
+              "shoes",
+              "sleeping_bag",
+              "sleeping_pad",
+              "snow_chains",
+              "soap",
+              "socks",
+              "spare_tire",
+              "speaker",
+              "sunglasses",
+              "sunscreen",
+              "sweatpants",
+              "swimwear",
+              "tea",
+              "tent",
+              "thermos",
+              "ticket_reserved",
+              "tissues",
+              "tool_kit",
+              "toothbrush",
+              "toothpaste",
+              "towel",
+              "trash_bags",
+              "travel_insurance",
+              "tshirt",
+              "underwear",
+              "utensils_set",
+              "vehicle_insurance",
+              "visa",
+              "warm_clothes",
+              "water_bottle_filter",
+              "water_gun",
+              "waterproof_bag",
+              "wet_wipes"
+            ],
+            "description": "Canonical checklist item id from taxonomy/checklist-items.json"
           }
         },
         "camping": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 60,
-            "pattern": "^[^.!؟?؛:\\n]+$",
-            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+            "enum": [
+              "backpack",
+              "board_games",
+              "boarding_pass",
+              "book_ereader",
+              "camera",
+              "camp_shower",
+              "camping_stove",
+              "car_charger",
+              "car_documents",
+              "card_games",
+              "cash",
+              "charger",
+              "condom",
+              "cooking_oil",
+              "dish_soap_sponge",
+              "earplugs",
+              "first_aid_kit",
+              "fishing_gear",
+              "flashlight",
+              "food_supplies",
+              "frisbee",
+              "hammock",
+              "hat_buff",
+              "headlamp",
+              "headlamp_battery",
+              "headphones",
+              "id_card",
+              "insect_repellent",
+              "jumper_cables",
+              "lantern",
+              "lighter",
+              "lip_balm",
+              "map_or_offline_maps",
+              "mobile_phone",
+              "multitool_knife",
+              "neck_pillow",
+              "painkillers",
+              "passport",
+              "pen_paper",
+              "personal_medicine",
+              "pillow",
+              "pot_kettle",
+              "power_bank",
+              "raincoat_poncho",
+              "road_snacks",
+              "salt_spices",
+              "sandals_slippers",
+              "shampoo",
+              "shoes",
+              "sleeping_bag",
+              "sleeping_pad",
+              "snow_chains",
+              "soap",
+              "socks",
+              "spare_tire",
+              "speaker",
+              "sunglasses",
+              "sunscreen",
+              "sweatpants",
+              "swimwear",
+              "tea",
+              "tent",
+              "thermos",
+              "ticket_reserved",
+              "tissues",
+              "tool_kit",
+              "toothbrush",
+              "toothpaste",
+              "towel",
+              "trash_bags",
+              "travel_insurance",
+              "tshirt",
+              "underwear",
+              "utensils_set",
+              "vehicle_insurance",
+              "visa",
+              "warm_clothes",
+              "water_bottle_filter",
+              "water_gun",
+              "waterproof_bag",
+              "wet_wipes"
+            ],
+            "description": "Canonical checklist item id from taxonomy/checklist-items.json"
           }
         },
         "train": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 60,
-            "pattern": "^[^.!؟?؛:\\n]+$",
-            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+            "enum": [
+              "backpack",
+              "board_games",
+              "boarding_pass",
+              "book_ereader",
+              "camera",
+              "camp_shower",
+              "camping_stove",
+              "car_charger",
+              "car_documents",
+              "card_games",
+              "cash",
+              "charger",
+              "condom",
+              "cooking_oil",
+              "dish_soap_sponge",
+              "earplugs",
+              "first_aid_kit",
+              "fishing_gear",
+              "flashlight",
+              "food_supplies",
+              "frisbee",
+              "hammock",
+              "hat_buff",
+              "headlamp",
+              "headlamp_battery",
+              "headphones",
+              "id_card",
+              "insect_repellent",
+              "jumper_cables",
+              "lantern",
+              "lighter",
+              "lip_balm",
+              "map_or_offline_maps",
+              "mobile_phone",
+              "multitool_knife",
+              "neck_pillow",
+              "painkillers",
+              "passport",
+              "pen_paper",
+              "personal_medicine",
+              "pillow",
+              "pot_kettle",
+              "power_bank",
+              "raincoat_poncho",
+              "road_snacks",
+              "salt_spices",
+              "sandals_slippers",
+              "shampoo",
+              "shoes",
+              "sleeping_bag",
+              "sleeping_pad",
+              "snow_chains",
+              "soap",
+              "socks",
+              "spare_tire",
+              "speaker",
+              "sunglasses",
+              "sunscreen",
+              "sweatpants",
+              "swimwear",
+              "tea",
+              "tent",
+              "thermos",
+              "ticket_reserved",
+              "tissues",
+              "tool_kit",
+              "toothbrush",
+              "toothpaste",
+              "towel",
+              "trash_bags",
+              "travel_insurance",
+              "tshirt",
+              "underwear",
+              "utensils_set",
+              "vehicle_insurance",
+              "visa",
+              "warm_clothes",
+              "water_bottle_filter",
+              "water_gun",
+              "waterproof_bag",
+              "wet_wipes"
+            ],
+            "description": "Canonical checklist item id from taxonomy/checklist-items.json"
           }
         },
         "bus": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 60,
-            "pattern": "^[^.!؟?؛:\\n]+$",
-            "description": "آیتم کوتاه و ملموسِ فارسی، مانند «پاسپورت»، «عینک»، «شارژر همراه» یا «زنجیر چرخ»؛ جمله، فعل، توصیه و علامت پایان جمله ممنوع."
+            "enum": [
+              "backpack",
+              "board_games",
+              "boarding_pass",
+              "book_ereader",
+              "camera",
+              "camp_shower",
+              "camping_stove",
+              "car_charger",
+              "car_documents",
+              "card_games",
+              "cash",
+              "charger",
+              "condom",
+              "cooking_oil",
+              "dish_soap_sponge",
+              "earplugs",
+              "first_aid_kit",
+              "fishing_gear",
+              "flashlight",
+              "food_supplies",
+              "frisbee",
+              "hammock",
+              "hat_buff",
+              "headlamp",
+              "headlamp_battery",
+              "headphones",
+              "id_card",
+              "insect_repellent",
+              "jumper_cables",
+              "lantern",
+              "lighter",
+              "lip_balm",
+              "map_or_offline_maps",
+              "mobile_phone",
+              "multitool_knife",
+              "neck_pillow",
+              "painkillers",
+              "passport",
+              "pen_paper",
+              "personal_medicine",
+              "pillow",
+              "pot_kettle",
+              "power_bank",
+              "raincoat_poncho",
+              "road_snacks",
+              "salt_spices",
+              "sandals_slippers",
+              "shampoo",
+              "shoes",
+              "sleeping_bag",
+              "sleeping_pad",
+              "snow_chains",
+              "soap",
+              "socks",
+              "spare_tire",
+              "speaker",
+              "sunglasses",
+              "sunscreen",
+              "sweatpants",
+              "swimwear",
+              "tea",
+              "tent",
+              "thermos",
+              "ticket_reserved",
+              "tissues",
+              "tool_kit",
+              "toothbrush",
+              "toothpaste",
+              "towel",
+              "trash_bags",
+              "travel_insurance",
+              "tshirt",
+              "underwear",
+              "utensils_set",
+              "vehicle_insurance",
+              "visa",
+              "warm_clothes",
+              "water_bottle_filter",
+              "water_gun",
+              "waterproof_bag",
+              "wet_wipes"
+            ],
+            "description": "Canonical checklist item id from taxonomy/checklist-items.json"
           }
         }
       },
       "minProperties": 1
-    },
-    "evidence": {
-      "type": "array",
-      "uniqueItems": true,
-      "description": "نگاشت Factهای مهم به Source واقعی. هر sourceUrl باید دقیقاً یکی از sources[].url باشد.",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "field",
-          "claim",
-          "sourceUrl"
-        ],
-        "properties": {
-          "field": {
-            "type": "string",
-            "minLength": 1,
-            "description": "مسیر فیلد یا موضوع Fact؛ مانند content.description یا location.coordinates"
-          },
-          "claim": {
-            "type": "string",
-            "minLength": 1
-          },
-          "sourceUrl": {
-            "type": "string",
-            "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$"
-          },
-          "quote": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      },
-      "minItems": 1
-    },
-    "costs": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "currency",
-        "priceAsOf",
-        "forTravelers",
-        "items",
-        "estimatedVisitTotal"
-      ],
-      "properties": {
-        "currency": {
-          "const": "IRT",
-          "description": "تمام قیمت‌ها به تومان ایران هستند."
-        },
-        "priceAsOf": {
-          "type": "string",
-          "format": "date",
-          "description": "تاریخ واقعی مشاهده یا برآورد قیمت."
-        },
-        "forTravelers": {
-          "type": "integer",
-          "const": 1,
-          "description": "برآورد پیش‌فرض برای یک مسافر؛ هزینه‌های مشترک با unit مشخص می‌شوند."
-        },
-        "items": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "category",
-              "name",
-              "required",
-              "unit",
-              "budget",
-              "inflationCategory",
-              "sourceUrl"
-            ],
-            "properties": {
-              "category": {
-                "enum": [
-                  "entry",
-                  "food",
-                  "beverage",
-                  "snack",
-                  "restaurant",
-                  "cafe",
-                  "transport_local",
-                  "parking",
-                  "accommodation",
-                  "camping",
-                  "guide",
-                  "equipment_rental",
-                  "shopping",
-                  "souvenir",
-                  "toll",
-                  "insurance",
-                  "other"
-                ]
-              },
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
-              "required": {
-                "type": "boolean"
-              },
-              "unit": {
-                "enum": [
-                  "per_person",
-                  "per_vehicle",
-                  "per_room",
-                  "per_night",
-                  "per_visit",
-                  "per_item"
-                ]
-              },
-              "quantity": {
-                "type": "number",
-                "minimum": 0,
-                "default": 1
-              },
-              "budget": {
-                "$ref": "#/$defs/budgetTiers"
-              },
-              "inflationCategory": {
-                "enum": [
-                  "all_items",
-                  "food_and_beverages",
-                  "restaurants_and_hotels",
-                  "transport",
-                  "recreation_and_culture",
-                  "clothing_and_footwear",
-                  "health",
-                  "miscellaneous_goods"
-                ]
-              },
-              "sourceUrl": {
-                "type": "string",
-                "pattern": "^(?!.*&amp;)https://[^\\s\\[\\]]+$"
-              },
-              "notes": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "estimatedVisitTotal": {
-          "$ref": "#/$defs/budgetTiers"
-        },
-        "calculationNotes": {
-          "type": "string"
-        }
-      },
-      "description": "Costs belong to the current Entity only. Child costs are stored on child Entities and may be aggregated by the application later. estimatedVisitTotal must cover only costs owned by the current Entity."
     }
   },
   "$defs": {
@@ -1569,70 +1941,6 @@
     "faText": {
       "type": "string",
       "minLength": 1
-    },
-    "costRange": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "min",
-        "max"
-      ],
-      "properties": {
-        "min": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "max": {
-          "type": "integer",
-          "minimum": 0
-        }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "min": {
-                "type": "integer"
-              },
-              "max": {
-                "type": "integer"
-              }
-            },
-            "required": [
-              "min",
-              "max"
-            ]
-          },
-          "then": {
-            "properties": {
-              "max": {
-                "minimum": 0
-              }
-            }
-          }
-        }
-      ],
-      "description": "بازه هزینه به تومان (IRT). min نباید از max بیشتر باشد؛ این رابطه در Quality Gate بررسی می‌شود."
-    },
-    "budgetTiers": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "economy",
-        "standard",
-        "comfortable"
-      ],
-      "properties": {
-        "economy": {
-          "$ref": "#/$defs/costRange"
-        },
-        "standard": {
-          "$ref": "#/$defs/costRange"
-        },
-        "comfortable": {
-          "$ref": "#/$defs/costRange"
-        }
-      }
     }
   },
   "allOf": [
@@ -1664,23 +1972,6 @@
             }
           }
         }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "status": {
-            "const": "active"
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "then": {
-        "required": [
-          "costs"
-        ]
       }
     },
     {

@@ -1,1 +1,161 @@
-{"version":"1.0.0","items":[{"id":"parking","label":"پارکینگ"},{"id":"toilet","label":"سرویس بهداشتی"},{"id":"prayer_room","label":"نمازخانه"},{"id":"restaurant","label":"رستوران"},{"id":"cafe","label":"کافه"},{"id":"buffet","label":"بوفه"},{"id":"souvenir_shop","label":"فروشگاه سوغات"},{"id":"accommodation_nearby","label":"اقامتگاه نزدیک"},{"id":"atm","label":"خودپرداز"},{"id":"first_aid","label":"کمک‌های اولیه"},{"id":"drinking_water","label":"آب آشامیدنی"},{"id":"wifi","label":"وای‌فای"},{"id":"guide_service","label":"راهنمای محلی"},{"id":"ticket_office","label":"باجه فروش بلیت"},{"id":"rest_area","label":"فضای استراحت"},{"id":"playground","label":"زمین بازی"}]}
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "accommodation_nearby",
+      "label": "اقامتگاه نزدیک"
+    },
+    {
+      "id": "atm",
+      "label": "خودپرداز"
+    },
+    {
+      "id": "baby_changing",
+      "label": "اتاق تعویض کودک"
+    },
+    {
+      "id": "bbq_area",
+      "label": "محل کباب‌پزی"
+    },
+    {
+      "id": "bike_rental",
+      "label": "اجاره دوچرخه"
+    },
+    {
+      "id": "boat_rental",
+      "label": "اجاره قایق"
+    },
+    {
+      "id": "buffet",
+      "label": "بوفه"
+    },
+    {
+      "id": "bus_stop",
+      "label": "ایستگاه اتوبوس"
+    },
+    {
+      "id": "cafe",
+      "label": "کافه"
+    },
+    {
+      "id": "camping_area",
+      "label": "محل کمپ"
+    },
+    {
+      "id": "camping_toilet",
+      "label": "سرویس بهداشتی کمپ"
+    },
+    {
+      "id": "charging_station",
+      "label": "ایستگاه شارژ"
+    },
+    {
+      "id": "cloakroom",
+      "label": "رختکن / امانات لباس"
+    },
+    {
+      "id": "drinking_water",
+      "label": "آب آشامیدنی"
+    },
+    {
+      "id": "elevator",
+      "label": "آسانسور"
+    },
+    {
+      "id": "first_aid",
+      "label": "کمک‌های اولیه"
+    },
+    {
+      "id": "guide_service",
+      "label": "راهنمای محلی"
+    },
+    {
+      "id": "information_desk",
+      "label": "میز اطلاعات"
+    },
+    {
+      "id": "laundry",
+      "label": "رختشویی"
+    },
+    {
+      "id": "locker",
+      "label": "کمد امانات"
+    },
+    {
+      "id": "medical_post",
+      "label": "پست امداد"
+    },
+    {
+      "id": "parking",
+      "label": "پارکینگ"
+    },
+    {
+      "id": "pharmacy_nearby",
+      "label": "داروخانه نزدیک"
+    },
+    {
+      "id": "picnic_table",
+      "label": "میز پیک‌نیک"
+    },
+    {
+      "id": "playground",
+      "label": "زمین بازی"
+    },
+    {
+      "id": "prayer_room",
+      "label": "نمازخانه"
+    },
+    {
+      "id": "rest_area",
+      "label": "فضای استراحت"
+    },
+    {
+      "id": "restaurant",
+      "label": "رستوران"
+    },
+    {
+      "id": "shade_shelter",
+      "label": "سایه‌بان"
+    },
+    {
+      "id": "shower",
+      "label": "دوش"
+    },
+    {
+      "id": "souvenir_shop",
+      "label": "فروشگاه سوغات"
+    },
+    {
+      "id": "taxi_stand",
+      "label": "ایستگاه تاکسی"
+    },
+    {
+      "id": "ticket_office",
+      "label": "باجه فروش بلیت"
+    },
+    {
+      "id": "toilet",
+      "label": "سرویس بهداشتی"
+    },
+    {
+      "id": "trash_bin",
+      "label": "سطل زباله"
+    },
+    {
+      "id": "viewpoint_platform",
+      "label": "سکو / دیدگاه"
+    },
+    {
+      "id": "visitor_center",
+      "label": "مرکز بازدیدکنندگان"
+    },
+    {
+      "id": "wheelchair_ramp",
+      "label": "رمپ ویلچر"
+    },
+    {
+      "id": "wifi",
+      "label": "وای‌فای"
+    }
+  ]
+}

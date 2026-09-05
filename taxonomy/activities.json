@@ -1,1 +1,221 @@
-{"version":"1.0.0","items":[{"id":"visit","label":"بازدید"},{"id":"walking","label":"پیاده‌روی"},{"id":"nature_travel","label":"طبیعت‌گردی"},{"id":"hiking","label":"کوهنوردی / هایکینگ"},{"id":"mountaineering","label":"کوهنوردی فنی"},{"id":"cycling","label":"دوچرخه‌سواری"},{"id":"skiing","label":"اسکی"},{"id":"rock_climbing","label":"سنگ‌نوردی"},{"id":"caving","label":"غارنوردی"},{"id":"swimming","label":"شنا"},{"id":"water_play","label":"آب‌تنی"},{"id":"hydrotherapy","label":"آب‌درمانی"},{"id":"boating","label":"قایق‌سواری"},{"id":"fishing","label":"ماهیگیری"},{"id":"birdwatching","label":"پرنده‌نگری"},{"id":"wildlife_watching","label":"حیات‌وحش‌نگری"},{"id":"photography","label":"عکاسی"},{"id":"sunrise_watching","label":"تماشای طلوع"},{"id":"sunset_watching","label":"تماشای غروب"},{"id":"stargazing","label":"رصد آسمان"},{"id":"picnic","label":"پیک‌نیک"},{"id":"camping","label":"کمپینگ"},{"id":"horse_riding","label":"اسب‌سواری"},{"id":"shopping","label":"خرید"},{"id":"local_food_tasting","label":"چشیدن غذای محلی"},{"id":"crafts_experience","label":"آشنایی با صنایع‌دستی"},{"id":"museum_visit","label":"بازدید از موزه"},{"id":"religious_visit","label":"بازدید از مکان مذهبی"},{"id":"architecture_viewing","label":"تماشای معماری"},{"id":"historical_site_visit","label":"بازدید از بنای تاریخی"},{"id":"desert_travel","label":"کویرگردی"},{"id":"nature_observation","label":"مشاهده طبیعت"}]}
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "architecture_viewing",
+      "label": "تماشای معماری"
+    },
+    {
+      "id": "atv",
+      "label": "آفرود با ATV"
+    },
+    {
+      "id": "bazaar_walk",
+      "label": "گشت بازار"
+    },
+    {
+      "id": "birdwatching",
+      "label": "پرنده‌نگری"
+    },
+    {
+      "id": "boating",
+      "label": "قایق‌سواری"
+    },
+    {
+      "id": "cable_car",
+      "label": "تله‌کابین"
+    },
+    {
+      "id": "camel_riding",
+      "label": "شترسواری"
+    },
+    {
+      "id": "camping",
+      "label": "کمپینگ"
+    },
+    {
+      "id": "canyoning",
+      "label": "دره‌نوردی"
+    },
+    {
+      "id": "caving",
+      "label": "غارنوردی"
+    },
+    {
+      "id": "crafts_experience",
+      "label": "آشنایی با صنایع‌دستی"
+    },
+    {
+      "id": "cultural_tour",
+      "label": "تور فرهنگی"
+    },
+    {
+      "id": "cycling",
+      "label": "دوچرخه‌سواری"
+    },
+    {
+      "id": "desert_travel",
+      "label": "کویرگردی"
+    },
+    {
+      "id": "diving",
+      "label": "غواصی"
+    },
+    {
+      "id": "fishing",
+      "label": "ماهیگیری"
+    },
+    {
+      "id": "food_tour",
+      "label": "تور خوراک"
+    },
+    {
+      "id": "hiking",
+      "label": "کوهنوردی / هایکینگ"
+    },
+    {
+      "id": "historical_site_visit",
+      "label": "بازدید از بنای تاریخی"
+    },
+    {
+      "id": "horse_riding",
+      "label": "اسب‌سواری"
+    },
+    {
+      "id": "hydrotherapy",
+      "label": "آب‌درمانی"
+    },
+    {
+      "id": "ice_climbing",
+      "label": "یخ‌نوردی"
+    },
+    {
+      "id": "kayaking",
+      "label": "کایاک‌سواری"
+    },
+    {
+      "id": "local_food_tasting",
+      "label": "چشیدن غذای محلی"
+    },
+    {
+      "id": "mountaineering",
+      "label": "کوهنوردی فنی"
+    },
+    {
+      "id": "museum_visit",
+      "label": "بازدید از موزه"
+    },
+    {
+      "id": "nature_observation",
+      "label": "مشاهده طبیعت"
+    },
+    {
+      "id": "nature_travel",
+      "label": "طبیعت‌گردی"
+    },
+    {
+      "id": "night_tour",
+      "label": "بازدید شبانه"
+    },
+    {
+      "id": "paragliding",
+      "label": "پاراگلایدر"
+    },
+    {
+      "id": "photography",
+      "label": "عکاسی"
+    },
+    {
+      "id": "picnic",
+      "label": "پیک‌نیک"
+    },
+    {
+      "id": "pilgrimage",
+      "label": "زیارت"
+    },
+    {
+      "id": "rafting",
+      "label": "رفتینگ"
+    },
+    {
+      "id": "religious_visit",
+      "label": "بازدید از مکان مذهبی"
+    },
+    {
+      "id": "rock_climbing",
+      "label": "سنگ‌نوردی"
+    },
+    {
+      "id": "safari",
+      "label": "سافاری"
+    },
+    {
+      "id": "sandboarding",
+      "label": "ساندبردینگ"
+    },
+    {
+      "id": "shopping",
+      "label": "خرید"
+    },
+    {
+      "id": "skiing",
+      "label": "اسکی"
+    },
+    {
+      "id": "snorkeling",
+      "label": "اسنورکلینگ"
+    },
+    {
+      "id": "snowshoeing",
+      "label": "راه‌پیمایی با کفش برفی"
+    },
+    {
+      "id": "stargazing",
+      "label": "رصد آسمان"
+    },
+    {
+      "id": "sunrise_watching",
+      "label": "تماشای طلوع"
+    },
+    {
+      "id": "sunset_watching",
+      "label": "تماشای غروب"
+    },
+    {
+      "id": "swimming",
+      "label": "شنا"
+    },
+    {
+      "id": "tea_house_visit",
+      "label": "بازدید از قهوه‌خانه / چایخانه"
+    },
+    {
+      "id": "viewpoint_stop",
+      "label": "توقف در دیدگاه"
+    },
+    {
+      "id": "village_stay",
+      "label": "اقامت روستایی"
+    },
+    {
+      "id": "visit",
+      "label": "بازدید"
+    },
+    {
+      "id": "walking",
+      "label": "پیاده‌روی"
+    },
+    {
+      "id": "water_play",
+      "label": "آب‌تنی"
+    },
+    {
+      "id": "wildlife_watching",
+      "label": "حیات‌وحش‌نگری"
+    },
+    {
+      "id": "zip_lining",
+      "label": "زیپ‌لاین"
+    }
+  ]
+}

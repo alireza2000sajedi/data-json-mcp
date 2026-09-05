@@ -45,10 +45,9 @@ data-json-mcp/
 │   ├── entity-field-policy.json ← ماتریس Required/Recommended/Optional/Forbidden هر نوع Entity
 │   ├── source_policy.json    ← ۵ منبع Primary اجباری + fallbackها + منابع تصویر + Coverage
 │   ├── brand_voice.md        ← هویت کلامی و لحن برند
-│   └── iran-cpi.schema.json
 ├── taxonomy/                 ← Global Taxonomy (تنها مرجع مقادیر مجاز)
 │   ├── types · subtypes · categories · activities · features · facilities · risks
-│   └── agent-taxonomy/proposals.json  ← پیشنهادهای Agent (هرگز وارد production نمی‌شود)
+│   └── agent-taxonomy/       ← کاتالوگ‌های موازی staging (همان شکل taxonomy؛ تا promote وارد Entity نمی‌شوند)
 ├── input/                    ← ساختار اداری کامل ۳۱ استان (1.json … 31.json)
 ├── scripts/
 │   ├── verify-project.mjs    ← بررسی قرارداد پروژه (workspace / package)
@@ -124,7 +123,7 @@ npm test                # verify + e2e
 
 `scripts/e2e-province-smoke.mjs` سرویس ساخته‌شده را روی یک پوشهٔ خروجی موقت اجرا می‌کند و کل مرحلهٔ استان را
 می‌سنجد: نرمال‌سازی `30 → province-30`، ثبت ۹ شهرستان / ۳۱ شهر / ۹۶۲ روستای همدان، Coverage پنج منبع،
-پایپ‌لاین رسانه تا هدف ۵، همهٔ گیت‌های منفی (مالکیت Visit/Cost/FAQ/Checklist، Taxonomy، Evidence، Brand Voice،
+پایپ‌لاین رسانه تا هدف ۵، همهٔ گیت‌های منفی (مالکیت Visit/FAQ/Checklist، Taxonomy، Evidence، Brand Voice،
 تکرار سراسری تصویر)، ذخیرهٔ Entity در مسیر canonical، قرارداد `count`، ترتیب DFS، `awaitingScopeSelection`،
 `check_definition_of_done` و `validate_province`، و در پایان قفل‌شدن Scope بعدی و Resume از روی state.
 
@@ -184,9 +183,9 @@ npm test                # verify + e2e
 | `planro://rules/entity-fields` | ماتریس قطعی فیلدهای هر نوع Entity (`entity-field-policy.json`) |
 | `planro://rules/brand-voice-guide` | هویت کلامی و لحن برند |
 | `planro://rules/source-policy` | ۵ منبع Primary اجباری + fallback + منابع مجاز تصویر + قرارداد Coverage |
-| `planro://taxonomy` | Global Taxonomy (تنها مرجع مقادیر مجاز) |
+| `planro://taxonomy` | Global Taxonomy catalogs |
+| `planro://taxonomy/agent` | Agent Taxonomy staging catalogs (`taxonomy/agent-taxonomy/`) |
 | `planro://schema/place` | `place.schema.json` |
-| `planro://schema/iran-cpi` | `iran-cpi.schema.json` |
 | `planro://province/{provinceId}/notes` | notes.md |
 | `planro://province/{provinceId}/registry` | ID Registry |
 | `planro://province/{provinceId}/tree` | درخت Nodeها |
@@ -202,8 +201,8 @@ npm test                # verify + e2e
 2. **Candidate فقط در notes**: `create_candidate` هیچ فایلی نمی‌سازد (`jsonCreated: false`). نودی که اصلاً دادهٔ Entity ندارد با `mark_node_media_deficit` بسته می‌شود تا DFS متوقف نشود.
 3. **notes ساخت‌یافته و اتمیک**: `notes.state.json` (منبع state) + `notes.md` (خوانا). همهٔ نوشتنها temp+rename هستند.
 4. **پیمایش عمقی (DFS) + قرارداد Count**: ترتیب والد-آگاه است (`province → مکان‌های سطح استان → county → …`). هر discovery track قابل‌شمارش هنگام تکمیل باید `count` واقعی را اعلام کند و DoD همان تعداد Node ثبت‌شده را می‌سنجد.
-5. **مالکیت Source**: هر Search Result فقط با `record_search_result` ثبت می‌شود؛ در ذخیره `evidence.sourceUrl` باید دقیقاً یکی از `sources[].url` و ثبت‌شده برای همان Node باشد. **کشف تصویر هرگز جای Fact Source Coverage را نمی‌گیرد.**
-6. **مالکیت داده بین والد و فرزند**: Visit/Costs/FAQ/Checklist/Media هر Entity متعلق به خودش است. والد می‌تواند فرزند را در متن **نام ببرد**، اما دادهٔ عملیاتی فرزند (ساعت کار، بلیت، رزرو، مسیر) روی والد رد می‌شود (`FAQ_CHILD_SCOPE`, `COST_CHILD_SCOPE`). تطبیق نام، هم‌نامیِ استان/شهرستان/شهر (مثل «همدان») را به‌درستی استثنا می‌کند.
+5. **مالکیت Source**: هر Search Result فقط با `record_search_result` ثبت می‌شود؛ در ذخیره هر `sources[].url` باید برای همان Node در Source Matrix ثبت شده باشد. فیلد `evidence` از قرارداد حذف شده است. **کشف تصویر هرگز جای Fact Source Coverage را نمی‌گیرد.**
+6. **مالکیت داده بین والد و فرزند**: Visit/FAQ/Checklist/Media هر Entity متعلق به خودش است. والد می‌تواند فرزند را در متن **نام ببرد**، اما دادهٔ عملیاتی فرزند (ساعت کار، بلیت، رزرو، مسیر) روی والد رد می‌شود (`FAQ_CHILD_SCOPE`). تطبیق نام، هم‌نامیِ استان/شهرستان/شهر (مثل «همدان») را به‌درستی استثنا می‌کند. فیلد `costs` از قرارداد حذف شده است.
 7. **مسیر Canonical از Graph** گرفته می‌شود، نه از رشتهٔ نام:
 
    ```
@@ -217,11 +216,11 @@ npm test                # verify + e2e
    ```
 
 8. **ID/slug یکتا** و **Path traversal مسدود** (`safeJoin` زیر `outputDir`).
-9. **خطاهای ساخت‌یافته**: `{ accepted:false, errors:[{code,path,message}], warnings:[] }` با کدهایی مانند `SOURCE_OWNERSHIP_MISMATCH`، `URL_NOT_RAW_HTTPS`، `EVIDENCE_SOURCE_NOT_IN_SOURCES`، `VISIT_FIELD_NOT_ALLOWED`، `COST_CATEGORY_NOT_ALLOWED`، `TAXONOMY_UNKNOWN`، `COST_MIN_GT_MAX`.
+9. **خطاهای ساخت‌یافته**: `{ accepted:false, errors:[{code,path,message}], warnings:[] }` با کدهایی مانند `SOURCE_OWNERSHIP_MISMATCH`، `URL_NOT_RAW_HTTPS`، `SOURCE_NOT_REGISTERED`، `VISIT_FIELD_NOT_ALLOWED`، `TAXONOMY_UNKNOWN`.
 10. **Query-Generator، نه Search**: `discover_node` فقط رشتهٔ Query تولید می‌کند؛ اجرای جستجو با Agent است.
 11. **ذخیره فقط از مسیر MCP**: نوشتن مستقیم فایل، Quality Gate را دور می‌زند و ممنوع است.
 12. **URLها خودکار نرمال می‌شوند**: اگر لایهٔ چت URL را به شکل `[url](url)` رندر کند، هنگام ذخیره به لینک خام تبدیل می‌شود (در `record_search_result` اما URL باید از ابتدا خام باشد).
-13. **Taxonomy سراسری**: همهٔ مقادیر type/subType/category/activity/feature/facility/risk فقط از `taxonomy/` می‌آیند؛ پیشنهادهای جدید در `agent-taxonomy/proposals.json` می‌مانند و هرگز وارد Entity تولیدی نمی‌شوند.
+13. **Taxonomy سراسری + Agent Taxonomy**: Entity تولیدی فقط idهای Global Taxonomy را می‌گیرد. اگر مفهومی نبود، Agent مثل taxonomyنویس رفتار می‌کند: تحقیق می‌کند، داده می‌گیرد، و آیتم کامل را در کاتالوگ متناظر `taxonomy/agent-taxonomy/` می‌سازد (`planro://taxonomy/agent`). تا promote انسانی وارد Entity نمی‌شود. در پایان استان باید بگوید چه نبود و چه ساخته.
 14. **اجرای پلکانی + Scope مؤثر**: تا وقتی Scope فعالی انتخاب نشده، DoD فقط مرحلهٔ استان را می‌سنجد؛ با `set_active_scope` همان زیردرخت معیار می‌شود و `mark_node_complete` بیرون از Scope با `SCOPE VIOLATION` رد می‌شود.
 
 ---

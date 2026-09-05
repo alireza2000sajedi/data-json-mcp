@@ -11,10 +11,8 @@ import { config } from "./config.js";
 
 interface SchemaBundle {
   placeSchema: Record<string, unknown>;
-  cpiSchema: Record<string, unknown>;
   validatePlace: (data: unknown) => { valid: boolean; errors: ErrorObject[] };
   approvedLicenses: string[];
-  inflationCategories: string[];
   checklistCategories: string[];
   relationTypes: string[];
 }
@@ -24,17 +22,12 @@ function loadJson(file: string): Record<string, unknown> {
   return JSON.parse(raw) as Record<string, unknown>;
 }
 
-function readEnum(schema: Record<string, unknown>, pointer: (s: Record<string, unknown>) => string[]): string[] {
-  return pointer(schema);
-}
-
 let bundle: SchemaBundle | null = null;
 
 export function getSchemas(): SchemaBundle {
   if (bundle) return bundle;
 
   const placeSchema = loadJson("place.schema.json");
-  const cpiSchema = loadJson("iran-cpi.schema.json");
 
   const ajv = new Ajv2020({ strict: false, allErrors: true });
   addFormats(ajv);
@@ -44,11 +37,6 @@ export function getSchemas(): SchemaBundle {
   const mediaItem = defs.mediaItem ?? {};
   const approvedLicenses: string[] = mediaItem.properties?.license?.enum ?? [];
 
-  const costs = (placeSchema as any).properties?.costs ?? {};
-  // costs.items is an array; its item schema is costs.items.items.
-  const costItemDef = costs.properties?.items?.items ?? {};
-  const inflationCategories: string[] = costItemDef.properties?.inflationCategory?.enum ?? [];
-
   const checklist = (placeSchema as any).properties?.travelChecklist ?? {};
   const checklistCategories: string[] = Object.keys(checklist.properties ?? {});
 
@@ -57,13 +45,11 @@ export function getSchemas(): SchemaBundle {
 
   bundle = {
     placeSchema,
-    cpiSchema,
     validatePlace: (data) => {
       const valid = validatePlace(data) as boolean;
       return { valid, errors: (validatePlace.errors ?? []) as ErrorObject[] };
     },
     approvedLicenses,
-    inflationCategories,
     checklistCategories,
     relationTypes,
   };
