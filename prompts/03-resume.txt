@@ -13,6 +13,7 @@ previous_id=<PREVIOUS_ID>
 State فعلی را از MCP بخوان و از اولین مورد ناقص بعد از previous_id ادامه بده. کار کامل را بی‌دلیل تکرار نکن.
 SPEED MODE: تحقیق موازی OK؛ save/DoD/git خطی؛ بدون حذف Source/media/subtree.
 همه قواعد Normalize فیلدها، ownership FAQ/Checklist، taxonomy، sources و media مستقل را حفظ کن.
+متن: انسانی و بدون ردپای AI/OTA مطابق بخش ۱۲ پرامپت ۰۱ (و `06-province-text-rewrite.txt`).
 سؤال تعاملی نپرس. بعد از تکمیل همان Scope متوقف شو.
 
 ## تحویل (Delivery)

@@ -1,5 +1,7 @@
 # PLANRO — FINAL GLOBAL AUDIT + MINIFY
 
+قبل از این مرحله، در صورت نیاز `06-province-text-rewrite.txt` را روی کل استان اجرا کن تا متن‌ها یکدست، انسانی (بدون حس AI) و بدون نام پلتفرم در لایهٔ کاربرمحور شوند. قواعد متن از save اول هم در بخش ۱۲ پرامپت ۰۱ هست.
+
 قرارداد اصلی در `01-start-province.txt` است.
 
 ### RUN VARIABLES
@@ -17,7 +19,7 @@ final_audit=true
 - independent Checklist با canonical ids از taxonomy
 - Media ownership و uniqueness و target
 - safety/transport correctness
-- brand voice و فارسی طبیعی
+- brand voice، فارسی انسانی (بدون حس متن AI)، و نبود نام/امتیاز OTA در متن کاربرمحور
 - forbidden fields
 - Taxonomy staging: اگر چیزی در Global نبود و در `taxonomy/agent-taxonomy/` ساخته شد، در گزارش نهایی فهرست کن
 

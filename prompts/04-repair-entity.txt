@@ -13,6 +13,7 @@ previous_id=<PREVIOUS_ID>
 
 فقط همین Entity را repair کن. schema/taxonomy/hierarchy/source و applicability فیلدهای Visit/FAQ/Checklist/Media را بررسی کن.
 Child-specific data را به Parent منتقل نکن و عکس Entity دیگری را reuse نکن.
+اگر متن کاربرمحور کپی منبع، لحن ماشینی، یا نام/امتیاز OTA دارد → مطابق بخش ۱۲ پرامپت ۰۱ (و `06-province-text-rewrite.txt`) از نو بنویس.
 پس از Save، validation و DoD را اجرا کن و متوقف شو.
 سؤال تعاملی نپرس.
 
