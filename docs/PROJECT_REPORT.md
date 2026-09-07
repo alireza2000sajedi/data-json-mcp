@@ -196,7 +196,7 @@ npm run build
 npm run verify        # قرارداد پروژه (workspace)
 npm run e2e           # اجرای واقعی مرحلهٔ استان
 npm test              # هر دو
-npm run verify:package  # فقط پیش از تحویل ZIP (بدون node_modules/dist/output)
+npm run verify:package  # فقط پیش از تحویل بسته (بدون node_modules/dist/output)
 ```
 
 ## ۱۷) محدودیت‌های باقی‌مانده

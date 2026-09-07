@@ -110,7 +110,7 @@ node mcp-client.mjs list-resources
 
 ```bash
 npm run verify          # قرارداد پروژه در حالت workspace (node_modules/dist مجاز)
-npm run verify:package  # حالت تحویل/ZIP: node_modules، dist و output نباید وجود داشته باشند
+npm run verify:package  # حالت تحویل بسته: node_modules، dist و output نباید وجود داشته باشند
 npm run e2e             # build + اجرای واقعی مرحلهٔ استان (۴۵ assertion)
 npm test                # verify + e2e
 ```

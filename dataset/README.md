@@ -501,11 +501,6 @@ Entity فعال دیگر `costs` ندارد و Agent نباید قیمت/هزی�
 add province {province_id} data batch
 ```
 
-### زیپ نهایی Output
-
-- فقط پس از پایان واقعی Scope (Definition of Done کامل + Validation پاس)، کل پوشهٔ `output/{province_id}/` یک‌جا زیپ می‌شود (مثلاً `output-{province_id}.zip` در ریشهٔ ریپو) و مسیر آن در گزارش نهایی می‌آید.
-- زیپ جای چک‌پوینت‌های Git (Commit) را نمی‌گیرد؛ الویت ثبت پیشرفت با Commit است و Push اختیاری است.
-
 ## 16. Definition of Done
 
 Scope فقط وقتی کامل است که:
@@ -520,7 +515,7 @@ Scope فقط وقتی کامل است که:
 - [ ] `notes.md`، ID Registry و Git checkpoint به‌روزند؛
 - [ ] هیچ Candidate قابل‌پیگیری، Conflict قابل‌حل یا کار قابل‌انجامی باقی نمانده است.
 
-فقط در این وضعیت گزارش نهایی شامل province_id، مسیر خروجی، تعداد رکورد، Validation، notes، آخرین Commit و مسیر بستهٔ زیپ نهایی داده می‌شود.
+فقط در این وضعیت گزارش نهایی شامل province_id، مسیر خروجی، تعداد رکورد، Validation، notes و آخرین Commit داده می‌شود.
 
 ## 17. Discovery سلسله‌مراتبی و مالکیت Context
 

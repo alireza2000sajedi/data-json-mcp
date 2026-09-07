@@ -8,7 +8,7 @@
  *       are expected here, because the documented bootstrap is
  *       `npm install && npm run build && npm run verify`.
  *
- *   node scripts/verify-project.mjs --package  → PACKAGE mode (delivery/ZIP)
+ *   node scripts/verify-project.mjs --package  → PACKAGE mode (clean delivery tree)
  *       Additionally requires a clean tree: no node_modules/, dist/, output/.
  *
  * The checks encode the project contract itself (media targets, taxonomy,

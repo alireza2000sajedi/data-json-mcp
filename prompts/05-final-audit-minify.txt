@@ -17,17 +17,55 @@ final_audit=true
 - Visit field applicability
 - FAQ ownership: parent نباید child FAQ داشته باشد
 - independent Checklist با canonical ids از taxonomy
-- Media ownership و uniqueness و target
+- Media ownership و uniqueness و target (بخش Media Completion پایین اجباری است)
 - safety/transport correctness
 - brand voice، فارسی انسانی (بدون حس متن AI)، و نبود نام/امتیاز OTA در متن کاربرمحور
 - forbidden fields
 - Taxonomy staging: اگر چیزی در Global نبود و در `taxonomy/agent-taxonomy/` ساخته شد، در گزارش نهایی فهرست کن
 
+## Media Completion — برای Place حیاتی است
+قبل از minify، media هر Entity را به target برسان. ناقص رها نکن.
+
+هدف تعداد عکس یکتا (thumbnail داخل همین بودجه):
+- **Place / Province / County / City = ۵ لینک عکس**
+- Village / Camping = ۳ لینک عکس
+
+برای **Place** (و هر Entity با target ۵ که هنوز `media.status` غیر از `complete` است):
+1. لیست کن کدام‌ها زیر targetاند.
+2. از **هر جا که لازم است** لینک خام HTTPS تصویر بگیر: Wikimedia Commons، سایت رسمی، خبرگزاری، مجلهٔ گردشگری، صفحهٔ مقصد، گالری عمومی معتبر، و منابع مشابه — محدود به ۵ Primary نباش.
+3. هر تصویر را با `record_media_candidate` ثبت کن (imageUrl مستقیم فایل، pageUrl صفحهٔ مجوز/منبع، license معتبر شامل `all-rights-reserved` با credit).
+4. `finalize_media` → به entity بچسبان → `save_active_entity`.
+5. URL تکراری بین Entityها ممنوع؛ عکس Parent/Child/Sibling را reuse نکن.
+6. از ۱–۲ عکس متوقف نشو؛ تا ۵ لینک یکتا برای Place جلو برو.
+7. `mark_node_media_deficit` فقط وقتی هیچ دادهٔ Entity قابل ذخیره نبود — کمبود عکس به‌تنهایی دلیل deficit نیست.
+
+تا media target برای Placeها (و بقیهٔ Entityهای ناقص) تأمین نشود، این مرحله را تمام‌شده حساب نکن.
+
+## Cleanup — فایل‌های اضافه را پاک کن (اجباری)
+قبل از commit نهایی، فایل‌های غیرضروری را حذف کن. خروجی باید فقط دادهٔ production + state لازم باشد.
+
+### پاک کن
+- هر `*.tmp-*` / `*.tmp` / فایل نیمه‌کارهٔ rename در `output/` یا ریشهٔ پروژه
+- `tmp-*.json`، `*-review.json`، `*-draft.json`، `scratch*`، `backup*`، کپی‌های دستی مثل `province.copy.json`
+- `.DS_Store`، `Thumbs.db`، `*.log`، خروجی debug agent در workspace
+- پوشه/فایل خالی بی‌استفاده زیر `output/{province}/` که Entity یا notes نیست
+- هر فایل خارج از درخت canonical که Agent برای آزمایش ساخته و دیگر لازم نیست
+
+### هرگز پاک نکن
+- Entityهای canonical در `output/` (`province.json`، `county-*/…`، place/camp JSONها)
+- `notes.md` و `notes.state.json` همان استان
+- `input/`، `taxonomy/` (Global و agent-taxonomy)، `dataset/`، `prompts/`، `src/`، `scripts/`
+- `sources[]` داخل Entity یا media با URL معتبر — cleanup یعنی فایل اضافه، نه حذف دادهٔ Entity
+
+بعد از پاک‌سازی: `git status` را ببین؛ فقط تغییرات معنادار بماند.
+
 تا رفع تمام blocking issueها minify یا publish نکن. داده را برای رد شدن Audit جعل نکن.
-پس از global validation موفق، JSONهای production را بدون تغییر معنای داده minify کن.
+پس از global validation موفق و Cleanup، JSONهای production را بدون تغییر معنای داده minify کن.
 سؤال تعاملی نپرس.
 
 ## تحویل (Delivery)
-1. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
-2. اگر DoD پاس نشد، **commit ممنوع**.
-3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.
+1. Media target کامل + Cleanup فایل‌های اضافه انجام شده باشد.
+2. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
+3. اگر DoD پاس نشد، **commit ممنوع**.
+4. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.
+   فایل‌های junk پاک‌شده را commit نکن؛ فقط حذفشان در وضعیت git دیده شود.
