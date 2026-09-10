@@ -266,6 +266,14 @@
       ]
     },
     {
+      "id": "memorial",
+      "label": "بنای یادبود / یادمان",
+      "appliesTo": [
+        "historical",
+        "museum"
+      ]
+    },
+    {
       "id": "mosque",
       "label": "مسجد",
       "appliesTo": [
