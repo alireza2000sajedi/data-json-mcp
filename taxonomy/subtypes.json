@@ -73,6 +73,13 @@
       ]
     },
     {
+      "id": "cafe",
+      "label": "کافه",
+      "appliesTo": [
+        "restaurant"
+      ]
+    },
+    {
       "id": "campground",
       "label": "کمپینگ",
       "appliesTo": [

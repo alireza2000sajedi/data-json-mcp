@@ -34,3 +34,7 @@ See `agent-taxonomy/README.md` for the item contract.
 | `checklist-items.json` | `entity.travelChecklist.{mode}[]` |
 
 `travelChecklist` modes stay structural (`tour`, `personalCar`, `airplane`, `camping`, `train`, `bus`). Values inside each mode must be ids from Global `checklist-items.json`, never free-form Persian prose.
+
+## Event taxonomy (host / program types)
+
+`taxonomy/events/` is local data only (not exposed via MCP resources). See `events/README.md`.

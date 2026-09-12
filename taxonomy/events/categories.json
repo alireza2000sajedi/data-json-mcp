@@ -1,0 +1,179 @@
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "team_ball",
+      "rootId": "sports",
+      "label": "ورزش‌های تیمی و توپی",
+      "description": "فوتبال، فوتسال، بسکتبال، والیبال و مشابه."
+    },
+    {
+      "id": "racket",
+      "rootId": "sports",
+      "label": "ورزش‌های راکتی",
+      "description": "تنیس، پدل، بدمینتون، تنیس روی میز و اسکواش."
+    },
+    {
+      "id": "fitness",
+      "rootId": "sports",
+      "label": "تناسب و آمادگی جسمانی",
+      "description": "تمرین قدرتی، کراس‌فیت، شنا و ورزش‌های رزمی."
+    },
+    {
+      "id": "mind_body",
+      "rootId": "sports",
+      "label": "ذهن و بدن",
+      "description": "یوگا، پیلاتس و مدیتیشن."
+    },
+    {
+      "id": "endurance",
+      "rootId": "sports",
+      "label": "استقامتی و حرکتی",
+      "description": "دویدن، پیاده‌روی، دوچرخه و اسکیت."
+    },
+    {
+      "id": "outdoor_adventure",
+      "rootId": "sports",
+      "label": "طبیعت و ماجراجویی",
+      "description": "کوهنوردی، سنگ‌نوردی و طبیعت‌گردی."
+    },
+    {
+      "id": "recreational_games",
+      "rootId": "sports",
+      "label": "بازی‌های تفریحی رقابتی",
+      "description": "بولینگ، بیلیارد، دارت و پینت‌بال."
+    },
+    {
+      "id": "performing_music",
+      "rootId": "arts_culture",
+      "label": "هنرهای نمایشی و موسیقی",
+      "description": "تئاتر، کنسرت و یادگیری ساز."
+    },
+    {
+      "id": "visual_arts_crafts",
+      "rootId": "arts_culture",
+      "label": "هنرهای تجسمی و صنایع‌دستی",
+      "description": "نقاشی، سفال، عکاسی و کارگاه‌های ساختنی."
+    },
+    {
+      "id": "dance",
+      "rootId": "arts_culture",
+      "label": "رقص",
+      "description": "سبک‌های دونفره، خیابانی، معاصر و آزاد."
+    },
+    {
+      "id": "literature",
+      "rootId": "arts_culture",
+      "label": "ادبیات",
+      "description": "کتاب‌خوانی، شعر، داستان و رونمایی کتاب."
+    },
+    {
+      "id": "cinema",
+      "rootId": "arts_culture",
+      "label": "سینما و نمایش فیلم",
+      "description": "سینما و پخش گروهی فیلم."
+    },
+    {
+      "id": "cultural_other",
+      "rootId": "arts_culture",
+      "label": "سایر فرهنگی",
+      "description": "رونمایی اثر و رویدادهای فرهنگی چندرشته‌ای."
+    },
+    {
+      "id": "social_gatherings",
+      "rootId": "social",
+      "label": "دورهمی‌های اجتماعی",
+      "description": "دورهمی عادی، موضوعی، پیک‌نیک و رستوران گروهی."
+    },
+    {
+      "id": "food_experiences",
+      "rootId": "social",
+      "label": "تجربه غذا و نوشیدنی",
+      "description": "آشپزی، شیرینی‌پزی، قهوه‌آزمایی و فستیوال غذا."
+    },
+    {
+      "id": "outdoor_social",
+      "rootId": "social",
+      "label": "دورهمی در طبیعت",
+      "description": "کمپینگ و رصد ستاره."
+    },
+    {
+      "id": "discussion",
+      "rootId": "social",
+      "label": "گفت‌وگو و خودشناسی",
+      "description": "گفت‌وگوی آزاد و جمع‌های روان‌شناسی غیر‌درمانی."
+    },
+    {
+      "id": "community_ceremonies",
+      "rootId": "social",
+      "label": "اجتماعی و مناسبتی",
+      "description": "افتتاحیه، خیریه و سایر مراسم جمعی."
+    },
+    {
+      "id": "technology",
+      "rootId": "learning",
+      "label": "فناوری و برنامه‌نویسی",
+      "description": "کلاس و دورهمی فنی برنامه‌نویسی."
+    },
+    {
+      "id": "languages",
+      "rootId": "learning",
+      "label": "زبان",
+      "description": "تمرین و یادگیری زبان."
+    },
+    {
+      "id": "content_creation",
+      "rootId": "learning",
+      "label": "تولید محتوا",
+      "description": "مهارت‌های شبکه‌های اجتماعی و موبایل‌گرافی."
+    },
+    {
+      "id": "entertainment_venues",
+      "rootId": "entertainment",
+      "label": "مراکز تفریحی",
+      "description": "شهربازی، پارک آبی و کارائوکه."
+    },
+    {
+      "id": "adventure_games",
+      "rootId": "entertainment",
+      "label": "ماجراجویی و رقابت",
+      "description": "اتاق فرار، لیزرتگ و بازی‌های رقابتی گروهی."
+    },
+    {
+      "id": "tabletop_social",
+      "rootId": "entertainment",
+      "label": "بازی‌های رومیزی و اجتماعی",
+      "description": "بردگیم، شطرنج، مافیا، پانتومیم و کوئیز."
+    },
+    {
+      "id": "digital_games",
+      "rootId": "entertainment",
+      "label": "دیجیتال و فراگیر",
+      "description": "گیم‌نت و واقعیت مجازی."
+    },
+    {
+      "id": "business_events",
+      "rootId": "business",
+      "label": "رویدادهای تجاری",
+      "description": "همایش، نمایشگاه و افتتاحیه کسب‌وکار."
+    },
+    {
+      "id": "pitch_investment",
+      "rootId": "business",
+      "label": "ارائه و سرمایه‌گذاری",
+      "description": "پچ ایده یا محصول و جلسه سرمایه‌گذاری."
+    },
+    {
+      "id": "startup_career",
+      "rootId": "business",
+      "label": "استارتاپ و مسیر شغلی",
+      "description": "رویداد استارتاپی، فرصت شغلی و تست محصول."
+    },
+    {
+      "id": "professional_networking",
+      "rootId": "business",
+      "label": "شبکه‌سازی حرفه‌ای",
+      "description": "شبکه‌سازی و دورهمی تخصصی."
+    }
+  ]
+}
