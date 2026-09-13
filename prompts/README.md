@@ -6,6 +6,8 @@
 4. `04-repair-entity.txt` — تعمیر یک Entity مشخص.
 5. `06-province-text-rewrite.txt` — بازنویسی متن‌ها با Brand Voice؛ لحن انسانی (بدون حس AI) و بدون نام OTA در متن کاربرمحور (قبل از audit).
 6. `05-final-audit-minify.txt` — Audit نهایی + minify.
+7. `07-full-province-places.txt` — تکمیل همهٔ Placeها در کل استان؛ فقط `province_id`؛ پیمایش `county-*` و داخل هر کدام `city-*` (بدون انتخاب Scope از کاربر).
+8. `08-media-gap-audit.txt` — اسکن Entityهای بدون عکس / زیر target و تکمیل media؛ فقط `province_id`.
 
 هر Entity Visit/FAQ/Checklist/Media مستقل دارد. Parent نباید operational data مربوط به Child را duplicate کند.
 فیلد `costs` از قرارداد حذف شده است.

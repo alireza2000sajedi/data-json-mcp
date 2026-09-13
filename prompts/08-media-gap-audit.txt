@@ -1,0 +1,100 @@
+# PLANRO — MEDIA GAP AUDIT (Entities Without / Below-Target Photos)
+
+پرامپت جدا برای **پیدا کردن و تکمیل Entityهایی که عکس ندارند یا زیر targetاند**.
+فقط `province_id` می‌گیرد. Scope جدا از کاربر نمی‌خواهد.
+
+قرارداد مادر در `01-start-province.txt` است (schema، source-policy، brand voice، uniqueness رسانه، Call Order). این فایل فقط **دامنهٔ media** را مشخص می‌کند.
+
+### RUN VARIABLES
+```text
+province_id=<PROVINCE_ID>
+```
+- مقدار واقعی در Task (مثلاً `30` یا `province-30`) authoritative است.
+- نبود مقدار → `MISSING_INPUT: province_id` و توقف؛ سؤال نپرس.
+- عدد را به `province-{n}` normalize کن.
+- اختیاری در Task: `node_types=place,camping` یا `only_zero=true` — اگر نبود، پیش‌فرض پایین را بگیر.
+
+---
+
+## 1) هدف
+همهٔ Entityهای `output/{province_id}/` را از نظر media بررسی کن و این‌ها را لیست + رفع کن:
+
+| وضعیت | تعریف |
+|---|---|
+| **zero** | بدون `media`، یا `images` خالی، یا صفر URL معتبر |
+| **below_target** | تعداد URL یکتای thumbnail+images کمتر از target |
+| **bad_status** | `media.status` با تعداد واقعی نمی‌خواند |
+| **reuse** | URL تکراری با Entity دیگر |
+
+Target (thumbnail داخل همین بودجه):
+- Province / County / City / Place → **۵**
+- Village / Camping → **۳**
+
+پیش‌فرض این پرامپت: همهٔ nodeTypeهای entity-bearing. اگر `only_zero=true` فقط zeroها را رفع کن؛ below_target را فقط گزارش بده مگر کاربر خلافش را گفته باشد.
+
+---
+
+## 2) نحوهٔ اسکن (اجباری)
+1. `import_province_scopes` اگر notes/scopes نیست.
+2. `set_active_scope(provinceId)` برای دسترسی به کل استان.
+3. `list_pending_nodes({ provinceId, allScopes: true })` + پیمایش DFS از MCP.
+4. همهٔ Entityهای ذخیره‌شده را از `output/{province_id}/` (و ابزارهای MCP مثل `get_node_context` / notes) بخوان.
+5. برای هر Entity بساز:
+
+```text
+entityId | nodeType | path | imageCount | target | gap | status | notes
+```
+
+`imageCount` = تعداد URL یکتا در `media.thumbnail` + `media.images` (ویدیو/پانوراما جزو بودجهٔ عکس حساب نشوند مگر فقط همان‌ها باشند و عکس صفر باشد — آن حالت را zero بگذار).
+
+گزارش اولیه را **قبل از تعمیر** بده، بعد وارد رفع شو.
+
+---
+
+## 3) رفع کمبود عکس
+برای هر مورد zero / below_target / bad_status:
+
+1. `get_node_context(nodeId)` و وضعیت کاندیدهای notes را ببین.
+2. جست‌وجوی تصویر را باز کن — محدود به ۵ Primary نباش: Wikimedia Commons، سایت رسمی، خبرگزاری، مجلهٔ گردشگری، گالری عمومی معتبر، صفحهٔ مقصد.
+3. هر تصویر را با `record_media_candidate` ثبت کن (`imageUrl` مستقیم فایل، `pageUrl`، license/credit معتبر؛ `all-rights-reserved` با credit مجاز است).
+4. `finalize_media(nodeId)` → media را به Entity بچسبان → `save_active_entity({ provinceId, entity, expectedNodeId })`.
+5. تا رسیدن به **target** ادامه بده؛ با ۱–۲ عکس متوقف نشو.
+6. URL تکراری بین Entityها ممنوع؛ عکس Parent/Child/Sibling را reuse نکن.
+7. `mark_node_media_deficit` فقط وقتی **هیچ دادهٔ Entity قابل ذخیره نیست** — کمبود عکس به‌تنهایی deficit نیست. اگر Entity JSON دارد و فقط عکس کم است، باید partial/complete media بسازی نه deficit.
+
+متن/FAQ/Visit را در این پرامپت بازنویسی نکن مگر برای save معتبر لازم باشد؛ تمرکز فقط media است.
+
+---
+
+## 4) معیار تمام‌شدن
+تا وقتی یکی از این‌ها مانده، تمام‌شده حساب نکن:
+
+- Entity با `imageCount === 0`
+- Entity با `imageCount < target` (مگر `only_zero=true`)
+- `media.status` ناسازگار با تعداد
+- URL اشتراکی بین دو Entity
+
+سپس:
+1. `validate_province(provinceId)` → `invalid:0` (هشدار `MEDIA_BELOW_TARGET` هم باید با پر شدن target از بین برود)
+2. `check_definition_of_done(provinceId)` در صورت امکان `complete:true`؛ اگر فقط به خاطر غیرmedia گیر است، در گزارش جدا بنویس و media gap را صفر کن.
+
+---
+
+## 5) گزارش پایانی
+```text
+scanned: N
+zero_fixed: …
+below_target_fixed: …
+still_zero: […]   # باید خالی باشد مگر واقعاً هیچ تصویر معتبری در وب نبود — با دلیل
+still_below: […]
+reuse_fixed: …
+```
+
+---
+
+## 6) تحویل
+1. گزارش اسکن + رفع.
+2. اگر validation به‌خاطر media پاس نشد، **commit ممنوع**.
+3. پس از پاس معنادار media: `git status --short output/` → `git add output/` → commit → `git push`.
+
+سؤال تعاملی نپرس. اگر متغیر ناقص است فقط `MISSING_INPUT: province_id` بده.
