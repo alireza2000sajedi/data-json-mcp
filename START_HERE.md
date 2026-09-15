@@ -10,7 +10,11 @@ province_id=<PROVINCE_ID>
 
 Prompt 01 خودش مخزن MCP را پیدا یا Clone می‌کند، `npm install` / `npm run build` / `npm run verify` را اجرا می‌کند، ابزارها و Resourceها را بررسی می‌کند و **فقط Province root** را پردازش می‌کند. در پایان متوقف می‌شود و Scope بعدی را از کاربر می‌پرسد.
 
-Scopeهای بعدی با `prompts/02-run-scope.txt`، Resume با `03-resume.txt` و Repair با `04-repair-entity.txt` انجام می‌شوند. برای تکمیل یک‌جای همهٔ Placeهای استان (پیمایش `county-*` → `city-*`) از `prompts/07-full-province-places.txt` با فقط `province_id` استفاده کن. برای Entityهای بدون عکس / زیر target از `prompts/08-media-gap-audit.txt` استفاده کن. آخر کار `05-final-audit-minify.txt` اجرا می‌شود.
+Scopeهای بعدی با `prompts/02-run-scope.txt`، Resume با `03-resume.txt` و Repair با `04-repair-entity.txt` انجام می‌شوند.
+
+برای ران یک‌تکهٔ **استان + شهرستان(+مکان) + شهر(+مکان)** از `prompts/09-province-county-city-places.txt` با فقط `province_id` استفاده کن (continuous؛ Scope جدا نمی‌خواهد).
+
+برای تکمیل یک‌جای همهٔ Placeهای استان وقتی اداری‌ها از قبل هستند از `prompts/07-full-province-places.txt` استفاده کن. برای Entityهای بدون عکس / زیر target از `prompts/08-media-gap-audit.txt` استفاده کن. قبل از audit نهایی در صورت نیاز `06-province-text-rewrite.txt`، بعد `05-final-audit-minify.txt`.
 
 ## بررسی سلامت پروژه (اختیاری، قبل از تحویل به Agent)
 
