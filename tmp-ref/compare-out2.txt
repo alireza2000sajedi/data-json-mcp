@@ -1,0 +1,547 @@
+﻿{
+  "totals": {
+    "ref": {
+      "provinces": 31,
+      "counties": 482,
+      "cities": 1659
+    },
+    "ours": {
+      "provinces": 31,
+      "counties": 484,
+      "cities": 1495
+    },
+    "missingCounties": 10,
+    "extraCounties": 12,
+    "missingCities": 254,
+    "extraCities": 84
+  },
+  "missingCounties": [
+    {
+      "province": "╪º╪╡┘ü┘ç╪º┘å",
+      "file": "4.json",
+      "county": "┘å╪º█î█î┘å"
+    },
+    {
+      "province": "╪º╪╡┘ü┘ç╪º┘å",
+      "file": "4.json",
+      "county": "╪¿┘ê█î█î┘å ┘ê ┘à█î╪º┘å╪»╪┤╪¬"
+    },
+    {
+      "province": "╪«╪▒╪º╪│╪º┘å ╪¼┘å┘ê╪¿█î",
+      "file": "10.json",
+      "county": "┘é╪º█î┘å╪º╪¬"
+    },
+    {
+      "province": "╪│█î╪│╪¬╪º┘å ┘ê ╪¿┘ä┘ê┌å╪│╪¬╪º┘å",
+      "file": "16.json",
+      "county": "┌å╪º┘ç ╪¿┘ç╪º╪▒"
+    },
+    {
+      "province": "┘é╪▓┘ê█î┘å",
+      "file": "18.json",
+      "county": "╪¿┘ê█î█î┘å ╪▓┘ç╪▒╪º"
+    },
+    {
+      "province": "┌⌐╪▒┘à╪º┘å",
+      "file": "21.json",
+      "county": "╪º╪▒╪▓┘ê█î█î┘ç"
+    },
+    {
+      "province": "┌⌐┘ç┌»█î┘ä┘ê█î┘ç ┘ê ╪¿┘ê█î╪▒╪º╪¡┘à╪»",
+      "file": "23.json",
+      "county": "╪¿┘ç┘à█î█î"
+    },
+    {
+      "province": "┌»┘ä╪│╪¬╪º┘å",
+      "file": "24.json",
+      "county": "╪╣┘ä█î ╪ó╪¿╪º╪» ┌⌐╪¬┘ê┘ä"
+    },
+    {
+      "province": "┌»█î┘ä╪º┘å",
+      "file": "26.json",
+      "county": "╪╖┘ê╪º┘ä╪┤"
+    },
+    {
+      "province": "┘à╪º╪▓┘å╪»╪▒╪º┘å",
+      "file": "27.json",
+      "county": "┘é╪º█î┘à ╪┤┘ç╪▒"
+    }
+  ],
+  "extraCounties": [
+    {
+      "province": "╪ó╪░╪▒╪¿╪º█î╪¼╪º┘å ╪┤╪▒┘é█î",
+      "file": "1.json",
+      "county": "╪¬╪▒┌⌐┘à╪º┘å┌å╪º█î"
+    },
+    {
+      "province": "╪º╪╡┘ü┘ç╪º┘å",
+      "file": "4.json",
+      "county": "╪¿┘ê╪ª█î┘å ┘à█î╪º┘å╪»╪┤╪¬"
+    },
+    {
+      "province": "╪º╪╡┘ü┘ç╪º┘å",
+      "file": "4.json",
+      "county": "┘å╪º╪ª█î┘å"
+    },
+    {
+      "province": "╪«╪▒╪º╪│╪º┘å ╪¼┘å┘ê╪¿█î",
+      "file": "10.json",
+      "county": "╪╣╪┤┘éΓÇî╪ó╪¿╪º╪»"
+    },
+    {
+      "province": "╪«╪▒╪º╪│╪º┘å ╪¼┘å┘ê╪¿█î",
+      "file": "10.json",
+      "county": "┘é╪º╪ª┘å╪º╪¬"
+    },
+    {
+      "province": "╪│█î╪│╪¬╪º┘å ┘ê ╪¿┘ä┘ê┌å╪│╪¬╪º┘å",
+      "file": "16.json",
+      "county": "┌å╪º╪¿┘ç╪º╪▒"
+    },
+    {
+      "province": "┘é╪▓┘ê█î┘å",
+      "file": "18.json",
+      "county": "╪¿┘ê╪ª█î┘åΓÇî╪▓┘ç╪▒╪º"
+    },
+    {
+      "province": "┌⌐╪▒┘à╪º┘å",
+      "file": "21.json",
+      "county": "╪º╪▒╪▓┘ê╪ª█î┘ç"
+    },
+    {
+      "province": "┌⌐┘ç┌»█î┘ä┘ê█î┘ç ┘ê ╪¿┘ê█î╪▒╪º╪¡┘à╪»",
+      "file": "23.json",
+      "county": "╪¿┘ç┘à╪ª█î"
+    },
+    {
+      "province": "┌»┘ä╪│╪¬╪º┘å",
+      "file": "24.json",
+      "county": "╪╣┘ä█îΓÇî╪ó╪¿╪º╪»"
+    },
+    {
+      "province": "┌»█î┘ä╪º┘å",
+      "file": "26.json",
+      "county": "╪¬╪º┘ä╪┤"
+    },
+    {
+      "province": "┘à╪º╪▓┘å╪»╪▒╪º┘å",
+      "file": "27.json",
+      "county": "┘é╪º╪ª┘àΓÇî╪┤┘ç╪▒"
+    }
+  ],
+  "byProvince": [
+    {
+      "file": "1.json",
+      "name": "╪ó╪░╪▒╪¿╪º█î╪¼╪º┘å ╪┤╪▒┘é█î",
+      "ourCounties": 23,
+      "refCounties": 22,
+      "ourCities": 76,
+      "refCities": 84,
+      "missingCounties": [],
+      "extraCounties": [
+        "╪¬╪▒┌⌐┘à╪º┘å┌å╪º█î"
+      ],
+      "missingCitiesCount": 13,
+      "extraCitiesCount": 4
+    },
+    {
+      "file": "2.json",
+      "name": "╪ó╪░╪▒╪¿╪º█î╪¼╪º┘å ╪║╪▒╪¿█î",
+      "ourCounties": 20,
+      "refCounties": 20,
+      "ourCities": 48,
+      "refCities": 53,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 6,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "3.json",
+      "name": "╪º╪▒╪»╪¿█î┘ä",
+      "ourCounties": 12,
+      "refCounties": 12,
+      "ourCities": 36,
+      "refCities": 40,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 7,
+      "extraCitiesCount": 3
+    },
+    {
+      "file": "4.json",
+      "name": "╪º╪╡┘ü┘ç╪º┘å",
+      "ourCounties": 28,
+      "refCounties": 28,
+      "ourCities": 120,
+      "refCities": 129,
+      "missingCounties": [
+        "┘å╪º█î█î┘å",
+        "╪¿┘ê█î█î┘å ┘ê ┘à█î╪º┘å╪»╪┤╪¬"
+      ],
+      "extraCounties": [
+        "╪¿┘ê╪ª█î┘å ┘à█î╪º┘å╪»╪┤╪¬",
+        "┘å╪º╪ª█î┘å"
+      ],
+      "missingCitiesCount": 16,
+      "extraCitiesCount": 6
+    },
+    {
+      "file": "5.json",
+      "name": "╪º┘ä╪¿╪▒╪▓",
+      "ourCounties": 7,
+      "refCounties": 7,
+      "ourCities": 19,
+      "refCities": 30,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 12,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "6.json",
+      "name": "╪º█î┘ä╪º┘à",
+      "ourCounties": 12,
+      "refCounties": 12,
+      "ourCities": 29,
+      "refCities": 30,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 2,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "7.json",
+      "name": "╪¿┘ê╪┤┘ç╪▒",
+      "ourCounties": 10,
+      "refCounties": 10,
+      "ourCities": 41,
+      "refCities": 43,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 3,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "8.json",
+      "name": "╪¬┘ç╪▒╪º┘å",
+      "ourCounties": 16,
+      "refCounties": 16,
+      "ourCities": 51,
+      "refCities": 80,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 31,
+      "extraCitiesCount": 2
+    },
+    {
+      "file": "9.json",
+      "name": "┌å┘ç╪º╪▒┘à╪¡╪º┘ä ┘ê ╪¿╪«╪¬█î╪º╪▒█î",
+      "ourCounties": 12,
+      "refCounties": 12,
+      "ourCities": 46,
+      "refCities": 43,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 2,
+      "extraCitiesCount": 5
+    },
+    {
+      "file": "10.json",
+      "name": "╪«╪▒╪º╪│╪º┘å ╪¼┘å┘ê╪¿█î",
+      "ourCounties": 12,
+      "refCounties": 11,
+      "ourCities": 32,
+      "refCities": 33,
+      "missingCounties": [
+        "┘é╪º█î┘å╪º╪¬"
+      ],
+      "extraCounties": [
+        "╪╣╪┤┘éΓÇî╪ó╪¿╪º╪»",
+        "┘é╪º╪ª┘å╪º╪¬"
+      ],
+      "missingCitiesCount": 2,
+      "extraCitiesCount": 0
+    },
+    {
+      "file": "11.json",
+      "name": "╪«╪▒╪º╪│╪º┘å ╪▒╪╢┘ê█î",
+      "ourCounties": 34,
+      "refCounties": 34,
+      "ourCities": 99,
+      "refCities": 113,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 19,
+      "extraCitiesCount": 5
+    },
+    {
+      "file": "12.json",
+      "name": "╪«╪▒╪º╪│╪º┘å ╪┤┘à╪º┘ä█î",
+      "ourCounties": 10,
+      "refCounties": 10,
+      "ourCities": 25,
+      "refCities": 27,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 2,
+      "extraCitiesCount": 0
+    },
+    {
+      "file": "13.json",
+      "name": "╪«┘ê╪▓╪│╪¬╪º┘å",
+      "ourCounties": 30,
+      "refCounties": 30,
+      "ourCities": 90,
+      "refCities": 105,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 20,
+      "extraCitiesCount": 5
+    },
+    {
+      "file": "14.json",
+      "name": "╪▓┘å╪¼╪º┘å",
+      "ourCounties": 8,
+      "refCounties": 8,
+      "ourCities": 23,
+      "refCities": 25,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 4,
+      "extraCitiesCount": 2
+    },
+    {
+      "file": "15.json",
+      "name": "╪│┘à┘å╪º┘å",
+      "ourCounties": 8,
+      "refCounties": 8,
+      "ourCities": 22,
+      "refCities": 21,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 0,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "16.json",
+      "name": "╪│█î╪│╪¬╪º┘å ┘ê ╪¿┘ä┘ê┌å╪│╪¬╪º┘å",
+      "ourCounties": 26,
+      "refCounties": 26,
+      "ourCities": 57,
+      "refCities": 60,
+      "missingCounties": [
+        "┌å╪º┘ç ╪¿┘ç╪º╪▒"
+      ],
+      "extraCounties": [
+        "┌å╪º╪¿┘ç╪º╪▒"
+      ],
+      "missingCitiesCount": 8,
+      "extraCitiesCount": 4
+    },
+    {
+      "file": "17.json",
+      "name": "┘ü╪º╪▒╪│",
+      "ourCounties": 37,
+      "refCounties": 37,
+      "ourCities": 130,
+      "refCities": 135,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 15,
+      "extraCitiesCount": 10
+    },
+    {
+      "file": "18.json",
+      "name": "┘é╪▓┘ê█î┘å",
+      "ourCounties": 6,
+      "refCounties": 6,
+      "ourCities": 29,
+      "refCities": 32,
+      "missingCounties": [
+        "╪¿┘ê█î█î┘å ╪▓┘ç╪▒╪º"
+      ],
+      "extraCounties": [
+        "╪¿┘ê╪ª█î┘åΓÇî╪▓┘ç╪▒╪º"
+      ],
+      "missingCitiesCount": 5,
+      "extraCitiesCount": 2
+    },
+    {
+      "file": "19.json",
+      "name": "┘é┘à",
+      "ourCounties": 3,
+      "refCounties": 3,
+      "ourCities": 7,
+      "refCities": 15,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 8,
+      "extraCitiesCount": 0
+    },
+    {
+      "file": "20.json",
+      "name": "┌⌐╪▒╪»╪│╪¬╪º┘å",
+      "ourCounties": 10,
+      "refCounties": 10,
+      "ourCities": 34,
+      "refCities": 36,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 4,
+      "extraCitiesCount": 2
+    },
+    {
+      "file": "21.json",
+      "name": "┌⌐╪▒┘à╪º┘å",
+      "ourCounties": 25,
+      "refCounties": 25,
+      "ourCities": 85,
+      "refCities": 91,
+      "missingCounties": [
+        "╪º╪▒╪▓┘ê█î█î┘ç"
+      ],
+      "extraCounties": [
+        "╪º╪▒╪▓┘ê╪ª█î┘ç"
+      ],
+      "missingCitiesCount": 10,
+      "extraCitiesCount": 4
+    },
+    {
+      "file": "22.json",
+      "name": "┌⌐╪▒┘à╪º┘å╪┤╪º┘ç",
+      "ourCounties": 14,
+      "refCounties": 14,
+      "ourCities": 36,
+      "refCities": 43,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 10,
+      "extraCitiesCount": 3
+    },
+    {
+      "file": "23.json",
+      "name": "┌⌐┘ç┌»█î┘ä┘ê█î┘ç ┘ê ╪¿┘ê█î╪▒╪º╪¡┘à╪»",
+      "ourCounties": 9,
+      "refCounties": 9,
+      "ourCities": 21,
+      "refCities": 21,
+      "missingCounties": [
+        "╪¿┘ç┘à█î█î"
+      ],
+      "extraCounties": [
+        "╪¿┘ç┘à╪ª█î"
+      ],
+      "missingCitiesCount": 1,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "24.json",
+      "name": "┌»┘ä╪│╪¬╪º┘å",
+      "ourCounties": 14,
+      "refCounties": 14,
+      "ourCities": 38,
+      "refCities": 40,
+      "missingCounties": [
+        "╪╣┘ä█î ╪ó╪¿╪º╪» ┌⌐╪¬┘ê┘ä"
+      ],
+      "extraCounties": [
+        "╪╣┘ä█îΓÇî╪ó╪¿╪º╪»"
+      ],
+      "missingCitiesCount": 4,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "25.json",
+      "name": "┘ä╪▒╪│╪¬╪º┘å",
+      "ourCounties": 12,
+      "refCounties": 12,
+      "ourCities": 33,
+      "refCities": 39,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 8,
+      "extraCitiesCount": 2
+    },
+    {
+      "file": "26.json",
+      "name": "┌»█î┘ä╪º┘å",
+      "ourCounties": 17,
+      "refCounties": 17,
+      "ourCities": 57,
+      "refCities": 63,
+      "missingCounties": [
+        "╪╖┘ê╪º┘ä╪┤"
+      ],
+      "extraCounties": [
+        "╪¬╪º┘ä╪┤"
+      ],
+      "missingCitiesCount": 11,
+      "extraCitiesCount": 4
+    },
+    {
+      "file": "27.json",
+      "name": "┘à╪º╪▓┘å╪»╪▒╪º┘å",
+      "ourCounties": 22,
+      "refCounties": 22,
+      "ourCities": 65,
+      "refCities": 69,
+      "missingCounties": [
+        "┘é╪º█î┘à ╪┤┘ç╪▒"
+      ],
+      "extraCounties": [
+        "┘é╪º╪ª┘àΓÇî╪┤┘ç╪▒"
+      ],
+      "missingCitiesCount": 5,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "28.json",
+      "name": "┘à╪▒┌⌐╪▓█î",
+      "ourCounties": 12,
+      "refCounties": 12,
+      "ourCities": 36,
+      "refCities": 41,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 8,
+      "extraCitiesCount": 3
+    },
+    {
+      "file": "29.json",
+      "name": "┘ç╪▒┘à╪▓┌»╪º┘å",
+      "ourCounties": 13,
+      "refCounties": 13,
+      "ourCities": 52,
+      "refCities": 52,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 8,
+      "extraCitiesCount": 8
+    },
+    {
+      "file": "30.json",
+      "name": "┘ç┘à╪»╪º┘å",
+      "ourCounties": 10,
+      "refCounties": 10,
+      "ourCities": 34,
+      "refCities": 37,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 4,
+      "extraCitiesCount": 1
+    },
+    {
+      "file": "31.json",
+      "name": "█î╪▓╪»",
+      "ourCounties": 12,
+      "refCounties": 12,
+      "ourCities": 24,
+      "refCities": 29,
+      "missingCounties": [],
+      "extraCounties": [],
+      "missingCitiesCount": 6,
+      "extraCitiesCount": 1
+    }
+  ]
+}
