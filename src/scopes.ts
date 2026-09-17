@@ -96,9 +96,11 @@ export function loadProvinceInput(provinceId: string): ProvinceInput {
     throw new Error(`Province input checklist has an unexpected shape: ${file} (expected {id,name,counties[]}).`);
   }
   for (const [i, c] of d.counties.entries()) {
-    if (!c || typeof c.name !== "string" || !Array.isArray(c.cities) || !Array.isArray(c.villages)) {
-      throw new Error(`counties[${i}] in ${file} must have name:string, cities:string[], villages:string[].`);
+    if (!c || typeof c.name !== "string" || !Array.isArray(c.cities)) {
+      throw new Error(`counties[${i}] in ${file} must have name:string, cities:string[].`);
     }
+    // Villages are archived under input/with-villages/; active checklist ignores them.
+    if (!Array.isArray(c.villages)) (c as CountyInput).villages = [];
   }
   return d as ProvinceInput;
 }
@@ -121,7 +123,6 @@ export function buildScopeRegistry(provinceId: string): ScopeRegistry {
   };
 
   let cityN = 0;
-  let villageN = 0;
 
   data.counties.forEach((c, ci) => {
     const countyId = `county-${p}-${ci + 1}`;
@@ -141,12 +142,7 @@ export function buildScopeRegistry(provinceId: string): ScopeRegistry {
       county.cities.push(city);
       add(city);
     }
-    for (const name of c.villages) {
-      villageN += 1;
-      const village: ScopeUnit = { id: `village-${p}-v${villageN}`, name, type: "village", parentId: countyId };
-      county.villages.push(village);
-      add(village);
-    }
+    // Active pipeline does not register villages (see input/with-villages for archive).
     tree.push(county);
   });
 
@@ -154,7 +150,7 @@ export function buildScopeRegistry(provinceId: string): ScopeRegistry {
     provinceId: canonicalProvinceId,
     provinceName: data.name,
     source: `input/${data.id}.json`,
-    counts: { counties: tree.length, cities: cityN, villages: villageN },
+    counts: { counties: tree.length, cities: cityN, villages: 0 },
     tree,
     index,
     indexByName,
@@ -171,12 +167,12 @@ export function listProvinceScopesIndex(): ProvinceScopesIndexEntry[] {
       id: `county-${n}-${i + 1}`,
       name: c.name,
       cities: c.cities.length,
-      villages: c.villages.length,
+      villages: 0,
     }));
     out.push({
       provinceId: id,
       provinceName: data.name,
-      counts: { counties: counties.length, cities: data.counties.reduce((a, c) => a + c.cities.length, 0), villages: data.counties.reduce((a, c) => a + c.villages.length, 0) },
+      counts: { counties: counties.length, cities: data.counties.reduce((a, c) => a + c.cities.length, 0), villages: 0 },
       counties,
     });
   }

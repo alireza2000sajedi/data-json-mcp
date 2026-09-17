@@ -1,33 +1,78 @@
 # PLANRO — RUN ONE SCOPE
 
-قرارداد اصلی در `01-start-province.txt` است. فقط همین Scope را اجرا کن.
-یک Scope یعنی کل زیردرخت آن واحد (خود واحد + شهرها/روستاها/مکان‌هایش)، نه فقط ریشه.
+قرارداد مادر: `01-start-province.txt` (schema، sources، media، taxonomy، متن، TURBO، Ownership).
+این پرامپت فقط **یک Scope** را اجرا می‌کند.
+
+یک Scope = کل زیردرخت آن واحد (خود واحد + شهرها/Placeهایش)، نه فقط ریشه.
+Scope مجاز: **County** یا **City** (از `planro://scopes/{provinceId}`).
+
+---
 
 ### RUN VARIABLES
 ```text
 province_id=<PROVINCE_ID>
 scope_id=<SCOPE_ID>
 ```
-اگر در Task جاری مقدار واقعی `scope_id` آمده باشد، همان authoritative است و placeholder بالا نادیده گرفته می‌شود؛ در نبود مقدار واقعی `MISSING_INPUT: scope_id` بده و متوقف شو.
+- مقدار واقعی در Task authoritative است.
+- نبود `scope_id` → `MISSING_INPUT: scope_id` و توقف؛ سؤال نپرس.
+- نبود `province_id` → `MISSING_INPUT: province_id`.
+- عدد استان را به `province-{n}` normalize کن.
+- نام فارسی را با `indexByName` به id قطعی تبدیل کن؛ در ابهام `expectedType` بگذار.
 
-- MCP و Resourceها را بررسی کن.
-- Scope را دقیقاً lock کن (`set_active_scope`) و فقط subtree مجاز آن را اجرا کن؛ صف کار را با `list_pending_nodes` ببین (پیش‌فرض همان Scope؛ `allScopes:true` برای کل استان).
-- Field policy را از `planro://rules/entity-fields` بخوان.
-- Visit/FAQ/Checklist/Media باید متعلق به همان Entity باشند.
-- برای Province/County/City openingHours و child-specific entryFee ذخیره نکن.
-- برای Parent هزینه Child یا FAQ Child ذخیره نکن.
-- هر Entity checklist مستقل خودش را داشته باشد.
-- Media: Province/County/City/Place = 5؛ Village/Camping = 3؛ بدون URL تکراری بین Entityها.
-- پنج Primary Source را واقعاً جست‌وجو و با `record_search_result` ثبت کن؛ Media جای Source Coverage نیست.
-- فقط canonical taxonomy IDs از Global Taxonomy را در Entity استفاده کن.
-- اگر id لازم در Global نبود → مثل Taxonomy آیتم بساز داخل `taxonomy/agent-taxonomy/{catalog}.json` (با `source` و دادهٔ واقعی)؛ وارد Entity نکن. در گزارش پایان Scope بگو چه نبود و چه ساخته شد.
-- SPEED MODE از پرامپت ۰۱ فعال است: تحقیق موازی OK؛ save/DoD/git خطی؛ بدون حذف Source/media/subtree.
-- متن از همان save اول: انسانی (بخش ۱۲ پرامپت ۰۱)، بدون حس AI، بدون نام/امتیاز OTA در content/faq/seo/tips؛ جزئیات کامل در `06-province-text-rewrite.txt`.
-- Save فقط با MCP؛ سپس DoD + validation و توقف.
+---
 
-## تحویل (Delivery)
-1. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
-2. اگر DoD پاس نشد، **commit ممنوع**.
-3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.
+TURBO SPEED / SPEED MODE از پرامپت ۰۱: تحقیق موازی OK؛ save خطی؛ media در target؛ track خالی با count 0.
 
-اگر متغیر ناقص است `MISSING_INPUT: <variable>` بده؛ سؤال نپرس.
+## 1) قفل Scope
+1. Resourceها / MCP طبق ۰۱ (اگر آماده است تکرار بی‌نیاز).
+2. `import_province_scopes(provinceId)` اگر notes نیست.
+3. `set_active_scope({ provinceId, nodeId: scope_id })` — فقط همین subtree.
+4. صف: `list_pending_nodes` (پیش‌فرض Scope فعال). `allScopes:true` فقط برای گزارش کل استان، نه برای کار خارج از Scope.
+5. ترتیب DFS را از `get_next_research_node` بگیر؛ حدس نزن.
+
+---
+
+## 2) چه چیزی کامل شود
+داخل Scope فعال، تا pending مربوطه صفر شود:
+- خود County یا City
+- همهٔ Placeهای مستقیم و زیر شهرهای داخل همان Scope
+- محل کمپ = Place (`campground` + taxonomy مرتبط)؛ Entity جدا نساز
+
+Media:
+- County=۳ · City=۳ · Place=۴
+- به‌محض target متوقف شو؛ URL reuse ممنوع
+
+Discovery tracks:
+- county: `countyPlaces` (+ `districts`/`ruralDistricts` خالی با `count:0`)
+- city: `places`
+- شهرهای داخل county از import آمده‌اند؛ deep-research هر city داخل Scope را انجام بده
+
+---
+
+## 3) حلقه کار (هر Node)
+1. `get_node_context(nodeId)`
+2. در صورت اداری: `discover_subtree`
+3. `record_search_result` × ۵ Primary تا `get_source_coverage` → `satisfied:true`
+4. media → `finalize_media` تا target
+5. `save_active_entity({ provinceId, entity, expectedNodeId })` — فقط MCP
+6. `complete_discovery_task` با count واقعی
+
+TURBO: تحقیق موازی OK؛ save خطی؛ بدون حذف Source/Place.
+
+متن: انسانی، بدون OTA (بخش ۸ پرامپت ۰۱).
+
+---
+
+## 4) پایان Scope
+1. `list_pending_nodes` برای Scope فعال → کار باز نمانده
+2. `check_definition_of_done(provinceId)` → `complete:true` (نسبت به Scope فعال)
+3. `validate_province(provinceId)` → `invalid:0`
+4. متوقف شو؛ Scope بعدی را خودکار انتخاب نکن
+
+---
+
+## 5) تحویل
+1. اگر DoD/validate پاس نشد → **commit ممنوع**
+2. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`
+
+گزارش کوتاه: scope_id، تعداد city/place کامل‌شده، taxonomy staging.

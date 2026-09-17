@@ -78,7 +78,7 @@ export function registerResources(server: McpServer): void {
     {
       title: "Planro source policy",
       description:
-        "Mandatory primary sources (Kojaro, Jabama Mag, Alibaba Mag, Lastsecond, Flytoday), fallback sources (Wikipedia/Commons etc.) and the coverage contract (all primaries per entity node, 2 per village).",
+        "Mandatory primary sources (Kojaro, Jabama Mag, Alibaba Mag, Lastsecond, Flytoday), fallback sources (Wikipedia/Commons etc.) and the coverage contract (all primaries per entity node).",
       mimeType: "application/json",
     },
     async (uri) => {
@@ -98,7 +98,7 @@ export function registerResources(server: McpServer): void {
   );
 
   const scopesTpl = new ResourceTemplate("planro://scopes/{provinceId}", { list: undefined });
-  server.registerResource("scopes", scopesTpl, { title: "Province scope registry", description: "Deterministic scope ids (county/city/village) for a province, derived from input/{n}.json: tree + id index + name lookup.", mimeType: "application/json" }, async (uri) => {
+  server.registerResource("scopes", scopesTpl, { title: "Province scope registry", description: "Deterministic scope ids (county/city) for a province, derived from input/{n}.json: tree + id index + name lookup.", mimeType: "application/json" }, async (uri) => {
     const m = uri.pathname.match(/^\/([^/]+)$/);
     const provinceId = m?.[1];
     if (!provinceId) throw new Error("Invalid scopes resource uri: planro://scopes/{provinceId}");

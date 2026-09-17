@@ -100,8 +100,8 @@ for (let i = 1; i <= 31; i++) {
   ok(Array.isArray(data.counties) && data.counties.length > 0, `input/${i}.json: counties[] is required.`);
   for (const [ci, c] of (data.counties ?? []).entries()) {
     ok(
-      c && typeof c.name === "string" && Array.isArray(c.cities) && Array.isArray(c.villages),
-      `input/${i}.json counties[${ci}] must be {name, cities[], villages[]}.`,
+      c && typeof c.name === "string" && Array.isArray(c.cities),
+      `input/${i}.json counties[${ci}] must be {name, cities[]}.`,
     );
   }
 }
@@ -187,7 +187,7 @@ for (const [prop, domain] of [
 }
 
 // --- 5. media policy: one target contract everywhere ------------------------
-const EXPECTED_TARGETS = { province: 5, county: 5, city: 5, place: 5, village: 3, camping: 3 };
+const EXPECTED_TARGETS = { province: 5, county: 3, city: 3, place: 4 };
 const fieldPolicy = readJson("dataset/entity-field-policy.json");
 for (const [type, target] of Object.entries(EXPECTED_TARGETS)) {
   const actual = fieldPolicy.entityTypes?.[type]?.media?.target;
@@ -195,7 +195,9 @@ for (const [type, target] of Object.entries(EXPECTED_TARGETS)) {
 }
 const mediaSrc = read("src/media.ts");
 ok(/const TARGET_5:\s*MediaPolicyEntry\s*=\s*\{\s*target:\s*5/.test(mediaSrc), "src/media.ts: TARGET_5 must have target 5.");
+ok(/const TARGET_4:\s*MediaPolicyEntry\s*=\s*\{\s*target:\s*4/.test(mediaSrc), "src/media.ts: TARGET_4 must have target 4.");
 ok(/const TARGET_3:\s*MediaPolicyEntry\s*=\s*\{\s*target:\s*3/.test(mediaSrc), "src/media.ts: TARGET_3 must have target 3.");
+ok(/const TARGET_2:\s*MediaPolicyEntry\s*=\s*\{\s*target:\s*2/.test(mediaSrc), "src/media.ts: TARGET_2 must have target 2.");
 for (const [type, target] of Object.entries(EXPECTED_TARGETS)) {
   const expected = new RegExp(`${type}:\\s*TARGET_${target}`);
   ok(expected.test(mediaSrc), `src/media.ts: MEDIA_POLICY.${type} must use TARGET_${target}.`);
@@ -208,7 +210,7 @@ ok(primaries.length === 5, `source_policy.json: exactly 5 mandatory primary fact
 for (const domain of ["kojaro.com", "jabama.com", "alibaba.ir", "lastsecond.ir", "flytoday.ir"]) {
   ok(primaries.some((p) => p.domain === domain), `source_policy.json: missing mandatory primary source ${domain}.`);
 }
-for (const t of ["province", "county", "city", "village", "place", "camping"]) {
+for (const t of ["province", "county", "city", "place"]) {
   ok(sourcePolicy.enforcement?.[t] === "all", `source_policy.json: enforcement.${t} must be "all".`);
 }
 
@@ -221,7 +223,7 @@ const PROMPT_FILES = [
   "05-final-audit-minify.txt",
 ];
 const prompts = PROMPT_FILES.map((f) => read(`prompts/${f}`));
-const CONCRETE_ID = /\b(?:province|county|city|village|place)-\d+(?:-[A-Za-z0-9_-]+)*\b/;
+const CONCRETE_ID = /\b(?:province|county|city|place)-\d+(?:-[A-Za-z0-9_-]+)*\b/;
 prompts.forEach((t, i) => ok(!CONCRETE_ID.test(t), `prompts/${PROMPT_FILES[i]}: concrete scope id found — prompts must stay generic.`));
 ok(/province_id=<PROVINCE_ID>/.test(prompts[0]), "prompts/01: province_id input block missing.");
 ok(/scope_id=<SCOPE_ID>/.test(prompts[1]), "prompts/02: scope_id input block missing.");
@@ -235,18 +237,18 @@ ok(
 );
 ok(
   /زیردرخت|subtree/i.test(prompts[1]),
-  "prompts/02: must state that one Scope means the whole subtree (county + cities/villages/places).",
+  "prompts/02: must state that one Scope means the whole subtree (county + cities/places).",
 );
 ok(
-  /SPEED MODE/.test(prompts[0]) && /موازی/.test(prompts[0]) && /خطی/.test(prompts[0]),
+  /(SPEED MODE|TURBO SPEED)/.test(prompts[0]) && /موازی/.test(prompts[0]) && /خطی/.test(prompts[0]),
   "prompts/01: SPEED MODE (parallel research, linear save) is missing.",
 );
 ok(
   /حذف/.test(prompts[0]) && /Primary|media target|Source/.test(prompts[0]),
   "prompts/01: SPEED MODE must still forbid cutting Source/media/quality for speed.",
 );
-ok(/SPEED MODE/.test(prompts[1]), "prompts/02: SPEED MODE reference missing.");
-ok(/SPEED MODE/.test(prompts[2]), "prompts/03: SPEED MODE reference missing.");
+ok(/(SPEED MODE|TURBO SPEED)/.test(prompts[1]), "prompts/02: SPEED MODE reference missing.");
+ok(/(SPEED MODE|TURBO SPEED)/.test(prompts[2]), "prompts/03: SPEED MODE reference missing.");
 ok(
   /planro:\/\/taxonomy\/agent|agent-taxonomy\//.test(prompts[0]) && /taxonomy\/agent-taxonomy\//.test(prompts[0]),
   "prompts/01: missing-concept → create item in taxonomy/agent-taxonomy/ (parallel catalogs) is missing.",

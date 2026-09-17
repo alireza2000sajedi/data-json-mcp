@@ -130,8 +130,8 @@ section("1) Province stage bootstrap — import_province_scopes");
 // ===========================================================================
 const imported = tools.toolImportProvinceScopes({ provinceId: "30" });
 check("province_id '30' is normalized to province-30", imported.provinceId === PROVINCE, imported.provinceId);
-check("9 counties / 31 cities / 962 villages registered from input/30.json",
-  imported.scopeSummary.counties === 9 && imported.scopeSummary.cities === 31 && imported.scopeSummary.villages === 962,
+check("9 counties / 31 cities registered from input/30.json",
+  imported.scopeSummary.counties === 9 && imported.scopeSummary.cities === 31 && imported.scopeSummary.villages === 0,
   JSON.stringify(imported.scopeSummary));
 check("import is idempotent", (() => {
   const again = tools.toolImportProvinceScopes({ provinceId: PROVINCE });
@@ -314,9 +314,6 @@ for (const nodeId of ["place-30-901", "place-30-902"]) {
 tools.toolUpdateNotes({
   provinceId: PROVINCE, operation: "complete_discovery_task", payload: { nodeId: PROVINCE, track: "provincePlaces", count: 2 },
 });
-tools.toolUpdateNotes({
-  provinceId: PROVINCE, operation: "complete_discovery_task", payload: { nodeId: PROVINCE, track: "camping", count: 0 },
-});
 
 check("declared count must match the registered nodes", (() => {
   const before = tools.toolUpdateNotes({
@@ -406,9 +403,11 @@ check("ملایر (county+city same name) picks the broader county-30-6",
   tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر" }).activeScopeId === "county-30-6");
 check("ملایر + expectedType:'city' → city-30-20",
   tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر", expectedType: "city" }).activeScopeId === "city-30-20");
-check("اسدآباد (cross-branch ambiguity) is rejected with candidates", (() => {
-  const msg = expectThrow(() => tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد" }));
-  return !!msg && msg.includes("INVALID_INPUT") && msg.includes("candidates=");
+check("اسدآباد (county+city same name) picks the broader county-30-1",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد" }).activeScopeId === "county-30-1");
+check("اسدآباد + expectedType:'city' → city under اسدآباد", (() => {
+  const r = tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد", expectedType: "city" });
+  return r.activeScopeId?.startsWith("city-30-") === true;
 })());
 check("out-of-range county index '999' is rejected", (() => {
   const msg = expectThrow(() => tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "999" }));
@@ -424,11 +423,10 @@ section("10) Scope-aware work queue — list_pending_nodes");
 // ===========================================================================
 tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد", expectedType: "county" });
 const pendingScoped = tools.toolListPendingNodes({ provinceId: PROVINCE });
-check("اسدآباد scope pending = 99 (1 county + 3 cities + 95 villages)",
-  pendingScoped.pending === 99 &&
+check("اسدآباد scope pending = 4 (1 county + 3 cities)",
+  pendingScoped.pending === 4 &&
     pendingScoped.pendingByType?.county === 1 &&
-    pendingScoped.pendingByType?.city === 3 &&
-    pendingScoped.pendingByType?.village === 95,
+    pendingScoped.pendingByType?.city === 3,
   JSON.stringify(pendingScoped.pendingByType));
 check("scoped queue stays inside the active subtree",
   pendingScoped.activeScopeId === "county-30-1" &&

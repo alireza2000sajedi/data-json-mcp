@@ -17,7 +17,7 @@
       },
       "faq": "county-only",
       "checklist": "independent county checklist",
-      "media": { "target": 5, "owner": "county" }
+      "media": { "target": 3, "owner": "county" }
     },
     "city": {
       "visit": {
@@ -26,16 +26,7 @@
       },
       "faq": "city-only",
       "checklist": "independent city checklist",
-      "media": { "target": 5, "owner": "city" }
-    },
-    "village": {
-      "visit": {
-        "allowed": ["durationMinutes", "bestTimeOfDay", "bestSeasons", "bestMonths", "entryFee", "difficulty", "requiresReservation", "requiresGuide", "crowdLevel"],
-        "forbidden": ["openingHours"]
-      },
-      "faq": "village-only",
-      "checklist": "independent village checklist",
-      "media": { "target": 3, "owner": "village" }
+      "media": { "target": 3, "owner": "city" }
     },
     "place": {
       "visit": {
@@ -44,16 +35,7 @@
       },
       "faq": "place-only",
       "checklist": "independent place checklist",
-      "media": { "target": 5, "owner": "place" }
-    },
-    "camping": {
-      "visit": {
-        "allowed": ["durationMinutes", "bestTimeOfDay", "bestSeasons", "bestMonths", "openingHours", "entryFee", "difficulty", "requiresReservation", "requiresGuide", "crowdLevel"],
-        "forbidden": []
-      },
-      "faq": "camping-only",
-      "checklist": "independent camping checklist",
-      "media": { "target": 3, "owner": "camping" }
+      "media": { "target": 4, "owner": "place" }
     }
   },
   "globalRules": {

@@ -142,22 +142,18 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
     ensureNode(state, county.id, { nodeType: "county", name: county.name, parentNodeId: registry.provinceId });
     // Cities and villages counts are fully known from the reference checklist.
     completeDiscoveryTask(state, county.id, "cities", county.cities.length);
-    completeDiscoveryTask(state, county.id, "villages", county.villages.length);
     for (const city of county.cities) {
       ensureNode(state, city.id, { nodeType: "city", name: city.name, parentNodeId: county.id });
-    }
-    for (const village of county.villages) {
-      ensureNode(state, village.id, { nodeType: "village", name: village.name, parentNodeId: county.id });
     }
   }
 
   state.nextStep =
     `Province stage: structure registered for ${registry.provinceId} (${registry.counts.counties} counties, ` +
-    `${registry.counts.cities} cities, ${registry.counts.villages} villages). NEXT: deep-research the PROVINCE node itself — ` +
+    `${registry.counts.cities} cities). NEXT: deep-research the PROVINCE node itself — ` +
     `get_next_research_node returns '${registry.provinceId}': search it on the 5 mandatory primary sources (see source policy), ` +
-    `save its entity (media is best-effort: target 5 images, partial OK, 0 → save without media), ` +
-    `complete its provincePlaces/camping tracks, then mark_node_complete. ` +
-    `After that STOP and ask the user which county/city/village to continue with ` +
+    `save its entity (media target: province=5), ` +
+    `complete its provincePlaces track, then mark_node_complete. ` +
+    `After that STOP and ask the user which county/city to continue with ` +
     `(look the Persian name up in planro://scopes/${registry.provinceId} → indexByName, then set_active_scope with that id).`;
 
   writeNotes(state);
@@ -173,15 +169,14 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
       id: c.id,
       name: c.name,
       cities: c.cities.length,
-      villages: c.villages.length,
     })),
     registeredNodes: state.nodes.length,
     nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
     scopesResource: `planro://scopes/${registry.provinceId}`,
     note:
       "Structure + dedicated ids registered. Continue with the PROVINCE STAGE: full research of the province node " +
-      "(entity, province-level places, camping, best-effort media from the 5 primary sources), then STOP and ask the user " +
-      "for the next scope. County/city/village subtrees are separate runs.",
+      "(entity, province-level places, media from the 5 primary sources), then STOP and ask the user " +
+      "for the next scope. County/city subtrees are separate runs.",
   };
 }
 
@@ -363,7 +358,7 @@ export function toolGetNextResearchNode(args: { provinceId: string }) {
       awaitingScopeSelection: true,
       node: null,
       instruction:
-        "PROVINCE STAGE COMPLETE. STOP: report the finished province stage to the user and ask which county/city/village " +
+        "PROVINCE STAGE COMPLETE. STOP: report the finished province stage to the user and ask which county/city " +
         "to research next. Look the user's Persian name up in planro://scopes/{provinceId} (indexByName → dedicated id), then call set_active_scope. " +
         "(For a continuous whole-province run, call set_active_scope with the province id itself.)",
     };
@@ -467,8 +462,12 @@ export function toolReserveEntityId(args: { provinceId: string; entityKind: stri
   const id = generateId(args.provinceId, args.entityKind, ids);
   const slug = generateSlug(args.preferredSlug, slugs);
 
-  const kindNodeType: NodeType = args.entityKind === "camping" ? "camping" : args.entityKind === "poi" ? "place" : (args.entityKind as NodeType);
-  const nodeType: NodeType = ["province", "county", "city", "village", "place", "camping"].includes(kindNodeType) ? kindNodeType : "place";
+  // Campsites are reserved as Places (place-*), never as a separate camping entity.
+  const kindNodeType: NodeType =
+    args.entityKind === "camping" || args.entityKind === "campground" || args.entityKind === "poi"
+      ? "place"
+      : (args.entityKind as NodeType);
+  const nodeType: NodeType = ["province", "county", "city", "place"].includes(kindNodeType) ? kindNodeType : "place";
 
   // Real reservation: persist a pending registry entry so a later reserve call
   // (or a concurrent agent) cannot return the same id/slug. save_active_entity
@@ -1262,7 +1261,7 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       const provinceNode = state.nodes.find((n) => n.nodeType === "province");
       if (awaitingScopeSelection(state) && nodeId !== provinceNode?.nodeId) {
         throw new Error(
-          `AWAITING SCOPE SELECTION: the province stage is complete. Ask the user which county/city/village to ` +
+          `AWAITING SCOPE SELECTION: the province stage is complete. Ask the user which county/city to ` +
             `research next (look the Persian name up in planro://scopes/${args.provinceId} → indexByName), then call set_active_scope before ` +
             `completing '${nodeId}'. For a continuous whole-province run, set the active scope to the province id.`,
         );
@@ -1292,7 +1291,7 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
       if (provinceNode && nodeId === provinceNode.nodeId && !state.activeScopeId) {
         state.nextStep =
           `PROVINCE STAGE COMPLETE. STOP: report the finished province stage to the user and ask which ` +
-          `county/city/village to research next (planro://scopes/${args.provinceId} → indexByName → set_active_scope).`;
+          `county/city to research next (planro://scopes/${args.provinceId} → indexByName → set_active_scope).`;
         writeNotes(state);
         return {
           updated: true,
@@ -1377,7 +1376,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   const provinceNodeId = state.nodes.find((n) => n.nodeType === "province")?.nodeId;
   if (scopeIds === null || (provinceNodeId && scopeIds.has(provinceNodeId))) {
     const nodeTypesSeen = new Set(state.nodes.map((n) => n.nodeType));
-    for (const nt of ["province", "county", "city", "village"] as NodeType[]) {
+    for (const nt of ["province", "county", "city"] as NodeType[]) {
       if (!nodeTypesSeen.has(nt)) missingAdministrativeNodes.push(nt);
     }
   }
@@ -1404,9 +1403,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   for (const e of listEntities(args.provinceId)) {
     if (!inScope(e.id)) continue;
     if (e.entity.status === "active") {
-      // Media is best-effort while researching, but the Definition of Done
-      // requires the entity-owned target (5 province/county/city/place,
-      // 3 village/camping; thumbnail counts inside the budget).
+      // Media DoD targets: province=5, county=3, city=3, place=4.
       const media = e.entity.media as any;
       const images = (media?.images as any[]) ?? [];
       const policy = mediaPolicyFor(entityNodeType(e.entity));
@@ -1419,7 +1416,7 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
 
   // Primary-source coverage across the scope (nodes blocked on missing searches).
   const coverageRows = state.nodes
-    .filter((n) => inScope(n.nodeId) && ["province", "county", "city", "village", "place", "camping"].includes(n.nodeType))
+    .filter((n) => inScope(n.nodeId) && ["province", "county", "city", "place"].includes(n.nodeType))
     .map((n) => {
       const c = sourceCoverageFor(state, n.nodeType, n.nodeId);
       return { nodeId: n.nodeId, nodeType: n.nodeType, searchedCount: c.searchedCount, required: c.required, satisfied: c.satisfied };
@@ -1557,7 +1554,6 @@ function contextForNode(state: NotesState, nodeId: string): DiscoveryContext {
     else if (n.nodeType === "district") ctx.district = n.canonicalName;
     else if (n.nodeType === "ruralDistrict") ctx.ruralDistrict = n.canonicalName;
     else if (n.nodeType === "city") ctx.city = n.canonicalName;
-    else if (n.nodeType === "village") ctx.village = n.canonicalName;
   }
   return ctx;
 }

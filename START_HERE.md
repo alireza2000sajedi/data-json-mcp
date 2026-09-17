@@ -2,27 +2,24 @@
 
 اول این فایل را به Agent بده: `prompts/01-start-province.txt`
 
-ورودی اولیه (فقط همین یک مقدار):
 ```text
 province_id=<PROVINCE_ID>
 ```
-اگر مقدار واقعی (مثلاً `30`) در خودِ درخواست آمده باشد، همان authoritative است؛ عدد را MCP خودش به `province-30` تبدیل می‌کند.
+مثال: `30` → MCP به `province-30` normalize می‌کند.
 
-Prompt 01 خودش مخزن MCP را پیدا یا Clone می‌کند، `npm install` / `npm run build` / `npm run verify` را اجرا می‌کند، ابزارها و Resourceها را بررسی می‌کند و **فقط Province root** را پردازش می‌کند. در پایان متوقف می‌شود و Scope بعدی را از کاربر می‌پرسد.
+`01` مخزن را آماده می‌کند و **فقط Province root** را کامل می‌کند؛ سپس برای Scope بعدی (County/City) می‌ایستد.
 
-Scopeهای بعدی با `prompts/02-run-scope.txt`، Resume با `03-resume.txt` و Repair با `04-repair-entity.txt` انجام می‌شوند.
+ادامه:
+- یک Scope → `prompts/02-run-scope.txt` (`scope_id=...`)
+- Resume → `03-resume.txt`
+- Repair → `04-repair-entity.txt`
+- همه Placeهای استان → `07-full-province-places.txt`
+- کمبود عکس → `08-media-gap-audit.txt`
+- متن → `06-province-text-rewrite.txt` سپس Audit → `05-final-audit-minify.txt`
 
-برای ران یک‌تکهٔ **استان + شهرستان(+مکان) + شهر(+مکان)** از `prompts/09-province-county-city-places.txt` با فقط `province_id` استفاده کن (continuous؛ Scope جدا نمی‌خواهد).
-
-برای تکمیل یک‌جای همهٔ Placeهای استان وقتی اداری‌ها از قبل هستند از `prompts/07-full-province-places.txt` استفاده کن. برای Entityهای بدون عکس / زیر target از `prompts/08-media-gap-audit.txt` استفاده کن. قبل از audit نهایی در صورت نیاز `06-province-text-rewrite.txt`، بعد `05-final-audit-minify.txt`.
-
-## بررسی سلامت پروژه (اختیاری، قبل از تحویل به Agent)
+Media: Province=۵ · County=۳ · City=۳ · Place=۴  
+محل کمپ = Place (مثلاً `campground`).
 
 ```bash
-npm install
-npm run build
-npm run verify     # قرارداد پروژه
-npm run e2e        # اجرای واقعی مرحلهٔ استان (۴۵ assertion)
+npm install && npm run build && npm run verify && npm run e2e
 ```
-
-گزارش کامل تصمیم‌ها، قواعد و وضعیت اجرا: `docs/PROJECT_REPORT.md`

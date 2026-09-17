@@ -1,6 +1,6 @@
 # PLANRO — REPAIR ONE ENTITY
 
-قرارداد اصلی در `01-start-province.txt` است.
+قرارداد مادر: `01-start-province.txt`.
 
 ### RUN VARIABLES
 ```text
@@ -9,15 +9,27 @@ scope_id=<SCOPE_ID>
 entity_id=<ENTITY_ID>
 previous_id=<PREVIOUS_ID>
 ```
-اگر در Task جاری مقدار واقعی `entity_id` آمده باشد، همان authoritative است و placeholder بالا نادیده گرفته می‌شود؛ در نبود مقدار واقعی `MISSING_INPUT: entity_id` بده و متوقف شو.
+- `entity_id` واقعی در Task authoritative است؛ نبود → `MISSING_INPUT: entity_id`.
+- بقیه در صورت نیاز برای قفل Scope؛ نبود هرکدام که برای save لازم است → `MISSING_INPUT: <variable>`.
 
-فقط همین Entity را repair کن. schema/taxonomy/hierarchy/source و applicability فیلدهای Visit/FAQ/Checklist/Media را بررسی کن.
-Child-specific data را به Parent منتقل نکن و عکس Entity دیگری را reuse نکن.
-اگر متن کاربرمحور کپی منبع، لحن ماشینی، یا نام/امتیاز OTA دارد → مطابق بخش ۱۲ پرامپت ۰۱ (و `06-province-text-rewrite.txt`) از نو بنویس.
-پس از Save، validation و DoD را اجرا کن و متوقف شو.
-سؤال تعاملی نپرس.
+---
 
-## تحویل (Delivery)
-1. `check_definition_of_done` → `complete:true` و `validate_province` → `invalid:0`.
-2. اگر DoD پاس نشد، **commit ممنوع**.
-3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`.
+## اجرا
+1. در صورت نیاز `set_active_scope(scope_id)`.
+2. فقط همین `entity_id` را repair کن:
+   - schema / hierarchy / Visit applicability
+   - source coverage (۵ Primary)
+   - FAQ / Checklist / Media مستقل همان Entity
+   - media target: Province=۵، County=۳، City=۳، Place=۴
+3. Child-data را به Parent منتقل نکن؛ URL عکس را بین Entityها reuse نکن.
+4. اگر متن ماشینی یا نام OTA دارد → مطابق بخش ۸ پرامپت ۰۱ از نو بنویس.
+5. `save_active_entity` → `validate_province` → `check_definition_of_done`.
+6. متوقف شو؛ سؤال نپرس.
+
+---
+
+## تحویل
+1. `check_definition_of_done` → `complete:true`
+2. `validate_province` → `invalid:0`
+3. اگر پاس نشد → **commit ممنوع**
+4. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`

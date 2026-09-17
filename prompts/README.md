@@ -1,27 +1,29 @@
 # Prompt Sequence
 
-1. `01-start-province.txt` — Prompt مادر + Bootstrap MCP + شروع Province. فقط `province_id` می‌گیرد.
-2. `02-run-scope.txt` — اجرای یک Scope مشخص.
-3. `03-resume.txt` — ادامه یک Scope با `previous_id`.
-4. `04-repair-entity.txt` — تعمیر یک Entity مشخص.
-5. `06-province-text-rewrite.txt` — بازنویسی متن‌ها با Brand Voice؛ لحن انسانی (بدون حس AI) و بدون نام OTA در متن کاربرمحور (قبل از audit).
-6. `05-final-audit-minify.txt` — Audit نهایی + minify.
-7. `07-full-province-places.txt` — تکمیل همهٔ Placeها در کل استان؛ فقط `province_id`؛ پیمایش `county-*` و داخل هر کدام `city-*` (بدون انتخاب Scope از کاربر). تمرکز Place؛ deep-research دوبارهٔ اداری نه.
-8. `08-media-gap-audit.txt` — اسکن Entityهای بدون عکس / زیر target و تکمیل media؛ فقط `province_id`.
-9. `09-province-county-city-places.txt` — **خودکفا** (MCP bootstrap + همهٔ قواعد داخل همان فایل): استان + شهرستان(+Place) + شهر(+Place)؛ فقط `province_id`؛ continuous whole-province. روستا پیش‌نیاز DFS است و باید کامل شود.
+1. `01-start-province.txt` — Prompt مادر + MCP bootstrap + فقط Province root؛ بعد توقف برای Scope (County/City).
+2. `02-run-scope.txt` — اجرای یک Scope (زیردرخت County یا City + Placeها).
+3. `03-resume.txt` — ادامه همان Scope با `previous_id`.
+4. `04-repair-entity.txt` — تعمیر یک Entity.
+5. `07-full-province-places.txt` — جبران همهٔ Placeهای استان (continuous؛ فقط `province_id`).
+6. `08-media-gap-audit.txt` — جبران عکس‌های صفر/زیر target.
+7. `06-province-text-rewrite.txt` — بازنویسی متن (انسانی، بدون OTA).
+8. `05-final-audit-minify.txt` — Audit نهایی + cleanup + minify.
 
-### کی کدام را بزنی
+### کی کدام
 | هدف | پرامپت |
 |---|---|
-| فقط ریشهٔ استان، بعد توقف برای Scope | `01` |
-| یک شهرستان/واحد مشخص | `02` (+ `03` برای resume) |
-| استان + شهرستان(+مکان) + شهر(+مکان) یک‌سره | `09` |
-| فقط جبران Placeهای جاافتاده | `07` |
-| فقط جبران عکس | `08` |
-| یکدست‌سازی متن | `06` سپس `05` |
+| شروع استان | `01` |
+| یک شهرستان یا شهر | `02` (+ `03` resume) |
+| تعمیر یک Entity | `04` |
+| همه Placeهای استان | `07` |
+| فقط عکس | `08` |
+| متن یکدست | `06` سپس `05` |
 
-هر Entity Visit/FAQ/Checklist/Media مستقل دارد. Parent نباید operational data مربوط به Child را duplicate کند.
-فیلد `costs` از قرارداد حذف شده است.
-متن کاربرمحور از save اول باید انسانی (بدون حس AI) و بدون نام OTA باشد — بخش ۱۲ در `01-start-province.txt`؛ پاس استانی در `06-province-text-rewrite.txt`.
-
-Media target: Province/County/City/Place = 5 unique images؛ Village/Camping = 3 unique images. هیچ image URL بین Entityها reuse نمی‌شود.
+### قرارداد مشترک
+- Entityها: Province / County / City / Place
+- محل کمپ = Place (`campground`) — نه Entity جدا
+- Media: Province=۵ · County=۳ · City=۳ · Place=۴
+- Parent بدون operational dataی Child
+- بدون `costs` / `evidence`
+- متن از save اول انسانی و بدون نام OTA
+- TURBO/SPEED: موازی تحقیق، save خطی، توقف media در target، `districts`/`ruralDistricts` خالی با count 0

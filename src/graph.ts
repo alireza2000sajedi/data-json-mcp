@@ -5,12 +5,13 @@ import type { NotesState, NodeType, NodeRecord, DiscoveryTask } from "./types.js
 
 /** Fixed required-discovery mapping per node type. */
 export const REQUIRED_DISCOVERY: Record<NodeType, string[]> = {
-  province: ["counties", "provincePlaces", "camping"],
-  county: ["districts", "ruralDistricts", "cities", "villages", "countyPlaces", "camping"],
-  district: ["ruralDistricts", "cities", "villages", "places"],
-  ruralDistrict: ["villages", "places"],
-  city: ["places", "camping"],
-  village: ["places", "camping"],
+  province: ["counties", "provincePlaces"],
+  // Villages and camping sites are out of pipeline scope.
+  county: ["districts", "ruralDistricts", "cities", "countyPlaces"],
+  district: ["ruralDistricts", "cities", "places"],
+  ruralDistrict: ["places"],
+  city: ["places"],
+  village: ["places"],
   place: [],
   camping: [],
 };
@@ -67,36 +68,32 @@ export function nodeTypeOrder(t: NodeType): number {
  * into administrative children in hierarchy order. County-level places come
  * AFTER all administrative children (cities, villages) are fully processed.
  *
- *   province → province places → province camping → counties
- *   county   → districts → ruralDistricts → cities → villages → county places → county camping
- *   district → ruralDistricts → cities → villages → places → camping
- *   ruralDistrict → villages → places → camping
- *   city     → city places → city camping
- *   village  → village places → village camping
+ *   province → province places → counties
+ *   county   → districts → ruralDistricts → cities → county places
+ *   district → ruralDistricts → cities → places
+ *   ruralDistrict → places
+ *   city     → city places
  */
 function siblingPriority(parentType: NodeType | null, childType: NodeType): number {
   let order: Partial<Record<NodeType, number>>;
   switch (parentType) {
     case "province":
-      order = { place: 0, camping: 1, county: 2 };
+      order = { place: 0, county: 1 };
       break;
     case "county":
-      // Districts first (structure), then cities, then villages, then county-level places last
-      order = { district: 0, ruralDistrict: 1, city: 2, village: 3, place: 4, camping: 5 };
+      order = { district: 0, ruralDistrict: 1, city: 2, place: 3 };
       break;
     case "district":
-      order = { ruralDistrict: 0, city: 1, village: 2, place: 3, camping: 4 };
+      order = { ruralDistrict: 0, city: 1, place: 2 };
       break;
     case "ruralDistrict":
-      order = { village: 0, place: 1, camping: 2 };
+      order = { place: 0 };
       break;
     case "city":
-      // City places first, then camping
-      order = { place: 0, camping: 1 };
+      order = { place: 0 };
       break;
     case "village":
-      // Village places first, then camping
-      order = { place: 0, camping: 1 };
+      order = { place: 0 };
       break;
     default:
       return nodeTypeOrder(childType);

@@ -55,7 +55,7 @@ export function createServer(): McpServer {
 
   register(
     "import_province_scopes",
-    "Province Stage, step 1: derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city/village with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}, village-{p}-v{n}). Structure + ids only here — then CONTINUE with the PROVINCE STAGE: full deep research of the province node itself (entity + province-level places + camping + Entity-owned media from the 5 primary sources), mark it complete, and only then STOP and ask the user for the next county/city/village.",
+    "Province Stage, step 1: derive the full administrative scope list of a province from the reference checklist input/{n}.json and register every county/city with a DEDICATED deterministic id (county-{p}-{n}, city-{p}-{n}). Structure + ids only here — then CONTINUE with the PROVINCE STAGE: full deep research of the province node itself (entity + province-level places + Entity-owned media), mark it complete, and only then STOP and ask the user for the next county/city.",
     { provinceId: z.string().min(1) },
     toolImportProvinceScopes,
   );
@@ -187,7 +187,7 @@ export function createServer(): McpServer {
 
   register(
     "finalize_media",
-    "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and store the BEST min(usable, target) images — never more than target (target: 5 for province/county/city/place, 3 for village/camping; the thumbnail counts inside this budget; 20 is only the absolute validation cap). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
+    "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and store the BEST min(usable, target) images — never more than target (targets: province=5, county=3, city=3, place=4; the thumbnail counts inside this budget; 20 is only the absolute validation cap). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
     { provinceId: z.string().min(1), nodeId: z.string().min(1) },
     toolFinalizeMedia,
   );
@@ -201,7 +201,7 @@ export function createServer(): McpServer {
 
   register(
     "save_active_entity",
-    "Validate and save an active entity at its canonical path (all-or-nothing quality gate). Media is BEST-EFFORT and NON-BLOCKING: the target (5 for province/county/city/place, 3 for village/camping) is required for DoD completion; partial media may be saved during research; 0 images after COMPLETE primary-source coverage → save WITHOUT media (status 'unavailable' injected automatically; saving with zero images is rejected with MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE until every mandatory primary source has been attempted/recorded). Never store more than target images (advisory) / 20 (hard cap); credited web images (all-rights-reserved) are acceptable.",
+    "Validate and save an active entity at its canonical path (all-or-nothing quality gate). Media is BEST-EFFORT and NON-BLOCKING: the target (province=5, county=3, city=3, place=4) is required for DoD completion; partial media may be saved during research; 0 images after COMPLETE primary-source coverage → save WITHOUT media (status 'unavailable' injected automatically; saving with zero images is rejected with MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE until every mandatory primary source has been attempted/recorded). Never store more than target images (advisory) / 20 (hard cap); credited web images (all-rights-reserved) are acceptable.",
     { provinceId: z.string().min(1), entity: z.record(z.any()), expectedNodeId: z.string().min(1) },
     toolSaveActiveEntity,
   );

@@ -1,106 +1,64 @@
-# PLANRO — FULL PROVINCE PLACES (County → City)
+# PLANRO — FULL PROVINCE PLACES
 
-پرامپت جدا برای تکمیل **همهٔ Placeها** (و Campingهای وابسته) در کل استان.
-فقط `province_id` می‌گیرد. Scope جدا از کاربر نمی‌خواهد.
+تکمیل **همهٔ Placeها** در کل استان وقتی Province/County/City از قبل شروع شده‌اند.
+فقط `province_id`. Scope جدا از کاربر نخواه.
 
-قرارداد مادر در `01-start-province.txt` است (schema، taxonomy، source-policy، brand voice، SPEED MODE، Call Order، Ownership، Media). این فایل فقط **دامنه و مسیر اجرا** را عوض می‌کند.
+قرارداد مادر: `01-start-province.txt`.
 
 ### RUN VARIABLES
 ```text
 province_id=<PROVINCE_ID>
 ```
-- اگر در Task مقدار واقعی آمده باشد (مثلاً `30` یا `province-30`) همان authoritative است.
-- نبود مقدار → `MISSING_INPUT: province_id` و توقف؛ سؤال نپرس.
-- عدد را به `province-{n}` normalize کن.
-- هرگز `scope_id`، نام شهرستان، یا مسیر فایل از کاربر نخواه.
+- مقدار واقعی در Task authoritative است.
+- نبود → `MISSING_INPUT: province_id` و توقف.
 
 ---
 
 ## 1) هدف
-برای همان استان، همهٔ Placeها را کامل کن طوری که:
+1. هر `county-*` را پیمایش کن.
+2. Placeهای مستقیم شهرستان (`countyPlaces`) را کامل کن.
+3. هر `city-*` داخل شهرستان و Placeهایش را کامل کن.
+4. محل کمپ = Place (`campground`) — Entity جدا نساز.
 
-1. از ریشهٔ `output/{province_id}/` وارد **هر فولدر `county-*`** شوی.
-2. داخل هر شهرستان، Placeهای مستقیم زیر county را پیدا و کامل کنی.
-3. وارد **هر فولدر `city-*`** داخل همان county شوی و Placeهای شهر را پیدا و کامل کنی.
-4. Placeهای زیر village داخل همان شهرستان را هم از قلم نیندازی (همان زیردرخت county).
-5. Camping هم‌سطح Place در همان مسیرها را هم کامل کنی (media target جدا: ۳ عکس).
-
-این پرامپت برای deep-research دوبارهٔ متن Province/County/City نیست؛ اگر Entity اداری ناقص یا غایب است فقط به اندازهٔ لازم برای کشف/ذخیرهٔ child Placeها کاملش کن، بعد برو سراغ Place.
+تمرکز Place است. اداری‌ها را فقط اگر برای کشف/ذخیرهٔ Place لازم‌اند تعمیر کن.
 
 ---
 
-## 2) قفل Scope — کل استان یک‌سره
-1. `import_province_scopes(provinceId)` اگر هنوز زده نشده.
-2. `set_active_scope` را با **خودِ `provinceId`** بزن → حالت continuous whole-province.
-3. دیگر برای هر county جدا `awaitingScopeSelection` نایست و از کاربر Scope نپرس.
-4. صف کار: `list_pending_nodes({ provinceId, allScopes: true })` و `get_next_research_node`.
-5. ترتیب DFS را خودت حدس نزن؛ از MCP بگیر. مسیر منطقی فولدرها این است:
+## 2) قفل — کل استان یک‌سره
+1. `import_province_scopes` اگر لازم است.
+2. `set_active_scope(provinceId)` — continuous؛ برای Scope بعدی نایست.
+3. صف: `list_pending_nodes({ provinceId, allScopes: true })` + `get_next_research_node`.
+4. ترتیب DFS را حدس نزن.
 
 ```text
 output/{province_id}/
-├── county-{p}-{n}/
-│   ├── county.json
-│   ├── place-*.json                 ← Place مستقیم شهرستان
-│   ├── city-{p}-{m}/
-│   │   ├── city.json
-│   │   ├── place-*.json             ← Place شهر
-│   │   └── village-*/place-*.json   ← Place روستا (همان county)
-│   └── village-*/place-*.json
+└── county-*/ 
+    ├── place-*.json
+    └── city-*/place-*.json
 ```
 
 ---
 
-## 3) کشف Place داخل County و City
-برای **هر** county و **هر** city داخلش:
-
-1. `get_node_context(nodeId)` همان واحد اداری.
-2. `discover_subtree` برای تولید صف جست‌وجوی Place/Camping.
-3. پنج Primary Source را واقعاً بزن و با `record_search_result` ثبت کن تا `get_source_coverage` برای همان Node `satisfied=true` شود.
-4. Placeهای پیدا‌شده را با id قطعی `place-{p}-{n}` بساز؛ مسیر ذخیره را MCP (`save_active_entity`) تعیین می‌کند — فایل دستی نساز.
-5. Discovery trackهای لازم را با `complete_discovery_task` ببند:
-   - county: `countyPlaces` (+ `camping` اگر موضوعیت دارد)
-   - city: `places` (+ `camping`)
-   - village: `places` (+ `camping`) وقتی داخل مسیر county هستی
-6. هیچ Place معتبری را برای سرعت حذف/رد نکن.
-
-اولویت محتوا برای Place (و Camping):
-- Visit کامل (duration، bestTimeOfDay، seasons/months، openingHours، entryFee وقتی مربوط است، difficulty، reservation، guide، crowd)
-- FAQ / travelChecklist / Media مستقل همان Place
-- فقط idهای Global Taxonomy؛ کمبود → staging در `taxonomy/agent-taxonomy/` (وارد Entity نکن)
-- متن انسانی بدون نام/امتیاز OTA (بخش ۱۲ پرامپت ۰۱)
-
-Media: Place = ۵ عکس یکتا؛ Camping = ۳؛ URL بین Entityها reuse نشود.
+## 3) کار هر واحد
+1. `get_node_context`
+2. `discover_subtree` برای Place
+3. ۵ Primary + `get_source_coverage` → satisfied
+4. Place با `place-{p}-{n}` از طریق `save_active_entity`
+5. `complete_discovery_task`: county→`countyPlaces` (+ districts/ruralDistricts با ۰ اگر خالی) · city→`places`
+6. Media Place=۴؛ به‌محض target توقف؛ URL reuse ممنوع
 
 ---
 
-## 4) ترتیب امن اجرا
-1. Bootstrap/Resourceها طبق پرامپت ۰۱ (اگر از قبل آماده است تکرار بی‌نیاز).
-2. `import_province_scopes` → `set_active_scope(provinceId)`.
-3. حلقه تا صف Place/Camping/اداریِ لازم خالی شود:
-   - `get_next_research_node` / `list_pending_nodes(allScopes:true)`
-   - تحقیق موازی OK (SPEED MODE)
-   - یک `save_active_entity` خطی با `expectedNodeId`
-   - media finalize / deficit فقط وقتی واقعاً عکس معتبر نیست
-4. وقتی `pendingByType.place` و `camping` (و discovery باز مربوط به آن‌ها) صفر شد، یک دور `list_pending_nodes(allScopes:true)` بزن و مطمئن شو هیچ `county-*` یا `city-*` با track Place باز نمانده.
-5. `check_definition_of_done(provinceId)` سپس `validate_province(provinceId)`.
+## 4) پایان
+1. `pendingByType.place` و trackهای Place باز = ۰
+2. `check_definition_of_done` → `complete:true`
+3. `validate_province` → `invalid:0`
+4. اگر DoD به‌خاطر اداری ناقص است همان را در همین ران تعمیر کن
 
-اگر DoD به‌خاطر Nodeهای غیرPlace (مثلاً village متن ناقص) `complete:false` است، همان Node را در همان ران تعمیر کن؛ Scope را تکه نکن و از کاربر تأیید نخواه.
+ممنوع: توقف بعد از یک county · پرسیدن Scope بعدی · save بدون MCP · commit با fail
 
 ---
 
-## 5) توقف‌های ممنوع
-- توقف بعد از Province root با پیشنهاد Scope بعدی
-- اجرای فقط یک county و پرسیدن «بعدی کدام باشد؟»
-- ساخت Place فقط برای یک city و رها کردن بقیهٔ countyها
-- save فایل خام زیر `output/` بدون MCP
-- commit وقتی `complete:false` یا `invalid>0`
-
----
-
-## 6) تحویل
-1. `check_definition_of_done` → `complete:true`
-2. `validate_province` → `invalid:0`
-3. گزارش کوتاه: تعداد county پیمایش‌شده، city پیمایش‌شده، Place کامل‌شده، Camping کامل‌شده، staging taxonomy ساخته‌شده
-4. `git status --short output/` → `git add output/` → commit → `git push`
-
-اگر متغیر ناقص است فقط `MISSING_INPUT: province_id` بده.
+## 5) تحویل
+گزارش: counties، cities، places، taxonomy staging  
+سپس git add/commit/push فقط اگر DoD و validate پاس شد.

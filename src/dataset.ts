@@ -77,12 +77,12 @@ export function entityNodeType(entity: PlaceEntity): NodeType {
   }
   if (entity.type === "city") return "city";
   if (entity.type === "village") return "village";
-  if (entity.type === "recreational" && entity.subType === "campground") return "camping";
+  // Campsites are Places (e.g. type recreational + subType campground) — not a separate node type.
   return "place";
 }
 
-/** Node types that correspond to a real entity file. */
-export const ENTITY_NODE_TYPES: NodeType[] = ["province", "county", "city", "village", "place", "camping"];
+/** Node types that correspond to a real entity file in the active pipeline. */
+export const ENTITY_NODE_TYPES: NodeType[] = ["province", "county", "city", "place"];
 
 /** Walk a node's ancestor chain via parentNodeId. */
 export function ancestorChain(state: NotesState, nodeId: string): NodeRecord[] {
@@ -189,7 +189,8 @@ const KIND_PREFIX: Record<string, string> = {
   village: "village",
   place: "place",
   poi: "place",
-  camping: "camp",
+  camping: "place",
+  campground: "place",
 };
 
 function numericSuffix(provinceId: string): string {
@@ -207,7 +208,6 @@ export function generateId(provinceId: string, entityKind: string, usedIds: Set<
     else if (prefix === "county") id = `county-${prov}-${n}`;
     else if (prefix === "city") id = `city-${prov}-${n}`;
     else if (prefix === "village") id = `village-${prov}-v${n}`;
-    else if (prefix === "camp") id = `camp-${prov}-${n}`;
     else id = `place-${prov}-${n}`;
     n += 1;
   } while (usedIds.has(id));

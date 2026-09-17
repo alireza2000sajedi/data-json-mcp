@@ -1,34 +1,37 @@
-# PLANRO — INITIAL AGENT PROMPT / START PROVINCE
+# PLANRO — START PROVINCE (Prompt مادر)
 
-این فایل Prompt مادرِ شروع پروژه است. بعد از دریافت آن، Agent باید خودش MCP را آماده کند و سپس Province انتخاب‌شده را جمع‌آوری کند.
+بعد از دریافت این پرامپت: MCP را آماده کن، سپس **فقط Province root** را کامل کن و برای Scope بعدی بایست.
 
-## 1) MCP bootstrap — اجباری
-قبل از هر تحقیق، workspace را بررسی کن. اگر clone معتبر پروژه موجود نیست، خودت اجرا کن:
-`git clone https://github.com/alireza2000sajedi/data-json-mcp.git`
+Entityهای پایپ‌لاین: **Province / County / City / Place**.
+محل کمپ = Place (مثلاً `subType: campground`) — Entity جدا نساز.
 
-سپس داخل clone:
-`npm install`
-`npm run build`
-`npm run verify`
-و برای بررسی اتصال:
-`node mcp-client.mjs list-tools`
-`node mcp-client.mjs list-resources`
+---
 
-فایل‌ها و Resourceهای واقعی را از همان clone بخوان؛ اگر MCP هنوز متصل نیست، مشکل فنی bootstrap را بررسی کن و فقط در صورت غیرقابل‌اجرا بودن با `MCP_UNAVAILABLE` متوقف شو. نبود فایل/Resource را قبل از تلاش برای clone گزارش نکن و از کاربر فایل نخواه.
-
-## 2) ورودی
-فقط یک ورودی از کاربر لازم است:
+## 0) RUN VARIABLES
 ```text
 province_id=<PROVINCE_ID>
 ```
-قرارداد ورودی Runtime (authoritative):
-- اگر در Task جاری یک مقدار واقعی برای `province_id` آمده باشد (مثلاً `province_id=30` یا حتی فقط عدد `30` در متن درخواست)، همان مقدار authoritative است و placeholderِ `<PROVINCE_ID>` داخل همین فایل را نادیده بگیر.
-- placeholder فقط زمانی معنا دارد که هیچ مقدار واقعی در Task نباشد؛ در آن حالت خروجی `MISSING_INPUT: province_id` بده و متوقف شو (سؤال تعاملی نپرس).
-- `province_id` عددی مثل `1` را خودت به `province-{n}` تبدیل کن؛ MCP هم همین Normalize را انجام می‌دهد، پس هر دو شکل قابل قبول است.
-- `scope_id` استان را خودت deterministic بساز و هرگز از کاربر نخواه.
+- مقدار واقعی در Task (عدد یا شکل `province-{n}`) authoritative است؛ placeholder را نادیده بگیر.
+- نبود مقدار → `MISSING_INPUT: province_id` و توقف؛ سؤال نپرس.
+- عدد را به `province-{n}` normalize کن.
+- `scope_id` / نام استان / مسیر فایل از کاربر نخواه.
 
-## 3) منابع لازم
-بعد از bootstrap این موارد را بخوان:
+---
+
+## 1) MCP bootstrap — اجباری
+اگر clone معتبر نیست:
+```bash
+git clone https://github.com/alireza2000sajedi/data-json-mcp.git
+cd data-json-mcp
+npm install && npm run build && npm run verify
+node mcp-client.mjs list-tools
+node mcp-client.mjs list-resources
+```
+فقط در صورت غیرقابل‌اجرا بودن → `MCP_UNAVAILABLE`. از کاربر فایل نخواه. `output/` را به `.gitignore` برنگردان.
+
+---
+
+## 2) منابع لازم
 - `planro://rules/readme`
 - `planro://schema/place`
 - `planro://rules/entity-fields`
@@ -38,180 +41,104 @@ province_id=<PROVINCE_ID>
 - `planro://taxonomy/agent`
 - `planro://scopes`
 
-## 3-b) SPEED MODE — سرعت بدون خراب‌کردن داده
-هدف: سریع‌تر تمام کن، نه ساده‌تر.
+---
 
-اجازه داری:
-- جستجوهای یک Entity را موازی کن (۵ Primary + مختصات/نقشه + media wave)
-- از `discover_subtree` برای صف Queryها استفاده کن
-- Queryهای فارسی/انگلیسی/نام جایگزین را هم‌زمان بزن
-- Source Matrix را بخوان تا دوباره‌کاری نکنی
-- متن را از همان save اول انسانی، Factمحور و بدون نام OTA بنویس (بخش ۱۲)؛ پاس نهایی `06` فقط برای یکدست‌سازی کل استان است
-- `costs` و `evidence` حذف شده‌اند — دنبالشان نرو
+## 3) TURBO SPEED (SPEED MODE)
+سریع‌تر تمام کن، نه ساده‌تر.
 
-اجازه نداری (داده را خراب می‌کند):
-- حذف/رد Village، Place، Source، تصویر، یا Cross-check برای «زودتر تمام شدن»
-- کم‌کردن Coverage پنج Primary یا media target
-- save موازی / چند `save_active_entity` هم‌زمان روی Nodeهای مختلف
-- رد شدن از DoD یا commit وقتی `complete:false` / `invalid>0`
-- id جعلی taxonomy داخل Entity؛ staging فقط در `taxonomy/agent-taxonomy/`
+مجاز: تحقیق موازی یک Node (۵ Primary + مختصات + media) · `discover_subtree` · Queryهای fa/en هم‌زمان · توقف media در target · بستن `districts`/`ruralDistricts` خالی با `count:0`
 
-ترتیب امن: تحقیق موازی → یک save خطی از MCP → DoD/validate → تحویل git.
+ممنوع: حذف Place/Source/media برای سرعت · کم‌کردن Coverage پنج Primary یا media target · چند `save_active_entity` هم‌زمان · commit با `complete:false`/`invalid>0` · id جعلی taxonomy در Entity
 
-## 4) تعریف نوع Entity و کاربرد فیلدها
-ماتریس قطعی در `planro://rules/entity-fields` است.
+ترتیب امن: تحقیق موازی → یک save خطی → DoD/validate → git.
 
-### Province
-Visit فقط: `bestSeasons`, `bestMonths`.
-Opening hours، entry fee، difficulty، guide، reservation، duration و bestTimeOfDay برای خود Province ممنوع است.
-FAQ، Checklist، Media، Safety و Transportation فقط در سطح خود استان هستند.
-فیلد `costs` حذف شده است؛ قیمت/هزینه را در Entity ذخیره نکن.
+---
 
-### County
-Visit فقط bestSeasons/bestMonths.
-FAQ/Checklist/Media/Transportation متعلق به خود County؛ child-specific ممنوع.
+## 4) فیلدها (خلاصه؛ ماتریس کامل: `planro://rules/entity-fields`)
 
-### City
-Visit: bestSeasons/bestMonths و در صورت منبع معتبر crowdLevel.
-Opening hours و entry fee و مشخصات عملیاتی Placeهای داخل شهر ممنوع.
+| نوع | Visit مجاز | Visit ممنوع |
+|---|---|---|
+| Province / County | bestSeasons, bestMonths | openingHours، entryFee، duration، difficulty، guide، reservation، bestTimeOfDay، crowd |
+| City | bestSeasons, bestMonths + crowdLevel با منبع | openingHours، entryFee عملیاتی Place |
+| Place | Visit کامل | — |
 
-### Village
-Visit می‌تواند مدت، زمان روز، فصل، ماه، سختی، reservation، guide، crowd و entryFee داشته باشد فقط وقتی خود Village/خدمت متعلق به Village موضوع است؛ openingHours برای خود Village ممنوع.
+Ownership: Parent فقط معرفی کوتاه Child؛ بدون ticket/hours/FAQ/checklistی Child.
+`costs` و `evidence` حذف شده‌اند — وارد Entity نکن.
 
-### Place
-Visit کامل: duration، bestTimeOfDay، bestSeasons، bestMonths، openingHours، entryFee، difficulty، reservation، guide، crowd.
-FAQ/Checklist/Media فقط برای همین Place.
+FAQ / Checklist / Media برای هر Entity مستقل است.
+Checklist فقط canonical id از Global Taxonomy (`tour` / `personalCar` / `airplane` / `camping` / `train` / `bus`).
 
-### Camping
-Visit و Checklist و FAQ و Media مخصوص همان محل کمپینگ.
+---
 
-## 5) Ownership
-Parent می‌تواند در content به Childها در سطح معرفی اشاره کند، اما نباید operational data را duplicate کند:
-- child ticket
-- child opening hours
-- child facilities
-- child directions
-- child FAQ
-- child checklist
+## 5) Media target
+| نوع | URL یکتا (thumbnail داخل بودجه) |
+|---|---|
+| Province | **۵** |
+| County | **۳** |
+| City | **۳** |
+| Place | **۴** |
 
-این اطلاعات فقط در Child Entity نگهداری می‌شوند.
+URL بین Entityها reuse نشود. عکس Parent/Child/Sibling برای Entity دیگر ممنوع.
+عکس Province نمایندهٔ خود استان باشد، نه فقط یک Place معروف.
 
-## 6) Costs — حذف‌شده
-فیلد `costs` و مدل CPI از قرارداد حذف شده‌اند. قیمت حدس نزن و وارد Entity نکن؛ اپ بعداً می‌تواند هزینه را جداگانه مدیریت کند.
+---
 
-## 7) FAQ model
-FAQ مستقل است.
-Province FAQ درباره سفر و خود استان.
-County FAQ درباره خود County.
-City FAQ درباره خود City.
-Village FAQ درباره خود Village.
-Place FAQ درباره خود Place.
-Camping FAQ درباره خود Camping.
-سؤال‌های child-specific در Parent ممنوع.
+## 6) Sources
+پنج Primary: kojaro.com · jabama.com · alibaba.ir · lastsecond.ir · flytoday.ir  
+هر پنج را با `record_search_result` ثبت کن (no-result/unreachable هم). تا `get_source_coverage` → `satisfied:true` Entity ننویس.
+نام OTA / امتیاز / رزرو فقط در `sources[]` — نه در content/faq/seo/tips/captions.
 
-## 8) Checklist model
-`travelChecklist` برای هر Entity مستقل است و بر اساس حالت سفر (`tour` / `personalCar` / `airplane` / `camping` / `train` / `bus`) پر می‌شود.
-آیتم‌ها فقط canonical id از `taxonomy/checklist-items.json` (و Resource `planro://taxonomy`) هستند — مثل `tent`، `sunscreen`، `snow_chains`.
-متن آزاد فارسی، جمله، مسیر، قیمت یا توصیه در checklist ممنوع است.
-کپی کامل Checklist از Parent/Child ممنوع؛ فقط آیتم‌های واقعاً مرتبط با همان Entity.
+---
 
-## 9) Media model
-هر Entity مجموعه عکس مستقل دارد:
-- Province: 5 عکس
-- County: 5 عکس
-- City: 5 عکس
-- Place: 5 عکس
-- Village: 3 عکس
-- Camping: 3 عکس
-Thumbnail جزو همین تعداد است.
-یک image URL نباید بین دو Entity تکرار شود.
-عکس Child/Parent/Sibling برای Entity دیگر قابل استفاده نیست.
-برای Province عکس باید واقعاً نماینده خود استان باشد، نه صرفاً یک Place معروف داخل آن.
-چند جستجوی مستقل انجام بده و از اولین ۱–۲ عکس متوقف نشو.
+## 7) Taxonomy
+فقط Global IDs در Entity. اگر مفهوم در Global نبود:
+1. آیتم کامل بساز و در `taxonomy/agent-taxonomy/` بنویس (با `source`).
+2. آن id را وارد Entity نکن تا promote انسانی (`planro://taxonomy/agent`).
+در پایان صریحاً بگو چه نبود و چه در agent-taxonomy ساختی + فهرست id و فایل کاتالوگ.
 
-## 10) Sources
-پنج Primary Source تعریف‌شده در Source Policy را برای هر Node واقعاً بررسی کن و با `record_search_result` ثبت کن؛ no-result/unreachable نیز باید ثبت شود.
-Media discovery هرگز جای Fact Source Coverage نیست.
-فیلد `evidence` حذف شده است؛ Factها را در `sources[]` و متن Entity نگه دار، نه در آرایهٔ evidence.
-متن کاربر نباید شامل query، search engine، یادداشت تحقیق، تناقض منبع یا فرآیند جمع‌آوری باشد.
-نام پلتفرم Primary (کجارو، جاباما، علی‌بابا، لست‌سکند، فلای‌تودی و …) و امتیاز/تعداد رزرو آن‌ها را در content/faq/seo/tips/warnings/captions ننویس؛ فقط در `sources[]` (URL لازم است؛ title را می‌توان خنثی کرد).
+---
 
-## 11) Taxonomy
-همه type/subType/category/activity/feature/facility/risk و آیتم‌های checklist در Entity تولیدی فقط از Global Taxonomy (`planro://taxonomy`).
-اگر مفهوم reusable در Global نبود:
-1. مثل خود Taxonomy رفتار کن: تحقیق کن، دادهٔ واقعی بگیر، و یک آیتم کامل taxonomy بساز.
-2. آیتم را در کاتالوگ متناظر زیر `taxonomy/agent-taxonomy/` بنویس (همان فایل‌ها: types/subtypes/categories/activities/features/facilities/risks/checklist-items) با همان شکل `id` + `label` (+ `appliesTo`/`group` اگر لازم) و فیلد `source` (provinceId، nodeId، reason، proposedAt، urls).
-3. آن id را هنوز وارد Entity تولیدی نکن؛ تا promote انسانی فقط staging است (`planro://taxonomy/agent`).
-در پایان مرحلهٔ استان (و اگر در Scope بعدی آیتم تازه‌ای ساختی) صریحاً بگو:
-«این مفاهیم در Global Taxonomy نبودند و من در agent-taxonomy ساختم» + فهرست idها و فایل کاتالوگ.
-Taxonomy داخل Province/Scope کپی نشود.
+## 8) متن انسانی (از save اول)
+مرجع: `planro://rules/brand-voice-guide` (پاس استانی: `06-province-text-rewrite.txt`).
+- کپی منبع / paraphrase مکانیکی ممنوع
+- کلیشه ممنوع: «در قلب…»، «واقع در…»، «شایان ذکر است»
+- صفت توخالی ممنوع: منحصربه‌فرد، رؤیایی، بهشت گمشده، نگین، …
+- نام کجارو/جاباما/علی‌بابا/لست‌سکند/فلای‌تودی در متن کاربرمحور ممنوع
 
-## 12) کیفیت متن — انسانی بنویس؛ ردپای AI و OTA ممنوع
-مرجع لحن: `planro://rules/brand-voice-guide`. پاس کامل استانی: `06-province-text-rewrite.txt` (همان قواعد؛ اینجا از save اول الزامی‌اند).
+---
 
-### ۱۲-۱ خروجی هدف
-مثل نوشتهٔ یک ادیتور انسانیِ گردشگریِ فارسی بنویس. خواننده نباید حس کند متن با مدل زبانی، ویکی‌ربات یا کاتالوگ رزرو ساخته شده است.
-در گزارش/commit هم ننویس که متن «با AI» نوشته شده.
+## 9) Location
+مختصات قابل‌اتکا؛ Distance مشتق ذخیره نکن.
 
-### ۱۲-۲ از نو بنویس، کپی نکن
-- جملهٔ منبع را نچسبان؛ paraphrase مکانیکی ممنوع است.
-- Fact فقط از منابع ثبت‌شدهٔ همان Node؛ عدد/تاریخ/قانون را اختراع نکن.
-- اگر Fact از OTA آمد، به زبان خنثی بنویس بدون نام‌بردن از پلتفرم.
+---
 
-### ۱۲-۳ ضد اثر متن ماشینی
-- شروع کلیشه‌ای ممنوع: «در قلب…»، «واقع در…»، «شایان ذکر است»، «لازم به ذکر است»، «در مجموع می‌توان گفت»
-- جمله‌های هم‌اندازهٔ پشت‌سرهم و پاراگراف متقارنِ بروشوری ممنوع؛ ریتم را عوض کن
-- ترجمهٔ انگلیسی‌زده کم کن: «ارائه می‌دهد»، «فراهم می‌کند»، «امکان تجربه را می‌دهد»
-- صفت توخالی ممنوع: منحصربه‌فرد، چشم‌نواز، دل‌انگیز، رؤیایی، فوق‌العاده، بی‌نظیر، جادویی، ایده‌آل، بهترین، زیباترین، بهشت گمشده، نگین
-- FAQ شبیه چت‌بات نباشد («البته!»، «حتماً»؛ جواب مستقیم بده)
-- برای دو Entity هم‌نوع قالب یکسان با اسم عوض‌شده ننویس
-- whyVisit / tips را کپی متقابل نکن؛ جزئیات ملموس و محدودیت واقعی بگذار
+## 10) Completion این پرامپت — فقط Province root
+1. `import_province_scopes(provinceId)` — درخت County/City ساخته می‌شود؛ deep-research نکن.
+2. فقط Node استان را کامل کن (entity + sources + FAQ + checklist + media=۵).
+3. track `provincePlaces` را با count واقعی ببند (۰ اگر Place سطح استان نبود؛ اگر بود همان Placeها را کامل کن). County/City را deep-research نکن.
+4. `check_definition_of_done` + `validate_province`
+5. وقتی `awaitingScopeSelection=true` → **متوقف شو**؛ Scope بعدی (County یا City) را از `planro://scopes/{provinceId}` پیشنهاد بده.
+6. ادامه با `02-run-scope.txt`. برای جبران Placeهای کل استان بعداً `07`.
 
-### ۱۲-۴ بدون نام پلتفرم در متن کاربرمحور
-در summary/description/whyVisit/history/culture/seo/faq/tips/warnings/media captions ممنوع:
-کجارو، جاباما، علی‌بابا، لست‌سکند، فلای‌تودی و هر OTA دیگر؛ امتیاز ستاره‌ای؛ «۶۳ رزرو»؛ «طبق سامانهٔ…».
+---
 
-### ۱۲-۵ Brand Voice
-همراه آگاه، دقیق، مشاهده‌محور؛ بدون اغراق آژانسی. سوپرلتیو، کلیشهٔ گردشگری و نویز تکنولوژی/AI مطابق quality-gate ممنوع‌اند.
+## 11) Call Order (قرارداد)
+1. `import_province_scopes(provinceId)`
+2. `get_next_research_node` / `get_scope_state` — ترتیب را حدس نزن
+3. `get_node_context(nodeId)`
+4. `record_search_result` × ۵ Primary
+5. `get_source_coverage` → `satisfied:true`
+6. `record_media_candidate` → `finalize_media` تا target
+7. `save_active_entity({ provinceId, entity, expectedNodeId })`
+8. `complete_discovery_task({ nodeId, track, count })` — count واقعی؛ track خالی با `0`
+9. `check_definition_of_done` → `validate_province`
+10. `awaitingScopeSelection=true` → توقف؛ Scope را از کاربر بگیر
 
-## 13) Location / Transport
-بهترین مختصات قابل اتکا را بگیر و در صورت وجود bounding box را ثبت کن.
-Distance مشتق‌شده را در Entity ذخیره نکن؛ مختصات برای محاسبه در اپ کافی است.
-Transport فقط node/route مرتبط با همان Scope باشد.
+`mark_node_complete` مستقیم نیست. نام→id از `planro://scopes/{provinceId}` / `indexByName`.
 
-## 14) Completion
-ابتدا `import_province_scopes` را اجرا کن.
-سپس فقط Province root را تحقیق کن؛ County/City/Village/Place فرزندان را در این مرحله deep-research نکن.
-Province فقط وقتی Complete است که schema، taxonomy، source coverage، normalized fields، FAQ، independent checklist و media target را پاس کند.
-سپس `check_definition_of_done` و validation را اجرا کن.
-بعد از موفقیت متوقف شو و Scope بعدی را خودکار انتخاب نکن.
+---
 
-## 15) قرارداد ترتیب فراخوانی MCP (Call Order)
-ترتیب زیر قرارداد است، نه پیشنهاد:
-1. `import_province_scopes(provinceId)` — یک بار؛ idempotent است و درخت County/City/Village را می‌سازد.
-2. `get_scope_state` / `get_next_research_node` — Node بعدی را فقط از MCP بگیر؛ ترتیب DFS را خودت حدس نزن.
-3. `get_node_context(nodeId)` — قبل از تحقیق، قواعد و وضعیت همان Node را بخوان.
-4. `record_search_result(...)` — برای هر پنج Primary Source، حتی وقتی نتیجه‌ای نبود (`resultCount=0` / unreachable).
-5. `get_source_coverage(nodeId)` — تا `satisfied=true` نشده سراغ نوشتن Entity نرو.
-6. `record_media_candidate(...)` برای هر عکس، سپس `finalize_media(nodeId)` تا به target برسی؛ اگر واقعاً عکس معتبر پیدا نشد `mark_node_media_deficit`.
-7. `save_active_entity({provinceId, entity, expectedNodeId})` — ذخیره فقط از این مسیر.
-8. `complete_discovery_task({nodeId, count})` — `count` عدد واقعی Nodeهای ثبت‌شده است؛ بدون آن رد می‌شود.
-9. `check_definition_of_done(provinceId)` سپس `validate_province(provinceId)`.
-10. وقتی `awaitingScopeSelection=true` شد، متوقف شو؛ Scope بعدی را از `planro://scopes/{provinceId}` به کاربر پیشنهاد بده و فقط با `set_active_scope` ادامه بده.
-`mark_node_complete` مستقیم وجود ندارد؛ فقط از طریق `update_notes` انجام می‌شود. ابزار `resolve_scope_name` هم حذف شده است: برای تبدیل نام به id از `planro://scopes/{provinceId}` و `indexByName` استفاده کن.
-
-## 16) تحویل (Delivery) — بعد از DoD موفق اجباری است
-1. `check_definition_of_done` باید `complete:true` باشد و `validate_province` باید `invalid:0` باشد.
-2. اگر DoD یا validation پاس نشد، **commit ممنوع** است؛ فقط تعمیر کن و دوباره همان دو ابزار را بزن.
-3. پس از پاس شدن هر دو، خروجی را به git بسپار:
-   - `git status --short output/`
-   - `git add output/`
-   - commit با پیام واضح برای همین Scope
-   - `git push` (شکست push مانع commit محلی نیست، ولی تلاش اجباری است)
-هرگز `output/` را به `.gitignore` برنگردان.
-
-## 17) RUN VARIABLES — پایین فایل را مستقیم پر کن
-```text
-province_id=<PROVINCE_ID>
-```
-هرگز برای Province از کاربر `scope_id`، نام استان یا مسیر فایل درخواست نکن.
+## 12) تحویل
+1. DoD `complete:true` و validate `invalid:0` برای مرحلهٔ Province
+2. اگر پاس نشد → commit ممنوع
+3. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`
