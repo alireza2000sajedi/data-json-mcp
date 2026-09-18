@@ -5,65 +5,628 @@
     {
       "name": "ابهر",
       "cities": [
-        "ابهر",
-        "صایین‌قلعه",
-        "هیدج"
-      ]
+        {
+          "name": "ابهر",
+          "location": {
+            "lat": 36.146667,
+            "lng": 49.218056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار تاریخی ابهر",
+              "location": {
+                "lat": 36.147,
+                "lng": 49.218,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده زیدالکبیر",
+              "location": {
+                "lat": 36.15,
+                "lng": 49.22,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "صایین‌قلعه",
+          "location": {
+            "lat": 36.299444,
+            "lng": 49.074444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هیدج",
+          "location": {
+            "lat": 36.249722,
+            "lng": 49.127222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.146667,
+        "lng": 49.218056,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ایجرود",
       "cities": [
-        "حلب",
-        "زرین‌آباد"
-      ]
+        {
+          "name": "حلب",
+          "location": {
+            "lat": 36.294444,
+            "lng": 48.059722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "زرین‌آباد",
+          "location": {
+            "lat": 36.425,
+            "lng": 48.281944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.317764,
+        "lng": 48.158935,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خدابنده",
       "cities": [
-        "زرین‌رود",
-        "سجاس",
-        "سهرورد",
-        "قیدار",
-        "کرسف",
-        "گرماب",
-        "نوربهار"
-      ]
+        {
+          "name": "زرین‌رود",
+          "location": {
+            "lat": 35.759167,
+            "lng": 48.478056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سجاس",
+          "location": {
+            "lat": 36.238056,
+            "lng": 48.548056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سهرورد",
+          "location": {
+            "lat": 36.071944,
+            "lng": 48.44,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قیدار",
+          "location": {
+            "lat": 36.114722,
+            "lng": 48.591111,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار کتله‌خور",
+              "location": {
+                "lat": 35.83,
+                "lng": 48.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "گنبد تاریخی قیدار",
+              "location": {
+                "lat": 36.12,
+                "lng": 48.59,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه قیدار نبی",
+              "location": {
+                "lat": 36.12,
+                "lng": 48.59,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "کرسف",
+          "location": {
+            "lat": 36.044722,
+            "lng": 48.505,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گرماب",
+          "location": {
+            "lat": 35.848611,
+            "lng": 48.195278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نوربهار",
+          "location": {
+            "lat": 35.936567,
+            "lng": 48.792005,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.999843,
+        "lng": 48.379853,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خرم‌دره",
       "cities": [
-        "خرم‌دره"
-      ]
+        {
+          "name": "خرم‌دره",
+          "location": {
+            "lat": 36.203056,
+            "lng": 49.186944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.203056,
+        "lng": 49.186944,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "زنجان",
       "cities": [
-        "ارمغانخانه",
-        "زنجان",
-        "نیک پی"
-      ]
+        {
+          "name": "ارمغانخانه",
+          "location": {
+            "lat": 36.978056,
+            "lng": 48.373333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "زنجان",
+          "location": {
+            "lat": 36.666667,
+            "lng": 48.483333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار زنجان",
+              "location": {
+                "lat": 36.6674513,
+                "lng": 48.4755515,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "رختشویخانه زنجان",
+              "location": {
+                "lat": 36.6712106,
+                "lng": 48.4848536,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه باستان‌شناسی زنجان",
+              "location": {
+                "lat": 36.67,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار مسگرها زنجان",
+              "location": {
+                "lat": 36.67,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده سیدابراهیم",
+              "location": {
+                "lat": 36.67,
+                "lng": 48.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل سردار",
+              "location": {
+                "lat": 36.67,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "معبد داش‌کسن",
+              "location": {
+                "lat": 36.5,
+                "lng": 48.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای نیک‌پی",
+              "location": {
+                "lat": 36.8,
+                "lng": 48.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه خدیوی",
+              "location": {
+                "lat": 36.67,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی زنجان",
+              "location": {
+                "lat": 36.6708,
+                "lng": 48.4783,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت ذوالفقاری",
+              "location": {
+                "lat": 36.671,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه مردان نمکی",
+              "location": {
+                "lat": 36.6715,
+                "lng": 48.4795,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل میربهاءالدین",
+              "location": {
+                "lat": 36.665,
+                "lng": 48.49,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده سید ابراهیم",
+              "location": {
+                "lat": 36.672,
+                "lng": 48.485,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل تاریخی سردار",
+              "location": {
+                "lat": 36.66,
+                "lng": 48.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت دارایی زنجان",
+              "location": {
+                "lat": 36.669,
+                "lng": 48.481,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تپه تاریخی اهرنجان",
+              "location": {
+                "lat": 36.7,
+                "lng": 48.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "نیک پی",
+          "location": {
+            "lat": 36.850278,
+            "lng": 48.178611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.666667,
+        "lng": 48.483333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سلطانیه",
       "cities": [
-        "سلطانیه",
-        "گوزلدره"
-      ]
+        {
+          "name": "سلطانیه",
+          "location": {
+            "lat": 36.434722,
+            "lng": 48.7975,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "گنبد سلطانیه",
+              "location": {
+                "lat": 36.4339132,
+                "lng": 48.79605,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "گنبد و بقعه چلبی‌اوغلو",
+              "location": {
+                "lat": 36.43,
+                "lng": 48.79,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "گوزلدره",
+          "location": {
+            "lat": 36.486156,
+            "lng": 48.637178,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.434722,
+        "lng": 48.7975,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "طارم",
       "cities": [
-        "آب‌بر",
-        "چورزق",
-        "گیلوان"
-      ]
+        {
+          "name": "آب‌بر",
+          "location": {
+            "lat": 36.9225,
+            "lng": 48.974444,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "رودخانه قزل‌اوزن",
+              "location": {
+                "lat": 36.9,
+                "lng": 48.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "شیت",
+              "location": {
+                "lat": 37,
+                "lng": 48.85,
+                "source": "web"
+              },
+              "places": [
+                {
+                  "name": "آبشار شیت",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37,
+                    "lng": 48.85,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "دره شیت",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.001,
+                    "lng": 48.851,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "چورزق",
+          "location": {
+            "lat": 37.000556,
+            "lng": 48.777222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گیلوان",
+          "location": {
+            "lat": 36.784649,
+            "lng": 49.132258,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.931669,
+        "lng": 48.887805,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ماه‌نشان",
       "cities": [
-        "دندی",
-        "ماه نشان"
-      ]
+        {
+          "name": "دندی",
+          "location": {
+            "lat": 36.549444,
+            "lng": 47.626389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ماه نشان",
+          "location": {
+            "lat": 36.744167,
+            "lng": 47.6725,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه بهستان",
+              "location": {
+                "lat": 36.75,
+                "lng": 47.65,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه پری ماه‌نشان",
+              "location": {
+                "lat": 36.7,
+                "lng": 47.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "ماه‌نشان",
+          "places": [],
+          "location": {
+            "lat": 36.75,
+            "lng": 47.65,
+            "source": "web"
+          },
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.744167,
+        "lng": 47.6725,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 36.515854,
+    "lng": 48.477762,
+    "source": "nominatim",
+    "bbox": [
+      35.5779816,
+      37.2492219,
+      47.1799518,
+      49.4336719
+    ]
+  },
+  "places": []
 }

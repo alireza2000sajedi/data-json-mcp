@@ -5,91 +5,680 @@
     {
       "name": "آبدانان",
       "cities": [
-        "آبدانان",
-        "سراب باغ",
-        "مورموری"
-      ]
+        {
+          "name": "آبدانان",
+          "location": {
+            "lat": 32.9925,
+            "lng": 47.419722,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه پشت قلعه",
+              "location": {
+                "lat": 32.99,
+                "lng": 47.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار آب‌آسمان",
+              "location": {
+                "lat": 33,
+                "lng": 47.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار آبتاف",
+              "location": {
+                "lat": 32.99,
+                "lng": 47.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سراب باغ",
+          "location": {
+            "lat": 32.898889,
+            "lng": 47.575,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مورموری",
+          "location": {
+            "lat": 32.726111,
+            "lng": 47.678333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.9925,
+        "lng": 47.419722,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ایلام",
       "cities": [
-        "ایلام",
-        "جعفرآباد"
-      ]
+        {
+          "name": "ایلام",
+          "location": {
+            "lat": 33.6375,
+            "lng": 46.422778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار زینگان",
+              "location": {
+                "lat": 33.4420524,
+                "lng": 46.1629813,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه والیان",
+              "location": {
+                "lat": 33.637,
+                "lng": 46.422,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگه رازیانه",
+              "location": {
+                "lat": 33.55,
+                "lng": 46.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آتشکده سیاهگل",
+              "location": {
+                "lat": 33.7,
+                "lng": 46.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه سد ایلام",
+              "location": {
+                "lat": 33.61,
+                "lng": 46.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ فلاحتی",
+              "location": {
+                "lat": 33.64,
+                "lng": 46.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگه ارغوان",
+              "location": {
+                "lat": 33.65,
+                "lng": 46.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "جنگل‌های ایلام",
+              "location": {
+                "lat": 33.6,
+                "lng": 46.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه تاریخ طبیعی ایلام",
+              "location": {
+                "lat": 33.635,
+                "lng": 46.422,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک جنگلی ایلام",
+              "location": {
+                "lat": 33.65,
+                "lng": 46.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "جعفرآباد",
+          "location": {
+            "lat": 39.646944,
+            "lng": 48.039722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.6375,
+        "lng": 46.422778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ایوان",
       "cities": [
-        "ایوان",
-        "زرنه"
-      ]
+        {
+          "name": "ایوان",
+          "location": {
+            "lat": 33.828241,
+            "lng": 46.309637,
+            "source": "nominatim"
+          },
+          "places": [
+            {
+              "name": "قلعه هزاردر",
+              "location": {
+                "lat": 33.8,
+                "lng": 46.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار زینه‌کان",
+              "location": {
+                "lat": 33.83,
+                "lng": 46.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "زرنه",
+          "location": {
+            "lat": 33.928499,
+            "lng": 46.18262,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.828241,
+        "lng": 46.309637,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بدره",
       "cities": [
-        "بدره",
-        "چشمه شیرین"
-      ]
+        {
+          "name": "بدره",
+          "location": {
+            "lat": 33.306667,
+            "lng": 47.037222,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تنگه کافرین",
+              "location": {
+                "lat": 33.3,
+                "lng": 47,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "چشمه شیرین",
+          "location": {
+            "lat": 33.273611,
+            "lng": 47.160833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.306667,
+        "lng": 47.037222,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "چرداول",
       "cities": [
-        "آسمان‌آباد",
-        "بلاوه",
-        "سرابله",
-        "شباب"
-      ]
+        {
+          "name": "آسمان‌آباد",
+          "location": {
+            "lat": 33.853056,
+            "lng": 46.461389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بلاوه",
+          "location": {
+            "lat": 33.66696,
+            "lng": 46.804304,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سرابله",
+          "location": {
+            "lat": 33.766667,
+            "lng": 46.566389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شباب",
+          "location": {
+            "lat": 33.749026,
+            "lng": 46.638423,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.780338,
+        "lng": 46.602467,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "چوار",
       "cities": [
-        "چوار"
-      ]
+        {
+          "name": "چوار",
+          "location": {
+            "lat": 33.695278,
+            "lng": 46.297778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.695278,
+        "lng": 46.297778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دره‌شهر",
       "cities": [
-        "دره‌شهر",
-        "ماژین"
-      ]
+        {
+          "name": "دره‌شهر",
+          "location": {
+            "lat": 33.144444,
+            "lng": 47.38,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تنگه بهرام چوبین",
+              "location": {
+                "lat": 33.15,
+                "lng": 47.38,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل گاومیشان",
+              "location": {
+                "lat": 33.1,
+                "lng": 47.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه پشت‌قلعه",
+              "location": {
+                "lat": 33.14,
+                "lng": 47.38,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آتشکده دره‌شهر",
+              "location": {
+                "lat": 33.135,
+                "lng": 47.375,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "ماژین",
+          "location": {
+            "lat": 32.9533,
+            "lng": 47.7898,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.144444,
+        "lng": 47.38,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دهلران",
       "cities": [
-        "پهله",
-        "دشت عباس",
-        "دهلران",
-        "موسیان",
-        "میمه"
-      ]
+        {
+          "name": "پهله",
+          "location": {
+            "lat": 33.008333,
+            "lng": 46.883333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دشت عباس",
+          "location": {
+            "lat": 32.414664,
+            "lng": 47.824198,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دهلران",
+          "location": {
+            "lat": 32.694167,
+            "lng": 47.267778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار خفاش دهلران",
+              "location": {
+                "lat": 32.69,
+                "lng": 47.27,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه آبگرم دهلران",
+              "location": {
+                "lat": 32.7,
+                "lng": 47.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تپه علی‌کش",
+              "location": {
+                "lat": 32.4,
+                "lng": 47.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "موسیان",
+          "location": {
+            "lat": 32.522222,
+            "lng": 47.375278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "میمه",
+          "location": {
+            "lat": 33.446111,
+            "lng": 51.168333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.694167,
+        "lng": 47.267778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سیروان",
       "cities": [
-        "کارزان",
-        "لومار"
-      ]
+        {
+          "name": "کارزان",
+          "location": {
+            "lat": 33.731541,
+            "lng": 46.51976,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لومار",
+          "location": {
+            "lat": 33.568056,
+            "lng": 46.813889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.59064,
+        "lng": 46.711663,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ملکشاهی",
       "cities": [
-        "ارکواز",
-        "دلگشا",
-        "مهر"
-      ]
+        {
+          "name": "ارکواز",
+          "location": {
+            "lat": 33.382778,
+            "lng": 46.598333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دلگشا",
+          "location": {
+            "lat": 33.405833,
+            "lng": 46.594722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مهر",
+          "location": {
+            "lat": 27.551465,
+            "lng": 52.882125,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.287549,
+        "lng": 46.628357,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مهران",
       "cities": [
-        "صالح آباد",
-        "مهران"
-      ]
+        {
+          "name": "صالح آباد",
+          "location": {
+            "lat": 34.923611,
+            "lng": 48.3425,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مهران",
+          "location": {
+            "lat": 33.122222,
+            "lng": 46.164722,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه کنجانچم",
+              "location": {
+                "lat": 33.12,
+                "lng": 46.16,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تالاب میمه",
+              "location": {
+                "lat": 33.1,
+                "lng": 46.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.122222,
+        "lng": 46.164722,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "هلیلان",
       "cities": [
-        "توحید"
-      ]
+        {
+          "name": "توحید",
+          "location": {
+            "lat": 33.726389,
+            "lng": 47.068611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.809284,
+        "lng": 47.09664,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 33.15457,
+    "lng": 46.757634,
+    "source": "nominatim",
+    "bbox": [
+      32.048518,
+      34.0377041,
+      45.69252,
+      48.0356369
+    ]
+  },
+  "places": []
 }

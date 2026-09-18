@@ -5,77 +5,704 @@
     {
       "name": "اسفراین",
       "cities": [
-        "اسفراین"
-      ]
+        {
+          "name": "اسفراین",
+          "location": {
+            "lat": 37.076389,
+            "lng": 57.51,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "شهر تاریخی بلقیس",
+              "location": {
+                "lat": 37.07,
+                "lng": 57.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "منطقه حفاظت‌شده سالوک",
+              "location": {
+                "lat": 37,
+                "lng": 57.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک ملی سالوک",
+              "location": {
+                "lat": 37.2,
+                "lng": 57.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک ملی ساریگل",
+              "location": {
+                "lat": 37.15,
+                "lng": 57.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.076389,
+        "lng": 57.51,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بام و صفی‌آباد",
       "cities": [
-        "صفی‌آباد"
-      ]
+        {
+          "name": "صفی‌آباد",
+          "location": {
+            "lat": 32.241389,
+            "lng": 49.488333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.799481,
+        "lng": 57.893209,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بجنورد",
       "cities": [
-        "بجنورد",
-        "چناران‌شهر",
-        "حصار گرم‌خان"
-      ]
+        {
+          "name": "بجنورد",
+          "location": {
+            "lat": 37.466667,
+            "lng": 57.333333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "عمارت مفخم",
+              "location": {
+                "lat": 37.475,
+                "lng": 57.332,
+                "source": "web-fix"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آینه خانه مفخم",
+              "location": {
+                "lat": 37.4841514,
+                "lng": 57.3328634,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بش قارداش",
+              "location": {
+                "lat": 37.4128166,
+                "lng": 57.2986126,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک جنگلی باباامان",
+              "location": {
+                "lat": 37.45,
+                "lng": 57.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دره گیفان",
+              "location": {
+                "lat": 37.5,
+                "lng": 57.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار حمید",
+              "location": {
+                "lat": 37.5,
+                "lng": 57.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آینه‌خانه مفخم",
+              "location": {
+                "lat": 37.4755,
+                "lng": 57.3305,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه باستان‌شناسی بجنورد",
+              "location": {
+                "lat": 37.4765,
+                "lng": 57.3315,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگه بازخانه",
+              "location": {
+                "lat": 37.5,
+                "lng": 57.25,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "اسفیدان",
+              "location": {
+                "lat": 37.55,
+                "lng": 57.55,
+                "source": "web"
+              },
+              "places": [
+                {
+                  "name": "آبشار اسفیدان",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.55,
+                    "lng": 57.55,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "دره اسفیدان",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.551,
+                    "lng": 57.552,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "چناران‌شهر",
+          "location": {
+            "lat": 37.399444,
+            "lng": 57.54,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "حصار گرم‌خان",
+          "location": {
+            "lat": 37.519444,
+            "lng": 57.4825,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.466667,
+        "lng": 57.333333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "جاجرم",
       "cities": [
-        "جاجرم",
-        "سنخواست",
-        "شوقان"
-      ]
+        {
+          "name": "جاجرم",
+          "location": {
+            "lat": 36.954722,
+            "lng": 56.373333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه جلال‌الدین",
+              "location": {
+                "lat": 36.95,
+                "lng": 56.38,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سنخواست",
+          "location": {
+            "lat": 37.099167,
+            "lng": 56.851944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شوقان",
+          "location": {
+            "lat": 37.341944,
+            "lng": 56.886944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.954722,
+        "lng": 56.373333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "راز و جرگلان",
       "cities": [
-        "راز",
-        "غلامان",
-        "یکه‌سعود"
-      ]
+        {
+          "name": "راز",
+          "location": {
+            "lat": 37.933889,
+            "lng": 57.1125,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "غلامان",
+          "location": {
+            "lat": 38.05806,
+            "lng": 57.142153,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "یکه‌سعود",
+          "location": {
+            "lat": 38.173228,
+            "lng": 56.690563,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 38.060972,
+        "lng": 57.043392,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سملقان",
       "cities": [
-        "آشخانه",
-        "آوا",
-        "قاضی"
-      ]
+        {
+          "name": "آشخانه",
+          "location": {
+            "lat": 37.561389,
+            "lng": 56.921111,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آتشکده اسپاخو",
+              "location": {
+                "lat": 37.4,
+                "lng": 56.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "محوطه تاریخی ریوی",
+              "location": {
+                "lat": 37.5,
+                "lng": 56.85,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه خان",
+              "location": {
+                "lat": 37.56,
+                "lng": 56.92,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "درکش",
+              "location": {
+                "lat": 37.4402757,
+                "lng": 56.747136,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "جنگل درکش",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.44,
+                    "lng": 56.75,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "آبشار درکش",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.441,
+                    "lng": 56.748,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "آوا",
+          "location": {
+            "lat": 37.477222,
+            "lng": 56.741111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قاضی",
+          "location": {
+            "lat": 37.474167,
+            "lng": 57.558889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "پیش‌قلعه",
+          "places": [],
+          "location": {
+            "lat": 37.5,
+            "lng": 56.9,
+            "source": "web"
+          },
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.616829,
+        "lng": 56.462045,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "شیروان",
       "cities": [
-        "خانلق",
-        "زیارت",
-        "شیروان",
-        "قوشخانه",
-        "لوجلی"
-      ]
+        {
+          "name": "خانلق",
+          "location": {
+            "lat": 37.427297,
+            "lng": 57.937872,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شیروان",
+          "location": {
+            "lat": 37.396667,
+            "lng": 57.929444,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آرامگاه بابا توکل",
+              "location": {
+                "lat": 37.4,
+                "lng": 57.92,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه حسن‌آباد شیروان",
+              "location": {
+                "lat": 37.4,
+                "lng": 57.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دره زوارم",
+              "location": {
+                "lat": 37.35,
+                "lng": 57.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار اسپهبد",
+              "location": {
+                "lat": 37.4,
+                "lng": 57.85,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی شیروان",
+              "location": {
+                "lat": 37.409,
+                "lng": 57.927,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "زیارت",
+              "location": {
+                "lat": 37.443889,
+                "lng": 57.890278,
+                "source": "wikidata"
+              },
+              "places": [
+                {
+                  "name": "امامزاده زیارت شیروان",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.4,
+                    "lng": 57.9,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "قوشخانه",
+          "location": {
+            "lat": 37.74552,
+            "lng": 57.721602,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لوجلی",
+          "location": {
+            "lat": 37.608056,
+            "lng": 57.8575,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.396667,
+        "lng": 57.929444,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فاروج",
       "cities": [
-        "تیتکانلو",
-        "فاروج"
-      ]
+        {
+          "name": "تیتکانلو",
+          "location": {
+            "lat": 37.2808,
+            "lng": 58.2886,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فاروج",
+          "location": {
+            "lat": 37.231111,
+            "lng": 58.218889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار بیار",
+              "location": {
+                "lat": 37.3,
+                "lng": 58.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه شیخ رشیدالدین",
+              "location": {
+                "lat": 37.37,
+                "lng": 58.22,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.231111,
+        "lng": 58.218889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "گرمه",
       "cities": [
-        "ایور",
-        "درق",
-        "گرمه"
-      ]
+        {
+          "name": "ایور",
+          "location": {
+            "lat": 36.9697,
+            "lng": 56.1581,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "درق",
+          "location": {
+            "lat": 36.969444,
+            "lng": 56.261111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گرمه",
+          "location": {
+            "lat": 36.986944,
+            "lng": 56.289444,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "چشمه آبگرم ایوب پیغمبر",
+              "location": {
+                "lat": 37.12,
+                "lng": 56.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.986944,
+        "lng": 56.289444,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مانه",
       "cities": [
-        "پیش‌قلعه"
-      ]
+        {
+          "name": "پیش‌قلعه",
+          "location": {
+            "lat": 37.651944,
+            "lng": 57.001944,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "دریاچه سد شیرین‌دره",
+              "location": {
+                "lat": 37.6,
+                "lng": 57,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.877649,
+        "lng": 56.752572,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 37.537886,
+    "lng": 56.952614,
+    "source": "nominatim",
+    "bbox": [
+      36.5680462,
+      38.285,
+      55.8692841,
+      58.4191121
+    ]
+  },
+  "places": []
 }

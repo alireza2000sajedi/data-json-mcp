@@ -5,97 +5,796 @@
     {
       "name": "اردبیل",
       "cities": [
-        "آراللو",
-        "اردبیل",
-        "ثمرین",
-        "هیر"
-      ]
+        {
+          "name": "آراللو",
+          "location": {
+            "lat": 38.144127,
+            "lng": 48.423803,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "اردبیل",
+          "location": {
+            "lat": 38.25,
+            "lng": 48.3,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "دریاچه شورابیل",
+              "location": {
+                "lat": 38.2125605,
+                "lng": 48.281982,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه نئور",
+              "location": {
+                "lat": 37.9977361,
+                "lng": 48.5644409,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه شیخ صفی‌الدین اردبیلی",
+              "location": {
+                "lat": 38.2489,
+                "lng": 48.2925,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی اردبیل",
+              "location": {
+                "lat": 38.249,
+                "lng": 48.297,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مجموعه بقعه شیخ صفی",
+              "location": {
+                "lat": 38.249,
+                "lng": 48.292,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام آقانقی",
+              "location": {
+                "lat": 38.25,
+                "lng": 48.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل هفت‌چشمه",
+              "location": {
+                "lat": 38.25,
+                "lng": 48.29,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه مردم‌شناسی اردبیل",
+              "location": {
+                "lat": 38.25,
+                "lng": 48.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد جمعه اردبیل",
+              "location": {
+                "lat": 38.251,
+                "lng": 48.297,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه تاریخی رضازاده",
+              "location": {
+                "lat": 38.249,
+                "lng": 48.293,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه خادم باشی",
+              "location": {
+                "lat": 38.2485,
+                "lng": 48.2945,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام تاریخی آقانقی",
+              "location": {
+                "lat": 38.25,
+                "lng": 48.296,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "ثمرین",
+          "location": {
+            "lat": 38.356574,
+            "lng": 48.135686,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هیر",
+          "location": {
+            "lat": 38.078611,
+            "lng": 48.505,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سرعین",
+          "places": [],
+          "location": {
+            "lat": 38.15,
+            "lng": 48.05,
+            "source": "web"
+          },
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 38.25,
+        "lng": 48.3,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "اصلاندوز",
       "cities": [
-        "اصلاندوز",
-        "بران علیا"
-      ]
+        {
+          "name": "اصلاندوز",
+          "location": {
+            "lat": 39.443889,
+            "lng": 47.405556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بران علیا",
+          "location": {
+            "lat": 39.317788,
+            "lng": 47.519859,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 39.443889,
+        "lng": 47.405556,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "انگوت",
       "cities": [
-        "انگوت",
-        "زیوه"
-      ]
+        {
+          "name": "انگوت",
+          "location": {
+            "lat": 39.044167,
+            "lng": 47.745278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "زیوه",
+          "location": {
+            "lat": 39.123279,
+            "lng": 47.650604,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 39.044167,
+        "lng": 47.745278,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بیله‌سوار",
       "cities": [
-        "بیله‌سوار",
-        "جعفرآباد"
-      ]
+        {
+          "name": "بیله‌سوار",
+          "location": {
+            "lat": 39.378611,
+            "lng": 48.361667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "جعفرآباد",
+          "location": {
+            "lat": 39.646944,
+            "lng": 48.039722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 39.378611,
+        "lng": 48.361667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "پارس‌آباد",
       "cities": [
-        "اسلام اباد",
-        "اولتان",
-        "پارس‌آباد",
-        "مغان سر"
-      ]
+        {
+          "name": "اسلام اباد",
+          "location": {
+            "lat": 39.583671,
+            "lng": 47.71196,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "اولتان",
+          "location": {
+            "lat": 39.610117,
+            "lng": 47.831082,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "پارس‌آباد",
+          "location": {
+            "lat": 39.648889,
+            "lng": 47.911389,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه اولتان",
+              "location": {
+                "lat": 39.65,
+                "lng": 47.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تالاب آق‌گل",
+              "location": {
+                "lat": 39.6,
+                "lng": 47.85,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "مغان سر",
+          "location": {
+            "lat": 39.576563,
+            "lng": 48.015769,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 39.648889,
+        "lng": 47.911389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خلخال",
       "cities": [
-        "خلخال",
-        "کلور",
-        "هشتجین"
-      ]
+        {
+          "name": "خلخال",
+          "location": {
+            "lat": 37.6189,
+            "lng": 48.5258,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار آق‌داغ",
+              "location": {
+                "lat": 37.6,
+                "lng": 48.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار سنتی خلخال",
+              "location": {
+                "lat": 37.62,
+                "lng": 48.53,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار نره گر",
+              "location": {
+                "lat": 37.55,
+                "lng": 48.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "کلور",
+          "location": {
+            "lat": 37.388889,
+            "lng": 48.720556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هشتجین",
+          "location": {
+            "lat": 37.346945,
+            "lng": 48.485423,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.6189,
+        "lng": 48.5258,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سرعین",
       "cities": [
-        "ایردموسی",
-        "سرعین"
-      ]
+        {
+          "name": "ایردموسی",
+          "location": {
+            "lat": 38.200214,
+            "lng": 48.132401,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سرعین",
+          "location": {
+            "lat": 38.151389,
+            "lng": 48.070833,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "پیست اسکی آلوارس",
+              "location": {
+                "lat": 38.15,
+                "lng": 48.05,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 38.151389,
+        "lng": 48.070833,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کوثر",
       "cities": [
-        "فیروزآباد",
-        "گیوی"
-      ]
+        {
+          "name": "فیروزآباد",
+          "location": {
+            "lat": 28.843611,
+            "lng": 52.570556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گیوی",
+          "location": {
+            "lat": 37.616667,
+            "lng": 48.516667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه دیو",
+              "location": {
+                "lat": 37.7,
+                "lng": 48.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.698329,
+        "lng": 48.252585,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "گرمی",
       "cities": [
-        "زهرا",
-        "گرمی"
-      ]
+        {
+          "name": "زهرا",
+          "location": {
+            "lat": 39.046641,
+            "lng": 48.292097,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گرمی",
+          "location": {
+            "lat": 39.021389,
+            "lng": 48.08,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 39.021389,
+        "lng": 48.08,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مشگین‌شهر",
       "cities": [
-        "النی",
-        "رضی",
-        "فخرآباد",
-        "قصابه",
-        "لاهرود",
-        "مرادلو",
-        "مشگین‌شهر"
-      ]
+        {
+          "name": "النی",
+          "location": {
+            "lat": 38.439891,
+            "lng": 47.730292,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رضی",
+          "location": {
+            "lat": 38.627778,
+            "lng": 48.094167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فخرآباد",
+          "location": {
+            "lat": 38.527774,
+            "lng": 47.864327,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قصابه",
+          "location": {
+            "lat": 38.389444,
+            "lng": 47.504444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لاهرود",
+          "location": {
+            "lat": 38.510833,
+            "lng": 47.832222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مرادلو",
+          "location": {
+            "lat": 38.747222,
+            "lng": 47.747778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مشگین‌شهر",
+          "location": {
+            "lat": 38.398889,
+            "lng": 47.681944,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه قهقهه",
+              "location": {
+                "lat": 38.7576343,
+                "lng": 47.5415744,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بقعه شیخ حیدر",
+              "location": {
+                "lat": 38.397,
+                "lng": 47.676,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک ملی سبلان",
+              "location": {
+                "lat": 38.27,
+                "lng": 47.84,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل معلق مشگین",
+              "location": {
+                "lat": 38.4,
+                "lng": 47.67,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مقبره شیخ حیدر",
+              "location": {
+                "lat": 38.4012629,
+                "lng": 47.6804214,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه آبگرم قینرجه",
+              "location": {
+                "lat": 38.41,
+                "lng": 47.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 38.398889,
+        "lng": 47.681944,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "نمین",
       "cities": [
-        "آبی‌بیگلو",
-        "عنبران",
-        "نمین"
-      ]
+        {
+          "name": "آبی‌بیگلو",
+          "location": {
+            "lat": 38.283889,
+            "lng": 48.550833,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار لاتون",
+              "location": {
+                "lat": 38.321062,
+                "lng": 48.7282045,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "عنبران",
+          "location": {
+            "lat": 38.4875,
+            "lng": 48.431944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نمین",
+          "location": {
+            "lat": 38.426944,
+            "lng": 48.483889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غارهای عنبران",
+              "location": {
+                "lat": 38.4,
+                "lng": 48.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه شیخ جبرائیل",
+              "location": {
+                "lat": 38.42,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "جنگل فندقلو",
+              "location": {
+                "lat": 38.4,
+                "lng": 48.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار شورشورنه",
+              "location": {
+                "lat": 38.38,
+                "lng": 48.52,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 38.426944,
+        "lng": 48.483889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "نیر",
       "cities": [
-        "کوراییم",
-        "نیر"
-      ]
+        {
+          "name": "کوراییم",
+          "location": {
+            "lat": 37.955,
+            "lng": 48.235556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نیر",
+          "location": {
+            "lat": 31.483889,
+            "lng": 54.1275,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.483889,
+        "lng": 54.1275,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 38.458398,
+    "lng": 47.9313,
+    "source": "nominatim",
+    "bbox": [
+      37.1043254,
+      39.709146,
+      47.2871719,
+      48.9214217
+    ]
+  },
+  "places": []
 }

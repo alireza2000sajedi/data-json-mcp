@@ -5,98 +5,816 @@
     {
       "name": "آشتیان",
       "cities": [
-        "آشتیان"
-      ]
+        {
+          "name": "آشتیان",
+          "location": {
+            "lat": 34.523056,
+            "lng": 50.006111,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "خانه کبیری آشتیان",
+              "location": {
+                "lat": 34.52,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.523056,
+        "lng": 50.006111,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "اراک",
       "cities": [
-        "اراک",
-        "داوودآباد",
-        "ساروق",
-        "کارچان",
-        "کرهرود"
-      ]
+        {
+          "name": "اراک",
+          "location": {
+            "lat": 34.095,
+            "lng": 49.698056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار اراک",
+              "location": {
+                "lat": 34.0908843,
+                "lng": 49.691763,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام چهارفصل",
+              "location": {
+                "lat": 34.0851755,
+                "lng": 49.6877294,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه پیر نجم‌الدین",
+              "location": {
+                "lat": 34.09,
+                "lng": 49.69,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده هفتاد و دو تن",
+              "location": {
+                "lat": 34.09,
+                "lng": 49.69,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه حاج وکیل",
+              "location": {
+                "lat": 34.09,
+                "lng": 49.69,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه چهارفصل اراک",
+              "location": {
+                "lat": 34.0906,
+                "lng": 49.6896,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج شیشه اراک",
+              "location": {
+                "lat": 34.092,
+                "lng": 49.69,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه حسن‌پور",
+              "location": {
+                "lat": 34.0908,
+                "lng": 49.687,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "داوودآباد",
+          "location": {
+            "lat": 34.293333,
+            "lng": 49.856389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ساروق",
+          "location": {
+            "lat": 34.411667,
+            "lng": 49.504167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کارچان",
+          "location": {
+            "lat": 34.099444,
+            "lng": 49.933333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کرهرود",
+          "location": {
+            "lat": 34.060833,
+            "lng": 49.644722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.095,
+        "lng": 49.698056,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "تفرش",
       "cities": [
-        "تفرش"
-      ]
+        {
+          "name": "تفرش",
+          "location": {
+            "lat": 34.693056,
+            "lng": 50.016111,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار امجک",
+              "location": {
+                "lat": 34.7,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه پروفسور حسابی",
+              "location": {
+                "lat": 34.69,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه تاریخی حاجباشی تفرش",
+              "location": {
+                "lat": 34.69,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.693056,
+        "lng": 50.016111,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خمین",
       "cities": [
-        "خمین",
-        "قورچی‌باشی"
-      ]
+        {
+          "name": "خمین",
+          "location": {
+            "lat": 33.638889,
+            "lng": 50.08,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه حاجوک خمین",
+              "location": {
+                "lat": 33.64,
+                "lng": 50.08,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه امام خمینی خمین",
+              "location": {
+                "lat": 33.642,
+                "lng": 50.078,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "قورچی‌باشی",
+          "location": {
+            "lat": 33.652778,
+            "lng": 49.872778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.638889,
+        "lng": 50.08,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خنداب",
       "cities": [
-        "جاورسیان",
-        "خنداب"
-      ]
+        {
+          "name": "جاورسیان",
+          "location": {
+            "lat": 34.257222,
+            "lng": 49.323333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خنداب",
+          "location": {
+            "lat": 34.392778,
+            "lng": 49.183889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.392778,
+        "lng": 49.183889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دلیجان",
       "cities": [
-        "دلیجان",
-        "نراق"
-      ]
+        {
+          "name": "دلیجان",
+          "location": {
+            "lat": 33.990556,
+            "lng": 50.683889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار نخجیر",
+              "location": {
+                "lat": 34.0374333,
+                "lng": 50.7654549,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل تاریخی دلیجان",
+              "location": {
+                "lat": 33.99,
+                "lng": 50.68,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "نراق",
+          "location": {
+            "lat": 34.011111,
+            "lng": 50.837778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "مسجد جامع نراق",
+              "location": {
+                "lat": 34.01,
+                "lng": 50.84,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی نراق",
+              "location": {
+                "lat": 34.01,
+                "lng": 50.841,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه تاریخی حاج‌آقا علی نراق",
+              "location": {
+                "lat": 34.011,
+                "lng": 50.84,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.990556,
+        "lng": 50.683889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "زرندیه",
       "cities": [
-        "پرندک",
-        "خشکرود",
-        "رازقان",
-        "زاویه",
-        "مامونیه"
-      ]
+        {
+          "name": "پرندک",
+          "location": {
+            "lat": 35.3625,
+            "lng": 50.683056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خشکرود",
+          "location": {
+            "lat": 35.399491,
+            "lng": 50.334578,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رازقان",
+          "location": {
+            "lat": 35.330833,
+            "lng": 49.953333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "زاویه",
+          "location": {
+            "lat": 35.383056,
+            "lng": 50.565556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مامونیه",
+          "location": {
+            "lat": 35.298889,
+            "lng": 50.511667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.333149,
+        "lng": 50.296612,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ساوه",
       "cities": [
-        "آوه",
-        "ساوه",
-        "غرق‌آباد",
-        "نوبران"
-      ]
+        {
+          "name": "آوه",
+          "location": {
+            "lat": 34.792222,
+            "lng": 50.423056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تپه باستانی آوه",
+              "location": {
+                "lat": 35,
+                "lng": 50.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "ساوه",
+          "location": {
+            "lat": 35.021389,
+            "lng": 50.356667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار ساوه",
+              "location": {
+                "lat": 35.02,
+                "lng": 50.36,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد جامع ساوه",
+              "location": {
+                "lat": 35.02,
+                "lng": 50.36,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده سید حمزه ساوه",
+              "location": {
+                "lat": 35.02,
+                "lng": 50.355,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای تاریخی ساوه",
+              "location": {
+                "lat": 35.019,
+                "lng": 50.354,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سد الغدیر ساوه",
+              "location": {
+                "lat": 34.95,
+                "lng": 50.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "غرق‌آباد",
+          "location": {
+            "lat": 35.106944,
+            "lng": 49.830833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نوبران",
+          "location": {
+            "lat": 35.129167,
+            "lng": 49.708889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.021389,
+        "lng": 50.356667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "شازند",
       "cities": [
-        "آستانه",
-        "توره",
-        "شازند",
-        "شهباز",
-        "مهاجران",
-        "هندودر"
-      ]
+        {
+          "name": "آستانه",
+          "location": {
+            "lat": 33.883333,
+            "lng": 49.352222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "توره",
+          "location": {
+            "lat": 34.0442,
+            "lng": 49.2878,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شازند",
+          "location": {
+            "lat": 33.9275,
+            "lng": 49.411389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شهباز",
+          "location": {
+            "lat": 33.878611,
+            "lng": 49.531111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مهاجران",
+          "location": {
+            "lat": 35.073889,
+            "lng": 48.616667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هندودر",
+          "location": {
+            "lat": 33.779167,
+            "lng": 49.231111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.9275,
+        "lng": 49.411389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فراهان",
       "cities": [
-        "تلخاب",
-        "خنجین",
-        "ساروق",
-        "فرمهین"
-      ]
+        {
+          "name": "تلخاب",
+          "location": {
+            "lat": 34.713649,
+            "lng": 49.64859,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خنجین",
+          "location": {
+            "lat": 34.756389,
+            "lng": 49.531944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ساروق",
+          "location": {
+            "lat": 34.411667,
+            "lng": 49.504167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فرمهین",
+          "location": {
+            "lat": 34.503889,
+            "lng": 49.684444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.621333,
+        "lng": 49.63118,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کمیجان",
       "cities": [
-        "کمیجان",
-        "میلاجرد"
-      ]
+        {
+          "name": "کمیجان",
+          "location": {
+            "lat": 34.721389,
+            "lng": 49.326667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "میلاجرد",
+          "location": {
+            "lat": 34.621944,
+            "lng": 49.2075,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.721389,
+        "lng": 49.326667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "محلات",
       "cities": [
-        "محلات",
-        "نیم‌ور"
-      ]
+        {
+          "name": "محلات",
+          "location": {
+            "lat": 33.911111,
+            "lng": 50.453056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "محوطه باستانی خورهه",
+              "location": {
+                "lat": 33.78,
+                "lng": 50.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سرچشمه محلات",
+              "location": {
+                "lat": 33.91,
+                "lng": 50.46,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ تاریخی محلات",
+              "location": {
+                "lat": 33.91,
+                "lng": 50.46,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه آبگرم محلات",
+              "location": {
+                "lat": 33.9,
+                "lng": 50.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "منطقه باستانی خورهه",
+              "location": {
+                "lat": 34,
+                "lng": 50.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "نیم‌ور",
+          "location": {
+            "lat": 33.886944,
+            "lng": 50.572778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار ثعلبیان",
+              "location": {
+                "lat": 33.88,
+                "lng": 50.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آتشکده آتشکوه",
+              "location": {
+                "lat": 33.87,
+                "lng": 50.52,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.911111,
+        "lng": 50.453056,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 34.530271,
+    "lng": 49.786456,
+    "source": "nominatim",
+    "bbox": [
+      33.3840881,
+      35.5706074,
+      48.9497625,
+      51.0553587
+    ]
+  },
+  "places": []
 }

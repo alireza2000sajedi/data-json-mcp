@@ -1,64 +1,150 @@
-# PLANRO — FULL PROVINCE PLACES
+# PLANRO — FULL PROVINCE (بدون Scope)
 
-تکمیل **همهٔ Placeها** در کل استان وقتی Province/County/City از قبل شروع شده‌اند.
-فقط `province_id`. Scope جدا از کاربر نخواه.
+کل استان را **یک‌سره و کامل** از `input` پر کن.
+فقط `province_id`. **`scope_id` نخواه.** برای Scope بعدی نایست. پرامپت `02` لازم نیست.
 
-قرارداد مادر: `01-start-province.txt`.
+قرارداد مادر برای جزئیات schema/brand: `01-start-province.txt` — ولی این فایل برای اجرای کامل استان **کافی و مستقل** است.
 
 ### RUN VARIABLES
 ```text
 province_id=<PROVINCE_ID>
 ```
-- مقدار واقعی در Task authoritative است.
-- نبود → `MISSING_INPUT: province_id` و توقف.
+- مقدار واقعی در Task authoritative است (عدد یا `province-{n}`).
+- نبود → `MISSING_INPUT: province_id` و توقف؛ سؤال نپرس.
+- عدد را به `province-{n}` normalize کن.
+- از کاربر نام شهرستان / شهر / روستا / `scope_id` نخواه.
 
 ---
 
-## 1) هدف
-1. هر `county-*` را پیمایش کن.
-2. Placeهای مستقیم شهرستان (`countyPlaces`) را کامل کن.
-3. هر `city-*` داخل شهرستان و Placeهایش را کامل کن.
-4. محل کمپ = Place (`campground`) — Entity جدا نساز.
+## 0) قانون طلایی — فقط input
+واحدها و Placeها را **فقط** از `input/{n}.json` بگیر (`import_province_scopes` / `planro://scopes/{provinceId}`).
 
-تمرکز Place است. اداری‌ها را فقط اگر برای کشف/ذخیرهٔ Place لازم‌اند تعمیر کن.
+- County / City / Village / Place جدید از خودت نساز و به چک‌لیست اضافه نکن.
+- اگر در input نبود → نادیده بگیر.
+- `placesChecklist` / `places` روی هر Node = همان نام‌هایی که باید اولویت سرچ شوند (با `location` اگر هست).
+- اگر ScopeUnit فیلد `location` داشت، همان lat/lng مبنای Entity است؛ فقط در نبود/بی‌اعتباری → Nominatim.
 
 ---
 
-## 2) قفل — کل استان یک‌سره
-1. `import_province_scopes` اگر لازم است.
-2. `set_active_scope(provinceId)` — continuous؛ برای Scope بعدی نایست.
-3. صف: `list_pending_nodes({ provinceId, allScopes: true })` + `get_next_research_node`.
-4. ترتیب DFS را حدس نزن.
+## 1) هدف — کل درخت، نه فقط Place
+تا پایان این پرامپت باید کامل شوند:
+
+| واحد | چه چیزی |
+|---|---|
+| Province | اگر هنوز ناقص است: entity + media=۵ + sources + FAQ + checklist |
+| هر County | entity + media=۳ + City/Village/Placeهای زیر آن |
+| هر City | entity + media=۳ + Village/Placeهای زیر آن |
+| هر Village | entity + media=۲ + Placeهای زیر آن |
+| هر Place | entity + media=۴ + Visit کامل |
+
+محل کمپ = Place (`campground`) — Entity جدا نساز.
+
+### سلسله‌مراتب (قفل)
+- Village Parent = County یا City — **هرگز فقط Province**
+  - `counties[].villages` → Parent = County
+  - `counties[].cities[].villages` → Parent = City
+- **روستا ≠ Place:** اول Village را کامل کن؛ جاذبه را Place زیر همان Village بگذار؛ `روستای X` یا نام خود روستا به‌عنوان Place ممنوع
+- Place را دقیقاً زیر Parentی بگذار که در scopes/input آمده
+- در Entity: `location.province / county / city / village` مطابق زنجیره
+
+---
+
+## 2) قفل اجرا — continuous؛ بدون Scope Selection
+1. MCP/Resourceها طبق ۰۱ (اگر آماده است تکرار بی‌نیاز).
+2. `import_province_scopes(provinceId)` — درخت را از input بساز؛ deep-research برای کشف واحد جدید نکن.
+3. `set_active_scope(provinceId)` — حالت **full-province / continuous**.
+4. صف: `list_pending_nodes({ provinceId, allScopes: true })` + `get_next_research_node`.
+5. ترتیب DFS را حدس نزن.
+6. **ممنوع:** `awaitingScopeSelection` را به توقف تبدیل کن · Scope بعدی را از کاربر بپرس · بعد از یک county بایست · به `02` سوئیچ کن
 
 ```text
 output/{province_id}/
-└── county-*/ 
+├── province-*.json
+└── county-*/
+    ├── county entity
     ├── place-*.json
-    └── city-*/place-*.json
+    ├── city-*/
+    │   ├── city entity
+    │   ├── place-*.json
+    │   └── village-*/          # Village زیر City
+    │       ├── village entity
+    │       └── place-*.json
+    └── village-*/              # Village مستقیم زیر County
+        ├── village entity
+        └── place-*.json
 ```
 
----
-
-## 3) کار هر واحد
-1. `get_node_context`
-2. `discover_subtree` برای Place
-3. ۵ Primary + `get_source_coverage` → satisfied
-4. Place با `place-{p}-{n}` از طریق `save_active_entity`
-5. `complete_discovery_task`: county→`countyPlaces` (+ districts/ruralDistricts با ۰ اگر خالی) · city→`places`
-6. Media Place=۴؛ به‌محض target توقف؛ URL reuse ممنوع
+Discovery tracks (count واقعی؛ خالی = `0`):
+- province → `provincePlaces`
+- county → `cities` · `villages` · `countyPlaces` · `districts`/`ruralDistricts`
+- city → `places` · `villages` (اگر در input زیر city آمده)
+- village → `places`
 
 ---
 
-## 4) پایان
-1. `pendingByType.place` و trackهای Place باز = ۰
-2. `check_definition_of_done` → `complete:true`
-3. `validate_province` → `invalid:0`
-4. اگر DoD به‌خاطر اداری ناقص است همان را در همین ران تعمیر کن
+## 3) TURBO + کیفیت (همان Node)
+سریع‌تر تمام کن، نه ساده‌تر.
 
-ممنوع: توقف بعد از یک county · پرسیدن Scope بعدی · save بدون MCP · commit با fail
+مجاز: تحقیق موازی یک Node (۵ Primary + مختصات + media) · `discover_subtree` · Queryهای fa/en · توقف media در target
+
+ممنوع: حذف Place/Source/media برای سرعت · کم‌کردن Coverage یا media target · دانلود/ذخیرهٔ فایل عکس · چند `save_active_entity` هم‌زمان · ساخت واحد خارج از input · commit با fail
+
+### حلقهٔ هر Node — کیفیت نهایی همان‌جا
+1. `get_node_context(nodeId)` — checklist فقط از input
+2. `discover_subtree` فقط برای trackهای مجاز همان نوع
+3. `record_search_result` × ۵ Primary (kojaro · jabama · alibaba · lastsecond · flytoday) تا `get_source_coverage` → `satisfied:true`
+4. متن نهایی انسانی (§۸ پرامپت ۰۱) — پاس بازنویسی جدا ممنوع
+5. Media تا target: Province=۵ · County=۳ · City=۳ · Village=۲ · Place=۴
+   - **فقط URL** (`record_media_candidate` → `finalize_media`) — دانلود/ذخیرهٔ باینری ممنوع
+   - URL reuse بین Entityها ممنوع — پاس media جدا ممنوع
+6. `save_active_entity({ provinceId, entity, expectedNodeId })` — فقط MCP
+7. اگر save/validate خطا داد → **همان Node را تعمیر کن**؛ ناقص رد نشو
+8. `complete_discovery_task({ nodeId, track, count })`
+
+Ownership: Parent فقط معرفی کوتاه Child؛ بدون ticket/hours/FAQ عملیاتی Child.
+`costs` / `evidence` وارد Entity نکن.
+Taxonomy: فقط Global IDs؛ مفهوم جدید → `taxonomy/agent-taxonomy/` (بدون گذاشتن id در Entity تا promote).
+
+Visit:
+- Province/County: bestSeasons/bestMonths — openingHours و فیلدهای Place ممنوع
+- City/Village: + crowdLevel با منبع — openingHours عملیاتی Place ممنوع
+- Place: Visit کامل
 
 ---
 
-## 5) تحویل
-گزارش: counties، cities، places، taxonomy staging  
-سپس git add/commit/push فقط اگر DoD و validate پاس شد.
+## 4) Call Order
+1. `import_province_scopes(provinceId)`
+2. `set_active_scope(provinceId)` — continuous / allScopes
+3. `get_next_research_node` / `list_pending_nodes({ allScopes: true })`
+4. `get_node_context(nodeId)`
+5. `record_search_result` × ۵ → `get_source_coverage` satisfied
+6. `record_media_candidate` → `finalize_media` تا target
+7. `save_active_entity`
+8. `complete_discovery_task`
+9. تا pending کل استان صفر شود تکرار کن
+10. `check_definition_of_done` → `validate_province`
+
+`mark_node_complete` مستقیم نیست. نام→id از `planro://scopes` / `indexByName`.
+
+---
+
+## 5) پایان — کل استان
+قبل از تحویل همه باید صفر/پاس باشند:
+- `pendingByType` برای county / city / village / place
+- trackهای باز Discovery
+- `check_definition_of_done` → `complete:true` (full province)
+- `validate_province` → `invalid:0`
+
+اگر DoD به‌خاطر واحد اداری ناقص گیر کرد → **همان را در همین ران** تعمیر کن؛ به `02` موکول نکن.
+
+ممنوع: توقف بعد از یک county · پرسیدن Scope · save بدون MCP · commit با `complete:false`/`invalid>0` · واحد خارج از input
+
+---
+
+## 6) تحویل
+گزارش: counties، cities، villages، places، taxonomy staging (چه idهایی در agent-taxonomy ساختی)
+
+1. `check_definition_of_done` → `complete:true`
+2. `validate_province` → `invalid:0`
+3. اگر پاس نشد → **commit ممنوع**
+4. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`

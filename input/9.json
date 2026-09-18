@@ -5,106 +5,841 @@
     {
       "name": "اردل",
       "cities": [
-        "اردل",
-        "دشتک",
-        "سرخون",
-        "کاج"
-      ]
+        {
+          "name": "اردل",
+          "location": {
+            "lat": 31.996111,
+            "lng": 50.656389,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "چشمه زنه",
+              "location": {
+                "lat": 32,
+                "lng": 50.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار دره عشق",
+              "location": {
+                "lat": 31.95,
+                "lng": 50.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "دشتک",
+          "location": {
+            "lat": 32.1625,
+            "lng": 50.453056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سرخون",
+          "location": {
+            "lat": 31.75,
+            "lng": 50.551111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کاج",
+          "location": {
+            "lat": 32.058308,
+            "lng": 50.582786,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.996111,
+        "lng": 50.656389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بروجن",
       "cities": [
-        "بروجن",
-        "بلداجی",
-        "سفیددشت",
-        "فرادنبه",
-        "گندمان",
-        "نقنه"
-      ]
+        {
+          "name": "بروجن",
+          "location": {
+            "lat": 31.968333,
+            "lng": 51.289444,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تالاب چغاخور",
+              "location": {
+                "lat": 31.9219697,
+                "lng": 50.9086286,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده حمزه علی",
+              "location": {
+                "lat": 31.97,
+                "lng": 51.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "بلداجی",
+          "location": {
+            "lat": 31.934167,
+            "lng": 51.057778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سفیددشت",
+          "location": {
+            "lat": 32.130833,
+            "lng": 51.181944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فرادنبه",
+          "location": {
+            "lat": 32.008333,
+            "lng": 51.212222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گندمان",
+          "location": {
+            "lat": 31.866389,
+            "lng": 51.158056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تالاب گندمان",
+              "location": {
+                "lat": 31.85,
+                "lng": 51.1,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "نقنه",
+          "location": {
+            "lat": 31.933325,
+            "lng": 51.32587,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.968333,
+        "lng": 51.289444,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بن",
       "cities": [
-        "بن",
-        "وردنجان",
-        "یان‌چشمه"
-      ]
+        {
+          "name": "بن",
+          "location": {
+            "lat": 32.535833,
+            "lng": 50.747222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "وردنجان",
+          "location": {
+            "lat": 32.473889,
+            "lng": 50.768056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "یان‌چشمه",
+          "location": {
+            "lat": 32.6683,
+            "lng": 50.7267,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.535833,
+        "lng": 50.747222,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خانمیرزا",
       "cities": [
-        "آلونی"
-      ]
+        {
+          "name": "آلونی",
+          "location": {
+            "lat": 31.553333,
+            "lng": 51.060556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.575279,
+        "lng": 50.993983,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سامان",
       "cities": [
-        "سامان",
-        "هوره"
-      ]
+        {
+          "name": "سامان",
+          "location": {
+            "lat": 32.451389,
+            "lng": 50.911667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "پل زمانخان",
+              "location": {
+                "lat": 32.4878691,
+                "lng": 50.8984965,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "رودخانه زاینده‌رود سامان",
+              "location": {
+                "lat": 32.45,
+                "lng": 50.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "هوره",
+          "location": {
+            "lat": 32.561507,
+            "lng": 50.853943,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.451389,
+        "lng": 50.911667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "شهرکرد",
       "cities": [
-        "چالشتر",
-        "سودجان",
-        "سورشجان",
-        "شهرکرد",
-        "شهرکیان",
-        "طاقانک",
-        "نافچ",
-        "هارونی",
-        "هفشجان"
-      ]
+        {
+          "name": "چالشتر",
+          "location": {
+            "lat": 32.378611,
+            "lng": 50.786667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سودجان",
+          "location": {
+            "lat": 32.523333,
+            "lng": 50.398889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سورشجان",
+          "location": {
+            "lat": 32.315278,
+            "lng": 50.680556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شهرکرد",
+          "location": {
+            "lat": 32.325556,
+            "lng": 50.864444,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه چالشتر",
+              "location": {
+                "lat": 32.3773966,
+                "lng": 50.7877178,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ چالشتر",
+              "location": {
+                "lat": 32.35,
+                "lng": 50.82,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار سراب",
+              "location": {
+                "lat": 32.3,
+                "lng": 50.85,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار شهرکرد",
+              "location": {
+                "lat": 32.33,
+                "lng": 50.86,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک جنگلی پامچال",
+              "location": {
+                "lat": 32.34,
+                "lng": 50.87,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت آزاده",
+              "location": {
+                "lat": 32.33,
+                "lng": 50.855,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "شهرکیان",
+          "location": {
+            "lat": 32.270918,
+            "lng": 50.867205,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "طاقانک",
+          "location": {
+            "lat": 32.223056,
+            "lng": 50.836111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نافچ",
+          "location": {
+            "lat": 32.423889,
+            "lng": 50.789444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هارونی",
+          "location": {
+            "lat": 32.391291,
+            "lng": 50.569649,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هفشجان",
+          "location": {
+            "lat": 32.226667,
+            "lng": 50.793056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.325556,
+        "lng": 50.864444,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فارسان",
       "cities": [
-        "باباحیدر",
-        "پردنجان",
-        "جونقان",
-        "چلیچه",
-        "فارسان",
-        "فیل‌آباد",
-        "گوجان"
-      ]
+        {
+          "name": "باباحیدر",
+          "location": {
+            "lat": 32.328056,
+            "lng": 50.476111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "پردنجان",
+          "location": {
+            "lat": 32.253333,
+            "lng": 50.5975,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "جونقان",
+          "location": {
+            "lat": 32.152222,
+            "lng": 50.691111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "چلیچه",
+          "location": {
+            "lat": 32.230576,
+            "lng": 50.628483,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فارسان",
+          "location": {
+            "lat": 32.256944,
+            "lng": 50.564167,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "چشمه سرداب",
+              "location": {
+                "lat": 32.25,
+                "lng": 50.57,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل ارجنک",
+              "location": {
+                "lat": 32.3,
+                "lng": 50.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تالاب سولقان",
+              "location": {
+                "lat": 32.28,
+                "lng": 50.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "فیل‌آباد",
+          "location": {
+            "lat": 32.302101,
+            "lng": 50.49808,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گوجان",
+          "location": {
+            "lat": 32.245556,
+            "lng": 50.541944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.256944,
+        "lng": 50.564167,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فرخ‌شهر",
       "cities": [
-        "فرخ‌شهر"
-      ]
+        {
+          "name": "فرخ‌شهر",
+          "location": {
+            "lat": 32.272778,
+            "lng": 50.982222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.272778,
+        "lng": 50.982222,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فلارد",
       "cities": [
-        "مال‌خلیفه"
-      ]
+        {
+          "name": "مال‌خلیفه",
+          "location": {
+            "lat": 31.29,
+            "lng": 51.262222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.287598,
+        "lng": 51.18999,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کوهرنگ",
       "cities": [
-        "بازفت",
-        "چلگرد",
-        "صمصامی"
-      ]
+        {
+          "name": "بازفت",
+          "location": {
+            "lat": 32.211338,
+            "lng": 50.033068,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "چلگرد",
+          "location": {
+            "lat": 32.468056,
+            "lng": 50.121389,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار کوهرنگ",
+              "location": {
+                "lat": 32.3607442,
+                "lng": 49.8539539,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه دیمه",
+              "location": {
+                "lat": 32.5115397,
+                "lng": 50.212895,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار یخی چما",
+              "location": {
+                "lat": 32.5614971,
+                "lng": 49.9578811,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تونل کوهرنگ",
+              "location": {
+                "lat": 32.45,
+                "lng": 50.15,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پیست اسکی چلگرد",
+              "location": {
+                "lat": 32.45,
+                "lng": 50.1,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار شیخ علیخان",
+              "location": {
+                "lat": 32.47,
+                "lng": 50.15,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "صمصامی",
+          "location": {
+            "lat": 32.167009,
+            "lng": 50.275483,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.402047,
+        "lng": 50.109106,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کیار",
       "cities": [
-        "دستنا",
-        "شلمزار",
-        "گهرو",
-        "ناغان"
-      ]
+        {
+          "name": "دستنا",
+          "location": {
+            "lat": 32.059984,
+            "lng": 50.770967,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شلمزار",
+          "location": {
+            "lat": 32.043889,
+            "lng": 50.813889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه دزک",
+              "location": {
+                "lat": 32.05,
+                "lng": 50.8,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه سردار اسعد",
+              "location": {
+                "lat": 32.04,
+                "lng": 50.84,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "گهرو",
+          "location": {
+            "lat": 32.0025,
+            "lng": 50.886944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ناغان",
+          "location": {
+            "lat": 31.941667,
+            "lng": 50.743056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.922382,
+        "lng": 50.646126,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "لردگان",
       "cities": [
-        "سردشت",
-        "لردگان",
-        "منج"
-      ]
+        {
+          "name": "سردشت",
+          "location": {
+            "lat": 36.155278,
+            "lng": 45.478889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لردگان",
+          "location": {
+            "lat": 31.509722,
+            "lng": 50.828333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار آتشگاه لردگان",
+              "location": {
+                "lat": 31.5,
+                "lng": 50.8,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه برم لردگان",
+              "location": {
+                "lat": 31.5,
+                "lng": 50.83,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "منج",
+          "location": {
+            "lat": 31.538464,
+            "lng": 50.626774,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.509722,
+        "lng": 50.828333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 32.016331,
+    "lng": 50.685709,
+    "source": "nominatim",
+    "bbox": [
+      31.1498667,
+      32.8090731,
+      49.5000772,
+      51.4343282
+    ]
+  },
+  "places": []
 }

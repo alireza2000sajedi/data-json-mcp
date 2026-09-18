@@ -5,94 +5,702 @@
     {
       "name": "بشرویه",
       "cities": [
-        "ارسک",
-        "بشرویه"
-      ]
+        {
+          "name": "ارسک",
+          "location": {
+            "lat": 33.701389,
+            "lng": 57.373889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بشرویه",
+          "location": {
+            "lat": 33.86621,
+            "lng": 57.425381,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.86621,
+        "lng": 57.425381,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بیرجند",
       "cities": [
-        "بیرجند"
-      ]
+        {
+          "name": "بیرجند",
+          "location": {
+            "lat": 32.866389,
+            "lng": 59.221111,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "ارگ بیرجند",
+              "location": {
+                "lat": 32.8763815,
+                "lng": 59.2083338,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بند دره",
+              "location": {
+                "lat": 32.8190637,
+                "lng": 59.2163968,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ اکبریه",
+              "location": {
+                "lat": 32.843,
+                "lng": 59.229,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت کلاه فرنگی بیرجند",
+              "location": {
+                "lat": 32.87,
+                "lng": 59.22,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه باستان‌شناسی بیرجند",
+              "location": {
+                "lat": 32.87,
+                "lng": 59.22,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار بیرجند",
+              "location": {
+                "lat": 32.867,
+                "lng": 59.219,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه بیرجند",
+              "location": {
+                "lat": 32.8655,
+                "lng": 59.2215,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه آراسته",
+              "location": {
+                "lat": 32.863,
+                "lng": 59.224,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ تاریخی رحیم‌آباد",
+              "location": {
+                "lat": 32.87,
+                "lng": 59.23,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.866389,
+        "lng": 59.221111,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خوسف",
       "cities": [
-        "خوسف",
-        "ماژان"
-      ]
+        {
+          "name": "خوسف",
+          "location": {
+            "lat": 32.780833,
+            "lng": 58.890556,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه خور",
+              "location": {
+                "lat": 32.78,
+                "lng": 58.89,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "ماژان",
+          "location": {
+            "lat": 32.582859,
+            "lng": 59.015027,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.780833,
+        "lng": 58.890556,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "درمیان",
       "cities": [
-        "اسدیه",
-        "طبس مسینا",
-        "قهستان",
-        "گزیک"
-      ]
+        {
+          "name": "اسدیه",
+          "location": {
+            "lat": 32.916389,
+            "lng": 60.025833,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه فورگ",
+              "location": {
+                "lat": 32.8449699,
+                "lng": 59.9484063,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "طبس مسینا",
+          "location": {
+            "lat": 32.806944,
+            "lng": 60.222222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قهستان",
+          "location": {
+            "lat": 33.15,
+            "lng": 59.715278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گزیک",
+          "location": {
+            "lat": 33.000821,
+            "lng": 60.226647,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.943717,
+        "lng": 60.147723,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "زیرکوه",
       "cities": [
-        "آبیز",
-        "حاجی‌آباد",
-        "زهان"
-      ]
+        {
+          "name": "آبیز",
+          "location": {
+            "lat": 33.693031,
+            "lng": 59.961147,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "حاجی‌آباد",
+          "location": {
+            "lat": 28.357222,
+            "lng": 54.423333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "زهان",
+          "location": {
+            "lat": 33.413889,
+            "lng": 59.797778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.539107,
+        "lng": 60.195886,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سرایان",
       "cities": [
-        "آیسک",
-        "سرایان",
-        "سه‌قلعه"
-      ]
+        {
+          "name": "آیسک",
+          "location": {
+            "lat": 33.8875,
+            "lng": 58.3825,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سرایان",
+          "location": {
+            "lat": 33.860278,
+            "lng": 58.521667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کویر سه قلعه",
+              "location": {
+                "lat": 33.45,
+                "lng": 58.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آب انبار سرایان",
+              "location": {
+                "lat": 33.86,
+                "lng": 58.52,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سه‌قلعه",
+          "location": {
+            "lat": 33.667778,
+            "lng": 58.397222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.860278,
+        "lng": 58.521667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سربیشه",
       "cities": [
-        "درح",
-        "سربیشه",
-        "مود"
-      ]
+        {
+          "name": "درح",
+          "location": {
+            "lat": 32.288611,
+            "lng": 60.490556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سربیشه",
+          "location": {
+            "lat": 32.575556,
+            "lng": 59.798333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مود",
+          "location": {
+            "lat": 32.708056,
+            "lng": 59.523333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.575556,
+        "lng": 59.798333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "طبس",
       "cities": [
-        "دیهوک",
-        "طبس",
-        "عشق آباد"
-      ]
+        {
+          "name": "دیهوک",
+          "location": {
+            "lat": 33.293889,
+            "lng": 57.518611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "طبس",
+          "location": {
+            "lat": 33.595833,
+            "lng": 56.924444,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "باغ گلشن طبس",
+              "location": {
+                "lat": 33.6,
+                "lng": 56.92,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سد شاه‌عباسی طبس",
+              "location": {
+                "lat": 33.6,
+                "lng": 57,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده حسین بن موسی الکاظم",
+              "location": {
+                "lat": 33.595,
+                "lng": 56.925,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کویر حلوان",
+              "location": {
+                "lat": 33.7,
+                "lng": 56.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "عشق آباد",
+          "location": {
+            "lat": 36.043056,
+            "lng": 58.6825,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.595833,
+        "lng": 56.924444,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "عشق‌آباد",
       "cities": [
-        "عشق‌آباد"
-      ]
+        {
+          "name": "عشق‌آباد",
+          "location": {
+            "lat": 36.043056,
+            "lng": 58.6825,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.043056,
+        "lng": 58.6825,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فردوس",
       "cities": [
-        "اسلامیه",
-        "باغستان",
-        "فردوس"
-      ]
+        {
+          "name": "اسلامیه",
+          "location": {
+            "lat": 34.045556,
+            "lng": 58.220278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "باغستان",
+          "location": {
+            "lat": 35.633889,
+            "lng": 51.137222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فردوس",
+          "location": {
+            "lat": 34.018611,
+            "lng": 58.172222,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه حسن‌آباد",
+              "location": {
+                "lat": 34,
+                "lng": 58.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.018611,
+        "lng": 58.172222,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "قائنات",
       "cities": [
-        "آرین‌شهر",
-        "اسفدن",
-        "خضری دشت‌بیاض",
-        "قائن",
-        "نیمبلوک"
-      ]
+        {
+          "name": "آرین‌شهر",
+          "location": {
+            "lat": 33.331667,
+            "lng": 59.233056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "اسفدن",
+          "location": {
+            "lat": 33.645,
+            "lng": 59.778056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خضری دشت‌بیاض",
+          "location": {
+            "lat": 34.022778,
+            "lng": 58.812778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قائن",
+          "location": {
+            "lat": 33.725556,
+            "lng": 59.189722,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آرامگاه بوذرجهری",
+              "location": {
+                "lat": 33.73,
+                "lng": 59.18,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه بوذرجمهر قاینی",
+              "location": {
+                "lat": 33.73,
+                "lng": 59.18,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار خونیک",
+              "location": {
+                "lat": 33.7,
+                "lng": 59.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "منطقه حفاظت‌شده شاسکوه",
+              "location": {
+                "lat": 33.9,
+                "lng": 59.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "نیمبلوک",
+          "location": {
+            "lat": 33.910833,
+            "lng": 58.931111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 33.650216,
+        "lng": 59.259015,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "نهبندان",
       "cities": [
-        "شوسف",
-        "نهبندان"
-      ]
+        {
+          "name": "شوسف",
+          "location": {
+            "lat": 31.804722,
+            "lng": 60.01,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نهبندان",
+          "location": {
+            "lat": 31.541944,
+            "lng": 60.036389,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه رستم نهبندان",
+              "location": {
+                "lat": 31.54,
+                "lng": 60.03,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کویر نهبندان",
+              "location": {
+                "lat": 31.5,
+                "lng": 60,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.541944,
+        "lng": 60.036389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 33.56887,
+    "lng": 57.069642,
+    "source": "nominatim",
+    "bbox": [
+      30.52283,
+      35.1269001,
+      55.4049914,
+      60.9459035
+    ]
+  },
+  "places": []
 }

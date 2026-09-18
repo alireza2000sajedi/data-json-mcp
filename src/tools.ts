@@ -142,18 +142,27 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
     ensureNode(state, county.id, { nodeType: "county", name: county.name, parentNodeId: registry.provinceId });
     // Cities and villages counts are fully known from the reference checklist.
     completeDiscoveryTask(state, county.id, "cities", county.cities.length);
+    completeDiscoveryTask(state, county.id, "villages", county.villages.length);
     for (const city of county.cities) {
       ensureNode(state, city.id, { nodeType: "city", name: city.name, parentNodeId: county.id });
+      const cityVillages = city.villages ?? [];
+      completeDiscoveryTask(state, city.id, "villages", cityVillages.length);
+      for (const village of cityVillages) {
+        ensureNode(state, village.id, { nodeType: "village", name: village.name, parentNodeId: city.id });
+      }
+    }
+    for (const village of county.villages) {
+      ensureNode(state, village.id, { nodeType: "village", name: village.name, parentNodeId: county.id });
     }
   }
 
   state.nextStep =
     `Province stage: structure registered for ${registry.provinceId} (${registry.counts.counties} counties, ` +
-    `${registry.counts.cities} cities). NEXT: deep-research the PROVINCE node itself — ` +
+    `${registry.counts.cities} cities, ${registry.counts.villages} villages). NEXT: deep-research the PROVINCE node itself — ` +
     `get_next_research_node returns '${registry.provinceId}': search it on the 5 mandatory primary sources (see source policy), ` +
     `save its entity (media target: province=5), ` +
     `complete its provincePlaces track, then mark_node_complete. ` +
-    `After that STOP and ask the user which county/city to continue with ` +
+    `After that STOP and ask the user which county/city/village to continue with ` +
     `(look the Persian name up in planro://scopes/${registry.provinceId} → indexByName, then set_active_scope with that id).`;
 
   writeNotes(state);
@@ -169,6 +178,7 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
       id: c.id,
       name: c.name,
       cities: c.cities.length,
+      villages: c.villages.length + c.cities.reduce((n, city) => n + (city.villages?.length ?? 0), 0),
     })),
     registeredNodes: state.nodes.length,
     nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
@@ -176,7 +186,7 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
     note:
       "Structure + dedicated ids registered. Continue with the PROVINCE STAGE: full research of the province node " +
       "(entity, province-level places, media from the 5 primary sources), then STOP and ask the user " +
-      "for the next scope. County/city subtrees are separate runs.",
+      "for the next scope. County/city/village subtrees are separate runs.",
   };
 }
 
@@ -414,6 +424,21 @@ export function toolGetNodeContext(args: { provinceId: string; nodeId: string })
   const status = nodeStatus(args.provinceId, node);
   const knownRelations = (entity?.entity.relations as any[]) ?? [];
   const deficit = findMediaDeficit(state, args.nodeId);
+
+  // Seed place checklist from input/{n}.json via scope registry (for search/discovery).
+  let placesChecklist: { name: string; location?: { lat: number; lng: number }; kind?: string }[] = [];
+  try {
+    const registry = buildScopeRegistry(args.provinceId);
+    if (node.nodeType === "province") {
+      placesChecklist = registry.places ?? [];
+    } else {
+      const unit = registry.index[args.nodeId];
+      placesChecklist = unit?.places ?? [];
+    }
+  } catch {
+    placesChecklist = [];
+  }
+
   return {
     nodeId: node.nodeId,
     nodeType: node.nodeType,
@@ -422,6 +447,7 @@ export function toolGetNodeContext(args: { provinceId: string; nodeId: string })
     administrativePath: administrativePath(state, node.nodeId),
     knownAlternativeNames: (entity?.entity.alternativeNames as string[]) ?? [],
     knownRelations: knownRelations.map((r) => ({ placeId: r?.placeId, relationType: r?.relationType })),
+    placesChecklist,
     completedDiscoveryTracks: status.completedDiscovery,
     pendingDiscoveryTracks: status.pendingDiscovery,
     mediaDeficit: status.mediaDeficit,

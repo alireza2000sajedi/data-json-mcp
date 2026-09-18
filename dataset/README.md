@@ -422,7 +422,7 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 - منبع تصویر فقط ویکی‌مدیا نیست: جستجوی تصویر وب (Google/Bing Images)، پنج منبع Primary سیاست منبع (§7)، خبرگزاری‌ها، سایت‌های رسمی مکان‌ها و وبلاگ‌های معتبر مجازند.
 - اولویت انتخاب: منابع Primary → Wikimedia Commons / Wikipedia → CC یا Public Domain روشن → تصاویر وب با لایسنس `all-rights-reserved` (با کردیت کامل و sourceUrl صفحهٔ منبع). لایسنس آزاد شرط نیست؛ شرط، قابل‌انتساب بودنِ واقعی تصویر به همان Entity است.
 - برای رسیدن به هدف، عکس تکراری، نامرتبط یا غیرقابل‌انتساب (همسایه/والد) اضافه نکن؛ عکس جعلی ممنوع.
-- دانلود تصویر ممنوع؛ فقط URL.
+- دانلود تصویر ممنوع؛ فقط URL مستقیم HTTPS در Entity (`imageUrl` / `url`). ذخیرهٔ باینری روی دیسک، کش محلی، یا پوشهٔ media ممنوع — پایپ‌لاین فقط رشتهٔ URL را نگه می‌دارد.
 - هر تصویر URL خام، alt، caption، source، sourceUrl، credit و license واقعی (مطابق enum اسکیما، شامل all-rights-reserved) دارد. photographer فقط اگر در Metadata واقعی موجود است ثبت می‌شود.
 - Map می‌تواند Media کمکی باشد، اما Thumbnail باید تا حد ممکن یک تصویر واقعی و نمایندهٔ تجربهٔ مکان باشد.
 - `mark_node_media_deficit` فقط برای «نبودِ کل دادهٔ Entity» است؛ اگر حتی ۱ کاندید رسانهٔ usable ثبت شده باشد، ابزار رد می‌کند و مسیر صحیح `finalize_media` + ذخیرهٔ partial است.

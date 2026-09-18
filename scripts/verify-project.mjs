@@ -49,9 +49,8 @@ const REQUIRED = [
   "dataset/brand_voice.md",
   "prompts/01-start-province.txt",
   "prompts/02-run-scope.txt",
-  "prompts/03-resume.txt",
-  "prompts/04-repair-entity.txt",
   "prompts/05-final-audit-minify.txt",
+  "prompts/07-full-province-places.txt",
   "prompts/README.md",
   "taxonomy/types.json",
   "taxonomy/subtypes.json",
@@ -218,19 +217,34 @@ for (const t of ["province", "county", "city", "place"]) {
 const PROMPT_FILES = [
   "01-start-province.txt",
   "02-run-scope.txt",
-  "03-resume.txt",
-  "04-repair-entity.txt",
   "05-final-audit-minify.txt",
+  "07-full-province-places.txt",
 ];
 const prompts = PROMPT_FILES.map((f) => read(`prompts/${f}`));
-const CONCRETE_ID = /\b(?:province|county|city|place)-\d+(?:-[A-Za-z0-9_-]+)*\b/;
+const CONCRETE_ID = /\b(?:province|county|city|village|place)-\d+(?:-[A-Za-z0-9_-]+)*\b/;
 prompts.forEach((t, i) => ok(!CONCRETE_ID.test(t), `prompts/${PROMPT_FILES[i]}: concrete scope id found — prompts must stay generic.`));
 ok(/province_id=<PROVINCE_ID>/.test(prompts[0]), "prompts/01: province_id input block missing.");
 ok(/scope_id=<SCOPE_ID>/.test(prompts[1]), "prompts/02: scope_id input block missing.");
-ok(/previous_id=<PREVIOUS_ID>/.test(prompts[2]), "prompts/03: previous_id input block missing.");
-ok(/entity_id=<ENTITY_ID>/.test(prompts[3]), "prompts/04: entity_id input block missing.");
-ok(/final_audit=true/.test(prompts[4]), "prompts/05: final_audit input block missing.");
-// runtime-input contract: a real value in the current task beats the placeholder
+ok(/final_audit=true/.test(prompts[2]), "prompts/05: final_audit input block missing.");
+ok(/province_id=<PROVINCE_ID>/.test(prompts[3]), "prompts/07: province_id input block missing.");
+ok(
+  /بدون Scope|scope_id نخواه|02 لازم نیست/.test(prompts[3]) && /allScopes:\s*true/.test(prompts[3]),
+  "prompts/07: must be full-province continuous without scope selection.",
+);
+ok(
+  /فقط[\s\S]{0,40}input|قانون طلایی[\s\S]{0,80}input/.test(prompts[3]),
+  "prompts/07: must lock units to input only.",
+);
+ok(/Village/i.test(prompts[0]) && /روستا ≠ Place|روستا Place نیست/.test(prompts[0]), "prompts/01: Village hierarchy contract missing.");
+ok(/کیفیت درجا|پاس جدا برای media ممنوع/.test(prompts[0]), "prompts/01: first-pass quality (no repair/media-gap pass) missing.");
+ok(
+  /دانلود/.test(prompts[0]) && /فقط URL/.test(prompts[0]),
+  "prompts/01: URL-only media policy (no image download) missing.",
+);
+ok(
+  /URL-only|never download/.test(mediaSrc),
+  "src/media.ts: URL-only / no-download media contract comment missing.",
+);
 ok(
   /authoritative/i.test(prompts[0]),
   "prompts/01: the runtime-input contract (a real province_id in the current task is authoritative) is missing.",
@@ -247,8 +261,7 @@ ok(
   /حذف/.test(prompts[0]) && /Primary|media target|Source/.test(prompts[0]),
   "prompts/01: SPEED MODE must still forbid cutting Source/media/quality for speed.",
 );
-ok(/(SPEED MODE|TURBO SPEED)/.test(prompts[1]), "prompts/02: SPEED MODE reference missing.");
-ok(/(SPEED MODE|TURBO SPEED)/.test(prompts[2]), "prompts/03: SPEED MODE reference missing.");
+ok(/(SPEED MODE|TURBO SPEED|TURBO)/.test(prompts[1]), "prompts/02: SPEED MODE reference missing.");
 ok(
   /planro:\/\/taxonomy\/agent|agent-taxonomy\//.test(prompts[0]) && /taxonomy\/agent-taxonomy\//.test(prompts[0]),
   "prompts/01: missing-concept → create item in taxonomy/agent-taxonomy/ (parallel catalogs) is missing.",
@@ -257,6 +270,9 @@ ok(
   /agent-taxonomy/.test(prompts[0]) && /(نبود|اضافه|ساختم)/.test(prompts[0]),
   "prompts/01: end-of-province report for missing taxonomy items is missing.",
 );
+for (const gone of ["03-resume.txt", "04-repair-entity.txt", "06-province-text-rewrite.txt", "08-media-gap-audit.txt"]) {
+  ok(!exists(`prompts/${gone}`), `prompts/${gone} must stay removed.`);
+}
 // Delivery stage: DoD+validate → git status/add output → commit/push; no commit if DoD fails
 prompts.forEach((t, i) => {
   const file = `prompts/${PROMPT_FILES[i]}`;

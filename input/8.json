@@ -5,133 +5,1205 @@
     {
       "name": "اسلامشهر",
       "cities": [
-        "احمدآباد مستوفی",
-        "اسلامشهر",
-        "چهاردانگه"
-      ]
+        {
+          "name": "احمدآباد مستوفی",
+          "location": {
+            "lat": 35.638333,
+            "lng": 51.2125,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "اسلامشهر",
+          "location": {
+            "lat": 35.552222,
+            "lng": 51.235,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "چهاردانگه",
+          "location": {
+            "lat": 35.603056,
+            "lng": 51.309722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.552222,
+        "lng": 51.235,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بهارستان",
       "cities": [
-        "صالحیه",
-        "گلستان",
-        "نسیم‌شهر"
-      ]
+        {
+          "name": "صالحیه",
+          "location": {
+            "lat": 35.507778,
+            "lng": 51.185833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گلستان",
+          "location": {
+            "lat": 35.518333,
+            "lng": 51.181944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نسیم‌شهر",
+          "location": {
+            "lat": 35.565,
+            "lng": 51.163333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.533153,
+        "lng": 51.16509,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "پاکدشت",
       "cities": [
-        "پاکدشت",
-        "شریف‌آباد",
-        "فرون‌آباد"
-      ]
+        {
+          "name": "پاکدشت",
+          "location": {
+            "lat": 35.478611,
+            "lng": 51.683333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شریف‌آباد",
+          "location": {
+            "lat": 35.426944,
+            "lng": 51.784444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فرون‌آباد",
+          "location": {
+            "lat": 35.515556,
+            "lng": 51.623333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.478611,
+        "lng": 51.683333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "پردیس",
       "cities": [
-        "بومهن",
-        "پردیس",
-        "خسروآباد",
-        "سعیدآباد"
-      ]
+        {
+          "name": "بومهن",
+          "location": {
+            "lat": 35.729722,
+            "lng": 51.861944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "پردیس",
+          "location": {
+            "lat": 35.737778,
+            "lng": 51.815556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خسروآباد",
+          "location": {
+            "lat": 35.728521,
+            "lng": 51.864313,
+            "source": "nominatim-near-bumehen"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سعیدآباد",
+          "location": {
+            "lat": 35.735513,
+            "lng": 51.70087,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.737778,
+        "lng": 51.815556,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "پیشوا",
       "cities": [
-        "پیشوا",
-        "جلیل‌آباد"
-      ]
+        {
+          "name": "پیشوا",
+          "location": {
+            "lat": 35.308056,
+            "lng": 51.726667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "جلیل‌آباد",
+          "location": {
+            "lat": 35.343333,
+            "lng": 51.786389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.308056,
+        "lng": 51.726667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "تهران",
       "cities": [
-        "تهران"
-      ]
+        {
+          "name": "تهران",
+          "location": {
+            "lat": 35.688889,
+            "lng": 51.389722,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "برج آزادی",
+              "location": {
+                "lat": 35.6997384,
+                "lng": 51.3380605,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج میلاد",
+              "location": {
+                "lat": 35.7473442,
+                "lng": 51.3785601,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "میدان آزادی",
+              "location": {
+                "lat": 35.6997056,
+                "lng": 51.3375039,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار بزرگ تهران",
+              "location": {
+                "lat": 35.6730448,
+                "lng": 51.4231268,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد امام تهران",
+              "location": {
+                "lat": 35.6760797,
+                "lng": 51.4215588,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج طغرل",
+              "location": {
+                "lat": 35.6006534,
+                "lng": 51.4455354,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه ملی ایران",
+              "location": {
+                "lat": 35.6869942,
+                "lng": 51.4151009,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه هنرهای معاصر تهران",
+              "location": {
+                "lat": 35.7114646,
+                "lng": 51.3904261,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه ایران باستان",
+              "location": {
+                "lat": 35.6871001,
+                "lng": 51.4146116,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دربند",
+              "location": {
+                "lat": 35.8262078,
+                "lng": 51.4259953,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "توچال",
+              "location": {
+                "lat": 35.8843493,
+                "lng": 51.4198766,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تجریش",
+              "location": {
+                "lat": 35.8055177,
+                "lng": 51.4296608,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت مسعودیه",
+              "location": {
+                "lat": 35.6891407,
+                "lng": 51.4280553,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه مقدم",
+              "location": {
+                "lat": 35.6870588,
+                "lng": 51.4049903,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ گلستان",
+              "location": {
+                "lat": 35.6797,
+                "lng": 51.4204,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ سعدآباد",
+              "location": {
+                "lat": 35.8197,
+                "lng": 51.4231,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ نیاوران",
+              "location": {
+                "lat": 35.8117,
+                "lng": 51.4725,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ مرمر",
+              "location": {
+                "lat": 35.6889,
+                "lng": 51.4117,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ صاحبقرانیه",
+              "location": {
+                "lat": 35.8115,
+                "lng": 51.472,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ سبز (شهوند)",
+              "location": {
+                "lat": 35.821,
+                "lng": 51.422,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ فرح‌آباد تهران",
+              "location": {
+                "lat": 35.72,
+                "lng": 51.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کوشک احمدشاهی",
+              "location": {
+                "lat": 35.819,
+                "lng": 51.424,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ مروارید",
+              "location": {
+                "lat": 35.73,
+                "lng": 50.95,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه جواهرات ملی",
+              "location": {
+                "lat": 35.687,
+                "lng": 51.416,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه آبگینه و سفالینه",
+              "location": {
+                "lat": 35.687,
+                "lng": 51.418,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه رضا عباسی",
+              "location": {
+                "lat": 35.72,
+                "lng": 51.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه فرش ایران",
+              "location": {
+                "lat": 35.71,
+                "lng": 51.39,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه سینما",
+              "location": {
+                "lat": 35.78,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه زمان",
+              "location": {
+                "lat": 35.8,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه عبرت",
+              "location": {
+                "lat": 35.69,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه صلح تهران",
+              "location": {
+                "lat": 35.7,
+                "lng": 51.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه ملی ملک",
+              "location": {
+                "lat": 35.69,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه ارتباطات",
+              "location": {
+                "lat": 35.69,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ موزه دفاع مقدس",
+              "location": {
+                "lat": 35.75,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ موزه قصر",
+              "location": {
+                "lat": 35.72,
+                "lng": 51.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ موزه نگارستان",
+              "location": {
+                "lat": 35.7,
+                "lng": 51.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ فردوس",
+              "location": {
+                "lat": 35.8,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه اتحادیه",
+              "location": {
+                "lat": 35.69,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه امام جمعه",
+              "location": {
+                "lat": 35.68,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت عین‌الدوله",
+              "location": {
+                "lat": 35.75,
+                "lng": 51.47,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه دکتر حسابی",
+              "location": {
+                "lat": 35.8,
+                "lng": 51.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه سیمین و جلال",
+              "location": {
+                "lat": 35.7,
+                "lng": 51.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه صادق هدایت",
+              "location": {
+                "lat": 35.69,
+                "lng": 51.41,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه حیات وحش دارآباد",
+              "location": {
+                "lat": 35.82,
+                "lng": 51.49,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک ملی خجیر",
+              "location": {
+                "lat": 35.65,
+                "lng": 51.75,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده صالح تجریش",
+              "location": {
+                "lat": 35.804,
+                "lng": 51.428,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار عودلاجان",
+              "location": {
+                "lat": 35.68,
+                "lng": 51.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سردر باغ ملی",
+              "location": {
+                "lat": 35.69,
+                "lng": 51.41,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "میدان بهارستان",
+              "location": {
+                "lat": 35.69,
+                "lng": 51.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل طبیعت",
+              "location": {
+                "lat": 35.75,
+                "lng": 51.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.688889,
+        "lng": 51.389722,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دماوند",
       "cities": [
-        "آبسرد",
-        "آبعلی",
-        "دماوند",
-        "رودهن",
-        "کیلان"
-      ]
+        {
+          "name": "آبسرد",
+          "location": {
+            "lat": 35.623056,
+            "lng": 52.153333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "آبعلی",
+          "location": {
+            "lat": 35.763333,
+            "lng": 51.965278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دماوند",
+          "location": {
+            "lat": 35.717778,
+            "lng": 52.065,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رودهن",
+          "location": {
+            "lat": 35.733333,
+            "lng": 51.905833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کیلان",
+          "location": {
+            "lat": 35.550278,
+            "lng": 52.168056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.717778,
+        "lng": 52.065,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "رباط‌کریم",
       "cities": [
-        "پرند",
-        "رباط‌کریم",
-        "نصیرشهر"
-      ]
+        {
+          "name": "پرند",
+          "location": {
+            "lat": 35.478333,
+            "lng": 50.947222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رباط‌کریم",
+          "location": {
+            "lat": 35.484722,
+            "lng": 51.082778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نصیرشهر",
+          "location": {
+            "lat": 35.491944,
+            "lng": 51.139722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.484722,
+        "lng": 51.082778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ری",
       "cities": [
-        "باقرشهر",
-        "حسن‌آباد",
-        "ری",
-        "قلعه‌نو",
-        "قیام‌دشت",
-        "کهریزک"
-      ]
+        {
+          "name": "باقرشهر",
+          "location": {
+            "lat": 35.5325,
+            "lng": 51.4025,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "حسن‌آباد",
+          "location": {
+            "lat": 35.366517,
+            "lng": 51.237575,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ری",
+          "location": {
+            "lat": 35.594735,
+            "lng": 51.442178,
+            "source": "nominatim"
+          },
+          "places": [
+            {
+              "name": "چشمه علی",
+              "location": {
+                "lat": 35.6,
+                "lng": 51.44,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دژ رشکان",
+              "location": {
+                "lat": 35.595,
+                "lng": 51.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار ری",
+              "location": {
+                "lat": 35.6,
+                "lng": 51.435,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "قلعه‌نو",
+          "location": {
+            "lat": 35.527192,
+            "lng": 51.44858,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قیام‌دشت",
+          "location": {
+            "lat": 35.523756,
+            "lng": 51.651003,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کهریزک",
+          "location": {
+            "lat": 35.5175,
+            "lng": 51.359722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.594735,
+        "lng": 51.442178,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "شمیرانات",
       "cities": [
-        "اوشان",
-        "تجریش",
-        "شمشک",
-        "فشم",
-        "لواسان",
-        "میگون"
-      ]
+        {
+          "name": "اوشان",
+          "location": {
+            "lat": 35.791122,
+            "lng": 51.451231,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "تجریش",
+          "location": {
+            "lat": 35.804937,
+            "lng": 51.440963,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شمشک",
+          "location": {
+            "lat": 36.011362,
+            "lng": 51.490936,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فشم",
+          "location": {
+            "lat": 35.930556,
+            "lng": 51.526667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لواسان",
+          "location": {
+            "lat": 35.821667,
+            "lng": 51.644444,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "دریاچه سد لتیان",
+              "location": {
+                "lat": 35.79,
+                "lng": 51.68,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "میگون",
+          "location": {
+            "lat": 35.953618,
+            "lng": 51.49081,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.928929,
+        "lng": 51.611249,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "شهریار",
       "cities": [
-        "اندیشه",
-        "باغستان",
-        "شاهدشهر",
-        "شهریار",
-        "صباشهر",
-        "فردوسیه",
-        "وحیدیه"
-      ]
+        {
+          "name": "اندیشه",
+          "location": {
+            "lat": 35.706944,
+            "lng": 51.024722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "باغستان",
+          "location": {
+            "lat": 35.633889,
+            "lng": 51.137222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شاهدشهر",
+          "location": {
+            "lat": 35.571389,
+            "lng": 51.083889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شهریار",
+          "location": {
+            "lat": 35.659722,
+            "lng": 51.059167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "صباشهر",
+          "location": {
+            "lat": 35.583333,
+            "lng": 51.116667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فردوسیه",
+          "location": {
+            "lat": 35.6,
+            "lng": 51.066667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "وحیدیه",
+          "location": {
+            "lat": 35.605278,
+            "lng": 51.026111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.659722,
+        "lng": 51.059167,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فیروزکوه",
       "cities": [
-        "ارجمند",
-        "فیروزکوه"
-      ]
+        {
+          "name": "ارجمند",
+          "location": {
+            "lat": 35.815,
+            "lng": 52.511667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فیروزکوه",
+          "location": {
+            "lat": 35.756944,
+            "lng": 52.773889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.756944,
+        "lng": 52.773889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "قدس",
       "cities": [
-        "قدس"
-      ]
+        {
+          "name": "قدس",
+          "location": {
+            "lat": 35.721389,
+            "lng": 51.108889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.721389,
+        "lng": 51.108889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "قرچک",
       "cities": [
-        "قرچک"
-      ]
+        {
+          "name": "قرچک",
+          "location": {
+            "lat": 35.439444,
+            "lng": 51.568889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.439444,
+        "lng": 51.568889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ملارد",
       "cities": [
-        "صفادشت",
-        "ملارد"
-      ]
+        {
+          "name": "صفادشت",
+          "location": {
+            "lat": 35.688333,
+            "lng": 50.839722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ملارد",
+          "location": {
+            "lat": 35.665833,
+            "lng": 50.976667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.665833,
+        "lng": 50.976667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ورامین",
       "cities": [
-        "جوادآباد",
-        "ورامین"
-      ]
+        {
+          "name": "جوادآباد",
+          "location": {
+            "lat": 35.209444,
+            "lng": 51.675278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ورامین",
+          "location": {
+            "lat": 35.324167,
+            "lng": 51.645833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.324167,
+        "lng": 51.645833,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 35.51211,
+    "lng": 51.800534,
+    "source": "nominatim",
+    "bbox": [
+      34.8652387,
+      36.1016137,
+      50.3327898,
+      53.1569031
+    ]
+  },
+  "places": []
 }

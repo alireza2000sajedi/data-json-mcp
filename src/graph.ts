@@ -6,11 +6,10 @@ import type { NotesState, NodeType, NodeRecord, DiscoveryTask } from "./types.js
 /** Fixed required-discovery mapping per node type. */
 export const REQUIRED_DISCOVERY: Record<NodeType, string[]> = {
   province: ["counties", "provincePlaces"],
-  // Villages and camping sites are out of pipeline scope.
-  county: ["districts", "ruralDistricts", "cities", "countyPlaces"],
+  county: ["districts", "ruralDistricts", "cities", "villages", "countyPlaces"],
   district: ["ruralDistricts", "cities", "places"],
   ruralDistrict: ["places"],
-  city: ["places"],
+  city: ["places", "villages"],
   village: ["places"],
   place: [],
   camping: [],
@@ -69,10 +68,11 @@ export function nodeTypeOrder(t: NodeType): number {
  * AFTER all administrative children (cities, villages) are fully processed.
  *
  *   province → province places → counties
- *   county   → districts → ruralDistricts → cities → county places
+ *   county   → districts → ruralDistricts → cities → villages → county places
  *   district → ruralDistricts → cities → places
  *   ruralDistrict → places
- *   city     → city places
+ *   city     → city places → villages
+ *   village  → village places
  */
 function siblingPriority(parentType: NodeType | null, childType: NodeType): number {
   let order: Partial<Record<NodeType, number>>;
@@ -81,7 +81,7 @@ function siblingPriority(parentType: NodeType | null, childType: NodeType): numb
       order = { place: 0, county: 1 };
       break;
     case "county":
-      order = { district: 0, ruralDistrict: 1, city: 2, place: 3 };
+      order = { district: 0, ruralDistrict: 1, city: 2, village: 3, place: 4 };
       break;
     case "district":
       order = { ruralDistrict: 0, city: 1, place: 2 };
@@ -90,7 +90,7 @@ function siblingPriority(parentType: NodeType | null, childType: NodeType): numb
       order = { place: 0 };
       break;
     case "city":
-      order = { place: 0 };
+      order = { place: 0, village: 1 };
       break;
     case "village":
       order = { place: 0 };

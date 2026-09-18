@@ -5,86 +5,945 @@
     {
       "name": "ابرکوه",
       "cities": [
-        "ابرکوه",
-        "مهردشت"
-      ]
+        {
+          "name": "ابرکوه",
+          "location": {
+            "lat": 31.128889,
+            "lng": 53.2825,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "مسجد جامع ابرکوه",
+              "location": {
+                "lat": 31.13,
+                "lng": 53.28,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "گنبد عالی ابرکوه",
+              "location": {
+                "lat": 31.13,
+                "lng": 53.282,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سرو ابرکوه",
+              "location": {
+                "lat": 31.128,
+                "lng": 53.279,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "یخچال ابرکوه",
+              "location": {
+                "lat": 31.132,
+                "lng": 53.281,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "مهردشت",
+          "location": {
+            "lat": 31.022778,
+            "lng": 53.356389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.128889,
+        "lng": 53.2825,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "اردکان",
       "cities": [
-        "احمدآباد",
-        "اردکان",
-        "خرانق",
-        "عقدا"
-      ]
+        {
+          "name": "احمدآباد",
+          "location": {
+            "lat": 32.359167,
+            "lng": 53.9925,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "اردکان",
+          "location": {
+            "lat": 32.309444,
+            "lng": 54.018611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "زیارتگاه چک‌چک",
+              "location": {
+                "lat": 32.336,
+                "lng": 54.185,
+                "source": "web-fix"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه خرمیدشت",
+              "location": {
+                "lat": 32.3,
+                "lng": 54,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آب‌انبار حاجی‌ولی اردکان",
+              "location": {
+                "lat": 32.31,
+                "lng": 54.02,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار سنتی اردکان",
+              "location": {
+                "lat": 32.31,
+                "lng": 54.018,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه تقدیری اردکان",
+              "location": {
+                "lat": 32.309,
+                "lng": 54.019,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "خرانق",
+              "location": {
+                "lat": 32.345331,
+                "lng": 54.667461,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "قلعه خرانق",
+                  "location": {
+                    "lat": 32.35,
+                    "lng": 54.65,
+                    "source": "web"
+                  },
+                  "kind": "heritage"
+                },
+                {
+                  "name": "مناره خرانق",
+                  "location": {
+                    "lat": 32.351,
+                    "lng": 54.651,
+                    "source": "web"
+                  },
+                  "kind": "heritage"
+                },
+                {
+                  "name": "کاروانسرای خرانق",
+                  "location": {
+                    "lat": 32.349,
+                    "lng": 54.649,
+                    "source": "web"
+                  },
+                  "kind": "heritage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "عقدا",
+          "location": {
+            "lat": 32.440833,
+            "lng": 53.629722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.309444,
+        "lng": 54.018611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "اشکذر",
       "cities": [
-        "اشکذر",
-        "خضرآباد",
-        "مجومرد"
-      ]
+        {
+          "name": "اشکذر",
+          "location": {
+            "lat": 32,
+            "lng": 54.204444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خضرآباد",
+          "location": {
+            "lat": 31.865833,
+            "lng": 53.952778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مجومرد",
+          "location": {
+            "lat": 32.023734,
+            "lng": 54.198849,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32,
+        "lng": 54.204444,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بافق",
       "cities": [
-        "بافق"
-      ]
+        {
+          "name": "بافق",
+          "location": {
+            "lat": 31.605278,
+            "lng": 55.402778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.605278,
+        "lng": 55.402778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بهاباد",
       "cities": [
-        "بهاباد"
-      ]
+        {
+          "name": "بهاباد",
+          "location": {
+            "lat": 31.872778,
+            "lng": 56.023611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.872778,
+        "lng": 56.023611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "تفت",
       "cities": [
-        "بخ",
-        "تفت",
-        "نیر"
-      ]
+        {
+          "name": "بخ",
+          "location": {
+            "lat": 31.30744,
+            "lng": 54.085772,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "تفت",
+          "location": {
+            "lat": 31.743889,
+            "lng": 54.202778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "باغ علی‌نقی‌خان تفت",
+              "location": {
+                "lat": 31.75,
+                "lng": 54.21,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد شاه ولی تفت",
+              "location": {
+                "lat": 31.748,
+                "lng": 54.205,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "نیر",
+          "location": {
+            "lat": 31.483889,
+            "lng": 54.1275,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.743889,
+        "lng": 54.202778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خاتم",
       "cities": [
-        "هرات"
-      ]
+        {
+          "name": "هرات",
+          "location": {
+            "lat": 30.05859,
+            "lng": 54.367402,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 29.920953,
+        "lng": 54.32925,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "زارچ",
       "cities": [
-        "زارچ"
-      ]
+        {
+          "name": "زارچ",
+          "location": {
+            "lat": 31.991111,
+            "lng": 54.231944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.991111,
+        "lng": 54.231944,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مروست",
       "cities": [
-        "مروست"
-      ]
+        {
+          "name": "مروست",
+          "location": {
+            "lat": 30.478333,
+            "lng": 54.211667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.478333,
+        "lng": 54.211667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مهریز",
       "cities": [
-        "مهریز"
-      ]
+        {
+          "name": "مهریز",
+          "location": {
+            "lat": 31.584195,
+            "lng": 54.444566,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "شهر تاریخی مهریز",
+              "location": {
+                "lat": 31.8964581,
+                "lng": 54.3682346,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار دره‌گاهان",
+              "location": {
+                "lat": 31.55,
+                "lng": 54.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه سریزد",
+              "location": {
+                "lat": 31.6,
+                "lng": 54.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای زین الدین",
+              "location": {
+                "lat": 31.5,
+                "lng": 54.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ پهلوان‌پور",
+              "location": {
+                "lat": 31.58,
+                "lng": 54.43,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه مهریز",
+              "location": {
+                "lat": 31.591,
+                "lng": 54.431,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار نباتی مهریز",
+              "location": {
+                "lat": 31.5,
+                "lng": 54.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای زین‌الدین",
+              "location": {
+                "lat": 31.37,
+                "lng": 54.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.584195,
+        "lng": 54.444566,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "میبد",
       "cities": [
-        "بفروئیه",
-        "میبد",
-        "ندوشن"
-      ]
+        {
+          "name": "بفروئیه",
+          "location": {
+            "lat": 32.276667,
+            "lng": 53.994167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "میبد",
+          "location": {
+            "lat": 32.25,
+            "lng": 54.016667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "نارین قلعه میبد",
+              "location": {
+                "lat": 32.226465,
+                "lng": 54.0144699,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج کبوتر میبد",
+              "location": {
+                "lat": 32.25,
+                "lng": 54.02,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای میبد",
+              "location": {
+                "lat": 32.25,
+                "lng": 54.02,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "یخچال میبد",
+              "location": {
+                "lat": 32.25,
+                "lng": 54.01,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج کبوترخانه میبد",
+              "location": {
+                "lat": 32.249,
+                "lng": 54.017,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد جامع میبد",
+              "location": {
+                "lat": 32.25,
+                "lng": 54.019,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه زیلو میبد",
+              "location": {
+                "lat": 32.251,
+                "lng": 54.02,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دروازه شهر میبد",
+              "location": {
+                "lat": 32.246,
+                "lng": 54.016,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "ندوشن",
+          "location": {
+            "lat": 32.03,
+            "lng": 53.55,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.25,
+        "lng": 54.016667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "یزد",
       "cities": [
-        "حمیدیا",
-        "شاهدیه",
-        "یزد"
-      ]
+        {
+          "name": "حمیدیا",
+          "location": {
+            "lat": 31.8225,
+            "lng": 54.392778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شاهدیه",
+          "location": {
+            "lat": 31.941389,
+            "lng": 54.282778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "یزد",
+          "location": {
+            "lat": 31.897222,
+            "lng": 54.3675,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "مسجد جامع یزد",
+              "location": {
+                "lat": 31.9003162,
+                "lng": 54.3696111,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آتشکده یزد",
+              "location": {
+                "lat": 31.8997574,
+                "lng": 54.3903179,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دخمه زرتشتیان",
+              "location": {
+                "lat": 31.8229574,
+                "lng": 54.3548512,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار خان یزد",
+              "location": {
+                "lat": 31.8964757,
+                "lng": 54.36775,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "زندان اسکندر",
+              "location": {
+                "lat": 31.9051816,
+                "lng": 54.3707261,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "میدان امیرچخماق",
+              "location": {
+                "lat": 31.893,
+                "lng": 54.369,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ دولت‌آباد",
+              "location": {
+                "lat": 31.902,
+                "lng": 54.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آب‌انبار شش بادگیری",
+              "location": {
+                "lat": 31.897,
+                "lng": 54.37,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه لاری‌ها",
+              "location": {
+                "lat": 31.9,
+                "lng": 54.37,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه رسولیان",
+              "location": {
+                "lat": 31.9,
+                "lng": 54.37,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ خان",
+              "location": {
+                "lat": 31.9,
+                "lng": 54.36,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار زرگرها",
+              "location": {
+                "lat": 31.9,
+                "lng": 54.37,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد ریگ",
+              "location": {
+                "lat": 31.89,
+                "lng": 54.36,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آب‌انبار حاجی قنبر",
+              "location": {
+                "lat": 31.9,
+                "lng": 54.37,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد جامع فهرج",
+              "location": {
+                "lat": 31.8,
+                "lng": 54.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تکیه امیرچخماق",
+              "location": {
+                "lat": 31.8935,
+                "lng": 54.3695,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار یزد",
+              "location": {
+                "lat": 31.896,
+                "lng": 54.367,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه علم",
+              "location": {
+                "lat": 31.897,
+                "lng": 54.369,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه آب یزد",
+              "location": {
+                "lat": 31.9,
+                "lng": 54.365,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه آینه و روشنایی",
+              "location": {
+                "lat": 31.905,
+                "lng": 54.355,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آتشکده بهرام",
+              "location": {
+                "lat": 31.904,
+                "lng": 54.359,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "گنبد سبز یزد",
+              "location": {
+                "lat": 31.903,
+                "lng": 54.373,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد فرط",
+              "location": {
+                "lat": 31.904,
+                "lng": 54.375,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مقبره دوازده امام",
+              "location": {
+                "lat": 31.9035,
+                "lng": 54.374,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه ملک‌التجار",
+              "location": {
+                "lat": 31.8965,
+                "lng": 54.3685,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام خان یزد",
+              "location": {
+                "lat": 31.8955,
+                "lng": 54.3675,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای لب خندق",
+              "location": {
+                "lat": 31.89,
+                "lng": 54.36,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج و باروی یزد",
+              "location": {
+                "lat": 31.894,
+                "lng": 54.365,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه کلاهدوزها",
+              "location": {
+                "lat": 31.8975,
+                "lng": 54.37,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "وزیر باغ یزد",
+              "location": {
+                "lat": 31.91,
+                "lng": 54.348,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.897222,
+        "lng": 54.3675,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 32.040616,
+    "lng": 54.665719,
+    "source": "nominatim",
+    "bbox": [
+      29.6004018,
+      33.3824666,
+      52.8004999,
+      56.6545639
+    ]
+  },
+  "places": []
 }

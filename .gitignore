@@ -1,4 +1,7 @@
 node_modules/
 dist/
+tmp-ref/
+tmp/
 *.log
+*.zip
 .DS_Store

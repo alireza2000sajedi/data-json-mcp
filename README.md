@@ -17,12 +17,12 @@ Agent / LLM
 - ✅ اعتبارسنجی JSON Schema Draft 2020-12 با Ajv + دروازهٔ کیفیت (Quality Gate)
 - ✅ پروف اجرا: `npm run verify` (قرارداد پروژه) + `npm run e2e` (۴۵ assertion روی سرویس واقعی)
 
-کار به‌صورت **پلکانی و مرحله‌ای** اجرا می‌شود: هر اجرا فقط یک Scope دارد و پس از آن Agent متوقف می‌شود
-(اول فقط خودِ استان → سپس یک شهرستان/شهر/روستا/POI به انتخاب کاربر). هر Scope یک **id اختصاصی و
-پایدار** دارد (`province-30`، `county-30-5`، `city-30-12`، `village-30-v2`، `place-30-3`) و پیشرفت بین
-اجراها در `notes.state.json` ذخیره و Resume می‌شود.
+کار دو مسیر دارد: **مسیر اصلی** `01` → `07` (کل استان یک‌سره، فقط `province_id`، بدون Scope) → `05`؛
+و مسیر اختیاری `02` برای یک شهرستان/شهر/روستای تکی. واحدها فقط از `input/{n}.json`.
+هر واحد id پایدار دارد (`province-30`، `county-30-5`، …) و پیشرفت در `notes.state.json` ذخیره می‌شود.
 
-قرارداد کامل اجرا در **`prompts/01-start-province.txt`** است؛ چهار Prompt دیگر فقط مرحله‌های بعدی را اجرا می‌کنند.
+قرارداد مادر: **`prompts/01-start-province.txt`** · اجرای کامل استان: **`prompts/07-full-province-places.txt`**.
+کیفیت متن و media از همان save اول الزامی است (پاس repair / rewrite / media-gap جدا وجود ندارد).
 گزارش تصمیم‌ها، قواعد و وضعیت اجرا: [`docs/PROJECT_REPORT.md`](docs/PROJECT_REPORT.md).
 
 ---
@@ -35,9 +35,9 @@ data-json-mcp/
 ├── tsconfig.json
 ├── START_HERE.md             ← نقطهٔ شروع کاربر
 ├── mcp-client.mjs            ← کلاینت CLI برای فراخوانی Toolها از شل
-├── prompts/                  ← دنبالهٔ ۵ پرامپت مرحله‌ای (قرارداد مادر: 01)
-│   ├── 01-start-province.txt · 02-run-scope.txt · 03-resume.txt
-│   └── 04-repair-entity.txt · 05-final-audit-minify.txt
+├── prompts/                  ← دنبالهٔ پرامپت مرحله‌ای (قرارداد مادر: 01)
+│   ├── 01-start-province.txt · 02-run-scope.txt
+│   └── 07-full-province-places.txt · 05-final-audit-minify.txt
 ├── docs/PROJECT_REPORT.md    ← گزارش جامع پروژه، تصمیم‌ها و وضعیت اجرا
 ├── dataset/                  ← Source of Truth (اسکیماها و قانون‌نامه، read-only)
 │   ├── README.md             ← قانون‌نامهٔ کامل محتوا و مالکیت داده

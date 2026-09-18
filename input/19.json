@@ -5,24 +5,287 @@
     {
       "name": "جعفرآباد",
       "cities": [
-        "جعفریه",
-        "قاهان"
-      ]
+        {
+          "name": "جعفریه",
+          "location": {
+            "lat": 34.789444,
+            "lng": 50.574722,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "دریاچه مره",
+              "location": {
+                "lat": 34.8,
+                "lng": 50.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "قاهان",
+          "location": {
+            "lat": 34.724444,
+            "lng": 50.263333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.757592,
+        "lng": 50.24899,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "قم",
       "cities": [
-        "دستجرد",
-        "سلفچگان",
-        "قم",
-        "قنوات"
-      ]
+        {
+          "name": "دستجرد",
+          "location": {
+            "lat": 34.551944,
+            "lng": 50.248333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سلفچگان",
+          "location": {
+            "lat": 34.483333,
+            "lng": 50.45,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کاروانسرای پاسنگان",
+              "location": {
+                "lat": 34.48,
+                "lng": 50.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "قم",
+          "location": {
+            "lat": 34.64,
+            "lng": 50.876389,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "حرم فاطمه معصومه",
+              "location": {
+                "lat": 34.6418552,
+                "lng": 50.8786556,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد جمکران",
+              "location": {
+                "lat": 34.5841359,
+                "lng": 50.9145739,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار کهنه قم",
+              "location": {
+                "lat": 34.6420185,
+                "lng": 50.892155,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه حوض سلطان",
+              "location": {
+                "lat": 34.99737,
+                "lng": 50.9396274,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه تاریخ قم",
+              "location": {
+                "lat": 34.64,
+                "lng": 50.88,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه آستانه مقدسه قم",
+              "location": {
+                "lat": 34.641,
+                "lng": 50.879,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد امام حسن عسکری",
+              "location": {
+                "lat": 34.64,
+                "lng": 50.88,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "گنبد سبز قم",
+              "location": {
+                "lat": 34.64,
+                "lng": 50.87,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار ویستون قم",
+              "location": {
+                "lat": 34.5,
+                "lng": 50.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل تاریخی قم",
+              "location": {
+                "lat": 34.64,
+                "lng": 50.88,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه زند قم",
+              "location": {
+                "lat": 34.64,
+                "lng": 50.87,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ گنبد سبز",
+              "location": {
+                "lat": 34.64,
+                "lng": 50.87,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد اعظم قم",
+              "location": {
+                "lat": 34.642,
+                "lng": 50.878,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه قمرود",
+              "location": {
+                "lat": 34.7,
+                "lng": 50.84,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "قنوات",
+          "location": {
+            "lat": 34.614167,
+            "lng": 51.028611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کاروانسرای دیر گچین",
+              "location": {
+                "lat": 35,
+                "lng": 51.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.64,
+        "lng": 50.876389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کهک",
       "cities": [
-        "کهک"
-      ]
+        {
+          "name": "کهک",
+          "location": {
+            "lat": 34.393889,
+            "lng": 50.864167,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "چشمه معصومه کهک",
+              "location": {
+                "lat": 34.4,
+                "lng": 50.85,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.393889,
+        "lng": 50.864167,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 34.719192,
+    "lng": 51.012284,
+    "source": "nominatim",
+    "bbox": [
+      34.1581799,
+      35.2186113,
+      50.0862046,
+      51.9649046
+    ]
+  },
+  "places": []
 }

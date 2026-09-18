@@ -15,27 +15,25 @@
 بدون آلودگی Parent/Child** تولید کند. MCP جای Agent یا موتور جستجو را نمی‌گیرد؛ فقط Tool و Resource ساخت‌یافته و
 یک **دروازهٔ کیفیت غیرقابل‌دور‌زدن** ارائه می‌دهد. هیچ HTTP، UI، دیتابیس، crawler یا shell آزادی وجود ندارد.
 
-## ۲) معماری اجرای پلکانی
+## ۲) معماری اجرا
 
-هر اجرا دقیقاً یک Scope دارد:
+دو مسیر مجاز است:
 
-1. **مرحلهٔ استان**: فقط Entity خودِ استان + مکان‌های سطح استان.
-2. **توقف**: `awaitingScopeSelection: true` و پرسش «کدام شهرستان/شهر/روستا؟».
-3. **Scope بعدی**: با `set_active_scope` قفل می‌شود و DFS/DoD فقط همان زیردرخت را می‌سنجند.
+1. **مسیر اصلی (بدون Scope):** `01` (Province root) → `07` کل استان یک‌سره از `input` (County/City/Village/Place) → `05`. فقط `province_id`.
+2. **مسیر اختیاری (Scope تکی):** بعد از `01`، با `02` یک شهرستان/شهر/روستا (`scope_id`).
 
-state در `output/{provinceId}/notes.state.json` نگه داشته می‌شود و Resume کاملاً از روی همین state انجام می‌شود.
+state در `output/{provinceId}/notes.state.json` نگه داشته می‌شود.
 
-## ۳) دنبالهٔ پرامپت‌ها (۵ فایل، ادغام‌نشده)
+## ۳) دنبالهٔ پرامپت‌ها
 
 | فایل | نقش |
 |---|---|
-| `prompts/01-start-province.txt` | **قرارداد مادر**: bootstrap، ورودی، ماتریس فیلدها، رسانه، منابع، Taxonomy، ترتیب فراخوانی MCP |
-| `prompts/02-run-scope.txt` | اجرای یک Scope مشخص |
-| `prompts/03-resume.txt` | ادامهٔ کار نیمه‌تمام از روی state |
-| `prompts/04-repair-entity.txt` | اصلاح یک Entity مشخص |
-| `prompts/05-final-audit-minify.txt` | ممیزی نهایی و آماده‌سازی خروجی |
+| `prompts/01-start-province.txt` | **قرارداد مادر**: bootstrap، فیلدها، media، منابع، متن، سلسله‌مراتب |
+| `prompts/07-full-province-places.txt` | **اجرای کامل استان بدون Scope** — فقط از input |
+| `prompts/02-run-scope.txt` | اختیاری: یک Scope تکی |
+| `prompts/05-final-audit-minify.txt` | ممیزی نهایی و minify |
 
-تصمیم: این پنج فایل **ادغام نمی‌شوند**؛ فقط ۰۱ قرارداد کامل را دارد و بقیه به آن ارجاع می‌دهند.
+پاس جدا برای repair / text-rewrite / media-gap / resume **وجود ندارد** — کیفیت از همان save اول در `01`/`07` (یا `02`) الزامی است.
 قرارداد: هیچ پرامپتی نباید id واقعی (`province-30`, `county-30-5`, …) داشته باشد — پرامپت‌ها generic می‌مانند.
 
 ## ۴) قرارداد ورودی
@@ -92,6 +90,7 @@ camping → هزینهٔ کمپ. قیمت هرگز حدس زده نمی‌شود
 - یک image URL نباید بین دو Entity تکرار شود — کنترل سراسری در زمان ثبت کاندید و در زمان ذخیره
   (`MEDIA_GLOBAL_DUPLICATE`).
 - عکس Parent/Child/Sibling برای Entity دیگر قابل استفاده نیست؛ عکس استان باید نمایندهٔ خود استان باشد.
+- **فقط URL:** دانلود یا ذخیرهٔ فایل تصویر روی دیسک ممنوع؛ فقط رشتهٔ HTTPS در Entity.
 - ذخیرهٔ ۰-عکس فقط پس از Coverage کامل منابع Primary مجاز است (`MEDIA_ZERO_WITHOUT_PRIMARY_COVERAGE`)،
   ولی برای **Definition of Done** رسیدن به هدف لازم است.
 - سقف مطلق اعتبارسنجی ۲۰ تصویر است. `mark_node_media_deficit` فقط برای «نبودِ کل دادهٔ Entity» است، نه کمبود عکس.
@@ -183,7 +182,7 @@ Scope بعدی. لحن برند سه دستهٔ `BRAND_VOICE_SUPERLATIVE` / `BRA
 - [x] `check_definition_of_done` → **`complete: true`** با `scopeMode: "province-stage"` و ثبت نتیجه در notes
 - [x] `validate_province` → **`invalid: 0`**
 - [x] `set_active_scope("county-…")` → قفل Scope، رد Node خارج از Scope، شروع DoD جدید با `complete:false`
-- [x] Resume: state از `notes.state.json` بازخوانی می‌شود
+- [x] ادامهٔ کار: state از `notes.state.json` بازخوانی می‌شود (با `02`، بدون پرامپت resume جدا)
 
 نتیجه: `npm run e2e` → **۴۵ assertion سبز**. `npm run verify` → **PASS**. `npx tsc --noEmit` → بدون خطا.
 `node mcp-client.mjs list-tools` → ۲۳ ابزار.

@@ -1,7 +1,7 @@
 # PLANRO — FINAL AUDIT + MINIFY
 
-قبل از این مرحله در صورت نیاز `06-province-text-rewrite.txt` را اجرا کن.
-قرارداد مادر: `01-start-province.txt`.
+آخرین مرحلهٔ استان. قرارداد مادر: `01-start-province.txt`.
+متن و media باید از قبل در `01`/`07` (یا `02` اگر Scope تکی بود) نهایی شده باشند؛ اینجا فقط Audit + بستن شکاف‌های باقی‌مانده + minify.
 
 ### RUN VARIABLES
 ```text
@@ -14,22 +14,27 @@ final_audit=true
 - schema / type / subType
 - Global Taxonomy
 - hierarchy / duplicate id-slug
-- source coverage
-- Visit applicability
+  - Village Parent = County یا City (نه Province تنها)
+  - Place زیر Village نباید نام خود روستا باشد
+- source coverage (۵ Primary)
+- Visit applicability (City/Village vs Place)
 - FAQ ownership (بدون child-FAQ در Parent)
 - Checklist با idهای taxonomy
-- Media: ownership، uniqueness، target (Province=۵، County=۳، City=۳، Place=۴)
-- safety / transport
-- brand voice + نبود OTA در متن کاربرمحور
-- forbidden fields
+- Media: ownership، uniqueness، target
+  - Province=۵ · County=۳ · City=۳ · Village=۲ · Place=۴
+- brand voice + نبود OTA در متن کاربرمحور (§۸ پرامپت ۰۱)
+- forbidden fields (`costs` / `evidence`)
 - فهرست staging در `taxonomy/agent-taxonomy/`
+
+اگر متن ماشینی یا media زیر target دیدی → **همان‌جا** درست کن (نه پرامپت جدا).
 
 ---
 
-## 2) Media Completion (اجباری قبل از minify)
-Entityهای زیر target را به target برسان. TURBO: در target متوقف شو.
+## 2) Media Completion (اگر هنوز gap مانده)
+Entity زیر target را به target برسان. TURBO: در target متوقف شو.
 `record_media_candidate` → `finalize_media` → `save_active_entity`.
-reuse URL ممنوع. deficit فقط وقتی هیچ Entity قابل ذخیره نیست.
+**فقط URL** — دانلود یا ذخیرهٔ باینری تصویر ممنوع.
+reuse URL ممنوع. deficit فقط وقتی هیچ تصویر قابل‌اتکا نیست.
 
 ---
 

@@ -5,86 +5,813 @@
     {
       "name": "بانه",
       "cities": [
-        "آرمرده",
-        "بانه",
-        "بویین سفلی",
-        "کانی‌سور"
-      ]
+        {
+          "name": "آرمرده",
+          "location": {
+            "lat": 35.9325,
+            "lng": 45.796111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بانه",
+          "location": {
+            "lat": 35.9975,
+            "lng": 45.885278,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه بانه",
+              "location": {
+                "lat": 35.997,
+                "lng": 45.885,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "بویین سفلی",
+          "location": {
+            "lat": 35.938611,
+            "lng": 45.936111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کانی‌سور",
+          "location": {
+            "lat": 36.058333,
+            "lng": 45.748056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.9975,
+        "lng": 45.885278,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بیجار",
       "cities": [
-        "بابارشانی",
-        "بیجار",
-        "پیرتاج",
-        "توپ‌آغاج",
-        "یاسوکند"
-      ]
+        {
+          "name": "بابارشانی",
+          "location": {
+            "lat": 35.679444,
+            "lng": 47.798611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بیجار",
+          "location": {
+            "lat": 35.872778,
+            "lng": 47.602778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "عمارت خسروآباد بیجار",
+              "location": {
+                "lat": 35.873,
+                "lng": 47.605,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار بیجار",
+              "location": {
+                "lat": 35.872,
+                "lng": 47.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "پیرتاج",
+          "location": {
+            "lat": 35.7714,
+            "lng": 48.1208,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "توپ‌آغاج",
+          "location": {
+            "lat": 36.0492,
+            "lng": 47.8247,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "یاسوکند",
+          "location": {
+            "lat": 36.284353,
+            "lng": 47.746568,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.872778,
+        "lng": 47.602778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دهگلان",
       "cities": [
-        "بلبان‌آباد",
-        "دهگلان"
-      ]
+        {
+          "name": "بلبان‌آباد",
+          "location": {
+            "lat": 35.140556,
+            "lng": 47.321111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دهگلان",
+          "location": {
+            "lat": 35.277778,
+            "lng": 47.418333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.277778,
+        "lng": 47.418333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دیواندره",
       "cities": [
-        "دیواندره",
-        "زرینه",
-        "هزارکانیان"
-      ]
+        {
+          "name": "دیواندره",
+          "location": {
+            "lat": 35.913889,
+            "lng": 47.023889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار کرفتو",
+              "location": {
+                "lat": 36.15,
+                "lng": 47,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "زرینه",
+          "location": {
+            "lat": 36.0603,
+            "lng": 47.1508,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هزارکانیان",
+          "location": {
+            "lat": 35.768007,
+            "lng": 46.81193,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.913889,
+        "lng": 47.023889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سروآباد",
       "cities": [
-        "سروآباد",
-        "هورامان تخت"
-      ]
+        {
+          "name": "سروآباد",
+          "location": {
+            "lat": 35.3125,
+            "lng": 46.366667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار بل",
+              "location": {
+                "lat": 35.3,
+                "lng": 46.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "اورامان",
+          "places": [],
+          "location": {
+            "lat": 35.0525189,
+            "lng": 46.3492663,
+            "source": "nominatim"
+          },
+          "villages": [
+            {
+              "name": "هورامان تخت",
+              "location": {
+                "lat": 35.253068,
+                "lng": 46.263714,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "چشمه بل",
+                  "location": {
+                    "lat": 35.2,
+                    "lng": 46.3,
+                    "source": "web"
+                  },
+                  "kind": "heritage"
+                }
+              ]
+            },
+            {
+              "name": "سلین",
+              "location": {
+                "lat": 35.22,
+                "lng": 46.22,
+                "source": "web"
+              },
+              "places": [
+                {
+                  "name": "بافت پلکانی سلین",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 35.22,
+                    "lng": 46.22,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "location": {
+        "lat": 35.3125,
+        "lng": 46.366667,
+        "source": "seat-city"
+      },
+      "places": [
+        {
+          "name": "اورامانات",
+          "location": {
+            "lat": 35.0525189,
+            "lng": 46.3492663,
+            "source": "nominatim"
+          },
+          "kind": "heritage"
+        }
+      ],
+      "villages": []
     },
     {
       "name": "سقز",
       "cities": [
-        "سقز",
-        "سنته",
-        "صاحب"
-      ]
+        {
+          "name": "سقز",
+          "location": {
+            "lat": 36.25,
+            "lng": 46.273611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه زیویه",
+              "location": {
+                "lat": 36.25,
+                "lng": 46.25,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار سقز",
+              "location": {
+                "lat": 36.24,
+                "lng": 46.27,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تپه زیویه",
+              "location": {
+                "lat": 36.25,
+                "lng": 46.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی سقز",
+              "location": {
+                "lat": 36.245,
+                "lng": 46.275,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه سقز",
+              "location": {
+                "lat": 36.246,
+                "lng": 46.274,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سنته",
+          "location": {
+            "lat": 36.1711,
+            "lng": 46.5534,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "صاحب",
+          "location": {
+            "lat": 36.2025,
+            "lng": 46.460833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.25,
+        "lng": 46.273611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سنندج",
       "cities": [
-        "حسین‌آباد",
-        "سنندج",
-        "شویشه",
-        "شهرک بهاران"
-      ]
+        {
+          "name": "حسین‌آباد",
+          "location": {
+            "lat": 35.7422,
+            "lng": 47.5257,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سنندج",
+          "location": {
+            "lat": 35.309722,
+            "lng": 46.998889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار سنندج",
+              "location": {
+                "lat": 35.3159574,
+                "lng": 46.9990225,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت آصف",
+              "location": {
+                "lat": 35.3191267,
+                "lng": 46.996274,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه کرد سنندج",
+              "location": {
+                "lat": 35.31,
+                "lng": 46.99,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت وکیل سنندج",
+              "location": {
+                "lat": 35.31,
+                "lng": 46.99,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد دارالاحسان",
+              "location": {
+                "lat": 35.31,
+                "lng": 46.99,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه سنندج",
+              "location": {
+                "lat": 35.31,
+                "lng": 46.99,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت سالار سعید",
+              "location": {
+                "lat": 35.315,
+                "lng": 46.998,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام خان سنندج",
+              "location": {
+                "lat": 35.3125,
+                "lng": 46.9978,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل قشلاق",
+              "location": {
+                "lat": 35.32,
+                "lng": 47.02,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده پیرعمر",
+              "location": {
+                "lat": 35.31,
+                "lng": 46.99,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "نگل",
+              "location": {
+                "lat": 35.4,
+                "lng": 46.7,
+                "source": "web"
+              },
+              "places": [
+                {
+                  "name": "قرآن تاریخی نگل",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 35.4,
+                    "lng": 46.7,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "مسجد نگل",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 35.401,
+                    "lng": 46.701,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "شویشه",
+          "location": {
+            "lat": 35.356667,
+            "lng": 46.677778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شهرک بهاران",
+          "location": {
+            "lat": 35.266474,
+            "lng": 47.006259,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.309722,
+        "lng": 46.998889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "قروه",
       "cities": [
-        "دزج",
-        "دلبران",
-        "سریش‌آباد",
-        "قروه",
-        "مالوجه"
-      ]
+        {
+          "name": "دزج",
+          "location": {
+            "lat": 35.063611,
+            "lng": 47.966111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دلبران",
+          "location": {
+            "lat": 35.245833,
+            "lng": 47.985833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سریش‌آباد",
+          "location": {
+            "lat": 35.25,
+            "lng": 47.778056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قروه",
+          "location": {
+            "lat": 35.166389,
+            "lng": 47.804444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مالوجه",
+          "location": {
+            "lat": 35.3027,
+            "lng": 47.9749,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.166389,
+        "lng": 47.804444,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کامیاران",
       "cities": [
-        "کامیاران",
-        "موچش"
-      ]
+        {
+          "name": "کامیاران",
+          "location": {
+            "lat": 34.795278,
+            "lng": 46.936944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": [
+            {
+              "name": "پالنگان",
+              "location": {
+                "lat": 35.06759,
+                "lng": 46.6041925,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "قلعه پالنگان",
+                  "location": {
+                    "lat": 35.07,
+                    "lng": 46.6,
+                    "source": "web"
+                  },
+                  "kind": "heritage"
+                },
+                {
+                  "name": "رودخانه تنگی‌ور پالنگان",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 35.07,
+                    "lng": 46.6,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "موچش",
+          "location": {
+            "lat": 35.055833,
+            "lng": 47.151389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.795278,
+        "lng": 46.936944,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مریوان",
       "cities": [
-        "برده رشه",
-        "چناره",
-        "کانی‌دینار",
-        "مریوان"
-      ]
+        {
+          "name": "برده رشه",
+          "location": {
+            "lat": 35.731885,
+            "lng": 46.342473,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "چناره",
+          "location": {
+            "lat": 35.633333,
+            "lng": 46.305278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کانی‌دینار",
+          "location": {
+            "lat": 35.461944,
+            "lng": 46.211389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مریوان",
+          "location": {
+            "lat": 35.526944,
+            "lng": 46.176111,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "دریاچه زریوار",
+              "location": {
+                "lat": 35.5458452,
+                "lng": 46.1289549,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار دره‌کی",
+              "location": {
+                "lat": 35.5,
+                "lng": 46.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تالاب زریوار",
+              "location": {
+                "lat": 35.53,
+                "lng": 46.13,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار گویله",
+              "location": {
+                "lat": 35.55,
+                "lng": 46.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه سد گاران",
+              "location": {
+                "lat": 35.6,
+                "lng": 46.25,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.526944,
+        "lng": 46.176111,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 35.672781,
+    "lng": 47.012798,
+    "source": "nominatim",
+    "bbox": [
+      34.7365695,
+      36.4596013,
+      45.5576542,
+      48.2901766
+    ]
+  },
+  "places": []
 }

@@ -5,144 +5,1316 @@
     {
       "name": "آستارا",
       "cities": [
-        "آستارا",
-        "لوندویل"
-      ]
+        {
+          "name": "آستارا",
+          "location": {
+            "lat": 38.430833,
+            "lng": 48.87,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار لاتون",
+              "location": {
+                "lat": 38.3,
+                "lng": 48.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار آستارا",
+              "location": {
+                "lat": 38.43,
+                "lng": 48.87,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار ساحلی آستارا",
+              "location": {
+                "lat": 38.425,
+                "lng": 48.87,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "لوندویل",
+          "location": {
+            "lat": 38.308889,
+            "lng": 48.870833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 38.430833,
+        "lng": 48.87,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "آستانه اشرفیه",
       "cities": [
-        "آستانه اشرفیه",
-        "کیاشهر"
-      ]
+        {
+          "name": "آستانه اشرفیه",
+          "location": {
+            "lat": 37.263056,
+            "lng": 49.943333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تالاب امیرکلایه",
+              "location": {
+                "lat": 37.3,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل تاریخی کیسم",
+              "location": {
+                "lat": 37.26,
+                "lng": 49.94,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بقعه آقا سید جلال‌الدین اشرف",
+              "location": {
+                "lat": 37.263,
+                "lng": 49.944,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "کیاشهر",
+          "location": {
+            "lat": 37.276005,
+            "lng": 49.936725,
+            "source": "nominatim"
+          },
+          "places": [
+            {
+              "name": "تالاب کیاشهر",
+              "location": {
+                "lat": 37.42,
+                "lng": 49.95,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.263056,
+        "lng": 49.943333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "املش",
       "cities": [
-        "املش",
-        "رانکوه"
-      ]
+        {
+          "name": "املش",
+          "location": {
+            "lat": 37.0975,
+            "lng": 50.186389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رانکوه",
+          "location": {
+            "lat": 37.098889,
+            "lng": 50.269444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.0975,
+        "lng": 50.186389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بندر انزلی",
       "cities": [
-        "انزلی"
-      ]
+        {
+          "name": "انزلی",
+          "location": {
+            "lat": 37.469653,
+            "lng": 49.439926,
+            "source": "nominatim"
+          },
+          "places": [
+            {
+              "name": "تالاب انزلی",
+              "location": {
+                "lat": 37.47064,
+                "lng": 49.3493349,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ میان‌پشته انزلی",
+              "location": {
+                "lat": 37.47,
+                "lng": 49.46,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار ماهی انزلی",
+              "location": {
+                "lat": 37.47,
+                "lng": 49.46,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "میدان انزلی",
+              "location": {
+                "lat": 37.47,
+                "lng": 49.46,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موج‌شکن انزلی",
+              "location": {
+                "lat": 37.473,
+                "lng": 49.46,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج ساعت انزلی",
+              "location": {
+                "lat": 37.472,
+                "lng": 49.458,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار سنتی انزلی",
+              "location": {
+                "lat": 37.471,
+                "lng": 49.457,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل غازیان انزلی",
+              "location": {
+                "lat": 37.468,
+                "lng": 49.47,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.556596,
+        "lng": 49.447968,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "تالش",
       "cities": [
-        "اسالم",
-        "تالش",
-        "چوبر",
-        "حویق",
-        "لیسار",
-        "هشتپر تالش"
-      ]
+        {
+          "name": "اسالم",
+          "location": {
+            "lat": 37.730556,
+            "lng": 48.953611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار وزنه سر",
+              "location": {
+                "lat": 37.7,
+                "lng": 48.85,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "تالش",
+          "location": {
+            "lat": 37.791878,
+            "lng": 48.905862,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "چوبر",
+          "location": {
+            "lat": 38.180278,
+            "lng": 48.893333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "حویق",
+          "location": {
+            "lat": 38.1475,
+            "lng": 48.892222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لیسار",
+          "location": {
+            "lat": 37.968333,
+            "lng": 48.898056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هشتپر تالش",
+          "location": {
+            "lat": 37.791878,
+            "lng": 48.905862,
+            "source": "nominatim"
+          },
+          "places": [
+            {
+              "name": "ساحل گیسوم",
+              "location": {
+                "lat": 37.7,
+                "lng": 49,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه لیسار",
+              "location": {
+                "lat": 37.95,
+                "lng": 48.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه سلسال",
+              "location": {
+                "lat": 37.8,
+                "lng": 48.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک جنگلی گیسوم",
+              "location": {
+                "lat": 37.66,
+                "lng": 49.04,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.791878,
+        "lng": 48.905862,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "خمام",
       "cities": [
-        "چوکام",
-        "خمام"
-      ]
+        {
+          "name": "چوکام",
+          "location": {
+            "lat": 37.382527,
+            "lng": 49.622523,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خمام",
+          "location": {
+            "lat": 37.4,
+            "lng": 49.666667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.4,
+        "lng": 49.666667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "رشت",
       "cities": [
-        "پیربازار",
-        "خشکبیجار",
-        "رشت",
-        "سنگر",
-        "کوچصفهان",
-        "لشت نشا",
-        "لولمان"
-      ]
+        {
+          "name": "پیربازار",
+          "location": {
+            "lat": 37.342057,
+            "lng": 49.547164,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خشکبیجار",
+          "location": {
+            "lat": 37.374722,
+            "lng": 49.7575,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رشت",
+          "location": {
+            "lat": 37.276111,
+            "lng": 49.588611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار رشت",
+              "location": {
+                "lat": 37.2659676,
+                "lng": 49.5737139,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "میدان شهرداری رشت",
+              "location": {
+                "lat": 37.279364,
+                "lng": 49.5847035,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه میرزا کوچک خان",
+              "location": {
+                "lat": 37.2598016,
+                "lng": 49.5711445,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ محتشم",
+              "location": {
+                "lat": 37.2674853,
+                "lng": 49.5863226,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه میراث روستایی گیلان",
+              "location": {
+                "lat": 37.1289981,
+                "lng": 49.6479573,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه میرزا کوچک خان",
+              "location": {
+                "lat": 37.28,
+                "lng": 49.58,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت کلاه فرنگی رشت",
+              "location": {
+                "lat": 37.28,
+                "lng": 49.59,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت شهرداری رشت",
+              "location": {
+                "lat": 37.2808,
+                "lng": 49.5855,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کتابخانه ملی رشت",
+              "location": {
+                "lat": 37.281,
+                "lng": 49.585,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه تاریخ رشت",
+              "location": {
+                "lat": 37.279,
+                "lng": 49.587,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار ماهی رشت",
+              "location": {
+                "lat": 37.277,
+                "lng": 49.59,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده هاشم",
+              "location": {
+                "lat": 37.15,
+                "lng": 49.65,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه سقالکسار",
+              "location": {
+                "lat": 37.15,
+                "lng": 49.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه تاریخی ابریشمی رشت",
+              "location": {
+                "lat": 37.2785,
+                "lng": 49.588,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت کولاک رشت",
+              "location": {
+                "lat": 37.2795,
+                "lng": 49.5865,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه گیلان",
+              "location": {
+                "lat": 37.28,
+                "lng": 49.586,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه تاریخ طبیعی رشت",
+              "location": {
+                "lat": 37.281,
+                "lng": 49.584,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سنگر",
+          "location": {
+            "lat": 37.181111,
+            "lng": 49.693889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کوچصفهان",
+          "location": {
+            "lat": 37.278333,
+            "lng": 49.772778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لشت نشا",
+          "location": {
+            "lat": 37.366111,
+            "lng": 49.859444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لولمان",
+          "location": {
+            "lat": 37.2783,
+            "lng": 49.8181,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.276111,
+        "lng": 49.588611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "رضوانشهر",
       "cities": [
-        "پره‌سر",
-        "رضوانشهر"
-      ]
+        {
+          "name": "پره‌سر",
+          "location": {
+            "lat": 37.599444,
+            "lng": 49.073611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار ویسادار",
+              "location": {
+                "lat": 37.55,
+                "lng": 49.1,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "رضوانشهر",
+          "location": {
+            "lat": 32.705556,
+            "lng": 51.103889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 32.705556,
+        "lng": 51.103889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "رودبار",
       "cities": [
-        "بره‌سر",
-        "توتکابن",
-        "جیرنده",
-        "رستم‌آباد",
-        "رودبار",
-        "لوشان",
-        "منجیل"
-      ]
+        {
+          "name": "بره‌سر",
+          "location": {
+            "lat": 36.786667,
+            "lng": 49.800556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "توتکابن",
+          "location": {
+            "lat": 36.8928,
+            "lng": 49.5272,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "جیرنده",
+          "location": {
+            "lat": 36.7,
+            "lng": 49.791667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رستم‌آباد",
+          "location": {
+            "lat": 36.8833,
+            "lng": 49.4833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رودبار",
+          "location": {
+            "lat": 36.805,
+            "lng": 49.408056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لوشان",
+          "location": {
+            "lat": 36.620556,
+            "lng": 49.510556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "منجیل",
+          "location": {
+            "lat": 36.744444,
+            "lng": 49.400833,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "منجیل و سد سفیدرود",
+              "location": {
+                "lat": 36.74,
+                "lng": 49.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.805,
+        "lng": 49.408056,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "رودسر",
       "cities": [
-        "چابکسر",
-        "رحیم‌آباد",
-        "رودسر",
-        "کلاچای",
-        "واجارگاه"
-      ]
+        {
+          "name": "چابکسر",
+          "location": {
+            "lat": 36.973611,
+            "lng": 50.57,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رحیم‌آباد",
+          "location": {
+            "lat": 37.0325,
+            "lng": 50.326389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رودسر",
+          "location": {
+            "lat": 37.1375,
+            "lng": 50.288056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کاخ ناهارخوران رودسر",
+              "location": {
+                "lat": 37.14,
+                "lng": 50.29,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه سماموس",
+              "location": {
+                "lat": 36.9,
+                "lng": 50.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار سنتی رودسر",
+              "location": {
+                "lat": 37.138,
+                "lng": 50.288,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "کلاچای",
+          "location": {
+            "lat": 37.078889,
+            "lng": 50.395278,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "واجارگاه",
+          "location": {
+            "lat": 37.0408,
+            "lng": 50.4086,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.1375,
+        "lng": 50.288056,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سیاهکل",
       "cities": [
-        "دیلمان",
-        "سیاهکل"
-      ]
+        {
+          "name": "دیلمان",
+          "location": {
+            "lat": 36.888889,
+            "lng": 49.905556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سیاهکل",
+          "location": {
+            "lat": 37.152778,
+            "lng": 49.870833,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کاروانسرای تی تی",
+              "location": {
+                "lat": 37.15,
+                "lng": 49.87,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.152778,
+        "lng": 49.870833,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "شفت",
       "cities": [
-        "احمدسرگوراب",
-        "شفت"
-      ]
+        {
+          "name": "احمدسرگوراب",
+          "location": {
+            "lat": 37.128056,
+            "lng": 49.366667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شفت",
+          "location": {
+            "lat": 37.170278,
+            "lng": 49.399722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.170278,
+        "lng": 49.399722,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "صومعه‌سرا",
       "cities": [
-        "تولم‌شهر",
-        "صومعه‌سرا",
-        "ضیابر",
-        "طاهر گوراب",
-        "گوراب زرمیخ"
-      ]
+        {
+          "name": "تولم‌شهر",
+          "location": {
+            "lat": 37.276108,
+            "lng": 49.37639,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "صومعه‌سرا",
+          "location": {
+            "lat": 37.311667,
+            "lng": 49.321944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ضیابر",
+          "location": {
+            "lat": 37.42613,
+            "lng": 49.242952,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "طاهر گوراب",
+          "location": {
+            "lat": 37.383116,
+            "lng": 49.22522,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گوراب زرمیخ",
+          "location": {
+            "lat": 37.304167,
+            "lng": 49.2225,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.311667,
+        "lng": 49.321944,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فومن",
       "cities": [
-        "فومن",
-        "ماسوله",
-        "ماکلوان"
-      ]
+        {
+          "name": "فومن",
+          "location": {
+            "lat": 37.223889,
+            "lng": 49.3125,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه رودخان",
+              "location": {
+                "lat": 37.0643056,
+                "lng": 49.2411372,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل خشتی توشیبان",
+              "location": {
+                "lat": 37.22,
+                "lng": 49.31,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار سنتی فومن",
+              "location": {
+                "lat": 37.224,
+                "lng": 49.312,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "ماسوله",
+              "location": {
+                "lat": 37.155,
+                "lng": 48.989722,
+                "source": "wikidata"
+              },
+              "places": [
+                {
+                  "name": "بازار سنتی ماسوله",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.155,
+                    "lng": 48.991,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "موزه مردم‌شناسی ماسوله",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.1555,
+                    "lng": 48.9905,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "بقعه عون‌بن‌محمد ماسوله",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 37.156,
+                    "lng": 48.99,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ماکلوان",
+          "location": {
+            "lat": 37.195556,
+            "lng": 49.198611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.223889,
+        "lng": 49.3125,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "لاهیجان",
       "cities": [
-        "رودبنه",
-        "لاهیجان"
-      ]
+        {
+          "name": "رودبنه",
+          "location": {
+            "lat": 37.254722,
+            "lng": 50.002778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لاهیجان",
+          "location": {
+            "lat": 37.207222,
+            "lng": 50.003889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بام سبز لاهیجان",
+              "location": {
+                "lat": 37.1994158,
+                "lng": 50.0238657,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "شیطان‌کوه",
+              "location": {
+                "lat": 37.207,
+                "lng": 50.003,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "استخر لاهیجان",
+              "location": {
+                "lat": 37.205,
+                "lng": 50.005,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بقعه شیخ زاهد گیلانی",
+              "location": {
+                "lat": 37.2,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه کاشف‌السلطنه",
+              "location": {
+                "lat": 37.2,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه چای",
+              "location": {
+                "lat": 37.2,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه تاریخی چهارپادشاهان",
+              "location": {
+                "lat": 37.2075,
+                "lng": 50.001,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.207222,
+        "lng": 50.003889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "لنگرود",
       "cities": [
-        "اطاقور",
-        "چاف و چمخاله",
-        "شلمان",
-        "کومله",
-        "لنگرود"
-      ]
+        {
+          "name": "اطاقور",
+          "location": {
+            "lat": 37.109444,
+            "lng": 50.114167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "چاف و چمخاله",
+          "location": {
+            "lat": 37.229444,
+            "lng": 50.253889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شلمان",
+          "location": {
+            "lat": 37.155278,
+            "lng": 50.216111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کومله",
+          "location": {
+            "lat": 37.152778,
+            "lng": 50.176944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لنگرود",
+          "location": {
+            "lat": 37.195556,
+            "lng": 50.1525,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.195556,
+        "lng": 50.1525,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ماسال",
       "cities": [
-        "شاندرمن",
-        "ماسال"
-      ]
+        {
+          "name": "شاندرمن",
+          "location": {
+            "lat": 37.405299,
+            "lng": 49.119282,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ماسال",
+          "location": {
+            "lat": 37.363056,
+            "lng": 49.132778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار آویشو",
+              "location": {
+                "lat": 37.4,
+                "lng": 48.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 37.363056,
+        "lng": 49.132778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 37.151563,
+    "lng": 49.638974,
+    "source": "nominatim",
+    "bbox": [
+      36.5503968,
+      38.4602165,
+      48.5361814,
+      50.7315385
+    ]
+  },
+  "places": []
 }

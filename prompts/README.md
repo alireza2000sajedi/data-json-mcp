@@ -1,29 +1,32 @@
 # Prompt Sequence
 
-1. `01-start-province.txt` — Prompt مادر + MCP bootstrap + فقط Province root؛ بعد توقف برای Scope (County/City).
-2. `02-run-scope.txt` — اجرای یک Scope (زیردرخت County یا City + Placeها).
-3. `03-resume.txt` — ادامه همان Scope با `previous_id`.
-4. `04-repair-entity.txt` — تعمیر یک Entity.
-5. `07-full-province-places.txt` — جبران همهٔ Placeهای استان (continuous؛ فقط `province_id`).
-6. `08-media-gap-audit.txt` — جبران عکس‌های صفر/زیر target.
-7. `06-province-text-rewrite.txt` — بازنویسی متن (انسانی، بدون OTA).
-8. `05-final-audit-minify.txt` — Audit نهایی + cleanup + minify.
+قرارداد مشترک از `01-start-province.txt`. کیفیت متن/media/تعمیر **همان‌جا** در هر Node تمام می‌شود — پرامپت جدا برای repair / rewrite / media-gap / resume وجود ندارد.
+
+### مسیر اصلی (پیشنهادی) — بدون Scope
+1. `01-start-province.txt` — MCP bootstrap + فقط Province root
+2. `07-full-province-places.txt` — **کل استان یک‌سره** از input (County/City/Village/Place) — فقط `province_id`
+3. `05-final-audit-minify.txt` — Audit نهایی + minify
+
+### اختیاری
+- `02-run-scope.txt` — فقط وقتی کاربر صریحاً یک Scope تکی می‌خواهد (`scope_id`)
 
 ### کی کدام
 | هدف | پرامپت |
 |---|---|
 | شروع استان | `01` |
-| یک شهرستان یا شهر | `02` (+ `03` resume) |
-| تعمیر یک Entity | `04` |
-| همه Placeهای استان | `07` |
-| فقط عکس | `08` |
-| متن یکدست | `06` سپس `05` |
+| کل استان بدون Scope | `07` |
+| یک شهرستان / شهر / روستا (اختیاری) | `02` |
+| بستن و minify | `05` |
 
-### قرارداد مشترک
-- Entityها: Province / County / City / Place
-- محل کمپ = Place (`campground`) — نه Entity جدا
-- Media: Province=۵ · County=۳ · City=۳ · Place=۴
-- Parent بدون operational dataی Child
+### قرارداد مشترک (قفل)
+- **Entityها:** Province / County / City / Village / Place
+- **محل کمپ** = Place (`campground`) — نه Entity جدا
+- **فقط از input:** `input/{n}.json` / `planro://scopes`؛ City/Village/Place جدید نساز
+- **سلسله‌مراتب:** Village Parent = County یا City؛ روستا Place نیست
+- **Media (همان save اول):** Province=۵ · County=۳ · City=۳ · Village=۲ · Place=۴
+- **فقط URL:** دانلود/ذخیرهٔ فایل عکس ممنوع؛ فقط `imageUrl` در Entity
+- **متن (همان save اول):** انسانی، ضد AI، بدون OTA (§۸ پرامپت ۰۱)
+- **خطا:** همان Node را تعمیر کن؛ ناقص رد نشو
 - بدون `costs` / `evidence`
-- متن از save اول انسانی و بدون نام OTA
-- TURBO/SPEED: موازی تحقیق، save خطی، توقف media در target، `districts`/`ruralDistricts` خالی با count 0
+- TURBO: موازی تحقیق، save خطی، توقف media در target، track خالی با count 0
+- **`07`:** Scope نپرس؛ `02` لازم نیست

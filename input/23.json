@@ -5,68 +5,572 @@
     {
       "name": "باشت",
       "cities": [
-        "باشت",
-        "بوستان"
-      ]
+        {
+          "name": "باشت",
+          "location": {
+            "lat": 30.361111,
+            "lng": 51.157222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بوستان",
+          "location": {
+            "lat": 30.325595,
+            "lng": 51.201822,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.361111,
+        "lng": 51.157222,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بویراحمد",
       "cities": [
-        "چیتاب",
-        "سپیدار",
-        "گراب سفلی",
-        "مادوان",
-        "یاسوج"
-      ]
+        {
+          "name": "چیتاب",
+          "location": {
+            "lat": 30.795,
+            "lng": 51.325556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سپیدار",
+          "location": {
+            "lat": 30.59706,
+            "lng": 51.363105,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گراب سفلی",
+          "location": {
+            "lat": 30.947222,
+            "lng": 50.887778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مادوان",
+          "location": {
+            "lat": 30.71407,
+            "lng": 51.541929,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "یاسوج",
+          "location": {
+            "lat": 30.666667,
+            "lng": 51.583333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار یاسوج",
+              "location": {
+                "lat": 30.6696258,
+                "lng": 51.6026121,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگ مهریان",
+              "location": {
+                "lat": 30.7026303,
+                "lng": 51.5813404,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه میشی",
+              "location": {
+                "lat": 30.8642462,
+                "lng": 51.502884,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه کوه گل",
+              "location": {
+                "lat": 30.8356,
+                "lng": 51.541173,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگ تامرادی",
+              "location": {
+                "lat": 30.7,
+                "lng": 51.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار بینه",
+              "location": {
+                "lat": 30.7,
+                "lng": 51.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگ گنجه ای",
+              "location": {
+                "lat": 30.65,
+                "lng": 51.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پیست اسکی کاکان",
+              "location": {
+                "lat": 30.6,
+                "lng": 51.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگ سرخ",
+              "location": {
+                "lat": 30.8,
+                "lng": 51.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "رودخانه بشار",
+              "location": {
+                "lat": 30.67,
+                "lng": 51.58,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار یاسوج",
+              "location": {
+                "lat": 30.67,
+                "lng": 51.59,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده علی",
+              "location": {
+                "lat": 30.66,
+                "lng": 51.59,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگ گنجهه‌ای",
+              "location": {
+                "lat": 30.78,
+                "lng": 51.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار ده شیخ",
+              "location": {
+                "lat": 30.8,
+                "lng": 51.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک جنگلی یاسوج",
+              "location": {
+                "lat": 30.67,
+                "lng": 51.58,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.758824,
+        "lng": 51.387223,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بهمئی",
       "cities": [
-        "سرآسیاب یوسفی",
-        "قلعه ممبی",
-        "لیکک"
-      ]
+        {
+          "name": "سرآسیاب یوسفی",
+          "location": {
+            "lat": 31.036616,
+            "lng": 50.217529,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قلعه ممبی",
+          "location": {
+            "lat": 31.108515,
+            "lng": 50.116214,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لیکک",
+          "location": {
+            "lat": 30.895,
+            "lng": 50.093056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.983862,
+        "lng": 50.079254,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "چرام",
       "cities": [
-        "چرام",
-        "سرفاریاب"
-      ]
+        {
+          "name": "چرام",
+          "location": {
+            "lat": 30.753333,
+            "lng": 50.743611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سرفاریاب",
+          "location": {
+            "lat": 30.803758,
+            "lng": 50.853991,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.753333,
+        "lng": 50.743611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دنا",
       "cities": [
-        "پاتاوه",
-        "سی سخت"
-      ]
+        {
+          "name": "پاتاوه",
+          "location": {
+            "lat": 30.954444,
+            "lng": 51.269722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سی سخت",
+          "location": {
+            "lat": 30.863889,
+            "lng": 51.455833,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار بهرام بیگی",
+              "location": {
+                "lat": 30.85,
+                "lng": 51.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار کبوترکوه",
+              "location": {
+                "lat": 30.85,
+                "lng": 51.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سی‌سخت",
+          "places": [],
+          "location": {
+            "lat": 30.85,
+            "lng": 51.45,
+            "source": "web"
+          },
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.04247,
+        "lng": 51.210383,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کهگیلویه",
       "cities": [
-        "دهدشت",
-        "دیشموک",
-        "سوق",
-        "قلعه رئیسی"
-      ]
+        {
+          "name": "دهدشت",
+          "location": {
+            "lat": 30.793611,
+            "lng": 50.565,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه تاریخی دهدشت",
+              "location": {
+                "lat": 30.79,
+                "lng": 50.56,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه بلقیس",
+              "location": {
+                "lat": 30.8,
+                "lng": 50.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار قدیمی دهدشت",
+              "location": {
+                "lat": 30.793,
+                "lng": 50.565,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای دهدشت",
+              "location": {
+                "lat": 30.795,
+                "lng": 50.563,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه سد کوثر",
+              "location": {
+                "lat": 30.7,
+                "lng": 50.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "دیشموک",
+          "location": {
+            "lat": 31.297222,
+            "lng": 50.398889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "چشمه آبگرم دیشموک",
+              "location": {
+                "lat": 31.15,
+                "lng": 50.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سوق",
+          "location": {
+            "lat": 30.858611,
+            "lng": 50.458056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قلعه رئیسی",
+          "location": {
+            "lat": 31.19,
+            "lng": 50.441944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 31.007641,
+        "lng": 50.571416,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "گچساران",
       "cities": [
-        "دوگنبدان"
-      ]
+        {
+          "name": "دوگنبدان",
+          "location": {
+            "lat": 30.358611,
+            "lng": 50.798056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار تنگ‌تکاب",
+              "location": {
+                "lat": 30.35,
+                "lng": 50.8,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل تاریخی خیرآباد",
+              "location": {
+                "lat": 30.36,
+                "lng": 50.8,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.284646,
+        "lng": 50.801273,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "لنده",
       "cities": [
-        "لنده"
-      ]
+        {
+          "name": "لنده",
+          "location": {
+            "lat": 30.981667,
+            "lng": 50.423333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.981667,
+        "lng": 50.423333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مارگون",
       "cities": [
-        "مارگون"
-      ]
+        {
+          "name": "مارگون",
+          "location": {
+            "lat": 30.992778,
+            "lng": 51.083611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 30.992778,
+        "lng": 51.083611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 30.785547,
+    "lng": 50.608552,
+    "source": "nominatim",
+    "bbox": [
+      30.7838707,
+      30.7872049,
+      50.6080243,
+      50.6087512
+    ]
+  },
+  "places": []
 }

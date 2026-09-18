@@ -5,55 +5,594 @@
     {
       "name": "اشتهارد",
       "cities": [
-        "اشتهارد",
-        "پلنگ‌آباد"
-      ]
+        {
+          "name": "اشتهارد",
+          "location": {
+            "lat": 35.725556,
+            "lng": 50.366111,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "پلنگ‌آباد",
+          "location": {
+            "lat": 35.722709,
+            "lng": 50.591362,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.725556,
+        "lng": 50.366111,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "چهارباغ",
       "cities": [
-        "چهارباغ"
-      ]
+        {
+          "name": "چهارباغ",
+          "location": {
+            "lat": 35.838889,
+            "lng": 50.848056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.838889,
+        "lng": 50.848056,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ساوجبلاغ",
       "cities": [
-        "کوهسار",
-        "گلسار",
-        "مهستان",
-        "هشتگرد"
-      ]
+        {
+          "name": "کوهسار",
+          "location": {
+            "lat": 35.956111,
+            "lng": 50.795833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گلسار",
+          "location": {
+            "lat": 35.907778,
+            "lng": 50.7825,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مهستان",
+          "location": {
+            "lat": 35.961944,
+            "lng": 50.68,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "هشتگرد",
+          "location": {
+            "lat": 35.964182,
+            "lng": 50.685804,
+            "source": "nominatim"
+          },
+          "places": [
+            {
+              "name": "ساوجبلاغ بازار تاریخی",
+              "location": {
+                "lat": 35.96,
+                "lng": 50.68,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه صعلوک",
+              "location": {
+                "lat": 35.96,
+                "lng": 50.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای ینگی‌امام",
+              "location": {
+                "lat": 35.98,
+                "lng": 50.65,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.98251,
+        "lng": 50.83654,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "طالقان",
       "cities": [
-        "طالقان"
-      ]
+        {
+          "name": "طالقان",
+          "location": {
+            "lat": 36.174444,
+            "lng": 50.769167,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "طالقان سد",
+              "location": {
+                "lat": 36.18,
+                "lng": 50.77,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار کرکبود",
+              "location": {
+                "lat": 36.2,
+                "lng": 50.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه کیقباد طالقان",
+              "location": {
+                "lat": 36.18,
+                "lng": 50.75,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه سد طالقان",
+              "location": {
+                "lat": 36.18,
+                "lng": 50.77,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.174444,
+        "lng": 50.769167,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فردیس",
       "cities": [
-        "فردیس",
-        "مشکین‌دشت"
-      ]
+        {
+          "name": "فردیس",
+          "location": {
+            "lat": 35.7225,
+            "lng": 50.988333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مشکین‌دشت",
+          "location": {
+            "lat": 35.7525,
+            "lng": 50.942778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.7225,
+        "lng": 50.988333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کرج",
       "cities": [
-        "آسارا",
-        "کرج",
-        "کمال‌شهر",
-        "گرمدره",
-        "ماهدشت",
-        "محمدشهر"
-      ]
+        {
+          "name": "آسارا",
+          "location": {
+            "lat": 36.036389,
+            "lng": 51.194167,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "پیست شمشک",
+              "location": {
+                "lat": 35.98,
+                "lng": 51.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "دیزین",
+              "location": {
+                "lat": 36.0508147,
+                "lng": 51.4155456,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "پیست دیزین",
+                  "location": {
+                    "lat": 36.031809,
+                    "lng": 51.4178122,
+                    "source": "nominatim"
+                  },
+                  "kind": "heritage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "کرج",
+          "location": {
+            "lat": 35.832778,
+            "lng": 50.991667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "جاده چالوس",
+              "location": {
+                "lat": 36.1524512,
+                "lng": 51.311427,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سد امیرکبیر",
+              "location": {
+                "lat": 35.9842555,
+                "lng": 51.1131167,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ سیب مهرشهر",
+              "location": {
+                "lat": 35.8113441,
+                "lng": 50.9192102,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دره شهرستانک",
+              "location": {
+                "lat": 35.9571503,
+                "lng": 51.3368012,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای شاه‌عباسی کرج",
+              "location": {
+                "lat": 35.835,
+                "lng": 51.006,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ شهرستانک",
+              "location": {
+                "lat": 35.97,
+                "lng": 51.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ سلیمانیه",
+              "location": {
+                "lat": 35.84,
+                "lng": 50.97,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ رضا شاهی گچسر",
+              "location": {
+                "lat": 36.11,
+                "lng": 51.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پل تاریخی کرج",
+              "location": {
+                "lat": 35.84,
+                "lng": 50.97,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده طاهر",
+              "location": {
+                "lat": 35.84,
+                "lng": 50.94,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار خور",
+              "location": {
+                "lat": 36,
+                "lng": 51.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار یخ‌مراد",
+              "location": {
+                "lat": 36.1,
+                "lng": 51.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج میدان کرج",
+              "location": {
+                "lat": 35.84,
+                "lng": 50.94,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه جانورشناسی کرج",
+              "location": {
+                "lat": 35.85,
+                "lng": 50.95,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار گچسر",
+              "location": {
+                "lat": 36.11,
+                "lng": 51.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ مروارید",
+              "location": {
+                "lat": 35.83,
+                "lng": 50.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغ فاتح",
+              "location": {
+                "lat": 35.85,
+                "lng": 50.96,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پارک جنگلی جهان‌نما",
+              "location": {
+                "lat": 35.86,
+                "lng": 51,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه خودروهای تاریخی ایران",
+              "location": {
+                "lat": 35.82,
+                "lng": 50.92,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه نیما یوشیج کرج",
+              "location": {
+                "lat": 35.84,
+                "lng": 50.94,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "آتشگاه",
+              "location": {
+                "lat": 35.91823,
+                "lng": 50.9937989,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "دره و چشمه آتشگاه",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 35.918,
+                    "lng": 50.994,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "کمال‌شهر",
+          "location": {
+            "lat": 35.862222,
+            "lng": 50.871667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گرمدره",
+          "location": {
+            "lat": 35.755833,
+            "lng": 51.068333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ماهدشت",
+          "location": {
+            "lat": 35.728333,
+            "lng": 50.813333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "محمدشهر",
+          "location": {
+            "lat": 35.763056,
+            "lng": 50.917222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.832778,
+        "lng": 50.991667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "نظرآباد",
       "cities": [
-        "تنکمان",
-        "نظرآباد"
-      ]
+        {
+          "name": "تنکمان",
+          "location": {
+            "lat": 35.8919,
+            "lng": 50.6167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نظرآباد",
+          "location": {
+            "lat": 35.952222,
+            "lng": 50.6075,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تپه ازبکی",
+              "location": {
+                "lat": 35.95,
+                "lng": 50.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.952222,
+        "lng": 50.6075,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
+    }
+  ],
+  "location": {
+    "lat": 35.941324,
+    "lng": 50.788422,
+    "source": "nominatim",
+    "bbox": [
+      35.5271473,
+      36.3508941,
+      50.1631517,
+      51.525278
+    ]
+  },
+  "places": [
+    {
+      "name": "چشمه اعلا",
+      "location": {
+        "lat": 35.75,
+        "lng": 52,
+        "source": "web"
+      },
+      "kind": "heritage"
     }
   ]
 }

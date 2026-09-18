@@ -5,61 +5,653 @@
     {
       "name": "آبیک",
       "cities": [
-        "آبیک",
-        "خاکعلی",
-        "زیاران",
-        "قشلاق"
-      ]
+        {
+          "name": "آبیک",
+          "location": {
+            "lat": 36.016667,
+            "lng": 50.516667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خاکعلی",
+          "location": {
+            "lat": 36.128333,
+            "lng": 50.176389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "زیاران",
+          "location": {
+            "lat": 36.120642,
+            "lng": 50.528082,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قشلاق",
+          "location": {
+            "lat": 36.013175,
+            "lng": 50.422495,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.016667,
+        "lng": 50.516667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "آوج",
       "cities": [
-        "آبگرم",
-        "آوج"
-      ]
+        {
+          "name": "آبگرم",
+          "location": {
+            "lat": 35.757222,
+            "lng": 49.286944,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "برج‌های دوگانه خرقان",
+              "location": {
+                "lat": 35.84,
+                "lng": 49.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "آوج",
+          "location": {
+            "lat": 35.578889,
+            "lng": 49.224167,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "برج‌های خرقان",
+              "location": {
+                "lat": 35.6,
+                "lng": 49.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.578889,
+        "lng": 49.224167,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "البرز",
       "cities": [
-        "الوند",
-        "بیدستان",
-        "شریفیه",
-        "محمدیه",
-        "مهرگان"
-      ]
+        {
+          "name": "الوند",
+          "location": {
+            "lat": 36.189167,
+            "lng": 50.064167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بیدستان",
+          "location": {
+            "lat": 36.230833,
+            "lng": 50.123611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شریفیه",
+          "location": {
+            "lat": 36.21357,
+            "lng": 50.153203,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "محمدیه",
+          "location": {
+            "lat": 36.223611,
+            "lng": 50.183333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کاروانسرای شاه‌عباسی محمدیه",
+              "location": {
+                "lat": 36.22,
+                "lng": 50.18,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "مهرگان",
+          "location": {
+            "lat": 36.251444,
+            "lng": 50.181674,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.213809,
+        "lng": 50.124997,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بوئین‌زهرا",
       "cities": [
-        "ارداق",
-        "بویین‌زهرا",
-        "دانسفهان",
-        "سگزآباد",
-        "شال",
-        "عصمت‌آباد"
-      ]
+        {
+          "name": "ارداق",
+          "location": {
+            "lat": 36.496389,
+            "lng": 49.241944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "بویین‌زهرا",
+          "location": {
+            "lat": 35.766944,
+            "lng": 50.057778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دانسفهان",
+          "location": {
+            "lat": 35.810833,
+            "lng": 49.742222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سگزآباد",
+          "location": {
+            "lat": 35.773056,
+            "lng": 49.937778,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تپه سگزآباد",
+              "location": {
+                "lat": 35.77,
+                "lng": 49.93,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "شال",
+          "location": {
+            "lat": 35.898333,
+            "lng": 49.772222,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "عصمت‌آباد",
+          "location": {
+            "lat": 35.847374,
+            "lng": 50.064092,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.766944,
+        "lng": 50.057778,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "تاکستان",
       "cities": [
-        "اسفرورین",
-        "تاکستان",
-        "خرمدشت",
-        "ضیاءآباد",
-        "نرجه"
-      ]
+        {
+          "name": "اسفرورین",
+          "location": {
+            "lat": 35.933333,
+            "lng": 49.746667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "تاکستان",
+          "location": {
+            "lat": 36.069444,
+            "lng": 49.695833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "خرمدشت",
+          "location": {
+            "lat": 35.924722,
+            "lng": 49.515833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ضیاءآباد",
+          "location": {
+            "lat": 35.993056,
+            "lng": 49.4475,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نرجه",
+          "location": {
+            "lat": 35.990833,
+            "lng": 49.624722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.069444,
+        "lng": 49.695833,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "قزوین",
       "cities": [
-        "اقبالیه",
-        "رازمیان",
-        "سیردان",
-        "قزوین",
-        "کوهین",
-        "محمودآباد نمونه",
-        "معلم‌کلایه"
-      ]
+        {
+          "name": "اقبالیه",
+          "location": {
+            "lat": 36.231389,
+            "lng": 49.925833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رازمیان",
+          "location": {
+            "lat": 36.540833,
+            "lng": 50.2125,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سیردان",
+          "location": {
+            "lat": 36.647222,
+            "lng": 49.191667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه سمیران",
+              "location": {
+                "lat": 36.7,
+                "lng": 49.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "قزوین",
+          "location": {
+            "lat": 36.285437,
+            "lng": 50.0041,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "مسجد جامع قزوین",
+              "location": {
+                "lat": 36.2610859,
+                "lng": 50.0026197,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار قزوین",
+              "location": {
+                "lat": 36.269082,
+                "lng": 49.9977099,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دروازه تهران قدیم",
+              "location": {
+                "lat": 36.2586151,
+                "lng": 50.0139206,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه حمدالله مستوفی",
+              "location": {
+                "lat": 36.2642806,
+                "lng": 50.0106772,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه الموت",
+              "location": {
+                "lat": 36.4447322,
+                "lng": 50.5860973,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه اوان",
+              "location": {
+                "lat": 36.483258,
+                "lng": 50.4437501,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ چهل‌ستون قزوین",
+              "location": {
+                "lat": 36.266,
+                "lng": 50.003,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حسینیه امینی‌ها",
+              "location": {
+                "lat": 36.27,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آب‌انبار سردار بزرگ",
+              "location": {
+                "lat": 36.27,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام قجر",
+              "location": {
+                "lat": 36.27,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده حسین قزوین",
+              "location": {
+                "lat": 36.26,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه لمبسر",
+              "location": {
+                "lat": 36.5,
+                "lng": 50.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار ولی‌عصر",
+              "location": {
+                "lat": 36.4,
+                "lng": 50.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد النبی قزوین",
+              "location": {
+                "lat": 36.27,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کلیسای کانتور",
+              "location": {
+                "lat": 36.27,
+                "lng": 50.01,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی قزوین",
+              "location": {
+                "lat": 36.267,
+                "lng": 50.005,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت چهل‌ستون قزوین",
+              "location": {
+                "lat": 36.265,
+                "lng": 50.002,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجدالنبی قزوین",
+              "location": {
+                "lat": 36.2685,
+                "lng": 50.0045,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دروازه درب‌کوشک",
+              "location": {
+                "lat": 36.275,
+                "lng": 50,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "باغستان سنتی قزوین",
+              "location": {
+                "lat": 36.28,
+                "lng": 50.02,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه میمون‌قلعه",
+              "location": {
+                "lat": 36.3,
+                "lng": 50.05,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده شاهزاده حسین",
+              "location": {
+                "lat": 36.26,
+                "lng": 50.005,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاخ تاریخی قزوین",
+              "location": {
+                "lat": 36.265,
+                "lng": 50.0025,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام بلور",
+              "location": {
+                "lat": 36.268,
+                "lng": 50.007,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "کوهین",
+          "location": {
+            "lat": 36.368889,
+            "lng": 49.663611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "محمودآباد نمونه",
+          "location": {
+            "lat": 36.288611,
+            "lng": 49.901944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "معلم‌کلایه",
+          "location": {
+            "lat": 36.451667,
+            "lng": 50.475278,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آبشار ورجه",
+              "location": {
+                "lat": 36.45,
+                "lng": 50.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.285437,
+        "lng": 50.0041,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 36.015629,
+    "lng": 49.839816,
+    "source": "nominatim",
+    "bbox": [
+      35.3905895,
+      36.8151799,
+      48.7244712,
+      50.8820575
+    ]
+  },
+  "places": []
 }

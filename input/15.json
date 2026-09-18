@@ -5,64 +5,647 @@
     {
       "name": "آرادان",
       "cities": [
-        "آرادان",
-        "کهن‌آباد"
-      ]
+        {
+          "name": "آرادان",
+          "location": {
+            "lat": 35.249722,
+            "lng": 52.493333,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کهن‌آباد",
+          "location": {
+            "lat": 35.222222,
+            "lng": 52.521389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.249722,
+        "lng": 52.493333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "دامغان",
       "cities": [
-        "امیریه",
-        "دامغان",
-        "دیباج",
-        "کلاته"
-      ]
+        {
+          "name": "امیریه",
+          "location": {
+            "lat": 36.027778,
+            "lng": 54.14,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "دامغان",
+          "location": {
+            "lat": 36.168056,
+            "lng": 54.348056,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تاریخانه دامغان",
+              "location": {
+                "lat": 36.1642698,
+                "lng": 54.3543039,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج طغرل دامغان",
+              "location": {
+                "lat": 36.168,
+                "lng": 54.348,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "چشمه علی دامغان",
+              "location": {
+                "lat": 36.17,
+                "lng": 54.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج چهل‌دختر دامغان",
+              "location": {
+                "lat": 36.17,
+                "lng": 54.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد تاریخانه",
+              "location": {
+                "lat": 36.163,
+                "lng": 54.354,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج چهل‌دختران دامغان",
+              "location": {
+                "lat": 36.168,
+                "lng": 54.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج پیرعلمدار",
+              "location": {
+                "lat": 36.167,
+                "lng": 54.348,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه گردکوه",
+              "location": {
+                "lat": 36.15,
+                "lng": 54.2,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "قلعه پاچهٔ دامغان",
+              "location": {
+                "lat": 36.17,
+                "lng": 54.34,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تپه حصار دامغان",
+              "location": {
+                "lat": 36.155,
+                "lng": 54.365,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "دیباج",
+          "location": {
+            "lat": 36.426944,
+            "lng": 54.223611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کلاته",
+          "location": {
+            "lat": 36.357084,
+            "lng": 54.145583,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.168056,
+        "lng": 54.348056,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سرخه",
       "cities": [
-        "سرخه"
-      ]
+        {
+          "name": "سرخه",
+          "location": {
+            "lat": 35.463333,
+            "lng": 53.213889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آب‌انبار سرخه",
+              "location": {
+                "lat": 35.46,
+                "lng": 53.21,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.463333,
+        "lng": 53.213889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "سمنان",
       "cities": [
-        "سمنان"
-      ]
+        {
+          "name": "سمنان",
+          "location": {
+            "lat": 35.583333,
+            "lng": 53.383333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار سمنان",
+              "location": {
+                "lat": 35.5667227,
+                "lng": 53.399654,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دروازه ارگ سمنان",
+              "location": {
+                "lat": 35.5739336,
+                "lng": 53.3953308,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "عمارت کاخ بیگدلی",
+              "location": {
+                "lat": 35.58,
+                "lng": 53.39,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "مسجد جامع سمنان",
+              "location": {
+                "lat": 35.58,
+                "lng": 53.39,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام پهنه سمنان",
+              "location": {
+                "lat": 35.58,
+                "lng": 53.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی سمنان",
+              "location": {
+                "lat": 35.577,
+                "lng": 53.393,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه طاهری سمنان",
+              "location": {
+                "lat": 35.578,
+                "lng": 53.39,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.583333,
+        "lng": 53.383333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "شاهرود",
       "cities": [
-        "بسطام",
-        "بیارجمند",
-        "رودیان",
-        "رویان",
-        "شاهرود",
-        "کلاته خیج",
-        "مجن"
-      ]
+        {
+          "name": "بسطام",
+          "location": {
+            "lat": 36.485278,
+            "lng": 54.999722,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "آرامگاه بایزید بسطامی",
+              "location": {
+                "lat": 36.48,
+                "lng": 54.99,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج کاشانه بسطام",
+              "location": {
+                "lat": 36.48,
+                "lng": 55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "بیارجمند",
+          "location": {
+            "lat": 36.080556,
+            "lng": 55.809722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رودیان",
+          "location": {
+            "lat": 36.3504,
+            "lng": 55.0025,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رویان",
+          "location": {
+            "lat": 36.568611,
+            "lng": 51.966944,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شاهرود",
+          "location": {
+            "lat": 36.418056,
+            "lng": 54.976389,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "جنگل ابر",
+              "location": {
+                "lat": 36.7619826,
+                "lng": 55.0346918,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه تاریخ طبیعی شاهرود",
+              "location": {
+                "lat": 36.42,
+                "lng": 54.97,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه شیخ ابوالحسن خرقانی",
+              "location": {
+                "lat": 36.5,
+                "lng": 55.1,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "غار شیربند",
+              "location": {
+                "lat": 36.4,
+                "lng": 54.9,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "ابرسج",
+              "location": {
+                "lat": 36.55,
+                "lng": 54.9,
+                "source": "web"
+              },
+              "places": [
+                {
+                  "name": "آبشار ابرسج",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 36.55,
+                    "lng": 54.9,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "کلاته خیج",
+          "location": {
+            "lat": 36.671111,
+            "lng": 55.2975,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مجن",
+          "location": {
+            "lat": 36.48,
+            "lng": 54.645833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.418056,
+        "lng": 54.976389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "گرمسار",
       "cities": [
-        "ایوانکی",
-        "گرمسار"
-      ]
+        {
+          "name": "ایوانکی",
+          "location": {
+            "lat": 35.343333,
+            "lng": 52.0675,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گرمسار",
+          "location": {
+            "lat": 35.216667,
+            "lng": 52.333333,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کویر ریگ جن",
+              "location": {
+                "lat": 34.8,
+                "lng": 52.5,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای ده نمک",
+              "location": {
+                "lat": 35.2,
+                "lng": 52.7,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای قصر بهرام",
+              "location": {
+                "lat": 34.95,
+                "lng": 52.15,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دریاچه نمک گرمسار",
+              "location": {
+                "lat": 34.9,
+                "lng": 51.95,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.216667,
+        "lng": 52.333333,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "مهدی‌شهر",
       "cities": [
-        "درجزین",
-        "شهمیرزاد",
-        "مهدی‌شهر"
-      ]
+        {
+          "name": "درجزین",
+          "location": {
+            "lat": 35.653611,
+            "lng": 53.337778,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "شهمیرزاد",
+          "location": {
+            "lat": 35.772778,
+            "lng": 53.328611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "شیرقلعه شهمیرزاد",
+              "location": {
+                "lat": 35.78,
+                "lng": 53.32,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "مهدی‌شهر",
+          "location": {
+            "lat": 35.710833,
+            "lng": 53.353889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار دربند مهدی‌شهر",
+              "location": {
+                "lat": 35.7,
+                "lng": 53.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تنگه داستان",
+              "location": {
+                "lat": 35.75,
+                "lng": 53.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.710833,
+        "lng": 53.353889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "میامی",
       "cities": [
-        "رضوان",
-        "میامی"
-      ]
+        {
+          "name": "رضوان",
+          "location": {
+            "lat": 37.185528,
+            "lng": 55.795641,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "میامی",
+          "location": {
+            "lat": 36.410833,
+            "lng": 55.650278,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "کاروانسرای میاندشت",
+              "location": {
+                "lat": 36.4,
+                "lng": 55.55,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 36.410833,
+        "lng": 55.650278,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 35.250064,
+    "lng": 54.693185,
+    "source": "nominatim",
+    "bbox": [
+      34.2342332,
+      37.3261317,
+      51.8335099,
+      57.0523637
+    ]
+  },
+  "places": []
 }

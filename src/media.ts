@@ -6,9 +6,13 @@ import type { NodeType } from "./types.js";
  *   province → 5 unique images
  *   county   → 3 unique images
  *   city     → 2–3 unique images (DoD target = 3)
+ *   village  → 2 unique images
  *   place    → 4 unique images
  *
- * Camping sites and villages are out of pipeline scope (not researched as entities).
+ * Selective checklist villages are in pipeline (with nested places).
+ *
+ * Images are URL-only: never download or write image binaries to disk;
+ * only HTTPS imageUrl/url strings are stored on the entity.
  *
  * The thumbnail counts inside that budget, the same image URL can never be
  * reused by two Entities, and a parent/child/sibling image is never a valid
@@ -35,7 +39,7 @@ export const MEDIA_POLICY: Record<NodeType, MediaPolicyEntry> = {
   county: TARGET_3,
   city: TARGET_3,
   place: TARGET_4,
-  // Exhaustiveness only — not researched in this pipeline.
+  // Exhaustiveness only — camping not researched as separate entities in this pipeline.
   camping: TARGET_2,
   village: TARGET_2,
   district: TARGET_2,

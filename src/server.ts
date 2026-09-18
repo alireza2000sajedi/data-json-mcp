@@ -169,7 +169,7 @@ export function createServer(): McpServer {
 
   register(
     "record_media_candidate",
-    "Best-effort media pipeline step 1 (§9): record EVERY attributable image you find for a node — nothing is discarded for being below target. imageUrl = direct raw HTTPS file URL; pageUrl = the page hosting/licensing it; license from the schema enum (all-rights-reserved is fine for credited web images); optional score 0..1. Media discovery never counts toward fact-source coverage; only record_search_result does.",
+    "Best-effort media pipeline step 1 (§9): record EVERY attributable image URL you find for a node — nothing is discarded for being below target. URL-ONLY: never download or write image binaries to disk; store only the HTTPS imageUrl string. imageUrl = direct raw HTTPS file URL; pageUrl = the page hosting/licensing it; license from the schema enum (all-rights-reserved is fine for credited web images); optional score 0..1. Media discovery never counts toward fact-source coverage; only record_search_result does.",
     {
       provinceId: z.string().min(1),
       nodeId: z.string().min(1),
@@ -187,7 +187,7 @@ export function createServer(): McpServer {
 
   register(
     "finalize_media",
-    "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and store the BEST min(usable, target) images — never more than target (targets: province=5, county=3, city=3, place=4; the thumbnail counts inside this budget; 20 is only the absolute validation cap). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
+    "Best-effort media pipeline step 2 (§9): deduplicate the node's media candidates by URL, drop invalid licenses/URLs, rank (score, free-license and primary-source bonus) and keep the BEST min(usable, target) image URLs — never more than target; never download files (targets: province=5, county=3, city=3, village=2, place=4; the thumbnail counts inside this budget; 20 is only the absolute validation cap). Returns the ready-to-attach media object incl. media.status (complete/partial/unavailable) — attach it to entity.media and save with save_active_entity.",
     { provinceId: z.string().min(1), nodeId: z.string().min(1) },
     toolFinalizeMedia,
   );

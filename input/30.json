@@ -5,86 +5,927 @@
     {
       "name": "اسدآباد",
       "cities": [
-        "آجین",
-        "اسدآباد",
-        "پالیز"
-      ]
+        {
+          "name": "آجین",
+          "location": {
+            "lat": 34.736111,
+            "lng": 47.924167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "اسدآباد",
+          "location": {
+            "lat": 34.7825,
+            "lng": 48.12,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "قلعه یزدگرد",
+              "location": {
+                "lat": 34.78,
+                "lng": 48.12,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "پالیز",
+          "location": {
+            "lat": 34.733381,
+            "lng": 48.087739,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.7825,
+        "lng": 48.12,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "بهار",
       "cities": [
-        "بهار",
-        "صالح‌آباد",
-        "لالجین",
-        "مهاجران"
-      ]
+        {
+          "name": "بهار",
+          "location": {
+            "lat": 34.907222,
+            "lng": 48.441389,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "صالح‌آباد",
+          "location": {
+            "lat": 34.923611,
+            "lng": 48.3425,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "لالجین",
+          "location": {
+            "lat": 34.974444,
+            "lng": 48.475556,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "موزه سفال لالجین",
+              "location": {
+                "lat": 34.971,
+                "lng": 48.481,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "مهاجران",
+          "location": {
+            "lat": 35.073889,
+            "lng": 48.616667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.907222,
+        "lng": 48.441389,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "تویسرکان",
       "cities": [
-        "تویسرکان",
-        "سرکان",
-        "فرسفج"
-      ]
+        {
+          "name": "تویسرکان",
+          "location": {
+            "lat": 34.551111,
+            "lng": 48.443611,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "بازار تویسرکان",
+              "location": {
+                "lat": 34.55,
+                "lng": 48.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه میر رضی‌الدین",
+              "location": {
+                "lat": 34.55,
+                "lng": 48.44,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه حبقوق نبی",
+              "location": {
+                "lat": 34.55,
+                "lng": 48.45,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار سنتی تویسرکان",
+              "location": {
+                "lat": 34.548,
+                "lng": 48.447,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه میررضی‌الدین آرتیمانی",
+              "location": {
+                "lat": 34.55,
+                "lng": 48.44,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "سرکان",
+          "location": {
+            "lat": 34.601667,
+            "lng": 48.450556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فرسفج",
+          "location": {
+            "lat": 34.486389,
+            "lng": 48.285833,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "پل فرسفج",
+              "location": {
+                "lat": 34.48,
+                "lng": 48.29,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کاروانسرای فرسفج",
+              "location": {
+                "lat": 34.501,
+                "lng": 48.301,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.551111,
+        "lng": 48.443611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "درگزین",
       "cities": [
-        "شاهنجرین",
-        "قروه درگزین",
-        "کرفس"
-      ]
+        {
+          "name": "شاهنجرین",
+          "location": {
+            "lat": 35.303124,
+            "lng": 49.167317,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قروه درگزین",
+          "location": {
+            "lat": 35.313168,
+            "lng": 49.098607,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کرفس",
+          "location": {
+            "lat": 35.363211,
+            "lng": 49.300329,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.354124,
+        "lng": 49.257093,
+        "source": "nominatim"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "رزن",
       "cities": [
-        "دمق",
-        "رزن"
-      ]
+        {
+          "name": "دمق",
+          "location": {
+            "lat": 35.442778,
+            "lng": 48.823056,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "رزن",
+          "location": {
+            "lat": 35.386389,
+            "lng": 49.033611,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.386389,
+        "lng": 49.033611,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "فامنین",
       "cities": [
-        "فامنین"
-      ]
+        {
+          "name": "فامنین",
+          "location": {
+            "lat": 35.113889,
+            "lng": 48.971667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.113889,
+        "lng": 48.971667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "کبودرآهنگ",
       "cities": [
-        "شیرین‌سو",
-        "کبودرآهنگ",
-        "گل‌تپه"
-      ]
+        {
+          "name": "شیرین‌سو",
+          "location": {
+            "lat": 35.492778,
+            "lng": 48.450556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "کبودرآهنگ",
+          "location": {
+            "lat": 35.208333,
+            "lng": 48.723889,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تالاب شیرین‌سو",
+              "location": {
+                "lat": 35.4,
+                "lng": 48.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        },
+        {
+          "name": "گل‌تپه",
+          "location": {
+            "lat": 35.218611,
+            "lng": 48.206111,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "غار علیصدر",
+              "location": {
+                "lat": 35.3050517,
+                "lng": 48.3009862,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 35.208333,
+        "lng": 48.723889,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "ملایر",
       "cities": [
-        "ازندریان",
-        "اسلام‌شهر آق‌گل",
-        "جوکار",
-        "زنگنه",
-        "سامن",
-        "علی‌آباد دمق",
-        "ملایر"
-      ]
+        {
+          "name": "ازندریان",
+          "location": {
+            "lat": 34.508889,
+            "lng": 48.686667,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "اسلام‌شهر آق‌گل",
+          "location": {
+            "lat": 34.556816,
+            "lng": 48.990338,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "جوکار",
+          "location": {
+            "lat": 34.432778,
+            "lng": 48.685556,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "زنگنه",
+          "location": {
+            "lat": 34.1547,
+            "lng": 49.0108,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "سامن",
+          "location": {
+            "lat": 34.209167,
+            "lng": 48.705833,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "علی‌آباد دمق",
+          "location": {
+            "lat": 34.531215,
+            "lng": 48.605595,
+            "source": "nominatim"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "ملایر",
+          "location": {
+            "lat": 34.294167,
+            "lng": 48.82,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "تپه نوشیجان",
+              "location": {
+                "lat": 34.3655143,
+                "lng": 48.6328872,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار ملایر",
+              "location": {
+                "lat": 34.29,
+                "lng": 48.82,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه لطفعلیان",
+              "location": {
+                "lat": 34.29,
+                "lng": 48.82,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "یخدان میرفتکای ملایر",
+              "location": {
+                "lat": 34.3,
+                "lng": 48.82,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه سیف‌الدوله",
+              "location": {
+                "lat": 34.3,
+                "lng": 48.82,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.294167,
+        "lng": 48.82,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "نهاوند",
       "cities": [
-        "برزول",
-        "فیروزان",
-        "گیان",
-        "نهاوند"
-      ]
+        {
+          "name": "برزول",
+          "location": {
+            "lat": 34.212778,
+            "lng": 48.258889,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "فیروزان",
+          "location": {
+            "lat": 34.278611,
+            "lng": 48.24,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "گیان",
+          "location": {
+            "lat": 34.178056,
+            "lng": 48.244167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "نهاوند",
+          "location": {
+            "lat": 34.188333,
+            "lng": 48.376944,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "معبد لائودیسه",
+              "location": {
+                "lat": 34.197471,
+                "lng": 48.3690663,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سراب گیان",
+              "location": {
+                "lat": 34.1771941,
+                "lng": 48.2392686,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سراب گاماسیاب",
+              "location": {
+                "lat": 34.2,
+                "lng": 48.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تپه گیان نهاوند",
+              "location": {
+                "lat": 34.18,
+                "lng": 48.35,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سراب فارسبان",
+              "location": {
+                "lat": 34.2,
+                "lng": 48.3,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": []
+        }
+      ],
+      "location": {
+        "lat": 34.188333,
+        "lng": 48.376944,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     },
     {
       "name": "همدان",
       "cities": [
-        "جورقان",
-        "قهاوند",
-        "مریانج",
-        "همدان"
-      ]
+        {
+          "name": "جورقان",
+          "location": {
+            "lat": 34.884722,
+            "lng": 48.554444,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "قهاوند",
+          "location": {
+            "lat": 34.860278,
+            "lng": 49.004722,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "مریانج",
+          "location": {
+            "lat": 34.830833,
+            "lng": 48.459167,
+            "source": "wikidata"
+          },
+          "places": [],
+          "villages": []
+        },
+        {
+          "name": "همدان",
+          "location": {
+            "lat": 34.8,
+            "lng": 48.516667,
+            "source": "wikidata"
+          },
+          "places": [
+            {
+              "name": "گنجنامه",
+              "location": {
+                "lat": 34.76237,
+                "lng": 48.43735,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آبشار گنجنامه",
+              "location": {
+                "lat": 34.7635,
+                "lng": 48.4365,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "میدان امام همدان",
+              "location": {
+                "lat": 34.798333,
+                "lng": 48.514722,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه ابوعلی سینا",
+              "location": {
+                "lat": 34.7916,
+                "lng": 48.5132,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه باباطاهر",
+              "location": {
+                "lat": 34.8090684,
+                "lng": 48.5086836,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "تپه هگمتانه",
+              "location": {
+                "lat": 34.8038334,
+                "lng": 48.5182706,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "شیر سنگی همدان",
+              "location": {
+                "lat": 34.7861006,
+                "lng": 48.5241868,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "گنبد علویان",
+              "location": {
+                "lat": 34.8036931,
+                "lng": 48.5102801,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "برج قربان",
+              "location": {
+                "lat": 34.7903746,
+                "lng": 48.5196888,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "بازار تاریخی همدان",
+              "location": {
+                "lat": 34.8005942,
+                "lng": 48.5136321,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "حمام قلعه همدان",
+              "location": {
+                "lat": 34.7996986,
+                "lng": 48.5086287,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "آرامگاه استر و مردخای",
+              "location": {
+                "lat": 34.7980216,
+                "lng": 48.5128422,
+                "source": "nominatim"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه تاریخ طبیعی همدان",
+              "location": {
+                "lat": 34.8,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "موزه هگمتانه",
+              "location": {
+                "lat": 34.8,
+                "lng": 48.52,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دشت میشان",
+              "location": {
+                "lat": 34.77,
+                "lng": 48.42,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "سد اکباتان",
+              "location": {
+                "lat": 34.75,
+                "lng": 48.6,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "پیست اسکی تاریک‌دره",
+              "location": {
+                "lat": 34.75,
+                "lng": 48.4,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "کلیسای گریگوری استپانوس",
+              "location": {
+                "lat": 34.799,
+                "lng": 48.518,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "خانه نظرفر",
+              "location": {
+                "lat": 34.796,
+                "lng": 48.513,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "دره مرادبیگ",
+              "location": {
+                "lat": 34.75,
+                "lng": 48.48,
+                "source": "web"
+              },
+              "kind": "heritage"
+            },
+            {
+              "name": "امامزاده محسن همدان",
+              "location": {
+                "lat": 34.81,
+                "lng": 48.52,
+                "source": "web"
+              },
+              "kind": "heritage"
+            }
+          ],
+          "villages": [
+            {
+              "name": "ورکانه",
+              "location": {
+                "lat": 34.6768473,
+                "lng": 48.6189942,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "قلعه مهری‌خانم",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 34.675,
+                    "lng": 48.618,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "اصطبل پرورش اسب ورکانه",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 34.676,
+                    "lng": 48.617,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "امامزاده غیب ورکانه",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 34.677,
+                    "lng": 48.62,
+                    "source": "web"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "سیمین ابرو",
+              "location": {
+                "lat": 34.6828195,
+                "lng": 48.5862938,
+                "source": "nominatim"
+              },
+              "places": [
+                {
+                  "name": "بافت سنگی سیمین ابرو",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 34.683,
+                    "lng": 48.586,
+                    "source": "web"
+                  }
+                },
+                {
+                  "name": "رودخانه سیمین",
+                  "kind": "heritage",
+                  "location": {
+                    "lat": 34.682,
+                    "lng": 48.585,
+                    "source": "web"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "location": {
+        "lat": 34.8,
+        "lng": 48.516667,
+        "source": "seat-city"
+      },
+      "places": [],
+      "villages": []
     }
-  ]
+  ],
+  "location": {
+    "lat": 34.97263,
+    "lng": 48.656382,
+    "source": "nominatim",
+    "bbox": [
+      34.0010465,
+      35.7338618,
+      47.7971938,
+      49.4727961
+    ]
+  },
+  "places": []
 }
