@@ -41,7 +41,7 @@ export interface ScopeUnit {
   parentId: string;
   /** Optional checklist coordinates from input/{n}.json (lat/lng). */
   location?: ScopeLocation;
-  /** Seed POI names for discovery/search (not auto-registered as graph nodes). */
+  /** Seed POI names from input — also registered as place graph nodes on import. */
   places?: PlaceChecklistItem[];
   /** Child villages when type is city (county-level villages live on ScopeTreeCounty.villages). */
   villages?: ScopeUnit[];

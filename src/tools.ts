@@ -51,6 +51,13 @@ import { mediaPolicyFor, mediaStatusFor } from "./media.js";
 import { getSourcePolicy, classifySource, sourceCoverageFor } from "./source-policy.js";
 import { buildDiscoveryQueries, DISCOVERY_NODE_TYPES, type DiscoveryContext } from "./discovery.js";
 import { buildScopeRegistry, provinceNumber } from "./scopes.js";
+import {
+  PLACE_DISCOVERY_TRACKS,
+  MIN_PLACE_SEARCHES_FOR_ZERO,
+  checklistForNode,
+  countPlaceDiscoverySearches,
+  normalizePlaceKey,
+} from "./place-checklist.js";
 import { assertProvinceId } from "./config.js";
 import type { NotesState, NodeType, OwnershipStatus, PlaceEntity, MediaDeficitRecord, MediaCandidate } from "./types.js";
 
@@ -127,43 +134,56 @@ export function toolGetScopeState(args: { provinceId: string }) {
  * Stage 1 of the staged workflow: derive the complete administrative scope
  * list of a province from the reference checklist (input/{n}.json) and give
  * every unit a dedicated, deterministic id (county-{p}-{n}, city-{p}-{n},
- * village-{p}-v{n}). Only structure is registered — NO deep research, NO POI
- * extraction, NO entity files. The agent stops after this call.
+ * village-{p}-v{n}, place-{p}-{n}). Admin structure + checklist Place nodes
+ * are registered — NO deep research, NO entity files.
  */
 export function toolImportProvinceScopes(args: { provinceId: string }) {
   const registry = buildScopeRegistry(args.provinceId);
   const state = readNotes(args.provinceId);
+  const p = provinceNumber(registry.provinceId);
+  let placeOrdinal = 0;
+
+  const seedPlaces = (parentId: string, places: { name: string }[] | undefined) => {
+    for (const pl of places ?? []) {
+      placeOrdinal += 1;
+      const placeId = `place-${p}-${placeOrdinal}`;
+      ensureNode(state, placeId, { nodeType: "place", name: pl.name, parentNodeId: parentId });
+    }
+  };
 
   // Province node (root).
   ensureNode(state, registry.provinceId, { nodeType: "province", name: registry.provinceName, parentNodeId: null });
   completeDiscoveryTask(state, registry.provinceId, "counties", registry.counts.counties);
+  seedPlaces(registry.provinceId, registry.places);
 
   for (const county of registry.tree) {
     ensureNode(state, county.id, { nodeType: "county", name: county.name, parentNodeId: registry.provinceId });
     // Cities and villages counts are fully known from the reference checklist.
     completeDiscoveryTask(state, county.id, "cities", county.cities.length);
     completeDiscoveryTask(state, county.id, "villages", county.villages.length);
+    seedPlaces(county.id, county.places);
     for (const city of county.cities) {
       ensureNode(state, city.id, { nodeType: "city", name: city.name, parentNodeId: county.id });
       const cityVillages = city.villages ?? [];
       completeDiscoveryTask(state, city.id, "villages", cityVillages.length);
+      seedPlaces(city.id, city.places);
       for (const village of cityVillages) {
         ensureNode(state, village.id, { nodeType: "village", name: village.name, parentNodeId: city.id });
+        seedPlaces(village.id, village.places);
       }
     }
     for (const village of county.villages) {
       ensureNode(state, village.id, { nodeType: "village", name: village.name, parentNodeId: county.id });
+      seedPlaces(village.id, village.places);
     }
   }
 
   state.nextStep =
-    `Province stage: structure registered for ${registry.provinceId} (${registry.counts.counties} counties, ` +
-    `${registry.counts.cities} cities, ${registry.counts.villages} villages). NEXT: deep-research the PROVINCE node itself — ` +
-    `get_next_research_node returns '${registry.provinceId}': search it on the 5 mandatory primary sources (see source policy), ` +
-    `save its entity (media target: province=5), ` +
-    `complete its provincePlaces track, then mark_node_complete. ` +
-    `After that STOP and ask the user which county/city/village to continue with ` +
-    `(look the Persian name up in planro://scopes/${registry.provinceId} → indexByName, then set_active_scope with that id).`;
+    `Structure registered for ${registry.provinceId} (${registry.counts.counties} counties, ` +
+    `${registry.counts.cities} cities, ${registry.counts.villages} villages, ${placeOrdinal} checklist places seeded). ` +
+    `NEXT: deep-research via get_next_research_node (DFS). Checklist Place nodes are mandatory — save each as an active entity. ` +
+    `For full-province continuous runs use set_active_scope(${registry.provinceId}) / allScopes; do not skip Place tracks with count:0 when checklist is non-empty. ` +
+    `Optional single-scope: set_active_scope with a county/city/village id from planro://scopes/${registry.provinceId}.`;
 
   writeNotes(state);
 
@@ -173,20 +193,22 @@ export function toolImportProvinceScopes(args: { provinceId: string }) {
     provinceId: registry.provinceId,
     provinceName: registry.provinceName,
     source: registry.source,
-    scopeSummary: registry.counts,
+    scopeSummary: { ...registry.counts, seededPlaces: placeOrdinal },
     scopesByCounty: registry.tree.map((c) => ({
       id: c.id,
       name: c.name,
       cities: c.cities.length,
       villages: c.villages.length + c.cities.reduce((n, city) => n + (city.villages?.length ?? 0), 0),
+      places: (c.places?.length ?? 0) + c.cities.reduce((n, city) => n + (city.places?.length ?? 0) + (city.villages ?? []).reduce((vn, v) => vn + (v.places?.length ?? 0), 0), 0),
     })),
     registeredNodes: state.nodes.length,
+    seededPlaces: placeOrdinal,
     nextRequiredNode: next ? { nodeId: next.nodeId, nodeType: next.nodeType, canonicalName: next.canonicalName } : null,
     scopesResource: `planro://scopes/${registry.provinceId}`,
     note:
-      "Structure + dedicated ids registered. Continue with the PROVINCE STAGE: full research of the province node " +
-      "(entity, province-level places, media from the 5 primary sources), then STOP and ask the user " +
-      "for the next scope. County/city/village subtrees are separate runs.",
+      "Admin units + checklist Place nodes registered. Every seeded place must be researched and saved. " +
+      "Closing places/countyPlaces/provincePlaces below checklist length is rejected. " +
+      "Full-province path: set_active_scope(provinceId) and drain allScopes — do not stop for scope selection unless the user asked for a single scope.",
   };
 }
 
@@ -1259,6 +1281,29 @@ export function toolUpdateNotes(args: { provinceId: string; operation: string; p
             `complete_discovery_task track '${track}' requires a non-negative integer 'count' = the full number of ${track} you discovered (e.g. 10 for counties). This is the completion contract.`,
           );
         }
+
+        if (PLACE_DISCOVERY_TRACKS.has(track)) {
+          const registry = buildScopeRegistry(args.provinceId);
+          const checklist = checklistForNode(registry, nodeId);
+          const floor = checklist.length;
+          if (count < floor) {
+            throw new Error(
+              `PLACES_BELOW_CHECKLIST: track '${track}' on '${nodeId}' requires count >= ${floor} ` +
+                `(input checklist length). Got ${count}. Save every checklist Place, then complete with the real total.`,
+            );
+          }
+          if (floor === 0 && count === 0) {
+            const searches = countPlaceDiscoverySearches(state.sourceMatrix, nodeId);
+            if (searches < MIN_PLACE_SEARCHES_FOR_ZERO) {
+              throw new Error(
+                `PLACES_ZERO_WITHOUT_SEARCH: cannot close '${track}' on '${nodeId}' with count:0 until at least ` +
+                  `${MIN_PLACE_SEARCHES_FOR_ZERO} place-discovery searches are recorded via record_search_result ` +
+                  `(queries like جاهای دیدنی / جاذبه / tourist attractions). Recorded: ${searches}.`,
+              );
+            }
+          }
+        }
+
         completeDiscoveryTask(state, nodeId, track, count);
       } else {
         completeDiscoveryTask(state, nodeId, track);
@@ -1440,9 +1485,42 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     }
   }
 
+  // Checklist Place coverage: every input checklist name under an in-scope admin
+  // node must have a saved active place entity (matched by name) under that parent.
+  const registry = buildScopeRegistry(args.provinceId);
+  const entities = listEntities(args.provinceId);
+  const uncoveredChecklistPlaces: { parentId: string; name: string }[] = [];
+  const adminIds = [
+    registry.provinceId,
+    ...Object.keys(registry.index),
+  ].filter((id) => inScope(id));
+
+  for (const parentId of adminIds) {
+    const checklist = checklistForNode(registry, parentId);
+    if (checklist.length === 0) continue;
+    const childPlaceNodes = state.nodes.filter((n) => n.parentNodeId === parentId && n.nodeType === "place");
+    const coveredKeys = new Set<string>();
+    for (const pn of childPlaceNodes) {
+      if (!inScope(pn.nodeId)) continue;
+      const ent = entities.find((e) => e.id === pn.nodeId && e.entity.status === "active");
+      if (!ent) continue;
+      coveredKeys.add(normalizePlaceKey(String(ent.entity.name?.fa ?? "")));
+      for (const alt of (ent.entity.alternativeNames as string[]) ?? []) {
+        coveredKeys.add(normalizePlaceKey(alt));
+      }
+      // Seeded node name usually matches checklist; count it only after an active save.
+      coveredKeys.add(normalizePlaceKey(pn.canonicalName));
+    }
+    for (const item of checklist) {
+      const key = normalizePlaceKey(item.name);
+      if (!key || coveredKeys.has(key)) continue;
+      uncoveredChecklistPlaces.push({ parentId, name: item.name });
+    }
+  }
+
   // Primary-source coverage across the scope (nodes blocked on missing searches).
   const coverageRows = state.nodes
-    .filter((n) => inScope(n.nodeId) && ["province", "county", "city", "place"].includes(n.nodeType))
+    .filter((n) => inScope(n.nodeId) && ["province", "county", "city", "village", "place"].includes(n.nodeType))
     .map((n) => {
       const c = sourceCoverageFor(state, n.nodeType, n.nodeId);
       return { nodeId: n.nodeId, nodeType: n.nodeType, searchedCount: c.searchedCount, required: c.required, satisfied: c.satisfied };
@@ -1455,7 +1533,8 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     incompleteMedia.length === 0 &&
     openCandidates.length === 0 &&
     unresolvedConflicts.length === 0 &&
-    missingAdministrativeNodes.length === 0;
+    missingAdministrativeNodes.length === 0 &&
+    uncoveredChecklistPlaces.length === 0;
 
   // Build compact issues list for DoD status
   const issues: string[] = [];
@@ -1465,6 +1544,9 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
   if (invalidRelations.length > 0) issues.push(`invalid relations: ${invalidRelations.length}`);
   if (incompleteMedia.length > 0) issues.push(`incomplete media: ${incompleteMedia.length}`);
   if (coverageRows.length > 0) issues.push(`missing source coverage: ${coverageRows.length} node(s)`);
+  if (uncoveredChecklistPlaces.length > 0) {
+    issues.push(`uncovered checklist places: ${uncoveredChecklistPlaces.length}`);
+  }
 
   // Update DoD status in notes
   updateDodStatus(state, complete, state.dodStatus?.validateInvalid ?? -1, state.dodStatus?.validateTotal ?? -1, issues);
@@ -1483,6 +1565,8 @@ export function toolCheckDefinitionOfDone(args: { provinceId: string }) {
     unresolvedConflicts: unresolvedConflicts.map((c) => c.id),
     invalidRelations,
     incompleteMedia,
+    uncoveredChecklistPlaces: uncoveredChecklistPlaces.slice(0, 100),
+    uncoveredChecklistPlacesCount: uncoveredChecklistPlaces.length,
     missingSourceCoverage: coverageRows.slice(0, 50),
     nextAction: complete ? null : scope.nextRequiredNode?.nodeId ?? "discover province administrative structure",
     reminder: complete
@@ -1580,6 +1664,7 @@ function contextForNode(state: NotesState, nodeId: string): DiscoveryContext {
     else if (n.nodeType === "district") ctx.district = n.canonicalName;
     else if (n.nodeType === "ruralDistrict") ctx.ruralDistrict = n.canonicalName;
     else if (n.nodeType === "city") ctx.city = n.canonicalName;
+    else if (n.nodeType === "village") ctx.village = n.canonicalName;
   }
   return ctx;
 }

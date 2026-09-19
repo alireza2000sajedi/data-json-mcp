@@ -21,7 +21,8 @@
 ### قرارداد مشترک (قفل)
 - **Entityها:** Province / County / City / Village / Place
 - **محل کمپ** = Place (`campground`) — نه Entity جدا
-- **فقط از input:** `input/{n}.json` / `planro://scopes`؛ City/Village/Place جدید نساز
+- **اداری فقط از input:** County / City / Village از `input/{n}.json`؛ واحد جدید نساز
+- **Place تحقیق اجباری:** checklist بذر + seed در import؛ بستن زیر checklist ممنوع (MCP)
 - **سلسله‌مراتب:** Village Parent = County یا City؛ روستا Place نیست
 - **Media (همان save اول):** Province=۵ · County=۳ · City=۳ · Village=۲ · Place=۴
 - **فقط URL:** دانلود/ذخیرهٔ فایل عکس ممنوع؛ فقط `imageUrl` در Entity

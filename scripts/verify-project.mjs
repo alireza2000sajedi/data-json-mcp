@@ -232,9 +232,27 @@ ok(
   "prompts/07: must be full-province continuous without scope selection.",
 );
 ok(
-  /فقط[\s\S]{0,40}input|قانون طلایی[\s\S]{0,80}input/.test(prompts[3]),
-  "prompts/07: must lock units to input only.",
+  /اداری فقط input|County[\s\S]{0,80}فقط[\s\S]{0,40}input/.test(prompts[3]) &&
+    /Place[\s\S]{0,80}تحقیق|checklist[\s\S]{0,40}بذر/.test(prompts[3]),
+  "prompts/07: admin-from-input + mandatory Place research contract missing.",
 );
+ok(
+  /Place[\s\S]{0,60}تحقیق اجباری|چک‌لیست فقط بذر/.test(prompts[0]),
+  "prompts/01: Place research beyond checklist contract missing.",
+);
+ok(
+  /PLACES_BELOW_CHECKLIST|seed/.test(prompts[0]) && /PLACES_ZERO_WITHOUT_SEARCH|جستجوی کشف Place/.test(prompts[0]),
+  "prompts/01: MCP place-completion hard gates must be documented.",
+);
+ok(exists("src/place-checklist.ts"), "src/place-checklist.ts must exist (checklist floor helpers).");
+const placeChecklistSrc = read("src/place-checklist.ts");
+ok(/PLACES_BELOW_CHECKLIST|normalizePlaceKey|MIN_PLACE_SEARCHES_FOR_ZERO/.test(placeChecklistSrc + read("src/tools.ts")),
+  "place checklist floor + zero-without-search enforcement must live in tools/place-checklist.");
+ok(/seedPlaces|seededPlaces|placeOrdinal/.test(read("src/tools.ts")),
+  "import_province_scopes must seed checklist place nodes.");
+ok(/uncoveredChecklistPlaces/.test(read("src/tools.ts")),
+  "check_definition_of_done must report uncoveredChecklistPlaces.");
+
 ok(/Village/i.test(prompts[0]) && /روستا ≠ Place|روستا Place نیست/.test(prompts[0]), "prompts/01: Village hierarchy contract missing.");
 ok(/کیفیت درجا|پاس جدا برای media ممنوع/.test(prompts[0]), "prompts/01: first-pass quality (no repair/media-gap pass) missing.");
 ok(

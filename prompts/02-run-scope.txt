@@ -42,7 +42,9 @@ TURBO از پرامپت ۰۱: تحقیق موازی OK؛ save خطی؛ media د�
 | Village | خود Village + Placeهای زیر همین Village |
 
 - محل کمپ = Place (`campground`)؛ Entity جدا نساز
-- واحد جدید خارج از input نساز
+- County / City / Village جدید خارج از input نساز
+- **Place:** checklist فقط بذر است — Nodeهای seed‌شده را کامل کن؛ بعد وب را برای جاذبهٔ بیشتر جستجو کن
+- بستن places با count کمتر از checklist یا count:0 بدون جستجو → MCP رد می‌کند
 
 Media: County=۳ · City=۳ · Village=۲ · Place=۴ — به‌محض target توقف؛ URL reuse ممنوع
 **فقط URL** — دانلود/ذخیرهٔ فایل تصویر ممنوع؛ فقط `imageUrl` در Entity.
@@ -55,23 +57,24 @@ Discovery tracks:
 ---
 
 ## 3) حلقه کار (هر Node) — کیفیت نهایی همان‌جا
-1. `get_node_context(nodeId)` — `placesChecklist` فقط از input
-2. در صورت اداری: `discover_subtree` فقط برای trackهای مجاز
+1. `get_node_context(nodeId)` — checklist = بذر Place
+2. در صورت اداری: `discover_subtree` + جستجوی Place فراتر از checklist
 3. `record_search_result` × ۵ Primary تا `get_source_coverage` → `satisfied:true`
 4. media → `finalize_media` **تا target** (پاس media جدا ممنوع؛ فقط URL — دانلود فایل ممنوع)
 5. متن نهایی انسانی (§۸ پرامپت ۰۱) — بازنویسی بعدی فرض نکن
 6. `save_active_entity({ provinceId, entity, expectedNodeId })` — فقط MCP
 7. اگر save/validate خطا داد → **همان Node را تعمیر کن**؛ ناقص رد نشو
-8. `complete_discovery_task` با count واقعی
+8. `complete_discovery_task` با count واقعی Placeهای ذخیره‌شده
 
 TURBO: تحقیق موازی OK؛ save خطی؛ بدون حذف Source/Place.
 
 Location: اگر ScopeUnit در `planro://scopes` فیلد `location` داشت، همان را برای Entity استفاده کن.
 
 ### سلسله‌مراتب (یادآوری)
-- فقط واحدهای input / scopes
+- County/City/Village فقط از input / scopes
 - Village Parent = County یا City — نه Province تنها
-- **روستا Place نیست:** Village را کامل کن؛ جاذبه را Place زیر Village بگذار؛ نام روستا را Place ننویس
+- **روستا Place نیست:** Village را کامل کن؛ جاذبه را Place زیر Village بگذار
+- Place تحقیق اجباری: checklist اولویت؛ خالی بودن checklist مجوز ترک Place نیست
 - در Entity: `location.province/county/city/village` مطابق زنجیره
 
 ---

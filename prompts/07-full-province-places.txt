@@ -16,13 +16,17 @@ province_id=<PROVINCE_ID>
 
 ---
 
-## 0) قانون طلایی — فقط input
-واحدها و Placeها را **فقط** از `input/{n}.json` بگیر (`import_province_scopes` / `planro://scopes/{provinceId}`).
+## 0) قانون — اداری فقط input؛ Place با تحقیق
+**واحد اداری** (County / City / Village) را **فقط** از `input/{n}.json` بگیر (`import_province_scopes` / `planro://scopes/{provinceId}`).
+- شهرستان/شهر/روستای جدید نساز.
+- اگر ScopeUnit فیلد `location` داشت، همان lat/lng مبنای Entity است.
 
-- County / City / Village / Place جدید از خودت نساز و به چک‌لیست اضافه نکن.
-- اگر در input نبود → نادیده بگیر.
-- `placesChecklist` / `places` روی هر Node = همان نام‌هایی که باید اولویت سرچ شوند (با `location` اگر هست).
-- اگر ScopeUnit فیلد `location` داشت، همان lat/lng مبنای Entity است؛ فقط در نبود/بی‌اعتباری → Nominatim.
+**Place (جاذبه‌ها) تحقیق اجباری است** — checklist در input فقط بذر/اولویت است، نه سقف.
+- `import` هر Place چک‌لیست را seed می‌کند؛ تا entity ذخیره نشود DoD پاس نمی‌شود.
+- اول `placesChecklist` / Nodeهای seed‌شده را کامل کن.
+- بعد وب را برای جاذبه‌های بیشتر جستجو کن؛ Place جدید زیر Parent موجود در input.
+- `complete_discovery_task` با count < طول checklist → خطای `PLACES_BELOW_CHECKLIST` (ممنوع).
+- `count:0` بدون ≥۳ جستجوی کشف Place → `PLACES_ZERO_WITHOUT_SEARCH`.
 
 ---
 
@@ -43,9 +47,20 @@ province_id=<PROVINCE_ID>
 - Village Parent = County یا City — **هرگز فقط Province**
   - `counties[].villages` → Parent = County
   - `counties[].cities[].villages` → Parent = City
-- **روستا ≠ Place:** اول Village را کامل کن؛ جاذبه را Place زیر همان Village بگذار؛ `روستای X` یا نام خود روستا به‌عنوان Place ممنوع
-- Place را دقیقاً زیر Parentی بگذار که در scopes/input آمده
+- **روستا ≠ Place:** اول Village را کامل کن؛ جاذبه را Place زیر همان Village بگذار؛ `روستای X` ممنوع
+- Place را زیر Parentی بگذار که در scopes/input وجود دارد (County یا City یا Village)
 - در Entity: `location.province / county / city / village` مطابق زنجیره
+
+### Place چه چیزی باشد
+مجاز: اثر تاریخی شاخص، موزه، بازار تاریخی، کاخ، قلعه، آبشار، غار، دریاچه، پارک ملی/جنگلی مهم، زیارتگاه معروف گردشگری، برج/پل نمادین، محوطهٔ باستان، کمپینگ شاخص.
+ممنوع: مسجد محلی معمولی، مغازه، پمپ‌بنزین، اداره، مدرسه، بیمارستان، صافکاری، رستوران زنجیره‌ای بی‌اهمیت.
+
+### حداقل پوشش Place (هدف کیفیت)
+برای هر Parent قبل از بستن track `places` / `countyPlaces`:
+1. همهٔ نام‌های checklist input
+2. به‌علاوهٔ جستجوی وب تا جاذبه‌های مهم پوشش داده شوند
+3. شهر مرکز شهرستان / شهرهای گردشگرپذیر: معمولاً چند Place واقعی — با ۱–۲ تا زود متوقف نشو
+4. شهرک اقماری بدون جاذبهٔ مستند: `count:0` با جستجوی واقعی ثبت‌شده مجاز است
 
 ---
 
@@ -90,16 +105,15 @@ Discovery tracks (count واقعی؛ خالی = `0`):
 ممنوع: حذف Place/Source/media برای سرعت · کم‌کردن Coverage یا media target · دانلود/ذخیرهٔ فایل عکس · چند `save_active_entity` هم‌زمان · ساخت واحد خارج از input · commit با fail
 
 ### حلقهٔ هر Node — کیفیت نهایی همان‌جا
-1. `get_node_context(nodeId)` — checklist فقط از input
-2. `discover_subtree` فقط برای trackهای مجاز همان نوع
-3. `record_search_result` × ۵ Primary (kojaro · jabama · alibaba · lastsecond · flytoday) تا `get_source_coverage` → `satisfied:true`
-4. متن نهایی انسانی (§۸ پرامپت ۰۱) — پاس بازنویسی جدا ممنوع
-5. Media تا target: Province=۵ · County=۳ · City=۳ · Village=۲ · Place=۴
-   - **فقط URL** (`record_media_candidate` → `finalize_media`) — دانلود/ذخیرهٔ باینری ممنوع
-   - URL reuse بین Entityها ممنوع — پاس media جدا ممنوع
-6. `save_active_entity({ provinceId, entity, expectedNodeId })` — فقط MCP
-7. اگر save/validate خطا داد → **همان Node را تعمیر کن**؛ ناقص رد نشو
-8. `complete_discovery_task({ nodeId, track, count })`
+1. `get_node_context(nodeId)` — checklist را بخوان؛ فقط بذر است
+2. `discover_subtree` برای Queryهای Place همان Node / زیردرخت
+3. برای County/City/Village: جستجوی Place را اجرا کن (نه فقط checklist) → نام‌های معتبر را به‌عنوان Place زیر همین Parent save کن
+4. `record_search_result` × ۵ Primary تا `get_source_coverage` → `satisfied:true`
+5. متن نهایی انسانی (§۸ پرامپت ۰۱)
+6. Media تا target: Province=۵ · County=۳ · City=۳ · Village=۲ · Place=۴ — **فقط URL**؛ دانلود فایل ممنوع
+7. `save_active_entity` — فقط MCP
+8. اگر خطا → همان Node را تعمیر کن؛ ناقص رد نشو
+9. `complete_discovery_task({ nodeId, track, count })` — count = تعداد Place واقعی ذخیره‌شده (نه صرفاً طول checklist)
 
 Ownership: Parent فقط معرفی کوتاه Child؛ بدون ticket/hours/FAQ عملیاتی Child.
 `costs` / `evidence` وارد Entity نکن.
@@ -137,7 +151,7 @@ Visit:
 
 اگر DoD به‌خاطر واحد اداری ناقص گیر کرد → **همان را در همین ران** تعمیر کن؛ به `02` موکول نکن.
 
-ممنوع: توقف بعد از یک county · پرسیدن Scope · save بدون MCP · commit با `complete:false`/`invalid>0` · واحد خارج از input
+ممنوع: توقف بعد از یک county · پرسیدن Scope · save بدون MCP · commit با `complete:false`/`invalid>0` · ساخت County/City/Village خارج از input · بستن Place track با ۰ بدون جستجوی واقعی
 
 ---
 

@@ -48,7 +48,7 @@ node mcp-client.mjs list-resources
 
 مجاز: تحقیق موازی یک Node (۵ Primary + مختصات + media) · `discover_subtree` · Queryهای fa/en هم‌زمان · توقف media در target · بستن `districts`/`ruralDistricts` خالی با `count:0`
 
-ممنوع: حذف Place/Source/media برای سرعت · کم‌کردن Coverage پنج Primary یا media target · دانلود/ذخیرهٔ فایل عکس (فقط URL) · چند `save_active_entity` هم‌زمان · commit با `complete:false`/`invalid>0` · id جعلی taxonomy در Entity · ساخت City/Village خارج از input
+ممنوع: حذف Place/Source/media برای سرعت · کم‌کردن Coverage پنج Primary یا media target · دانلود/ذخیرهٔ فایل عکس (فقط URL) · چند `save_active_entity` هم‌زمان · commit با `complete:false`/`invalid>0` · id جعلی taxonomy در Entity · ساخت County/City/Village خارج از input · بستن Place با ۰ بدون جستجو
 
 ترتیب امن: تحقیق موازی → یک save خطی → DoD/validate → git.
 
@@ -130,10 +130,21 @@ Ownership متن: Parent فقط معرفی کوتاه Child؛ بدون ساعت/
 اگر `input/{n}.json` یا `planro://scopes/{provinceId}` برای همان Node فیلد `location` (lat/lng) داشت، **همان را مبنای مختصات Entity بگذار** و فقط در صورت نبود/بی‌اعتباری، Nominatim/OSM را برای تکمیل (مثلاً boundingbox) استفاده کن.
 مختصات قابل‌اتکا؛ Distance مشتق ذخیره نکن.
 
-### فقط از input
-County / City / Village / Place را **فقط از `input/{n}.json`** بگیر (`import_province_scopes` / `planro://scopes`).
+### فقط از input — واحد اداری
+County / City / Village را **فقط از `input/{n}.json`** بگیر (`import_province_scopes` / `planro://scopes`).
 - City یا Village جدید به چک‌لیست اضافه نکن.
-- اگر در input نبود → نادیده بگیر؛ از خودت واحد نساز.
+- اگر واحد اداری در input نبود → نادیده بگیر؛ از خودت شهرستان/شهر/روستا نساز.
+
+### Place = تحقیق اجباری (چک‌لیست فقط بذر است)
+`places` / `placesChecklist` در input فقط **اولویت و نقطهٔ شروع** است — سقف نیست.
+- `import_province_scopes` هر Place چک‌لیست را به‌صورت Node در صف DFS seed می‌کند — هر کدام باید entity کامل بگیرند (sources + media + Visit).
+- اول همهٔ نام‌های checklist را با `location` (اگر هست) پوشش بده و save کن.
+- بعد **حتماً** وب را برای جاذبه‌های واقعی همان Parent جستجو کن؛ Place اضافه را زیر Parent موجود بساز.
+- **MCP رد می‌کند:** `complete_discovery_task` برای `places`/`countyPlaces`/`provincePlaces` با `count` کمتر از طول checklist (`PLACES_BELOW_CHECKLIST`).
+- **MCP رد می‌کند:** `count:0` وقتی checklist خالی است بدون حداقل ۳ جستجوی کشف Place (`PLACES_ZERO_WITHOUT_SEARCH`).
+- DoD تا وقتی نامی از checklist بدون Entity فعال مانده `complete:false` می‌ماند (`uncoveredChecklistPlaces`).
+- ممنوع به‌عنوان Place: مسجد محلی معمولی، مغازه، پمپ‌بنزین، صافکاری، اداره، مدرسه، بیمارستان، رستوران زنجیره‌ای بی‌اهمیت گردشگری.
+- مجاز: اثر تاریخی شاخص، موزه، بازار تاریخی، کاخ، قلعه، آبشار، غار، دریاچه، پارک ملی/جنگلی مهم، زیارتگاه معروف گردشگری، پل/برج نمادین، محوطهٔ باستان‌شناسی، کمپینگ شاخص (`campground`).
 
 ### Parent روستا
 Village هرگز فقط به Province وصل نشود. Parent همان است که در input آمده:
@@ -142,11 +153,8 @@ Village هرگز فقط به Province وصل نشود. Parent همان است ک
 
 ### روستا ≠ Place
 1. اول **Village** را از input کامل کن (entity + media=۲).
-2. جاذبه‌ها (قلعه، موزه، آبشار، …) را به‌عنوان **Place زیر همان Village** attach کن.
+2. جاذبه‌ها را به‌عنوان **Place زیر همان Village** attach کن.
 3. ممنوع: `روستای X` یا نام خود روستا به‌عنوان Place.
-
-### Place checklist
-اگر `places` / `placesChecklist` روی Province/County/City/Village بود، **همان نام‌ها را اولویت سرچ بگیر** (با `location` اگر هست). اول checklist را پوشش بده.
 
 در Entity، `location.province / county / city / village` را مطابق زنجیرهٔ scopes پر کن.
 
@@ -178,7 +186,7 @@ Village هرگز فقط به Province وصل نشود. Parent همان است ک
 5. `get_source_coverage` → `satisfied:true`
 6. `record_media_candidate` → `finalize_media` تا target
 7. `save_active_entity({ provinceId, entity, expectedNodeId })`
-8. `complete_discovery_task({ nodeId, track, count })` — count واقعی؛ track خالی با `0`
+8. `complete_discovery_task({ nodeId, track, count })` — برای Place: count ≥ طول checklist؛ صفر فقط با جستجوی واقعی
 9. `check_definition_of_done` → `validate_province`
 10. `awaitingScopeSelection=true` → اگر Task بعدی `07` است Scope نپرس؛ وگرنه برای یک Scope اختیاری بایست
 

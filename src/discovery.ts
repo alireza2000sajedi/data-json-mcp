@@ -17,6 +17,7 @@ export interface DiscoveryContext {
   district?: string;
   ruralDistrict?: string;
   city?: string;
+  village?: string;
 }
 
 const PROVINCE_QUERIES = (name: string): DiscoveryQuery[] => [
@@ -50,16 +51,31 @@ const RURAL_DISTRICT_QUERIES = (name: string): DiscoveryQuery[] => [
   { query: `طبیعت دهستان ${name}`, lang: "fa", purpose: "nature" },
 ];
 
-const CITY_QUERIES = (name: string): DiscoveryQuery[] => [
-  { query: `جاهای دیدنی شهر ${name}`, lang: "fa", purpose: "place discovery" },
-  { query: `آثار تاریخی شهر ${name}`, lang: "fa", purpose: "historical sites" },
-  { query: `طبیعت شهر ${name}`, lang: "fa", purpose: "nature" },
-  { query: `پارک های شهر ${name}`, lang: "fa", purpose: "parks" },
-  { query: `موزه های شهر ${name}`, lang: "fa", purpose: "museums" },
-  { query: `بازار شهر ${name}`, lang: "fa", purpose: "bazaars/markets" },
-  { query: `عکس شهر ${name}`, lang: "fa", purpose: "media: web image search (fa)" },
-  { query: `${name} Iran city photos`, lang: "en", purpose: "media: image search (en, Commons + web)" },
-];
+const CITY_QUERIES = (name: string, ctx: DiscoveryContext = {}): DiscoveryQuery[] => {
+  const scope = [name, ctx.county, ctx.province].filter(Boolean).join(" ");
+  return [
+    { query: `جاهای دیدنی ${scope}`, lang: "fa", purpose: "place discovery" },
+    { query: `جاذبه های گردشگری ${scope}`, lang: "fa", purpose: "attraction discovery" },
+    { query: `آثار تاریخی ${scope}`, lang: "fa", purpose: "historical sites" },
+    { query: `موزه ${scope}`, lang: "fa", purpose: "museums" },
+    { query: `بازار تاریخی ${scope}`, lang: "fa", purpose: "bazaars/markets" },
+    { query: `کاخ قلعه آبشار غار ${scope}`, lang: "fa", purpose: "landmark types" },
+    { query: `طبیعت گردی ${scope}`, lang: "fa", purpose: "nature" },
+    { query: `${name} tourist attractions ${ctx.province ?? "Iran"}`, lang: "en", purpose: "EN attraction list" },
+    { query: `عکس شهر ${scope}`, lang: "fa", purpose: "media: web image search (fa)" },
+    { query: `${name} Iran city photos`, lang: "en", purpose: "media: image search (en, Commons + web)" },
+  ];
+};
+
+const VILLAGE_QUERIES = (name: string, ctx: DiscoveryContext = {}): DiscoveryQuery[] => {
+  const scope = [name, ctx.city ?? ctx.county, ctx.province].filter(Boolean).join(" ");
+  return [
+    { query: `جاهای دیدنی روستای ${scope}`, lang: "fa", purpose: "village place discovery" },
+    { query: `جاذبه گردشگری روستای ${scope}`, lang: "fa", purpose: "village attractions" },
+    { query: `آثار تاریخی روستای ${scope}`, lang: "fa", purpose: "village heritage" },
+    { query: `عکس روستای ${scope}`, lang: "fa", purpose: "media: web image search (fa)" },
+  ];
+};
 
 const PLACE_QUERIES = (name: string, ctx: DiscoveryContext): DiscoveryQuery[] => {
   const queries: DiscoveryQuery[] = [];
@@ -86,7 +102,9 @@ export function buildDiscoveryQueries(nodeType: NodeType, canonicalName: string,
     case "ruralDistrict":
       return RURAL_DISTRICT_QUERIES(name);
     case "city":
-      return CITY_QUERIES(name);
+      return CITY_QUERIES(name, ctx);
+    case "village":
+      return VILLAGE_QUERIES(name, ctx);
     case "place":
       return PLACE_QUERIES(name, ctx);
     default:
@@ -94,4 +112,4 @@ export function buildDiscoveryQueries(nodeType: NodeType, canonicalName: string,
   }
 }
 
-export const DISCOVERY_NODE_TYPES: NodeType[] = ["province", "county", "district", "ruralDistrict", "city", "place"];
+export const DISCOVERY_NODE_TYPES: NodeType[] = ["province", "county", "district", "ruralDistrict", "city", "village", "place"];

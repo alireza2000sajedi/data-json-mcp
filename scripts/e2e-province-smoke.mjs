@@ -130,12 +130,15 @@ section("1) Province stage bootstrap — import_province_scopes");
 // ===========================================================================
 const imported = tools.toolImportProvinceScopes({ provinceId: "30" });
 check("province_id '30' is normalized to province-30", imported.provinceId === PROVINCE, imported.provinceId);
-check("9 counties / 31 cities registered from input/30.json",
-  imported.scopeSummary.counties === 9 && imported.scopeSummary.cities === 31 && imported.scopeSummary.villages === 0,
+check("10 counties / 34 cities / 2 villages registered from input/30.json",
+  imported.scopeSummary.counties === 10 && imported.scopeSummary.cities === 34 && imported.scopeSummary.villages === 2,
   JSON.stringify(imported.scopeSummary));
+check("checklist places are seeded as place nodes on import",
+  imported.seededPlaces === imported.scopeSummary.places && imported.seededPlaces > 0,
+  JSON.stringify({ seeded: imported.seededPlaces, places: imported.scopeSummary.places }));
 check("import is idempotent", (() => {
   const again = tools.toolImportProvinceScopes({ provinceId: PROVINCE });
-  return again.registeredNodes === imported.registeredNodes;
+  return again.registeredNodes === imported.registeredNodes && again.seededPlaces === imported.seededPlaces;
 })());
 
 const next0 = tools.toolGetNextResearchNode({ provinceId: PROVINCE });
@@ -301,6 +304,26 @@ check("complete_discovery_task without count is rejected",
     provinceId: PROVINCE, operation: "complete_discovery_task", payload: { nodeId: PROVINCE, track: "provincePlaces" },
   })));
 
+check("places count:0 without place-discovery searches is rejected", (() => {
+  // Use a fresh city that has an empty checklist (most do after seed floor=0).
+  // city-30-1 parent must exist from import.
+  const msg = expectThrow(() => tools.toolUpdateNotes({
+    provinceId: PROVINCE, operation: "complete_discovery_task",
+    payload: { nodeId: "city-30-1", track: "places", count: 0 },
+  }));
+  return !!msg && msg.includes("PLACES_ZERO_WITHOUT_SEARCH");
+})());
+
+check("places count below checklist floor is rejected", (() => {
+  // Find a city with checklist places from import seed (scopeSummary.places > 0).
+  // Hamadan city-30-8 has multiple places in input.
+  const msg = expectThrow(() => tools.toolUpdateNotes({
+    provinceId: PROVINCE, operation: "complete_discovery_task",
+    payload: { nodeId: "city-30-8", track: "places", count: 0 },
+  }));
+  return !!msg && msg.includes("PLACES_BELOW_CHECKLIST");
+})());
+
 // the two helper place nodes are part of the province stage: close them the
 // auditable way (no valid entity data was gathered for them in this run)
 for (const nodeId of ["place-30-901", "place-30-902"]) {
@@ -399,10 +422,10 @@ check("shorthand 'county-6' → county-30-6",
   tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "county-6" }).activeScopeId === "county-30-6");
 check("Persian name لالجین → city-30-6",
   tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "لالجین" }).activeScopeId === "city-30-6");
-check("ملایر (county+city same name) picks the broader county-30-6",
-  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر" }).activeScopeId === "county-30-6");
-check("ملایر + expectedType:'city' → city-30-20",
-  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر", expectedType: "city" }).activeScopeId === "city-30-20");
+check("ملایر (county+city same name) picks the broader county-30-8",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر" }).activeScopeId === "county-30-8");
+check("ملایر + expectedType:'city' → city-30-26",
+  tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "ملایر", expectedType: "city" }).activeScopeId === "city-30-26");
 check("اسدآباد (county+city same name) picks the broader county-30-1",
   tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد" }).activeScopeId === "county-30-1");
 check("اسدآباد + expectedType:'city' → city under اسدآباد", (() => {
@@ -423,14 +446,20 @@ section("10) Scope-aware work queue — list_pending_nodes");
 // ===========================================================================
 tools.toolSetActiveScope({ provinceId: PROVINCE, nodeId: "اسدآباد", expectedType: "county" });
 const pendingScoped = tools.toolListPendingNodes({ provinceId: PROVINCE });
-check("اسدآباد scope pending = 4 (1 county + 3 cities)",
-  pendingScoped.pending === 4 &&
-    pendingScoped.pendingByType?.county === 1 &&
-    pendingScoped.pendingByType?.city === 3,
+check("اسدآباد scope pending includes county + cities + seeded places",
+  pendingScoped.pendingByType?.county === 1 &&
+    pendingScoped.pendingByType?.city === 3 &&
+    pendingScoped.pendingByType?.place === 1 &&
+    pendingScoped.pending === 5,
   JSON.stringify(pendingScoped.pendingByType));
 check("scoped queue stays inside the active subtree",
   pendingScoped.activeScopeId === "county-30-1" &&
-    pendingScoped.nodes.every((n) => n.nodeId === "county-30-1" || n.parentNodeId === "county-30-1"));
+    pendingScoped.nodes.every((n) => {
+      if (n.nodeId === "county-30-1" || n.parentNodeId === "county-30-1") return true;
+      // place under a city that is under this county
+      const parent = pendingScoped.nodes.find((x) => x.nodeId === n.parentNodeId);
+      return parent?.parentNodeId === "county-30-1" || parent?.nodeId === "county-30-1";
+    }));
 const pendingAll = tools.toolListPendingNodes({ provinceId: PROVINCE, allScopes: true });
 check("allScopes:true exposes the full-province unfinished queue",
   pendingAll.allScopes === true && pendingAll.pending > pendingScoped.pending,
