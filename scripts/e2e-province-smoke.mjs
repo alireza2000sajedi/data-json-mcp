@@ -136,6 +136,14 @@ check("10 counties / 34 cities / 2 villages registered from input/30.json",
 check("checklist places are seeded as place nodes on import",
   imported.seededPlaces === imported.scopeSummary.places && imported.seededPlaces > 0,
   JSON.stringify({ seeded: imported.seededPlaces, places: imported.scopeSummary.places }));
+check("reserve_entity_id skips seeded place ids", (() => {
+  const r = tools.toolReserveEntityId({
+    provinceId: PROVINCE, entityKind: "place", preferredSlug: "e2e-extra-attraction",
+  });
+  // After seeding place-30-1..N, the next free id must be place-30-(N+1) or higher.
+  const n = Number(String(r.id).replace(/^place-30-/, ""));
+  return r.id.startsWith("place-30-") && n > imported.seededPlaces;
+})());
 check("import is idempotent", (() => {
   const again = tools.toolImportProvinceScopes({ provinceId: PROVINCE });
   return again.registeredNodes === imported.registeredNodes && again.seededPlaces === imported.seededPlaces;

@@ -138,6 +138,8 @@ County / City / Village را **فقط از `input/{n}.json`** بگیر (`import_
 ### Place = تحقیق اجباری (چک‌لیست فقط بذر است)
 `places` / `placesChecklist` در input فقط **اولویت و نقطهٔ شروع** است — سقف نیست.
 - `import_province_scopes` هر Place چک‌لیست را به‌صورت Node در صف DFS seed می‌کند — هر کدام باید entity کامل بگیرند (sources + media + Visit).
+- برای Placeهای seed‌شده **id جدید reserve نکن**؛ همان `place-*` موجود در `list_pending_nodes` / `get_node_context` را save کن.
+- `reserve_entity_id` فقط برای Place **فراتر از checklist**؛ بعد `register_node` با Parent درست.
 - اول همهٔ نام‌های checklist را با `location` (اگر هست) پوشش بده و save کن.
 - بعد **حتماً** وب را برای جاذبه‌های واقعی همان Parent جستجو کن؛ Place اضافه را زیر Parent موجود بساز.
 - **MCP رد می‌کند:** `complete_discovery_task` برای `places`/`countyPlaces`/`provincePlaces` با `count` کمتر از طول checklist (`PLACES_BELOW_CHECKLIST`).

@@ -250,6 +250,8 @@ ok(/PLACES_BELOW_CHECKLIST|normalizePlaceKey|MIN_PLACE_SEARCHES_FOR_ZERO/.test(p
   "place checklist floor + zero-without-search enforcement must live in tools/place-checklist.");
 ok(/seedPlaces|seededPlaces|placeOrdinal/.test(read("src/tools.ts")),
   "import_province_scopes must seed checklist place nodes.");
+ok(/state\.nodes/.test(read("src/dataset.ts")) && /collectUsedIdsAndSlugs/.test(read("src/dataset.ts")),
+  "collectUsedIdsAndSlugs must include graph node ids so reserve skips seeded places.");
 ok(/uncoveredChecklistPlaces/.test(read("src/tools.ts")),
   "check_definition_of_done must report uncoveredChecklistPlaces.");
 

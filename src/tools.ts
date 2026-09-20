@@ -515,7 +515,9 @@ export function toolReserveEntityId(args: { provinceId: string; entityKind: stri
     args.entityKind === "camping" || args.entityKind === "campground" || args.entityKind === "poi"
       ? "place"
       : (args.entityKind as NodeType);
-  const nodeType: NodeType = ["province", "county", "city", "place"].includes(kindNodeType) ? kindNodeType : "place";
+  const nodeType: NodeType = ["province", "county", "city", "village", "place"].includes(kindNodeType)
+    ? kindNodeType
+    : "place";
 
   // Real reservation: persist a pending registry entry so a later reserve call
   // (or a concurrent agent) cannot return the same id/slug. save_active_entity
@@ -536,6 +538,10 @@ export function toolReserveEntityId(args: { provinceId: string; entityKind: stri
     entityKind: args.entityKind,
     nodeType,
     status: "pending",
+    note:
+      nodeType === "place"
+        ? "Checklist Places are already seeded on import — use their existing place-* nodeId from list_pending_nodes / get_node_context. reserve_entity_id is only for Places beyond the checklist; register_node with the correct parent before save."
+        : undefined,
     suggestedCanonicalPath: suggestedPath(nodeType, args.provinceId, id),
   };
 }

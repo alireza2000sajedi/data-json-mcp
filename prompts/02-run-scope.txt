@@ -43,7 +43,7 @@ TURBO از پرامپت ۰۱: تحقیق موازی OK؛ save خطی؛ media د�
 
 - محل کمپ = Place (`campground`)؛ Entity جدا نساز
 - County / City / Village جدید خارج از input نساز
-- **Place:** checklist فقط بذر است — Nodeهای seed‌شده را کامل کن؛ بعد وب را برای جاذبهٔ بیشتر جستجو کن
+- **Place:** checklist فقط بذر است — Nodeهای seed‌شده را با همان nodeId کامل کن (`reserve` نزن)؛ بعد وب را برای جاذبهٔ بیشتر جستجو کن
 - بستن places با count کمتر از checklist یا count:0 بدون جستجو → MCP رد می‌کند
 
 Media: County=۳ · City=۳ · Village=۲ · Place=۴ — به‌محض target توقف؛ URL reuse ممنوع

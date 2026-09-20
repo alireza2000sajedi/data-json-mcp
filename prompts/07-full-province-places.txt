@@ -23,6 +23,8 @@ province_id=<PROVINCE_ID>
 
 **Place (جاذبه‌ها) تحقیق اجباری است** — checklist در input فقط بذر/اولویت است، نه سقف.
 - `import` هر Place چک‌لیست را seed می‌کند؛ تا entity ذخیره نشود DoD پاس نمی‌شود.
+- Placeهای seed‌شده: همان nodeId موجود را save کن — `reserve_entity_id` نزن (تداخل با کندوان/… پیش می‌آید).
+- `reserve_entity_id` فقط برای Place جدید فراتر از checklist + `register_node` با Parent درست.
 - اول `placesChecklist` / Nodeهای seed‌شده را کامل کن.
 - بعد وب را برای جاذبه‌های بیشتر جستجو کن؛ Place جدید زیر Parent موجود در input.
 - `complete_discovery_task` با count < طول checklist → خطای `PLACES_BELOW_CHECKLIST` (ممنوع).

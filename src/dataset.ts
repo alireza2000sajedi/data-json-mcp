@@ -46,7 +46,7 @@ export function readEntityFile(provinceId: string, id: string): StoredEntity | u
   return findEntityById(provinceId, id);
 }
 
-/** Collect every id + slug currently used across the dataset (files + registry). */
+/** Collect every id + slug currently used across the dataset (files + registry + graph nodes). */
 export function collectUsedIdsAndSlugs(provinceId: string, state: NotesState): { ids: Set<string>; slugs: Set<string> } {
   const ids = new Set<string>();
   const slugs = new Set<string>();
@@ -57,6 +57,11 @@ export function collectUsedIdsAndSlugs(provinceId: string, state: NotesState): {
   for (const r of state.registry) {
     ids.add(r.id);
     slugs.add(r.slug);
+  }
+  // Seeded checklist places (and all other graph nodes) occupy ids even before
+  // an entity file exists — reserve_entity_id must never reuse them.
+  for (const n of state.nodes) {
+    ids.add(n.nodeId);
   }
   return { ids, slugs };
 }
