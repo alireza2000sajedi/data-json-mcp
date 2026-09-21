@@ -1,121 +1,8164 @@
 {
-  "version": "1.0.0",
-  "description": "Canonical travel-checklist item IDs. Entity travelChecklist mode arrays must use these ids only (not free-form Persian prose). Item groups use the 17 checklist categories below.",
+  "version": "1.4.2",
+  "description": "Canonical travel-checklist items. categories[] -> taxonomy/categories.json. difficulty (trip only): easy|moderate|challenging. group_type: solo|couple|friends|family. transportation: tour|personalCar|airplane|camping|train|bus|hitchhiking|none. accommodation: hotel|hostel|airbnb|camp|none.",
   "groups": [
-    {"id": "general", "label": "عمومی"},
-    {"id": "clothing", "label": "پوشاک"},
-    {"id": "hygiene", "label": "بهداشت"},
-    {"id": "documents", "label": "مدارک"},
-    {"id": "electronics", "label": "الکترونیک"},
-    {"id": "cooking", "label": "آشپزی"},
-    {"id": "food", "label": "خوراکی"},
-    {"id": "night", "label": "شب‌ماندن"},
-    {"id": "recreation", "label": "تفریح"},
-    {"id": "sports", "label": "ورزشی"},
-    {"id": "vehicle", "label": "خودرو"},
-    {"id": "medical", "label": "پزشکی"},
-    {"id": "safety", "label": "ایمنی"},
-    {"id": "money", "label": "مالی"},
-    {"id": "tools", "label": "ابزار"},
-    {"id": "navigation", "label": "مسیریابی"},
-    {"id": "kids", "label": "کودک"}
+    {
+      "id": "general",
+      "label": "عمومی"
+    },
+    {
+      "id": "clothing",
+      "label": "پوشاک"
+    },
+    {
+      "id": "hygiene",
+      "label": "بهداشت"
+    },
+    {
+      "id": "documents",
+      "label": "مدارک"
+    },
+    {
+      "id": "electronics",
+      "label": "الکترونیک"
+    },
+    {
+      "id": "cooking",
+      "label": "آشپزی"
+    },
+    {
+      "id": "food",
+      "label": "خوراکی"
+    },
+    {
+      "id": "night",
+      "label": "شب‌ماندن"
+    },
+    {
+      "id": "recreation",
+      "label": "تفریح"
+    },
+    {
+      "id": "sports",
+      "label": "ورزشی"
+    },
+    {
+      "id": "vehicle",
+      "label": "خودرو"
+    },
+    {
+      "id": "medical",
+      "label": "پزشکی"
+    },
+    {
+      "id": "safety",
+      "label": "ایمنی"
+    },
+    {
+      "id": "money",
+      "label": "مالی"
+    },
+    {
+      "id": "tools",
+      "label": "ابزار"
+    },
+    {
+      "id": "navigation",
+      "label": "مسیریابی"
+    },
+    {
+      "id": "kids",
+      "label": "کودک"
+    }
   ],
   "items": [
-    {"id": "backpack", "label": "کوله‌پشتی", "group": "general"},
-    {"id": "water_bottle_filter", "label": "قمقمه یا فیلتر آب", "group": "general"},
-
-    {"id": "tshirt", "label": "تی‌شرت", "group": "clothing"},
-    {"id": "warm_clothes", "label": "لباس گرم", "group": "clothing"},
-    {"id": "underwear", "label": "لباس زیر", "group": "clothing"},
-    {"id": "socks", "label": "جوراب", "group": "clothing"},
-    {"id": "sweatpants", "label": "شلوار گرم‌کن", "group": "clothing"},
-    {"id": "raincoat_poncho", "label": "بارانی یا پانچو", "group": "clothing"},
-    {"id": "swimwear", "label": "لباس شنا", "group": "clothing"},
-    {"id": "hat_buff", "label": "کلاه یا دستمال سر", "group": "clothing"},
-    {"id": "sunglasses", "label": "عینک آفتابی", "group": "clothing"},
-    {"id": "shoes", "label": "کفش", "group": "clothing"},
-    {"id": "sandals_slippers", "label": "صندل یا دمپایی", "group": "clothing"},
-
-    {"id": "soap", "label": "صابون", "group": "hygiene"},
-    {"id": "shampoo", "label": "شامپو", "group": "hygiene"},
-    {"id": "towel", "label": "حوله", "group": "hygiene"},
-    {"id": "toothbrush", "label": "مسواک", "group": "hygiene"},
-    {"id": "toothpaste", "label": "خمیردندان", "group": "hygiene"},
-    {"id": "tissues", "label": "دستمال کاغذی", "group": "hygiene"},
-    {"id": "wet_wipes", "label": "دستمال مرطوب", "group": "hygiene"},
-    {"id": "insect_repellent", "label": "اسپری دفع حشرات", "group": "hygiene"},
-    {"id": "condom", "label": "کاندوم", "group": "hygiene"},
-    {"id": "lip_balm", "label": "نرم‌کننده لب", "group": "hygiene"},
-    {"id": "sunscreen", "label": "ضدآفتاب", "group": "hygiene"},
-
-    {"id": "id_card", "label": "کارت شناسایی", "group": "documents"},
-    {"id": "passport", "label": "گذرنامه", "group": "documents"},
-    {"id": "visa", "label": "ویزا", "group": "documents"},
-    {"id": "boarding_pass", "label": "کارت پرواز", "group": "documents"},
-    {"id": "ticket_reserved", "label": "بلیت رزروشده", "group": "documents"},
-    {"id": "travel_insurance", "label": "بیمه سفر", "group": "documents"},
-
-    {"id": "mobile_phone", "label": "موبایل", "group": "electronics"},
-    {"id": "charger", "label": "شارژر", "group": "electronics"},
-    {"id": "car_charger", "label": "شارژر فندکی", "group": "electronics"},
-    {"id": "power_bank", "label": "پاوربانک", "group": "electronics"},
-    {"id": "headlamp_battery", "label": "باتری هدلامپ", "group": "electronics"},
-    {"id": "headphones", "label": "هدفون", "group": "electronics"},
-    {"id": "speaker", "label": "اسپیکر", "group": "electronics"},
-    {"id": "camera", "label": "دوربین", "group": "electronics"},
-    {"id": "waterproof_bag", "label": "کیسه ضدآب", "group": "electronics"},
-
-    {"id": "lighter", "label": "فندک", "group": "cooking"},
-    {"id": "camping_stove", "label": "اجاق گاز سفری", "group": "cooking"},
-    {"id": "utensils_set", "label": "بشقاب قاشق چنگال چاقو", "group": "cooking"},
-    {"id": "trash_bags", "label": "پلاستیک زباله", "group": "cooking"},
-    {"id": "dish_soap_sponge", "label": "مایع ظرفشویی و ابر", "group": "cooking"},
-    {"id": "pot_kettle", "label": "قابلمه و کتری", "group": "cooking"},
-
-    {"id": "salt_spices", "label": "نمک و ادویه", "group": "food"},
-    {"id": "cooking_oil", "label": "روغن", "group": "food"},
-    {"id": "tea", "label": "چای", "group": "food"},
-    {"id": "food_supplies", "label": "مواد غذایی", "group": "food"},
-    {"id": "road_snacks", "label": "تنقلات مسیر", "group": "food"},
-    {"id": "thermos", "label": "فلاسک", "group": "food"},
-
-    {"id": "pillow", "label": "بالش", "group": "night"},
-    {"id": "tent", "label": "چادر", "group": "night"},
-    {"id": "sleeping_bag", "label": "کیسه خواب", "group": "night"},
-    {"id": "sleeping_pad", "label": "زیرانداز", "group": "night"},
-    {"id": "headlamp", "label": "هدلامپ", "group": "night"},
-    {"id": "flashlight", "label": "چراغ‌قوه", "group": "night"},
-    {"id": "lantern", "label": "فانوس", "group": "night"},
-    {"id": "neck_pillow", "label": "بالش گردنی", "group": "night"},
-    {"id": "earplugs", "label": "گوش‌گیر", "group": "night"},
-
-    {"id": "card_games", "label": "کارت‌گیم", "group": "recreation"},
-    {"id": "board_games", "label": "بردگیم", "group": "recreation"},
-    {"id": "hammock", "label": "ننو", "group": "recreation"},
-    {"id": "camp_shower", "label": "دوش صحرایی", "group": "recreation"},
-    {"id": "pen_paper", "label": "قلم و کاغذ", "group": "recreation"},
-    {"id": "book_ereader", "label": "کتاب یا کتاب‌خوان", "group": "recreation"},
-
-    {"id": "frisbee", "label": "فریزبی", "group": "sports"},
-    {"id": "fishing_gear", "label": "وسایل ماهی‌گیری", "group": "sports"},
-
-    {"id": "car_documents", "label": "مدارک خودرو", "group": "vehicle"},
-    {"id": "vehicle_insurance", "label": "بیمه خودرو", "group": "vehicle"},
-    {"id": "snow_chains", "label": "زنجیر چرخ", "group": "vehicle"},
-    {"id": "spare_tire", "label": "لاستیک زاپاس", "group": "vehicle"},
-    {"id": "jumper_cables", "label": "کابل باطری به باطری", "group": "vehicle"},
-
-    {"id": "first_aid_kit", "label": "کمک‌های اولیه", "group": "medical"},
-    {"id": "personal_medicine", "label": "داروهای شخصی", "group": "medical"},
-    {"id": "painkillers", "label": "قرص مسکن", "group": "medical"},
-
-    {"id": "cash", "label": "پول نقد", "group": "money"},
-
-    {"id": "multitool_knife", "label": "چاقوی همه‌کاره", "group": "tools"},
-    {"id": "tool_kit", "label": "کیت ابزار", "group": "tools"},
-
-    {"id": "map_or_offline_maps", "label": "نقشه یا نقشه آفلاین", "group": "navigation"},
-
-    {"id": "water_gun", "label": "تفنگ آب‌پاش", "group": "kids"}
-  ]
+    {
+      "id": "backpack",
+      "label": "کوله‌پشتی",
+      "group": "general",
+      "categories": [
+        "adventure",
+        "mountain",
+        "hiking_mountaineering",
+        "eco_tourism"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "daypack",
+      "label": "کوله‌روزانه",
+      "group": "general",
+      "categories": [
+        "urban",
+        "walking",
+        "museum_culture",
+        "shopping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "dry_bag",
+      "label": "کیسه خشک",
+      "group": "general",
+      "categories": [
+        "coastal",
+        "water",
+        "kayaking_meetup",
+        "rafting_meetup",
+        "beach_day"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "duct_tape",
+      "label": "نوار چسب پهن",
+      "group": "general",
+      "categories": [
+        "camping",
+        "adventure",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "laundry_bag",
+      "label": "کیسه لباس چرک",
+      "group": "general",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "luggage_lock",
+      "label": "قفل چمدان",
+      "group": "general",
+      "categories": [
+        "hospitality",
+        "urban",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "packing_cubes",
+      "label": "کیسه نظم‌دهنده",
+      "group": "general",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "reusable_bag",
+      "label": "کیسه پارچه‌ای",
+      "group": "general",
+      "categories": [
+        "shopping",
+        "bazaar",
+        "local_life"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sewing_kit",
+      "label": "کیت خیاطی",
+      "group": "general",
+      "categories": [
+        "camping",
+        "eco_tourism",
+        "adventure"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "travel_pillow_case",
+      "label": "روبالشی سفری",
+      "group": "general",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "umbrella",
+      "label": "چتر",
+      "group": "general",
+      "categories": [
+        "urban",
+        "seasonal",
+        "walking"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "water_bottle_filter",
+      "label": "قمقمه یا فیلتر آب",
+      "group": "general",
+      "categories": [
+        "adventure",
+        "mountain",
+        "desert",
+        "eco_tourism",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel"
+      ]
+    },
+    {
+      "id": "zip_ties",
+      "label": "بست کمربندی",
+      "group": "general",
+      "categories": [
+        "camping",
+        "adventure",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "belt",
+      "label": "کمربند",
+      "group": "clothing",
+      "categories": [
+        "urban"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "extra_pants",
+      "label": "شلوار اضافه",
+      "group": "clothing",
+      "categories": [
+        "hiking_mountaineering",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "fleece",
+      "label": "پلار",
+      "group": "clothing",
+      "categories": [
+        "mountain",
+        "camping",
+        "winter_events"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "formal_outfit",
+      "label": "لباس رسمی",
+      "group": "clothing",
+      "categories": [
+        "religion",
+        "pilgrimage",
+        "business_events",
+        "museum_culture"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "gaiters",
+      "label": "گتر",
+      "group": "clothing",
+      "categories": [
+        "mountain",
+        "hiking_mountaineering",
+        "snowshoe_meetup",
+        "desert"
+      ],
+      "difficulty": [
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "gloves",
+      "label": "دستکش",
+      "group": "clothing",
+      "categories": [
+        "winter_sports",
+        "winter_events",
+        "mountain",
+        "glacier"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "hat_buff",
+      "label": "کلاه یا دستمال سر",
+      "group": "clothing",
+      "categories": [
+        "desert",
+        "mountain",
+        "viewpoint",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "hiking_boots",
+      "label": "کفش کوهنوردی",
+      "group": "clothing",
+      "categories": [
+        "mountain",
+        "adventure",
+        "hiking_mountaineering",
+        "canyon",
+        "forest"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "hostel",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "jacket",
+      "label": "کاپشن",
+      "group": "clothing",
+      "categories": [
+        "mountain",
+        "seasonal",
+        "winter_sports",
+        "urban"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "raincoat_poncho",
+      "label": "بارانی یا پانچو",
+      "group": "clothing",
+      "categories": [
+        "forest",
+        "waterfall",
+        "seasonal",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sandals_slippers",
+      "label": "صندل یا دمپایی",
+      "group": "clothing",
+      "categories": [
+        "coastal",
+        "hospitality",
+        "thermal_spring"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "scarf_shawl",
+      "label": "شال یا روسری",
+      "group": "clothing",
+      "categories": [
+        "urban",
+        "seasonal",
+        "pilgrimage"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "shoes",
+      "label": "کفش",
+      "group": "clothing",
+      "categories": [
+        "urban",
+        "walking",
+        "shopping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sleepwear",
+      "label": "لباس خواب",
+      "group": "clothing",
+      "categories": [
+        "hospitality",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "socks",
+      "label": "جوراب",
+      "group": "clothing",
+      "categories": [
+        "hiking_mountaineering",
+        "walking",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sunglasses",
+      "label": "عینک آفتابی",
+      "group": "clothing",
+      "categories": [
+        "desert",
+        "coastal",
+        "viewpoint",
+        "winter_sports"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sweatpants",
+      "label": "شلوار گرم‌کن",
+      "group": "clothing",
+      "categories": [
+        "hospitality",
+        "road_trip",
+        "fitness"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "swimwear",
+      "label": "لباس شنا",
+      "group": "clothing",
+      "categories": [
+        "coastal",
+        "water",
+        "swimming",
+        "water_park",
+        "beach_day",
+        "thermal_spring"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "thermal_base_layer",
+      "label": "لباس لایه اول گرم",
+      "group": "clothing",
+      "categories": [
+        "winter_sports",
+        "winter_events",
+        "mountain",
+        "glacier"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tshirt",
+      "label": "تی‌شرت",
+      "group": "clothing",
+      "categories": [
+        "urban",
+        "family",
+        "walking"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "underwear",
+      "label": "لباس زیر",
+      "group": "clothing",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "warm_clothes",
+      "label": "لباس گرم",
+      "group": "clothing",
+      "categories": [
+        "mountain",
+        "winter_sports",
+        "winter_events",
+        "seasonal",
+        "glacier"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "wool_socks",
+      "label": "جوراب پشمی",
+      "group": "clothing",
+      "categories": [
+        "winter_sports",
+        "mountain",
+        "camping"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "condom",
+      "label": "کاندوم",
+      "group": "hygiene",
+      "categories": [
+        "romantic",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "airbnb",
+        "hostel",
+        "camp"
+      ]
+    },
+    {
+      "id": "contact_lens_kit",
+      "label": "لنز و محلول",
+      "group": "hygiene",
+      "categories": [
+        "urban",
+        "adventure"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "cotton_swabs",
+      "label": "گوش‌پاک‌کن",
+      "group": "hygiene",
+      "categories": [
+        "hospitality",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "dental_floss",
+      "label": "نخ دندان",
+      "group": "hygiene",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "deodorant",
+      "label": "ضدتعریق",
+      "group": "hygiene",
+      "categories": [
+        "urban",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "face_mask",
+      "label": "ماسک صورت",
+      "group": "hygiene",
+      "categories": [
+        "urban",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "hairbrush",
+      "label": "برس مو",
+      "group": "hygiene",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "hand_sanitizer",
+      "label": "ضدعفونی‌کننده دست",
+      "group": "hygiene",
+      "categories": [
+        "food",
+        "street_food",
+        "family",
+        "urban"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "insect_repellent",
+      "label": "اسپری دفع حشرات",
+      "group": "hygiene",
+      "categories": [
+        "forest",
+        "wetland",
+        "wildlife",
+        "camping",
+        "picnic"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "laundry_detergent_travel",
+      "label": "شوینده لباس سفری",
+      "group": "hygiene",
+      "categories": [
+        "camping",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "lip_balm",
+      "label": "نرم‌کننده لب",
+      "group": "hygiene",
+      "categories": [
+        "desert",
+        "mountain",
+        "winter_sports"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "menstrual_products",
+      "label": "اقلام قاعدگی",
+      "group": "hygiene",
+      "categories": [
+        "hospitality",
+        "camping",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "moisturizer",
+      "label": "مرطوب‌کننده",
+      "group": "hygiene",
+      "categories": [
+        "desert",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "nail_clipper",
+      "label": "ناخن‌گیر",
+      "group": "hygiene",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "razor",
+      "label": "تیغ اصلاح",
+      "group": "hygiene",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "shampoo",
+      "label": "شامپو",
+      "group": "hygiene",
+      "categories": [
+        "hospitality",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "soap",
+      "label": "صابون",
+      "group": "hygiene",
+      "categories": [
+        "camping",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sunscreen",
+      "label": "ضدآفتاب",
+      "group": "hygiene",
+      "categories": [
+        "desert",
+        "coastal",
+        "mountain",
+        "viewpoint",
+        "beach_day"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tissues",
+      "label": "دستمال کاغذی",
+      "group": "hygiene",
+      "categories": [
+        "road_trip",
+        "urban",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "toilet_paper",
+      "label": "دستمال توالت",
+      "group": "hygiene",
+      "categories": [
+        "camping",
+        "adventure",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "toothbrush",
+      "label": "مسواک",
+      "group": "hygiene",
+      "categories": [
+        "hospitality",
+        "camping",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "toothpaste",
+      "label": "خمیردندان",
+      "group": "hygiene",
+      "categories": [
+        "hospitality",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "towel",
+      "label": "حوله",
+      "group": "hygiene",
+      "categories": [
+        "coastal",
+        "swimming",
+        "thermal_spring",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "wet_wipes",
+      "label": "دستمال مرطوب",
+      "group": "hygiene",
+      "categories": [
+        "kids",
+        "family",
+        "road_trip",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "boarding_pass",
+      "label": "کارت پرواز",
+      "group": "documents",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "airplane"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "document_copies",
+      "label": "کپی مدارک",
+      "group": "documents",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "driver_license",
+      "label": "گواهینامه",
+      "group": "documents",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "emergency_contacts",
+      "label": "لیست تماس اضطراری",
+      "group": "documents",
+      "categories": [
+        "adventure",
+        "mountain",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "entrance_permits",
+      "label": "مجوز ورود",
+      "group": "documents",
+      "categories": [
+        "wildlife",
+        "geoheritage"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "hotel_reservation",
+      "label": "رزرو اقامت",
+      "group": "documents",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "id_card",
+      "label": "کارت شناسایی",
+      "group": "documents",
+      "categories": [
+        "urban",
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "passport",
+      "label": "گذرنامه",
+      "group": "documents",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "student_card",
+      "label": "کارت دانشجویی",
+      "group": "documents",
+      "categories": [
+        "education",
+        "museum_culture",
+        "urban"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "ticket_reserved",
+      "label": "بلیت رزروشده",
+      "group": "documents",
+      "categories": [
+        "road_trip",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "travel_insurance",
+      "label": "بیمه سفر",
+      "group": "documents",
+      "categories": [
+        "adventure",
+        "mountain",
+        "winter_sports",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "vaccination_card",
+      "label": "کارت واکسن",
+      "group": "documents",
+      "categories": [
+        "hospitality",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "visa",
+      "label": "ویزا",
+      "group": "documents",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "camera",
+      "label": "دوربین",
+      "group": "electronics",
+      "categories": [
+        "photography",
+        "viewpoint",
+        "wildlife",
+        "photo_outing"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "car_charger",
+      "label": "شارژر فندکی",
+      "group": "electronics",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "charger",
+      "label": "شارژر",
+      "group": "electronics",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "headlamp_battery",
+      "label": "باتری هدلامپ",
+      "group": "electronics",
+      "categories": [
+        "camping",
+        "cave",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "headphones",
+      "label": "هدفون",
+      "group": "electronics",
+      "categories": [
+        "road_trip",
+        "urban"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "kindle_ereader",
+      "label": "کتاب‌خوان الکترونیکی",
+      "group": "electronics",
+      "categories": [
+        "road_trip",
+        "hospitality",
+        "literature"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "laptop",
+      "label": "لپ‌تاپ",
+      "group": "electronics",
+      "categories": [
+        "business_events",
+        "learning",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "memory_card",
+      "label": "کارت حافظه",
+      "group": "electronics",
+      "categories": [
+        "photography",
+        "photo_outing"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "mobile_phone",
+      "label": "موبایل",
+      "group": "electronics",
+      "categories": [
+        "urban",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "outlet_adapter",
+      "label": "مبدل برق",
+      "group": "electronics",
+      "categories": [
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "power_bank",
+      "label": "پاوربانک",
+      "group": "electronics",
+      "categories": [
+        "adventure",
+        "hiking_mountaineering",
+        "urban",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sim_or_esim",
+      "label": "سیم‌کارت یا eSIM",
+      "group": "electronics",
+      "categories": [
+        "urban",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "smartwatch",
+      "label": "ساعت هوشمند",
+      "group": "electronics",
+      "categories": [
+        "fitness",
+        "running",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "speaker",
+      "label": "اسپیکر",
+      "group": "electronics",
+      "categories": [
+        "camping",
+        "picnic",
+        "social_gatherings",
+        "beach_day"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tablet",
+      "label": "تبلت",
+      "group": "electronics",
+      "categories": [
+        "family",
+        "kids",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "travel_extension_cord",
+      "label": "سه راهی سفری",
+      "group": "electronics",
+      "categories": [
+        "camping",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "usb_cable",
+      "label": "کابل USB",
+      "group": "electronics",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "waterproof_bag",
+      "label": "کیسه ضدآب",
+      "group": "electronics",
+      "categories": [
+        "coastal",
+        "water",
+        "waterfall",
+        "kayaking_meetup"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "aluminum_foil",
+      "label": "فویل آلومینیومی",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "picnic"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "camping_stove",
+      "label": "اجاق گاز سفری",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "eco_tourism",
+        "picnic"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "can_opener",
+      "label": "درب‌بازکن",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "picnic"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "coffee_kit",
+      "label": "وسایل قهوه سفری",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "cafe_culture",
+        "coffee_tasting"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "cooler_bag",
+      "label": "کیسه خنک‌کننده",
+      "group": "cooking",
+      "categories": [
+        "picnic",
+        "beach_day",
+        "road_trip",
+        "food"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "cutting_board_travel",
+      "label": "تخته برش سفری",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "cooking_class",
+        "picnic"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "dish_soap_sponge",
+      "label": "مایع ظرفشویی و ابر",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "picnic"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "fuel_canister",
+      "label": "کپسول گاز سفری",
+      "group": "cooking",
+      "categories": [
+        "camping"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "lighter",
+      "label": "فندک",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "picnic",
+        "outdoor_social"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "matches",
+      "label": "کبریت",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "picnic"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "pot_kettle",
+      "label": "قابلمه و کتری",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "eco_tourism"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "trash_bags",
+      "label": "پلاستیک زباله",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "picnic",
+        "eco_tourism",
+        "cleanup_volunteer"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "utensils_set",
+      "label": "بشقاب قاشق چنگال چاقو",
+      "group": "cooking",
+      "categories": [
+        "camping",
+        "picnic",
+        "food_experiences"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "baby_formula",
+      "label": "شیرخشک",
+      "group": "food",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "cooking_oil",
+      "label": "روغن",
+      "group": "food",
+      "categories": [
+        "camping",
+        "cooking_class"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "energy_bars",
+      "label": "شکلات یا بار انرژی",
+      "group": "food",
+      "categories": [
+        "hiking_mountaineering",
+        "adventure",
+        "endurance",
+        "mountain"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "extra_water",
+      "label": "آب اضافه",
+      "group": "food",
+      "categories": [
+        "desert",
+        "adventure",
+        "hiking_mountaineering",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "food_supplies",
+      "label": "مواد غذایی",
+      "group": "food",
+      "categories": [
+        "camping",
+        "picnic",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "instant_noodles",
+      "label": "نودل یا غذای فوری",
+      "group": "food",
+      "categories": [
+        "camping",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "nuts_dried_fruit",
+      "label": "آجیل و خشکبار",
+      "group": "food",
+      "categories": [
+        "hiking_mountaineering",
+        "road_trip",
+        "desert"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "powdered_drink",
+      "label": "نوشیدنی پودری",
+      "group": "food",
+      "categories": [
+        "hiking_mountaineering",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "road_snacks",
+      "label": "تنقلات مسیر",
+      "group": "food",
+      "categories": [
+        "road_trip",
+        "hiking_mountaineering",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "salt_spices",
+      "label": "نمک و ادویه",
+      "group": "food",
+      "categories": [
+        "camping",
+        "cooking_class",
+        "traditional_cuisine"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sugar_honey",
+      "label": "شکر یا عسل",
+      "group": "food",
+      "categories": [
+        "camping",
+        "cafe_culture"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tea",
+      "label": "چای",
+      "group": "food",
+      "categories": [
+        "camping",
+        "cafe_culture",
+        "local_life"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "thermos",
+      "label": "فلاسک",
+      "group": "food",
+      "categories": [
+        "mountain",
+        "winter_sports",
+        "road_trip",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "blanket",
+      "label": "پتو",
+      "group": "night",
+      "categories": [
+        "camping",
+        "road_trip",
+        "seasonal"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "camp_chair",
+      "label": "صندلی سفری",
+      "group": "night",
+      "categories": [
+        "camping",
+        "picnic",
+        "beach_day"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "earplugs",
+      "label": "گوش‌گیر",
+      "group": "night",
+      "categories": [
+        "hospitality",
+        "urban",
+        "nightlife"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "eye_mask",
+      "label": "چشم‌بند",
+      "group": "night",
+      "categories": [
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "flashlight",
+      "label": "چراغ‌قوه",
+      "group": "night",
+      "categories": [
+        "camping",
+        "cave",
+        "adventure"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "headlamp",
+      "label": "هدلامپ",
+      "group": "night",
+      "categories": [
+        "camping",
+        "cave",
+        "hiking_mountaineering",
+        "stargazing"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel"
+      ]
+    },
+    {
+      "id": "hot_water_bottle",
+      "label": "کیسه آب گرم",
+      "group": "night",
+      "categories": [
+        "winter_sports",
+        "camping",
+        "mountain"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "hostel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "inflatable_pillow",
+      "label": "بالش بادی",
+      "group": "night",
+      "categories": [
+        "camping",
+        "beach_day"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "lantern",
+      "label": "فانوس",
+      "group": "night",
+      "categories": [
+        "camping",
+        "picnic",
+        "outdoor_social"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "neck_pillow",
+      "label": "بالش گردنی",
+      "group": "night",
+      "categories": [
+        "road_trip",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "pillow",
+      "label": "بالش",
+      "group": "night",
+      "categories": [
+        "hospitality",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sleep_mask_earplug_set",
+      "label": "ست خواب مسیر",
+      "group": "night",
+      "categories": [
+        "road_trip",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "sleeping_bag",
+      "label": "کیسه خواب",
+      "group": "night",
+      "categories": [
+        "camping",
+        "mountain",
+        "winter_events",
+        "eco_tourism"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel"
+      ]
+    },
+    {
+      "id": "sleeping_pad",
+      "label": "زیرانداز",
+      "group": "night",
+      "categories": [
+        "camping",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tent",
+      "label": "چادر",
+      "group": "night",
+      "categories": [
+        "camping",
+        "outdoor_social",
+        "eco_tourism",
+        "adventure"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tent_footprint",
+      "label": "زیرچادر",
+      "group": "night",
+      "categories": [
+        "camping"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp"
+      ]
+    },
+    {
+      "id": "ball",
+      "label": "توپ",
+      "group": "recreation",
+      "categories": [
+        "family",
+        "kids",
+        "recreation",
+        "beach_day",
+        "parks_gardens"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "binoculars",
+      "label": "دوربین دوچشمی",
+      "group": "recreation",
+      "categories": [
+        "wildlife",
+        "viewpoint",
+        "stargazing"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "board_games",
+      "label": "بردگیم",
+      "group": "recreation",
+      "categories": [
+        "family",
+        "tabletop_social",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "book_ereader",
+      "label": "کتاب یا کتاب‌خوان",
+      "group": "recreation",
+      "categories": [
+        "road_trip",
+        "literature",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "airplane",
+        "train",
+        "bus"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "camp_shower",
+      "label": "دوش صحرایی",
+      "group": "recreation",
+      "categories": [
+        "camping",
+        "eco_tourism"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "card_games",
+      "label": "کارت‌گیم",
+      "group": "recreation",
+      "categories": [
+        "camping",
+        "family",
+        "tabletop_social",
+        "picnic"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "hammock",
+      "label": "ننو",
+      "group": "recreation",
+      "categories": [
+        "forest",
+        "camping",
+        "eco_tourism",
+        "picnic"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "journal",
+      "label": "دفترچه سفر",
+      "group": "recreation",
+      "categories": [
+        "photography",
+        "viewpoint",
+        "literature"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "kite",
+      "label": "بادبادک",
+      "group": "recreation",
+      "categories": [
+        "coastal",
+        "kids",
+        "beach_day",
+        "parks_gardens"
+      ],
+      "difficulty": [
+        "easy"
+      ],
+      "group_type": [
+        "family",
+        "friends"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "pen_paper",
+      "label": "قلم و کاغذ",
+      "group": "recreation",
+      "categories": [
+        "learning",
+        "literature",
+        "education"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "portable_speaker_games",
+      "label": "بازی‌های کم‌حجم",
+      "group": "recreation",
+      "categories": [
+        "family",
+        "kids",
+        "camping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "snorkeling_mask",
+      "label": "ماسک غواصی سطحی",
+      "group": "recreation",
+      "categories": [
+        "coastal",
+        "island",
+        "diving_meetup",
+        "water"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "bicycle_helmet",
+      "label": "کلاه دوچرخه",
+      "group": "sports",
+      "categories": [
+        "cycling",
+        "endurance",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "fishing_gear",
+      "label": "وسایل ماهی‌گیری",
+      "group": "sports",
+      "categories": [
+        "river",
+        "lake",
+        "coastal",
+        "wetland"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "camp",
+        "hotel",
+        "airbnb",
+        "none"
+      ]
+    },
+    {
+      "id": "fitness_band",
+      "label": "کش ورزشی",
+      "group": "sports",
+      "categories": [
+        "fitness",
+        "trx_functional",
+        "wellness"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "frisbee",
+      "label": "فریزبی",
+      "group": "sports",
+      "categories": [
+        "beach_day",
+        "parks_gardens",
+        "family",
+        "recreation"
+      ],
+      "difficulty": [
+        "easy"
+      ],
+      "group_type": [
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "hiking_poles",
+      "label": "باتوم کوهنوردی",
+      "group": "sports",
+      "categories": [
+        "mountain",
+        "hiking_mountaineering",
+        "trail_running"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "ski_goggles",
+      "label": "عینک اسکی",
+      "group": "sports",
+      "categories": [
+        "winter_sports",
+        "ski_meetup",
+        "snowboard_meetup"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar",
+        "bus"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp"
+      ]
+    },
+    {
+      "id": "swim_goggles",
+      "label": "عینک شنا",
+      "group": "sports",
+      "categories": [
+        "swimming",
+        "water_sports",
+        "coastal",
+        "water_park"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "yoga_mat_travel",
+      "label": "مت یوگای سفری",
+      "group": "sports",
+      "categories": [
+        "yoga",
+        "mind_body",
+        "wellness",
+        "pilates"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp"
+      ]
+    },
+    {
+      "id": "car_blanket",
+      "label": "پتو خودرو",
+      "group": "vehicle",
+      "categories": [
+        "road_trip",
+        "winter_sports",
+        "seasonal"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "car_documents",
+      "label": "مدارک خودرو",
+      "group": "vehicle",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "car_phone_mount",
+      "label": "پایه موبایل خودرو",
+      "group": "vehicle",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "coolant",
+      "label": "ضدیخ یا آب رادیاتور",
+      "group": "vehicle",
+      "categories": [
+        "road_trip",
+        "desert"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "fire_extinguisher",
+      "label": "کپسول آتش‌نشانی",
+      "group": "vehicle",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "fuel_jerrycan",
+      "label": "گالن بنزین",
+      "group": "vehicle",
+      "categories": [
+        "desert",
+        "road_trip",
+        "adventure"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "jumper_cables",
+      "label": "کابل باطری به باطری",
+      "group": "vehicle",
+      "categories": [
+        "road_trip",
+        "desert"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "motor_oil",
+      "label": "روغن موتور",
+      "group": "vehicle",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "snow_chains",
+      "label": "زنجیر چرخ",
+      "group": "vehicle",
+      "categories": [
+        "winter_sports",
+        "mountain",
+        "road_trip",
+        "seasonal"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "spare_tire",
+      "label": "لاستیک زاپاس",
+      "group": "vehicle",
+      "categories": [
+        "road_trip",
+        "desert",
+        "adventure"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tire_pump",
+      "label": "پمپ باد",
+      "group": "vehicle",
+      "categories": [
+        "road_trip",
+        "cycling"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tow_rope",
+      "label": "طناب بکسل",
+      "group": "vehicle",
+      "categories": [
+        "road_trip",
+        "adventure"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "vehicle_insurance",
+      "label": "بیمه خودرو",
+      "group": "vehicle",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "warning_triangle",
+      "label": "مثلث خطر",
+      "group": "vehicle",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "windshield_fluid",
+      "label": "شیشه‌شوی",
+      "group": "vehicle",
+      "categories": [
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "allergy_medicine",
+      "label": "داروی آلرژی",
+      "group": "medical",
+      "categories": [
+        "wildlife",
+        "forest",
+        "seasonal",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "antiseptic",
+      "label": "ضدعفونی‌کننده زخم",
+      "group": "medical",
+      "categories": [
+        "adventure",
+        "camping",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "bandages",
+      "label": "باند و گاز",
+      "group": "medical",
+      "categories": [
+        "adventure",
+        "hiking_mountaineering",
+        "climbing_bouldering"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "blister_plasters",
+      "label": "چسب تاول",
+      "group": "medical",
+      "categories": [
+        "hiking_mountaineering",
+        "walking",
+        "mountain"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "cold_flu_medicine",
+      "label": "داروی سرماخوردگی",
+      "group": "medical",
+      "categories": [
+        "seasonal",
+        "family",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "diarrhea_medicine",
+      "label": "داروی اسهال",
+      "group": "medical",
+      "categories": [
+        "food",
+        "street_food",
+        "adventure"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "electrolyte_powder",
+      "label": "پودر الکترولیت",
+      "group": "medical",
+      "categories": [
+        "desert",
+        "hiking_mountaineering",
+        "endurance"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "first_aid_kit",
+      "label": "کمک‌های اولیه",
+      "group": "medical",
+      "categories": [
+        "adventure",
+        "mountain",
+        "camping",
+        "hiking_mountaineering",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "motion_sickness_pills",
+      "label": "داروی تهوع سفر",
+      "group": "medical",
+      "categories": [
+        "road_trip",
+        "water",
+        "coastal"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "oral_rehydration",
+      "label": "ORS یا محلول کم‌آبی",
+      "group": "medical",
+      "categories": [
+        "desert",
+        "food",
+        "adventure"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "painkillers",
+      "label": "قرص مسکن",
+      "group": "medical",
+      "categories": [
+        "hiking_mountaineering",
+        "adventure",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "personal_medicine",
+      "label": "داروهای شخصی",
+      "group": "medical",
+      "categories": [
+        "family",
+        "hospitality",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "prescription_glasses",
+      "label": "عینک طبی",
+      "group": "medical",
+      "categories": [
+        "urban",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "thermometer",
+      "label": "تب‌سنج",
+      "group": "medical",
+      "categories": [
+        "family",
+        "kids",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "tweezers",
+      "label": "پنس",
+      "group": "medical",
+      "categories": [
+        "adventure",
+        "camping",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "emergency_blanket",
+      "label": "پتوی نجات",
+      "group": "safety",
+      "categories": [
+        "mountain",
+        "winter_sports",
+        "adventure",
+        "camping"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "fire_starter",
+      "label": "آتش‌زنه",
+      "group": "safety",
+      "categories": [
+        "camping",
+        "adventure"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "helmet",
+      "label": "کلاه ایمنی",
+      "group": "safety",
+      "categories": [
+        "cycling",
+        "climbing_bouldering",
+        "ski_meetup",
+        "adventure"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "life_jacket",
+      "label": "جلیقه نجات",
+      "group": "safety",
+      "categories": [
+        "water",
+        "coastal",
+        "kayaking_meetup",
+        "rafting_meetup"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hotel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "padlock",
+      "label": "قفل آویز",
+      "group": "safety",
+      "categories": [
+        "camping",
+        "hospitality",
+        "urban"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "paracord",
+      "label": "طناب پاراکورد",
+      "group": "safety",
+      "categories": [
+        "camping",
+        "adventure",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "personal_alarm",
+      "label": "آژیر شخصی",
+      "group": "safety",
+      "categories": [
+        "urban",
+        "nightlife",
+        "walking"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "reflective_vest",
+      "label": "جلیقه شبرنگ",
+      "group": "safety",
+      "categories": [
+        "road_trip",
+        "cycling",
+        "running"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "signal_mirror",
+      "label": "آینه علامت",
+      "group": "safety",
+      "categories": [
+        "desert",
+        "adventure",
+        "mountain"
+      ],
+      "difficulty": [
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "whistle",
+      "label": "سوت",
+      "group": "safety",
+      "categories": [
+        "adventure",
+        "mountain",
+        "hiking_mountaineering",
+        "kids"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "backup_cash",
+      "label": "پول نقد پشتیبان",
+      "group": "money",
+      "categories": [
+        "adventure",
+        "rural",
+        "desert",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "cash",
+      "label": "پول نقد",
+      "group": "money",
+      "categories": [
+        "bazaar",
+        "local_life",
+        "rural",
+        "shopping",
+        "street_food"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "credit_card",
+      "label": "کارت اعتباری",
+      "group": "money",
+      "categories": [
+        "urban",
+        "hospitality",
+        "shopping"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "debit_card",
+      "label": "کارت بانکی",
+      "group": "money",
+      "categories": [
+        "urban",
+        "shopping",
+        "hospitality"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "money_belt",
+      "label": "کمربند پولی",
+      "group": "money",
+      "categories": [
+        "urban",
+        "bazaar",
+        "pilgrimage"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "solo",
+        "couple"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "small_bills",
+      "label": "اسکناس خرد",
+      "group": "money",
+      "categories": [
+        "street_food",
+        "local_life",
+        "bazaar",
+        "rural"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "axe_hatchet",
+      "label": "تبر سفری",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "forest"
+      ],
+      "difficulty": [
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "folding_shovel",
+      "label": "بیل تاشو",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "desert",
+        "winter_sports",
+        "road_trip"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "multitool_knife",
+      "label": "چاقوی همه‌کاره",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "adventure",
+        "picnic",
+        "hiking_mountaineering"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "rope",
+      "label": "طناب",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "adventure",
+        "climbing_bouldering"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "saw_folding",
+      "label": "اره تاشو",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "forest"
+      ],
+      "difficulty": [
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "scissors",
+      "label": "قیچی",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "tent_repair_kit",
+      "label": "کیت تعمیر چادر",
+      "group": "tools",
+      "categories": [
+        "camping"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "camping",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "camp"
+      ]
+    },
+    {
+      "id": "tool_kit",
+      "label": "کیت ابزار",
+      "group": "tools",
+      "categories": [
+        "road_trip",
+        "camping"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "work_gloves",
+      "label": "دستکش کار",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "cleanup_volunteer",
+        "adventure"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "zip_bags",
+      "label": "کیسه زیپ‌دار",
+      "group": "tools",
+      "categories": [
+        "camping",
+        "food",
+        "kids"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "airbnb"
+      ]
+    },
+    {
+      "id": "altimeter",
+      "label": "ارتفاع‌سنج",
+      "group": "navigation",
+      "categories": [
+        "mountain",
+        "hiking_mountaineering",
+        "glacier"
+      ],
+      "difficulty": [
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel",
+        "airbnb",
+        "hotel"
+      ]
+    },
+    {
+      "id": "compass",
+      "label": "قطب‌نما",
+      "group": "navigation",
+      "categories": [
+        "adventure",
+        "mountain",
+        "hiking_mountaineering",
+        "forest"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "gps_device",
+      "label": "دستگاه GPS",
+      "group": "navigation",
+      "categories": [
+        "adventure",
+        "desert",
+        "hiking_mountaineering",
+        "road_trip"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel",
+        "airbnb",
+        "hotel"
+      ]
+    },
+    {
+      "id": "map_or_offline_maps",
+      "label": "نقشه یا نقشه آفلاین",
+      "group": "navigation",
+      "categories": [
+        "adventure",
+        "mountain",
+        "hiking_mountaineering",
+        "road_trip",
+        "desert"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel",
+        "airbnb",
+        "hotel"
+      ]
+    },
+    {
+      "id": "printed_directions",
+      "label": "مسیر چاپی",
+      "group": "navigation",
+      "categories": [
+        "road_trip",
+        "urban",
+        "pilgrimage"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel",
+        "airbnb",
+        "hotel"
+      ]
+    },
+    {
+      "id": "trail_guidebook",
+      "label": "راهنمای مسیر",
+      "group": "navigation",
+      "categories": [
+        "hiking_mountaineering",
+        "mountain",
+        "nature_touring"
+      ],
+      "difficulty": [
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "solo",
+        "couple",
+        "friends",
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "train",
+        "bus",
+        "hitchhiking"
+      ],
+      "accommodation": [
+        "camp",
+        "none",
+        "hostel",
+        "airbnb",
+        "hotel"
+      ]
+    },
+    {
+      "id": "baby_bottle",
+      "label": "شیشه شیر",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "baby_carrier",
+      "label": "آغوشی کودک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family",
+        "hiking_mountaineering",
+        "urban"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "baby_wipes",
+      "label": "دستمال کودک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "child_car_seat",
+      "label": "صندلی کودک خودرو",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "personalCar"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "coloring_kit",
+      "label": "لوازم نقاشی کودک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "diapers",
+      "label": "پوشک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "kids_clothes_extra",
+      "label": "لباس اضافه کودک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "kids_medicine",
+      "label": "داروی کودک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "kids_snacks",
+      "label": "تنقلات کودک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family",
+        "road_trip"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "pacifier",
+      "label": "پستانک",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate",
+        "challenging"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "stroller",
+      "label": "کالسکه",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family",
+        "urban",
+        "accessible"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "family"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "airbnb",
+        "hostel"
+      ]
+    },
+    {
+      "id": "toys",
+      "label": "اسباب‌بازی",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family"
+      ],
+      "difficulty": [
+        "easy",
+        "moderate"
+      ],
+      "group_type": [
+        "family",
+        "friends"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "hostel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    },
+    {
+      "id": "water_gun",
+      "label": "تفنگ آب‌پاش",
+      "group": "kids",
+      "categories": [
+        "kids",
+        "family",
+        "beach_day",
+        "parks_gardens"
+      ],
+      "difficulty": [
+        "easy"
+      ],
+      "group_type": [
+        "family",
+        "friends"
+      ],
+      "transportation": [
+        "tour",
+        "personalCar",
+        "airplane",
+        "camping",
+        "train",
+        "bus",
+        "hitchhiking",
+        "none"
+      ],
+      "accommodation": [
+        "hotel",
+        "airbnb",
+        "camp",
+        "none"
+      ]
+    }
+  ],
+  "enums": {
+    "difficulty": [
+      {
+        "id": "easy",
+        "label": "آسان"
+      },
+      {
+        "id": "moderate",
+        "label": "متوسط"
+      },
+      {
+        "id": "challenging",
+        "label": "چالش‌برانگیز"
+      }
+    ],
+    "group_type": [
+      {
+        "id": "solo",
+        "label": "انفرادی"
+      },
+      {
+        "id": "couple",
+        "label": "زوج"
+      },
+      {
+        "id": "friends",
+        "label": "دوستان"
+      },
+      {
+        "id": "family",
+        "label": "خانواده"
+      }
+    ],
+    "transportation": [
+      {
+        "id": "tour",
+        "label": "تور"
+      },
+      {
+        "id": "personalCar",
+        "label": "خودرو شخصی"
+      },
+      {
+        "id": "airplane",
+        "label": "هواپیما"
+      },
+      {
+        "id": "camping",
+        "label": "کمپینگ"
+      },
+      {
+        "id": "train",
+        "label": "قطار"
+      },
+      {
+        "id": "bus",
+        "label": "اتوبوس"
+      },
+      {
+        "id": "hitchhiking",
+        "label": "اتواستاپ"
+      },
+      {
+        "id": "none",
+        "label": "هیچ‌کدام"
+      }
+    ],
+    "accommodation": [
+      {
+        "id": "hotel",
+        "label": "هتل"
+      },
+      {
+        "id": "hostel",
+        "label": "هاستل"
+      },
+      {
+        "id": "airbnb",
+        "label": "ایربی‌ان‌بی"
+      },
+      {
+        "id": "camp",
+        "label": "کمپ"
+      },
+      {
+        "id": "none",
+        "label": "ندارد"
+      }
+    ]
+  }
 }

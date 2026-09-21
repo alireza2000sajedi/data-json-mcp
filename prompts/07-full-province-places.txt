@@ -120,6 +120,8 @@ Discovery tracks (count واقعی؛ خالی = `0`):
 Ownership: Parent فقط معرفی کوتاه Child؛ بدون ticket/hours/FAQ عملیاتی Child.
 `costs` / `evidence` وارد Entity نکن.
 Taxonomy: فقط Global IDs؛ مفهوم جدید → `taxonomy/agent-taxonomy/` (بدون گذاشتن id در Entity تا promote).
+`entity.categories`: id از درخت `categories.json` با `context` شامل `location` (نه برگ‌های فقط-event).
+`travelChecklist.{tour|personalCar|airplane|camping|train|bus}`: فقط id از `checklist-items.json` که `transportation` همان mode را دارد و `categories` با تم مکان هم‌خوان است. جزئیات: §۷ پرامپت ۰۱.
 
 Visit:
 - Province/County: bestSeasons/bestMonths — openingHours و فیلدهای Place ممنوع

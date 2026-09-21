@@ -97,10 +97,31 @@ Checklist فقط canonical id از Global Taxonomy (`tour` / `personalCar` / `ai
 ---
 
 ## 7) Taxonomy
-فقط Global IDs در Entity. اگر مفهوم در Global نبود:
+منبع: `planro://taxonomy`. فقط Global IDs در Entity. اگر مفهوم در Global نبود:
 1. آیتم کامل بساز و در `taxonomy/agent-taxonomy/` بنویس (با `source`).
 2. آن id را وارد Entity نکن تا promote انسانی (`planro://taxonomy/agent`).
 در پایان صریحاً بگو چه نبود و چه در agent-taxonomy ساختی + فهرست id و فایل کاتالوگ.
+
+### دسته‌ها (`categories.json`)
+درخت تو‌در‌تو است (`categories[]` → `children[]`). id هر سطح مجاز است.
+هر نود `context` دارد: `location` (مکان) · `trip` (تم سفر) · `event` (رویداد). فرزند ⊆ پرنت.
+برای Entity مکان فقط idهایی که `context` شامل `location` است. ریشهٔ فقط-event مثل `sports` / `social` / `business` / `entertainment` برای Place نگذار.
+نمونهٔ درست Place: `mountain`, `heritage`, `museum_culture`, `coastal`. نمونهٔ غلط Place: `football`, `hackathon`.
+
+اگر در agent-taxonomy دسته می‌سازی: همان درخت + `context`؛ `children: []` اگر برگ است.
+
+### چک‌لیست (`checklist-items.json`)
+`travelChecklist` روی Entity شش mode ساختاری دارد: `tour` · `personalCar` · `airplane` · `camping` · `train` · `bus`.
+مقدار هر آرایه فقط id آیتم است (نه فارسی آزاد).
+
+هر آیتم فیلتر دارد — برای انتخاب از آن‌ها استفاده کن:
+- `categories[]` با `entity.categories` هم‌پوشانی داشته باشد (تم مقصد)
+- `transportation` شامل همان mode باشد (`tour` برای `travelChecklist.tour`، `personalCar` برای خودرو، …)
+- `group_type` / `accommodation` / `difficulty` را فقط وقتی به مقصد می‌خورد اعمال کن (`difficulty` مخصوص trip است)
+
+`hitchhiking` و `none` mode Entity نیستند؛ فقط فیلتر آیتم‌اند. در `travelChecklist` آرایهٔ جدا برایشان نساز.
+
+آیتم جدید اگر لازم شد → `taxonomy/agent-taxonomy/checklist-items.json` با همان شکل (`group`, `categories`, `difficulty`, `group_type`, `transportation`, `accommodation`, `source`)؛ تا promote در Entity نگذار.
 
 ---
 

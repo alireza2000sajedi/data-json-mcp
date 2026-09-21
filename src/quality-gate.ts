@@ -257,6 +257,20 @@ function validateNormalizedFields(
   // Checklist item canonical ids are enforced by schema enum + validateGlobalTaxonomy.
 }
 
+/** Collect all taxonomy node ids from a flat `items` list or a nested `categories`/`children` tree. */
+function taxonomyIds(doc: { items?: { id: string; children?: unknown[] }[]; categories?: { id: string; children?: unknown[] }[] }): Set<string> {
+  const ids = new Set<string>();
+  const walk = (nodes: any[] | undefined) => {
+    for (const n of nodes ?? []) {
+      if (n?.id) ids.add(String(n.id));
+      if (Array.isArray(n?.children)) walk(n.children);
+    }
+  };
+  walk(doc.items);
+  walk(doc.categories);
+  return ids;
+}
+
 function validateGlobalTaxonomy(entity: PlaceEntity, errors: QualityError[]): void {
   const base = path.resolve(config.datasetDir, "..", "taxonomy");
   const domains = ["types", "subtypes", "categories", "activities", "features", "facilities", "risks", "checklist-items"] as const;
@@ -264,7 +278,7 @@ function validateGlobalTaxonomy(entity: PlaceEntity, errors: QualityError[]): vo
   for (const d of domains) {
     try {
       const x = JSON.parse(fs.readFileSync(path.join(base, `${d}.json`), "utf8"));
-      maps[d] = new Set((x.items ?? []).map((i: any) => i.id));
+      maps[d] = taxonomyIds(x);
     } catch {
       return;
     }

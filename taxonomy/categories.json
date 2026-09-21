@@ -1,121 +1,2410 @@
 {
-  "version": "1.0.0",
-  "items": [
+  "version": "3.1.0",
+  "description": "Nested category tree. Child context ⊆ parent context. context: trip | event | location. No defaults.",
+  "categories": [
+    {
+      "id": "nature",
+      "label": "طبیعت و فضای باز",
+      "description": "منظر، اقلیم و فعالیت در فضای باز.",
+      "context": [
+        "trip",
+        "location"
+      ],
+      "children": [
     {
       "id": "adventure",
-      "label": "ماجراجویی"
+          "label": "ماجراجویی",
+          "description": "تجربه پرتحرک و چالشی در طبیعت یا مسیر.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "coastal",
+          "label": "ساحلی",
+          "description": "ساحل، کرانه و فضای دریایی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "desert",
+          "label": "کویر و بیابان",
+          "description": "کویر، رمل و زیست‌بوم خشک.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "forest",
+          "label": "جنگل",
+          "description": "جنگل، بیشه و پوشش گیاهی انبوه.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "geoheritage",
+          "label": "میراث زمین‌شناسی",
+          "description": "سازند، غار، گسل و پدیده‌های زمین‌شناختی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "mountain",
+          "label": "کوهستان",
+          "description": "کوه، یال و فضای مرتفع.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "water",
+          "label": "آب",
+          "description": "رود، دریاچه، آبشار و پهنه‌های آبی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "winter_sports",
+          "label": "ورزش‌های زمستانی",
+          "description": "اسکی، اسنوبرد و فعالیت روی برف.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "wildlife",
+          "label": "حیات وحش",
+          "description": "زیستگاه، مشاهده حیوانات و پرنده‌نگری.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "cave",
+          "label": "غار",
+          "description": "غار و فضای زیرزمینی قابل‌بازدید.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "canyon",
+          "label": "دره و تنگه",
+          "description": "دره، تنگه و مسیر دره‌نوردی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "island",
+          "label": "جزیره",
+          "description": "جزیره و فضای محصور آبی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "wetland",
+          "label": "تالاب",
+          "description": "تالاب، مرداب و زیست‌بوم آبی کم‌عمق.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "thermal_spring",
+          "label": "آبگرم",
+          "description": "چشمه آبگرم و حمام معدنی طبیعی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "viewpoint",
+          "label": "دیدگاه و منظر",
+          "description": "نقطه دید، طلوع و غروب.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "waterfall",
+          "label": "آبشار",
+          "description": "آبشار و مسیر دسترسی مرتبط.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "lake",
+          "label": "دریاچه",
+          "description": "دریاچه طبیعی یا مصنوعی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "river",
+          "label": "رودخانه",
+          "description": "رود، مسیل و کناره‌رود.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "glacier",
+          "label": "یخچال و برف‌چال",
+          "description": "یخچال، برف‌چال و فضای مرتفع یخی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "plateau",
+          "label": "فلات و دشت مرتفع",
+          "description": "فلات، دشت مرتفع و فضای باز کوهپایه‌ای.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        }
+      ]
     },
     {
-      "id": "archaeology",
-      "label": "باستان‌شناسی"
-    },
-    {
-      "id": "architecture",
-      "label": "معماری"
-    },
-    {
-      "id": "arts_crafts",
-      "label": "هنر و صنایع‌دستی"
-    },
-    {
-      "id": "coastal",
-      "label": "ساحلی"
-    },
-    {
-      "id": "desert",
-      "label": "کویر و بیابان"
-    },
-    {
-      "id": "education",
-      "label": "آموزشی"
-    },
-    {
-      "id": "family",
-      "label": "خانوادگی"
-    },
-    {
-      "id": "food",
-      "label": "خوراک"
-    },
-    {
-      "id": "forest",
-      "label": "جنگل"
-    },
-    {
-      "id": "geoheritage",
-      "label": "میراث زمین‌شناسی"
+      "id": "heritage",
+      "label": "میراث و تاریخ",
+      "description": "تاریخ، معماری، مذهب و میراث مادی.",
+      "context": [
+        "trip",
+        "location"
+      ],
+      "children": [
+        {
+          "id": "archaeology",
+          "label": "باستان‌شناسی",
+          "description": "محوطه و یافته باستانی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "architecture",
+          "label": "معماری",
+          "description": "بنا و سبک معماری قابل‌بازدید.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
     },
     {
       "id": "history",
-      "label": "تاریخ"
+          "label": "تاریخ",
+          "description": "مکان یا مسیر با روایت تاریخی مشخص.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
     },
     {
       "id": "industrial_heritage",
-      "label": "میراث صنعتی"
+          "label": "میراث صنعتی",
+          "description": "کارخانه، معدن و زیرساخت تاریخی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "museum_culture",
+          "label": "موزه و فرهنگ",
+          "description": "موزه، نمایشگاه دائم و مجموعه فرهنگی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "pilgrimage",
+          "label": "زیارت",
+          "description": "مقصد زیارتی و مسیر زیارت.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "religion",
+          "label": "مذهب",
+          "description": "بنای مذهبی و فضای آیینی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "memorial",
+          "label": "یادمان",
+          "description": "یادبود، مقبره و بنای یادمان.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "historic_garden",
+          "label": "باغ تاریخی",
+          "description": "باغ ایرانی و محوطه تاریخی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "caravanserai",
+          "label": "کاروانسرا و راه",
+          "description": "کاروانسرا، رباط و مسیر تاریخی تجارت.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "folklore",
+          "label": "فرهنگ بومی",
+          "description": "آیین، موسیقی و روایت محلی زنده.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "bridge_heritage",
+          "label": "پل تاریخی",
+          "description": "پل و سازهٔ عبور تاریخی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "qanat_cistern",
+          "label": "قنات و آب‌انبار",
+          "description": "قنات، آب‌انبار و میراث آبی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        }
+      ]
     },
     {
-      "id": "local_life",
-      "label": "زندگی محلی"
-    },
-    {
-      "id": "mountain",
-      "label": "کوهستان"
-    },
-    {
-      "id": "museum_culture",
-      "label": "موزه و فرهنگ"
-    },
-    {
-      "id": "nature",
-      "label": "طبیعت"
-    },
-    {
-      "id": "nightlife",
-      "label": "شب‌گردی"
-    },
-    {
-      "id": "photography",
-      "label": "عکاسی"
-    },
-    {
-      "id": "pilgrimage",
-      "label": "زیارت"
-    },
-    {
-      "id": "recreation",
-      "label": "تفریح"
-    },
-    {
-      "id": "religion",
-      "label": "مذهب"
+      "id": "lifestyle",
+      "label": "زندگی و تجربه مقصد",
+      "description": "سبک زندگی محلی، تفریح روزمره و حال‌وهوای مقصد.",
+      "context": [
+        "trip",
+        "location"
+      ],
+      "children": [
+        {
+          "id": "family",
+          "label": "خانوادگی",
+          "description": "مناسب بازدید یا برنامهٔ خانوادگی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "food",
+          "label": "خوراک",
+          "description": "غذای محلی، بازار خوراک و تجربه چشیدن.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": [
+            {
+              "id": "street_food",
+              "label": "خیابانی",
+              "description": "غذای خیابانی و دکه‌های محلی.",
+              "context": [
+                "trip",
+                "location"
+              ],
+              "children": []
+            },
+            {
+              "id": "traditional_cuisine",
+              "label": "آشپزی سنتی",
+              "description": "غذای سنتی و سفره محلی.",
+              "context": [
+                "trip",
+                "location"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "local_life",
+          "label": "زندگی محلی",
+          "description": "روزمرگی، بازار محلی و تعامل با جامعهٔ میزبان.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "nightlife",
+          "label": "شب‌گردی",
+          "description": "فضا و برنامهٔ شبانهٔ مقصد.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "photography",
+          "label": "عکاسی",
+          "description": "سوژه و نقطهٔ مناسب عکاسی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "recreation",
+          "label": "تفریح",
+          "description": "تفریح عمومی و گذران اوقات فراغت.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": [
+            {
+              "id": "theme_recreation",
+              "label": "تفریح موضوعی",
+              "description": "شهربازی، پارک موضوعی و تفریح ساختگی.",
+              "context": [
+                "trip",
+                "location"
+              ],
+              "children": []
+            }
+          ]
     },
     {
       "id": "rural",
-      "label": "روستایی"
+          "label": "روستایی",
+          "description": "بافت و تجربهٔ روستایی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
     },
     {
       "id": "shopping",
-      "label": "خرید"
-    },
-    {
-      "id": "sports",
-      "label": "ورزشی"
+          "label": "خرید",
+          "description": "بازار، سوغات و فضای خرید.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": [
+            {
+              "id": "bazaar",
+              "label": "بازار سنتی",
+              "description": "بازار، گذر و فضای خرید سنتی.",
+              "context": [
+                "trip",
+                "location"
+              ],
+              "children": []
+            },
+            {
+              "id": "handicrafts_market",
+              "label": "صنایع‌دستی",
+              "description": "خرید صنایع‌دستی و کارگاه فروش.",
+              "context": [
+                "trip",
+                "location"
+              ],
+              "children": []
+            }
+          ]
     },
     {
       "id": "urban",
-      "label": "شهری"
+          "label": "شهری",
+          "description": "بافت شهری، خیابان و فضای شهر.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "wellness",
+          "label": "سلامت و آرامش",
+          "description": "آرامش، بازیابی و مراقبت از بدن.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": [
+            {
+              "id": "spa",
+              "label": "اسپا و ماساژ",
+              "description": "اسپا، ماساژ و مراقبت بدن.",
+              "context": [
+                "trip",
+                "location"
+              ],
+              "children": []
+            },
+            {
+              "id": "hydrotherapy",
+              "label": "آب‌درمانی",
+              "description": "استفاده درمانی از آب و چشمه.",
+              "context": [
+                "trip",
+                "location"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "parks_gardens",
+          "label": "پارک و باغ",
+          "description": "پارک شهری، باغ گیاه‌شناسی و فضای سبز.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "hospitality",
+          "label": "اقامت و میزبانی",
+          "description": "اقامتگاه، بوم‌گردی و تجربه میزبانی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "cafe_culture",
+          "label": "کافه و چایخانه",
+          "description": "کافه، چایخانه و فضای نوشیدنی محلی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "romantic",
+          "label": "رمانتیک",
+          "description": "مناسب زوج و فضای آرام دونفره.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "eco_tourism",
+          "label": "بوم‌گردی",
+          "description": "سفر کم‌اثر و تجربه پایدار در مقصد.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "road_trip",
+          "label": "جاده‌ای",
+          "description": "مسیر جاده‌ای و ایستگاه‌های منظره‌دار.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "accessible",
+          "label": "دسترس‌پذیر",
+          "description": "دسترسی آسان‌تر برای سالمند یا ویلچر.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "seasonal",
+          "label": "فصلی و مناسبتی",
+          "description": "تم سفر وابسته به فصل یا مناسبت محلی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "zoo_aquarium",
+          "label": "باغ‌وحش و آکواریوم",
+          "description": "باغ‌وحش، آکواریوم و نمایش گونه.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "kids",
+          "label": "کودک و نوجوان",
+          "description": "مناسب کودک و برنامه خانوادگی با تمرکز کودک.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        }
+      ]
     },
     {
-      "id": "water",
-      "label": "آب"
+      "id": "sports",
+      "label": "ورزش و تناسب",
+      "description": "بازی تیمی، راکتی، تناسب، استقامت و طبیعت‌نوردی.",
+      "context": [
+        "event"
+      ],
+      "children": [
+        {
+          "id": "team_ball",
+          "label": "ورزش‌های تیمی و توپی",
+          "description": "فوتبال، فوتسال، بسکتبال، والیبال.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "football",
+              "label": "فوتبال",
+              "description": "مسابقه یا تمرین فوتبال با ترکیب کامل.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "futsal",
+              "label": "فوتسال",
+              "description": "بازی فوتسال روی زمین سالنی با تیم کوچک.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "basketball",
+              "label": "بسکتبال",
+              "description": "تمرین یا مسابقه بسکتبال گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "volleyball",
+              "label": "والیبال",
+              "description": "بازی والیبال با تیم‌های کوچک.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "padbol",
+              "label": "پدبال",
+              "description": "بازی پدبال؛ ترکیبی از فوتبال و راکت روی زمین مخصوص.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "handball",
+              "label": "هندبال",
+              "description": "تمرین یا مسابقه هندبال.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "racket",
+          "label": "ورزش‌های راکتی",
+          "description": "تنیس، پدل، بدمینتون، پینگ‌پنگ، اسکواش.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "tennis",
+              "label": "تنیس",
+              "description": "بازی تنیس دونفره یا چهارنفره.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "padel",
+              "label": "پدل",
+              "description": "پدل چهارنفره روی زمین محصور.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "badminton",
+              "label": "بدمینتون",
+              "description": "بدمینتون دونفره یا چهارنفره.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "table_tennis",
+              "label": "تنیس روی میز",
+              "description": "تنیس روی میز؛ کوتاه و قابل تکرار.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "squash",
+              "label": "اسکواش",
+              "description": "اسکواش در زمین بسته؛ دونفره یا تمرینی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "pickleball",
+              "label": "پیکل‌بال",
+              "description": "بازی پیکل‌بال گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "fitness",
+          "label": "تناسب و آمادگی",
+          "description": "قدرت، کراس‌فیت، شنا، رزمی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "crossfit",
+              "label": "کراس‌فیت",
+              "description": "تمرین گروهی شدت‌بالا با حرکات ترکیبی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "bodybuilding",
+              "label": "بدنسازی",
+              "description": "تمرین قدرتی گروهی در باشگاه.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "swimming",
+              "label": "شنا",
+              "description": "شنای تمرینی یا آزاد در استخر.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "martial_arts",
+              "label": "ورزش‌های رزمی",
+              "description": "تمرین یا کلاس ورزش‌های رزمی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "trx_functional",
+              "label": "تی‌آر‌ایکس و فانکشنال",
+              "description": "تمرین تی‌آر‌ایکس یا فانکشنال.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "aerobics_dance_fit",
+              "label": "ایروبیک",
+              "description": "ایروبیک و تناسب با ریتم.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "mind_body",
+          "label": "ذهن و بدن",
+          "description": "یوگا، پیلاتس، مدیتیشن.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "yoga",
+              "label": "یوگا",
+              "description": "جلسه یوگا با تمرکز روی تنفس و حرکت.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "pilates",
+              "label": "پیلاتس",
+              "description": "تمرین پیلاتس برای کنترل بدن و ثبات مرکزی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "meditation",
+              "label": "مدیتیشن",
+              "description": "نشست کوتاه مدیتیشن گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "endurance",
+          "label": "استقامتی و حرکتی",
+          "description": "دویدن، پیاده‌روی، دوچرخه، اسکیت.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "running",
+              "label": "دویدن",
+              "description": "دویدن گروهی در مسیر شهری یا پارک.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "walking",
+              "label": "پیاده‌روی",
+              "description": "پیاده‌روی گروهی با سرعت قابل تنظیم.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "cycling",
+              "label": "دوچرخه‌سواری",
+              "description": "مسیر دوچرخه گروهی داخل یا اطراف شهر.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "skating",
+              "label": "اسکیت",
+              "description": "اسکیت گروهی در پیست یا مسیر مناسب.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "trail_running",
+              "label": "تریل‌رانینگ",
+              "description": "دویدن در مسیر طبیعت.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "outdoor_adventure",
+          "label": "طبیعت و ماجراجویی",
+          "description": "کوهنوردی، سنگ‌نوردی، طبیعت‌گردی گروهی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "hiking_mountaineering",
+              "label": "کوهنوردی و کوه‌پیمایی",
+              "description": "صعود یا پیمایش کوهستانی با برنامه مشخص.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "climbing_bouldering",
+              "label": "سنگ‌نوردی و بولدرینگ",
+              "description": "سنگ‌نوردی سالنی یا بولدرینگ؛ تنها هم می‌شود آمد.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "nature_touring",
+              "label": "طبیعت‌گردی",
+              "description": "گشت کوتاه در طبیعت بدون صعود فنی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "canyoning_meetup",
+              "label": "دره‌نوردی",
+              "description": "دره‌نوردی گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "via_ferrata",
+              "label": "ویافرراتا",
+              "description": "مسیر ویافرراتا گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "recreational_games",
+          "label": "بازی‌های تفریحی رقابتی",
+          "description": "بولینگ، بیلیارد، دارت، پینت‌بال.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "bowling",
+              "label": "بولینگ",
+              "description": "چند فریم بولینگ گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "billiards",
+              "label": "بیلیارد",
+              "description": "بیلیارد دونفره یا چند میز موازی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "darts",
+              "label": "دارت",
+              "description": "دارت رقابتی کوتاه و قابل تکرار.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "paintball",
+              "label": "پینت‌بال",
+              "description": "بازی پینت‌بال تیمی در زمین اختصاصی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "airsoft",
+              "label": "ایرسافت",
+              "description": "ایرسافت گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "water_sports",
+          "label": "ورزش‌های آبی",
+          "description": "شنای آزاد، قایق، رفتینگ و غواسی گروهی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "open_water_swim",
+              "label": "شنای فضای باز",
+              "description": "شنا در دریاچه، دریا یا استخر روباز گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "kayaking_meetup",
+              "label": "کایاک",
+              "description": "کایاک‌سواری گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "rafting_meetup",
+              "label": "رفتینگ",
+              "description": "رفتینگ گروهی روی رود.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "diving_meetup",
+              "label": "غواسی",
+              "description": "غواسی یا اسنورکل گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "equestrian",
+          "label": "اسب‌سواری",
+          "description": "اسب‌سواری و فعالیت سوارکاری گروهی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "horse_riding_meetup",
+              "label": "سواری تفریحی",
+              "description": "اسب‌سواری تفریحی گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "winter_events",
+          "label": "زمستانی",
+          "description": "اسکی، اسنوبرد و برف‌نوردی گروهی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "ski_meetup",
+              "label": "اسکی",
+              "description": "اسکی گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "snowboard_meetup",
+              "label": "اسنوبرد",
+              "description": "اسنوبرد گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "snowshoe_meetup",
+              "label": "برف‌کوبی",
+              "description": "پیاده‌روی با کفش برفی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "wellness",
-      "label": "سلامت و آرامش"
+      "id": "arts_culture",
+      "label": "هنر و فرهنگ",
+      "description": "موسیقی، نمایش، رقص، تجسمی، ادبیات و سینما.",
+      "context": [
+        "trip",
+        "event",
+        "location"
+      ],
+      "children": [
+        {
+          "id": "arts_crafts",
+          "label": "هنر و صنایع‌دستی",
+          "description": "کارگاه، اثر دستی و هنر محلی.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "performing_music",
+          "label": "نمایش و موسیقی",
+          "description": "تئاتر، کنسرت، آموزش ساز.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "theater",
+              "label": "تئاتر",
+              "description": "دیدن یا تمرین اجرای تئاتر.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "concert_music_performance",
+              "label": "کنسرت و اجرای موسیقی",
+              "description": "کنسرت یا اجرای زنده موسیقی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "guitar",
+              "label": "گیتار",
+              "description": "کلاس یا دورهمی تمرین گیتار.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "piano",
+              "label": "پیانو",
+              "description": "کلاس یا تمرین گروهی پیانو.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "traditional_music",
+              "label": "موسیقی سنتی",
+              "description": "اجرا یا آموزش موسیقی سنتی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "choir_singing",
+              "label": "آواز گروهی",
+              "description": "کر و آواز جمعی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "visual_arts_crafts",
+          "label": "تجسمی و ساختنی",
+          "description": "نقاشی، سفال، عکاسی، کارگاه ساخت.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "painting",
+              "label": "نقاشی",
+              "description": "کارگاه یا جلسه نقاشی با خروجی قابل بردن.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "calligraphy",
+              "label": "خوشنویسی",
+              "description": "تمرین خوشنویسی در جمع کوچک.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "pottery",
+              "label": "سفالگری",
+              "description": "کار با گل و ساخت قطعه سفالی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "photo_outing",
+              "label": "عکاسی",
+              "description": "خروج گروهی عکاسی یا نقد عکس.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "exhibition_gallery",
+              "label": "نمایشگاه و گالری",
+              "description": "بازدید گروهی از نمایشگاه یا گالری.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "candle_making",
+              "label": "شمع‌سازی",
+              "description": "کارگاه شمع‌سازی؛ ساخته را با خودت می‌بری.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "jewelry_making",
+              "label": "ساخت زیورآلات",
+              "description": "ساخت زیورآلات دست‌ساز با خروجی فیزیکی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "flower_arranging",
+              "label": "گل‌آرایی",
+              "description": "کارگاه گل‌آرایی با خروجی قابل بردن.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "terrarium_making",
+              "label": "ساخت تراریوم",
+              "description": "ساخت تراریوم شیشه‌ای؛ باغ کوچکی که می‌بری.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "clay_play",
+              "label": "خمیر بازی",
+              "description": "کار خلاقانه با خمیر یا گل بازی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "printmaking",
+              "label": "چاپ دستی",
+              "description": "کارگاه چاپ و گراور.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "sculpture",
+              "label": "مجسمه‌سازی",
+              "description": "کارگاه مجسمه‌سازی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "dance",
+          "label": "رقص",
+          "description": "سبک‌های دونفره، خیابانی، معاصر، آزاد.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "salsa_dance",
+              "label": "رقص سالسا",
+              "description": "کلاس یا شب سالسا؛ دونفره و گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "bachata_dance",
+              "label": "رقص باچاتا",
+              "description": "کلاس یا شب باچاتا از مبتدی تا پیشرفته.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "hiphop_dance",
+              "label": "رقص هیپ‌هاپ",
+              "description": "کلاس یا جم هیپ‌هاپ و رقص خیابانی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "contemporary_dance",
+              "label": "رقص معاصر",
+              "description": "کلاس یا اجرای رقص معاصر.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "freestyle_dance",
+              "label": "رقص آزاد",
+              "description": "شب رقص آزاد گروهی بدون سبک ثابت.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "traditional_dance",
+              "label": "رقص سنتی",
+              "description": "رقص محلی یا سنتی گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "literature",
+          "label": "ادبیات",
+          "description": "کتاب‌خوانی، شعر، داستان، رونمایی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "book_reading_review",
+              "label": "کتاب‌خوانی و نقد کتاب",
+              "description": "خواندن و گفت‌وگو درباره یک کتاب.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "poetry_story_night",
+              "label": "شب شعر و داستان",
+              "description": "خواندن شعر و داستان در جمع.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "book_unveiling",
+              "label": "رونمایی کتاب",
+              "description": "رونمایی و معرفی کتاب تازه منتشرشده.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "writing_workshop",
+              "label": "کارگاه نویسندگی",
+              "description": "تمرین نوشتن داستان یا شعر.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cinema",
+          "label": "سینما و فیلم",
+          "description": "سینما و پخش گروهی فیلم.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "cinema_visit",
+              "label": "سینما",
+              "description": "دیدن فیلم با هم در سینما.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "outdoor_film_screening",
+              "label": "پخش فیلم در طبیعت",
+              "description": "نمایش گروهی فیلم در فضای باز.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "film_festival",
+              "label": "جشنواره فیلم",
+              "description": "جشنواره یا هفته فیلم.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cultural_other",
+          "label": "سایر فرهنگی",
+          "description": "رونمایی اثر و رویداد چندرشته‌ای.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "artwork_unveiling",
+              "label": "رونمایی اثر هنری",
+              "description": "رونمایی و بازدید از اثر هنری.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "other_cultural_event",
+              "label": "سایر رویدادهای فرهنگی",
+              "description": "رویداد فرهنگی که در دسته‌های دیگر جا نمی‌گیرد.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "winter_sports",
-      "label": "ورزش‌های زمستانی"
+      "id": "social",
+      "label": "دورهمی و اجتماع",
+      "description": "جمع‌شدن، غذا، گفت‌وگو و برنامه‌های گروهی.",
+      "context": [
+        "event"
+      ],
+      "children": [
+        {
+          "id": "social_gatherings",
+          "label": "دورهمی اجتماعی",
+          "description": "دورهمی عادی، موضوعی، پیک‌نیک، رستوران گروهی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "casual_gathering",
+              "label": "دورهمی عادی",
+              "description": "جمع خودمانی بدون موضوع ثابت.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "themed_gathering",
+              "label": "دورهمی موضوعی",
+              "description": "دورهمی حول یک موضوع مشخص.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "picnic",
+              "label": "پیک‌نیک",
+              "description": "پیک‌نیک گروهی در پارک یا فضای سبز.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "group_restaurant",
+              "label": "رستوران گروهی",
+              "description": "غذا خوردن با هم در رستوران.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "brunch_meetup",
+              "label": "برانچ",
+              "description": "دورهمی برانچ.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "birthday_group",
+              "label": "تولد گروهی",
+              "description": "جشن تولد جمعی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "food_experiences",
+          "label": "تجربه غذا و نوشیدنی",
+          "description": "آشپزی، شیرینی‌پزی، قهوه‌آزمایی، فستیوال غذا.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "cooking_class",
+              "label": "آشپزی",
+              "description": "کارگاه آشپزی گروهی با میزبان یا شف.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "baking_pastry",
+              "label": "شیرینی‌پزی",
+              "description": "کارگاه شیرینی‌پزی و قنادی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "coffee_tasting",
+              "label": "قهوه‌آزمایی",
+              "description": "چشیدن و مقایسه چند قهوه در جمع کوچک.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "food_festival",
+              "label": "فستیوال غذا",
+              "description": "حضور گروهی در فستیوال یا جشن غذا.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "wine_tasting",
+              "label": "چشیدن نوشیدنی",
+              "description": "چشیدن نوشیدنی یا عصاره میوه به‌صورت گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "farm_to_table",
+              "label": "مزرعه تا سفره",
+              "description": "بازدید مزرعه و پخت تازه.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "outdoor_social",
+          "label": "دورهمی در طبیعت",
+          "description": "کمپ گروهی و رصد ستاره.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "camping",
+              "label": "کمپینگ",
+              "description": "اقامت گروهی یک‌شب یا چندساعته در طبیعت.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "stargazing",
+              "label": "رصد ستاره‌ها",
+              "description": "رصد آسمان شب بیرون شهر، جایی با آسمان صاف.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "beach_day",
+              "label": "روز ساحل",
+              "description": "دورهمی ساحلی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "discussion",
+          "label": "گفت‌وگو و خودشناسی",
+          "description": "گفت‌وگوی آزاد و جمع غیر‌درمانی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "free_discussion",
+              "label": "گفت‌وگوی آزاد",
+              "description": "گفت‌وگوی باز حول موضوع یا بدون موضوع ثابت.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "group_psychology",
+              "label": "گفت‌وگوی روان‌شناسی و خودشناسی",
+              "description": "گفت‌وگوی گروهی درباره خودشناسی و روابط؛ جایگزین درمان نیست.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "book_club_talk",
+              "label": "گفت‌وگوی کتاب",
+              "description": "بحث گروهی درباره کتاب.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "community_ceremonies",
+          "label": "مناسبتی و جمعی",
+          "description": "افتتاحیه، خیریه و مراسم گروهی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "opening_ceremony",
+              "label": "مراسم افتتاحیه",
+              "description": "افتتاحیه مکان یا برنامه جمعی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "charity_event",
+              "label": "خیریه",
+              "description": "برنامه خیریه یا جمع‌آوری کمک.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "other_gathering",
+              "label": "سایر دورهمی‌ها",
+              "description": "دورهمی‌ای که در دسته‌های دیگر جا نمی‌گیرد.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "volunteer",
+          "label": "داوطلبی",
+          "description": "کار داوطلبانه و خدمت جمعی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "community_volunteer",
+              "label": "خدمت محلی",
+              "description": "کمک داوطلبانه در محله یا پروژه محلی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "cleanup_volunteer",
+              "label": "پاکسازی محیط",
+              "description": "پاکسازی طبیعت یا شهر.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learning",
+      "label": "آموزش و مهارت",
+      "description": "یادگیری زبان، فناوری و مهارت‌های کاربردی.",
+      "context": [
+        "trip",
+        "event",
+        "location"
+      ],
+      "children": [
+        {
+          "id": "education",
+          "label": "آموزشی",
+          "description": "مکان یا برنامه با هدف یادگیری.",
+          "context": [
+            "trip",
+            "location"
+          ],
+          "children": []
+        },
+        {
+          "id": "technology",
+          "label": "فناوری و برنامه‌نویسی",
+          "description": "کلاس و دورهمی فنی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "programming",
+              "label": "برنامه‌نویسی",
+              "description": "کلاس یا دورهمی تمرین برنامه‌نویسی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "data_ai_meetup",
+              "label": "داده و هوش مصنوعی",
+              "description": "دورهمی داده یا هوش مصنوعی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "no_code_workshop",
+              "label": "نوکد",
+              "description": "کارگاه ساخت بدون کدنویسی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "languages",
+          "label": "زبان",
+          "description": "تمرین و یادگیری زبان.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "english_language",
+              "label": "زبان انگلیسی",
+              "description": "تمرین مکالمه یا کلاس زبان انگلیسی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "german_language",
+              "label": "زبان آلمانی",
+              "description": "تمرین زبان آلمانی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "french_language",
+              "label": "زبان فرانسوی",
+              "description": "تمرین زبان فرانسوی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "turkish_language",
+              "label": "زبان ترکی",
+              "description": "تمرین زبان ترکی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "arabic_language",
+              "label": "زبان عربی",
+              "description": "تمرین زبان عربی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "content_creation",
+          "label": "تولید محتوا",
+          "description": "مهارت شبکه اجتماعی و موبایل‌گرافی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "mobilegraphy",
+              "label": "موبایل‌گرافی",
+              "description": "عکاسی و تولید محتوا با موبایل.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "video_editing",
+              "label": "تدوین ویدیو",
+              "description": "کارگاه تدوین.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "copywriting",
+              "label": "کپی‌رایتینگ",
+              "description": "کارگاه نوشتن تبلیغاتی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "design_skills",
+          "label": "طراحی",
+          "description": "مهارت طراحی و کارگاه بصری.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "ui_ux_workshop",
+              "label": "UI/UX",
+              "description": "کارگاه رابط و تجربه کاربری.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "graphic_design_workshop",
+              "label": "گرافیک",
+              "description": "کارگاه طراحی گرافیک.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "soft_skills",
+          "label": "مهارت نرم",
+          "description": "ارتباط، ارائه و کار تیمی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "public_speaking",
+              "label": "سخنرانی",
+              "description": "تمرین سخنرانی عمومی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "negotiation_skills",
+              "label": "مذاکره",
+              "description": "کارگاه مذاکره.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "entertainment",
+      "label": "سرگرمی و بازی",
+      "description": "مراکز تفریحی، بازی گروهی، رقابتی و دیجیتال.",
+      "context": [
+        "event"
+      ],
+      "children": [
+        {
+          "id": "entertainment_venues",
+          "label": "مراکز تفریحی",
+          "description": "شهربازی، پارک آبی، کارائوکه.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "amusement_park",
+              "label": "شهربازی",
+              "description": "رفتن گروهی به شهربازی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "water_park",
+              "label": "پارک آبی",
+              "description": "رفتن گروهی به پارک آبی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "karaoke",
+              "label": "کارائوکه",
+              "description": "شب کارائوکه گروهی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "adventure_games",
+          "label": "ماجراجویی و رقابت",
+          "description": "اتاق فرار، لیزرتگ، بازی رقابتی گروهی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "escape_room",
+              "label": "اتاق فرار",
+              "description": "حل معما و خروج از اتاق فرار به‌صورت تیمی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "laser_tag",
+              "label": "لیزرتگ",
+              "description": "بازی لیزرتگ تیمی در زمین مخصوص.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "name_surname_game",
+              "label": "بازی اسم فامیل",
+              "description": "بازی گروهی اسم فامیل با کاغذ یا دیجیتال.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "scavenger_hunt",
+              "label": "شکار سرنخ",
+              "description": "بازی جست‌وجو و سرنخ در شهر.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "tabletop_social",
+          "label": "رومیزی و اجتماعی",
+          "description": "بردگیم، شطرنج، مافیا، پانتومیم، کوئیز.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "board_games",
+              "label": "بازی‌های رومیزی",
+              "description": "چند بازی رومیزی پشت سر هم در جمع.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "chess",
+              "label": "شطرنج",
+              "description": "بازی یا تورنمنت سبک شطرنج.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "mafia",
+              "label": "مافیا",
+              "description": "بازی نقش‌محور مافیا در جمع.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "pantomime",
+              "label": "پانتومیم",
+              "description": "پانتومیم گروهی بدون نیاز به ابزار خاص.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "trivia_quiz_night",
+              "label": "کوئیز و اطلاعات عمومی",
+              "description": "شب کوئیز گروهی؛ حتی یک میز کافه کافی است.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "role_playing_game",
+              "label": "نقش‌آفرینی",
+              "description": "بازی نقش‌آفرینی رومیزی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "digital_games",
+          "label": "دیجیتال و فراگیر",
+          "description": "گیم‌نت و واقعیت مجازی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "gaming_center",
+              "label": "گیم‌نت",
+              "description": "بازی گروهی در گیم‌نت.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "virtual_reality",
+              "label": "واقعیت مجازی",
+              "description": "تجربه VR گروهی در مرکز مخصوص.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "esports_meetup",
+              "label": "ورزش الکترونیکی",
+              "description": "مسابقه یا دورهمی بازی رقابتی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "live_shows",
+          "label": "نمایش زنده",
+          "description": "استندآپ، شعبده و اجرای زنده.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "stand_up_comedy",
+              "label": "استندآپ",
+              "description": "کمدی استندآپ.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "magic_show",
+              "label": "شعبده‌بازی",
+              "description": "نمایش شعبده.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "improv_show",
+              "label": "بداهه",
+              "description": "تئاتر بداهه.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business",
+      "label": "کسب‌وکار و حرفه‌ای",
+      "description": "همایش، شبکه‌سازی، استارتاپ و رویداد تجاری.",
+      "context": [
+        "event"
+      ],
+      "children": [
+        {
+          "id": "business_events",
+          "label": "رویداد تجاری",
+          "description": "همایش، نمایشگاه، افتتاحیه کسب‌وکار.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "business_exhibition",
+              "label": "نمایشگاه تجاری",
+              "description": "حضور در نمایشگاه تجاری.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "conference",
+              "label": "همایش",
+              "description": "همایش یا نشست عمومی کسب‌وکار.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "business_launch",
+              "label": "افتتاحیه و رونمایی کسب‌وکار",
+              "description": "افتتاحیه یا رونمایی محصول/کسب‌وکار.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "workshop_masterclass",
+              "label": "ورکشاپ تخصصی",
+              "description": "کارگاه کوتاه حرفه‌ای.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "pitch_investment",
+          "label": "ارائه و سرمایه‌گذاری",
+          "description": "پچ ایده/محصول و جلسه سرمایه‌گذاری.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "idea_product_pitch",
+              "label": "ارائه ایده یا محصول",
+              "description": "ارائه کوتاه ایده یا محصول به جمع.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "investment_meeting",
+              "label": "جلسه سرمایه‌گذاری",
+              "description": "نشست معرفی برای جذب سرمایه.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "startup_career",
+          "label": "استارتاپ و مسیر شغلی",
+          "description": "رویداد استارتاپی، فرصت شغلی، تست محصول.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "startup_event",
+              "label": "رویداد استارتاپی",
+              "description": "برنامه استارتاپی؛ معرفی، پنل یا ورکشاپ.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "job_opportunity_introduction",
+              "label": "معرفی فرصت شغلی",
+              "description": "معرفی موقعیت شغلی به جمع علاقه‌مند.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "product_testing",
+              "label": "تست محصول",
+              "description": "آزمایش گروهی محصول و گرفتن بازخورد.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "hackathon",
+              "label": "هکاتون",
+              "description": "رقابت ساخت محصول در زمان محدود.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "professional_networking",
+          "label": "شبکه‌سازی حرفه‌ای",
+          "description": "شبکه‌سازی و دورهمی تخصصی.",
+          "context": [
+            "event"
+          ],
+          "children": [
+            {
+              "id": "networking",
+              "label": "شبکه‌سازی",
+              "description": "آشنایی حرفه‌ای و تبادل ارتباط.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "specialist_gathering",
+              "label": "دورهمی تخصصی",
+              "description": "جمع متخصصان یک حوزه مشخص.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            },
+            {
+              "id": "mentorship_circle",
+              "label": "منتورشیپ",
+              "description": "حلقه منتور و مشاوره شغلی.",
+              "context": [
+                "event"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
     }
   ]
 }

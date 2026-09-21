@@ -92,3 +92,4 @@ Location: اگر ScopeUnit در `planro://scopes` فیلد `location` داشت،
 2. پس از پاس: `git status --short output/` → `git add output/` → commit → `git push`
 
 گزارش کوتاه: `scope_id`، تعداد city / village / place کامل‌شده، taxonomy staging.
+Taxonomy مثل §۷ پرامپت ۰۱: دسته با `context:location`؛ چک‌لیست با id + فیلتر `transportation` هم‌mode.

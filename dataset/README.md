@@ -340,7 +340,9 @@ https://nominatim.openstreetmap.org/search?q=East%20Azerbaijan%20Iran&format=jso
 
 ## 9. Category، subType، Feature و Camping
 
-- `categories` انگلیسی snake_case و مبتنی بر ماهیت واقعی‌اند؛ Tag فارسی و فراوان است.
+- `categories` فقط id از درخت `taxonomy/categories.json` است (هر سطح؛ `children[]`).
+- برای Entity مکان فقط نودهایی که `context` شامل `location` است. نود فقط-`event` برای Place ممنوع است.
+- Tag فارسی جدا و فراوان است؛ با id دسته قاطی نشود.
 - subType انگلیسی، lowercase و snake_case است. نمونه‌ها:
 
 ```text
@@ -373,17 +375,19 @@ church, monastery, museum, bazaar, park, campground, hotel, restaurant
 - `travelChecklist` Type-aware است.
 - برای Province، County، City، Village، Natural Area، Route، Accommodation و Campground هر شش دستهٔ `tour`، `personalCar`، `airplane`، `camping`، `train` و `bus` Required هستند.
 - مقادیر هر حالت فقط canonical id از `taxonomy/checklist-items.json` هستند (نه متن آزاد فارسی).
+- آیتم را وقتی در یک mode بگذار که `item.transportation` همان mode را دارد و `item.categories` با `entity.categories` هم‌خوان است.
+- فیلترهای `group_type` / `accommodation` / `difficulty` (سختی فقط برای trip) را برای تناسب با مقصد اعمال کن. `hitchhiking` و `none` mode Entity نیستند.
 - برای تعداد آیتم‌های هر دسته هیچ سقف مصنوعی وجود ندارد؛ هرچه چک‌لیست کامل‌تر و واقعاً مفیدتر باشد بهتر است.
 - Agent باید مسیر کامل سفر را از پیش از حرکت تا بازگشت تصور کند و همهٔ نیازهای واقعیِ مرتبط را بررسی کند: مدارک، رزرو/بلیت، پرداخت، ارتباط و برق، مسیریابی، خودرو، لباس، ایمنی، سلامت، غذا و آب، خواب و کمپ، بهداشت، کودک/خانواده و شرایط فصل/مقصد. فقط آیتم‌های واقعاً مرتبط با همان نوع سفر و مقصد ثبت می‌شوند.
 
 ```json
 {
-  "tour": ["کارت شناسایی", "عینک آفتابی", "شارژر همراه"],
-  "personalCar": ["کارت سوخت", "نقشه آفلاین", "زنجیر چرخ"],
-  "airplane": ["پاسپورت", "بلیت", "کارت شناسایی"],
-  "camping": ["چادر", "کیسه خواب", "چراغ قوه", "آب کافی"],
-  "train": ["بلیت قطار", "پاوربانک", "خوراکی مسیر"],
-  "bus": ["بلیت رفت و برگشت", "بالش گردنی", "آب آشامیدنی"]
+  "tour": ["id_card", "sunglasses", "power_bank"],
+  "personalCar": ["car_documents", "map_or_offline_maps", "snow_chains"],
+  "airplane": ["passport", "boarding_pass", "id_card"],
+  "camping": ["tent", "sleeping_bag", "flashlight", "extra_water"],
+  "train": ["ticket_reserved", "power_bank", "road_snacks"],
+  "bus": ["ticket_reserved", "neck_pillow", "water_bottle_filter"]
 }
 ```
 

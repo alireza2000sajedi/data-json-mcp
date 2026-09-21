@@ -31,6 +31,9 @@ Same as Global Taxonomy, plus required provenance for agent-created rows:
 {
   "id": "snake_case_id",
   "label": "برچسب فارسی",
+  "description": "یک خط مفید",
+  "context": ["trip", "location"],
+  "children": [],
   "appliesTo": ["natural"],
   "group": "general",
   "source": {
@@ -43,6 +46,7 @@ Same as Global Taxonomy, plus required provenance for agent-created rows:
 }
 ```
 
+For `categories.json`: nest under the right parent via `children[]` (same tree shape as Global). `context` is a subset of `trip` | `event` | `location`.
 Rules:
 
 - `id` must be lowercase snake_case and **must not** already exist in the matching Global Taxonomy catalog.
